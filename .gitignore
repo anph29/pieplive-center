@@ -14,5 +14,9 @@ tcl/*
 *.pyc
 *.xml
 *.mp4
-/dist/*
-/build/*
+*/Include/*
+*/Scripts/*
+*/tcl/*
+*/dist/*
+*/build/*
+*/Lib/*

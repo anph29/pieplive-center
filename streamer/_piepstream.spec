@@ -9,6 +9,7 @@ added_files = [
   ( 'src\\images', 'src\\images' ),
   ( 'src\\fonts', 'src\\fonts' ),
   ( 'src\\export', 'src\\export' ),
+  ( 'src\\icons', 'src\\icons' ),
   ( 'ffmpeg-win\\', 'ffmpeg-win\\' ),
   ( 'piepstream.kv', '.' ),
   ('Lib\\site-packages\\cv2\\opencv_ffmpeg410.dll', 'cv2'),
@@ -37,7 +38,7 @@ exe = EXE(pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=True, icon='src\\icons\\logo_streame.ico')
+          console=False, icon='src\\icons\\logo_streame.ico')
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,

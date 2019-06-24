@@ -3,8 +3,8 @@ from kivy.properties import ObjectProperty
 from src.modules.bottomleft.bottomleft import TextDialog
 from src.modules.bottomleft.bottomleft import ImageDialog
 from src.modules.bottomleft.bottomleft import AudioDialog
-# from src.modules.login.login import Login
-from src.modules.stream.mainstream import MainStream
+# from src.modules.login import Login
+from src.modules.mainstream import MainStream
 from src.utils import helper
 from kivy.lang import Builder
 import sounddevice as sd

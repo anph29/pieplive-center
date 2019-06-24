@@ -22,19 +22,18 @@ from kivy.factory import Factory
 
 from kivy.garden.iconfonts import iconfonts
 
-from src.modules.mainview.main import MainView
-from src.modules.rightcontentview.rightcontentstream import RightContentStream
+from src.modules.mainview import MainView
 
 from src.modules.custom.imagebutton import ImageButton
 from src.modules.custom.popup import PiepMePopup
 from src.modules.custom.pieplabel import PiepLabel
 from src.modules.custom.piepimage import PiepImage
-from src.modules.bufferview.buffer import Buffer
 from src.modules.controlview.control import Control
 from src.modules.kvcam.kivycamera import KivyCameraHeadless
 
 from src.modules.bottomleft.bottomleft import BottomLeft
 
+from src.modules.rightcontentview.rightcontent import RightContent
 from src.modules.rightcontentview.listview import ListCamera
 from src.modules.rightcontentview.gridview import GridCamera
 from src.modules.rightcontentview.itemlabel import ItemLabel

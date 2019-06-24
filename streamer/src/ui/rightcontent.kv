@@ -6,45 +6,47 @@
     size_hint:1,1
     pos_hint:{'y': 0, 'center_x': .5}
     do_default_tab: False
-    canvas:
-        Color:
-            rgb: .25,.25,.25
-        Rectangle:
-            size: self.size
-            pos: self.pos
     TabbedPanelItem:
         text: 'Media source'
         Box25:
-            padding:5
+            padding:2
             TabCamera:
                 id:tab_camera
-
+                canvas.before:
+                    Color:
+                        rgb: .0,.0,.0
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+            
     TabbedPanelItem:
         text:'Presenter'
         Box25:
-            padding:5
+            padding:2
             TabPresenter:
                 id:tab_presenter
+                canvas.before:
+                    Color:
+                        rgb: .0,.0,.0
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
 
 <TabCamera>:
+    ls_camera:ls_camera
     ListCamera:
         id:ls_camera
-        canvas.before:
-            Color:
-                rgb: .25,.25,.25
-            Rectangle:
-                pos: self.pos
-                size: self.size
-        viewclass: 'ItemCamera'
+        viewclass: 'ItemLabel'
         size_hint: 1,None
-        height: int(self.parent.height - 50)
+        height: int(self.parent.height - 30)
         scroll_type: ['bars', 'content']
         bar_width: 10
         GridCamera:
-            cols:2
-            spacing:5
-            default_size_hint: .5, None
-            default_size: 180, 100
+            cols:1
+            spacing:1
+            padding:1
+            default_size_hint: 1, None
+            default_size: None, 30
             multiselect: False
             touch_multiselect: False
             size_hint_y: None
@@ -61,26 +63,21 @@
             size_hint:1,1
             on_release: root.open_add_camera()
 
-
 <TabPresenter>:
+    ls_presenter:ls_presenter
     ListPresenter:
         id:ls_presenter
-        canvas.before:
-            Color:
-                rgb: .25,.25,.25
-            Rectangle:
-                pos: self.pos
-                size: self.size
-        viewclass: 'ItemCamera'
+        viewclass: 'ItemLabel'
         size_hint:1,None
-        height: int(self.parent.height - 50)
+        height: int(self.parent.height - 30)
         scroll_type: ['bars', 'content']
         bar_width: 10
         GridCamera:
-            cols:2
-            spacing:5
-            default_size_hint: .5, None
-            default_size: 180, 100
+            cols:1
+            spacing:1
+            padding:1
+            default_size_hint: 1, None
+            default_size: None, 30
             multiselect: False
             touch_multiselect: False
             size_hint_y: None

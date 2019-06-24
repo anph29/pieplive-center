@@ -13,6 +13,7 @@ from kivy.lang import Builder
 
 import numpy as np
 import array
+import pyaudio
 import audioread
 
 Builder.load_file('src/ui/mainstream.kv')
@@ -43,6 +44,7 @@ class MainStream(RelativeLayout):
             "url": "src/images/splash.jpg",
             "type": "IMG"
         }
+        self.setupAudio()
 
     def _load(self):
         try:
@@ -51,6 +53,22 @@ class MainStream(RelativeLayout):
             Clock.schedule_once(lambda x: self.pipe2.kill() , 10)
         except IOError:
             pass
+
+    def setupAudio(self):
+        pao = pyaudio.PyAudio()
+        CHUNK = 1024
+        FORMAT = pyaudio.paInt16
+        CHANNELS = 2
+        RATE = 44100
+        RECORD_SECONDS = 150
+        WAVE_OUTPUT_FILENAME = "C:/Users/hqtho/Dropbox/music/Nguoi Nao Do - JustaTee.mp3"
+
+        self.streamAudio= pao.open(format=FORMAT,
+                        channels=CHANNELS,
+                        rate=RATE,
+                        input=True,
+                        output=True,
+                        frames_per_buffer=CHUNK)
     
     def _set_capture(self, data_src):
         self.dataCam = data_src
@@ -92,7 +110,10 @@ class MainStream(RelativeLayout):
         
 
     def _process(self):
-        self.event = Clock.schedule_interval(self.stream, 1/30)
+        # self.event = Clock.schedule_interval(self.stream, 1/30)
+        for i in range(0, int(44100 / 1024 * 150)):
+            data = self.streamAudio.read(1024)
+            self.pipe.stdin.write(data)
 
     def _audio(self):
         with audioread.audio_open('src/videos/xin-mot-lan-ngoai-le.mp4') as f:
@@ -176,13 +197,18 @@ class MainStream(RelativeLayout):
             # tream
             self.command.extend(['-f', 'flv', self.urlStream])
 
-            aa=['ffmpeg-win/ffmpeg.exe', '-y', '-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', '1280x720', '-i', '-',
-                '-stream_loop', '-1', '-i', 'src/musics/default.mp3',
-                '-i', 'C:/Users/Thong/Desktop/piep-source/musics/hay-buong-tay-em.mp3',
-                '-i', 'C:/Users/Thong/Desktop/piep-source/musics/cau-chuyen-dem-v1.mp3',
-                '-f', 'dshow', '-i', 'audio=Microphone (Realtek High Definition Audio)',
-                '-filter_complex', '[a1]volume=0.0[a1],[a2]volume=1[a2],[a3]volume=0[a3],[a4]volume=0[a4],[EMP]amix=inputs=4[EMP]',
-                '-vb', '3072k', '-preset', 'veryfast', '-g', '25', '-r', '25', '-f', 'flv', 'rtmp://livevn.piepme.com/cam/7421.bf586e24e22cfc1a058ba9e8cf96afee?token=bf586e24e22cfc1a058ba9e8cf96afee&SRC=WEB&FO100=7421&PL300=7940&LN301=180&LV302=115.73.208.139&LV303=0982231325&LL348=1554461547035&UUID=247cbf2ee3f0bda1&NV124=vn&PN303=15&POS=1']
+            aa=['ffmpeg-win/ffmpeg.exe', '-y', 
+                #'-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', '1280x720', '-i', '-',
+                '-f', 's16le',
+                '-i', '-',
+
+                # '-stream_loop', '-1', '-i', 'src/musics/default.mp3',
+                # '-i', 'C:/Users/hqtho/Dropbox/music/Goc Khuat Sau Hanh Phuc - Phan Manh Quynh.mp3',
+                # '-i', 'C:/Users/hqtho/Dropbox/music/Khi Long Ta Hieu - Phan Manh Quynh.mp3',
+
+                # '-filter_complex', 'volume=0.0,[EMP]amix=inputs=3[EMP]',
+                
+                '-vb', '3072k', '-preset', 'veryfast', '-g', '25', '-r', '25', 'output.flv']
             
             self.pipe = subprocess.Popen(aa, stdin=subprocess.PIPE)
             

@@ -4,7 +4,6 @@ from kivy.uix.label import Label
 from kivy.clock import Clock
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
 from kivy.graphics.texture import Texture
-from src.modules.rightcontentview.controllers.itemcamera import ItemCamera
 
 _CAM_NUMS_FRAME = '-2562047788015215'
 

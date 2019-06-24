@@ -5,7 +5,7 @@ from kivy.uix.popup import Popup
 from src.modules.custom.filechoose import FileChooser
 from src.utils import ftype, helper
 
-Builder.load_file('src/modules/rightcontentview/views/addcamera.kv')
+Builder.load_file('src/ui/addcamera.kv')
 
 
 class AddCamera(Popup):

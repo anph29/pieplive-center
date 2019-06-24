@@ -2,11 +2,11 @@
 from kivy.uix.tabbedpanel import TabbedPanel
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty, StringProperty
-from src.modules.rightcontentview.controllers.addcamera import AddCamera
-from src.modules.rightcontentview.controllers.itemlabel import ItemLabel
+from src.modules.rightcontentview.addcamera import AddCamera
+from src.modules.rightcontentview.itemlabel import ItemLabel
 from kivy.uix.boxlayout import BoxLayout
 
-Builder.load_file('src/modules/rightcontentview/views/rightcontentstream.kv')
+Builder.load_file('src/ui/rightcontentstream.kv')
 
 class RightContentStream(TabbedPanel):
     tab_camera = ObjectProperty()

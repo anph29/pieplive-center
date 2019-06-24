@@ -15,7 +15,7 @@ from kivy.app import App
 from kivy.clock import Clock
 
 from functools import partial
-Builder.load_file('src/modules/bottomleft/views/listmixer.kv')
+Builder.load_file('src/ui/listmixer.kv')
 
 class ListMixer(RecycleView):
 

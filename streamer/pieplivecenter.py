@@ -18,8 +18,8 @@ Config.set('kivy', 'window_icon', 'src/images/logo.png')
 from kivy.app import App
 from kivy.core.text import LabelBase
 from kivy.properties import ObjectProperty
-from src.modules.mainview.controllers.main_stream import MainView
-from src.modules.rightcontentview.controllers.rightcontentstream import RightContentStream
+from src.modules.mainview.main import MainView
+from src.modules.rightcontentview.rightcontentstream import RightContentStream
 from kivy.garden.iconfonts import iconfonts
 
 iconfonts.register('default_font', 'src/fonts/iconfont_sample.ttf',

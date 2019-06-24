@@ -7,7 +7,7 @@ from kivy.lang import Builder
 from src.utils import helper
 
 
-Builder.load_file('src/modules/rightcontentview/views/itemlabel.kv')
+Builder.load_file('src/ui/itemlabel.kv')
 class ItemLabel(RecycleDataViewBehavior, FloatLayout):
     index = NumericProperty(0)
     dt_capture = ObjectProperty()

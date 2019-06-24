@@ -5,7 +5,7 @@ from src.utils import helper
 from src.utils import socket_client
 from kivy.clock import Clock
 
-Builder.load_file('src/modules/login/login.kv')
+Builder.load_file('src/ui/login.kv')
 
 
 class Login(Popup):

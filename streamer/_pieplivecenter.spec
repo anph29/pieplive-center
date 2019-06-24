@@ -14,7 +14,7 @@ added_files = [
 ]
 
 a = Analysis(['pieplivecenter.py'],
-             pathex=['D:\\QueenB\\pieplive-center-v1'],
+             pathex=['D:\\QueenB\\PiepLive-Center\\streamer'],
              binaries=[],
              datas=added_files,
              hiddenimports=['six','packaging','packaging.version','backend_kivy','win32timezone'],

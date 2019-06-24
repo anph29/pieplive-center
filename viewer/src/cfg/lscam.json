@@ -1,0 +1,57 @@
+[
+    {
+        "name": "S\u01a1n Tr\u00e0",
+        "url": "rtsp://viewer:FB1D2631C12FE8F7EE8951663A8A108@117.3.2.18:554",
+        "type": "RTSP"
+    },
+    {
+        "name": "\u0110\u00e0 N\u1eb5ng B\u00e2y gi\u1edd - Kh\u00e1ch S\u1ea1n H\u1ea3i An",
+        "url": "rtsp://viewer:FB1D2631C12FE8F7@113.160.235.253:554",
+        "type": "RTSP"
+    },
+    {
+        "name": "VID1",
+        "url": "src/videos/sample1mb.mp4",
+        "type": "VIDEO"
+    },
+    {
+        "name": "VID2",
+        "url": "src/videos/sample2mb.mp4",
+        "type": "VIDEO"
+    },
+    {
+        "name": "VID2",
+        "url": "src/images/splash.jpg",
+        "type": "IMG"
+    },
+    {
+        "name": "cc",
+        "url": "C:/Users/luots/Desktop/ssssssssssssssssssssssssssssssssss.PNG",
+        "type": "IMG"
+    },
+    {
+        "name": "Kh\u00e1ch S\u1ea1n Merry - CAM 1 - HK",
+        "url": "https://viewer:FB1D2631C12FE8F7@14.241.131.216:553",
+        "type": "RTSP"
+    },
+    {
+        "name": "zxxxxxx",
+        "url": "C:/Users/luots/Desktop/xxxxxxxxxxxxxxxxxxx.PNG",
+        "type": "IMG"
+    },
+    {
+        "name": "4man",
+        "url": "D:/anph/python/pieplive-center-v2/src/videos/4manshow.mp4",
+        "type": "VIDEO"
+    },
+    {
+        "name": "a",
+        "url": "C:/Users/luots/Desktop/image_2019_06_12T10_22_42_924Z.png",
+        "type": "IMG"
+    },
+    {
+        "name": "zz",
+        "url": "D:/anph/python/pieplive-center-v1/src/videos/costa_rica.mp4",
+        "type": "VIDEO"
+    }
+]

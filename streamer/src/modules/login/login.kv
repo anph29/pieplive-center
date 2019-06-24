@@ -1,0 +1,86 @@
+#:kivy 1.10.1
+#File name: login.py
+<Login>:
+    qr_login:qr_login
+    title: 'Login'
+    color:1,0,0,1
+    size_hint:None, None
+    width:sp(700)
+    height:sp(650)
+    auto_dismiss: False
+    padding:0
+    RelativeLayout:
+        size_hint:1,1 
+        pos:0,0
+        BoxLayout:
+            size_hint:1,1
+            orientation: 'vertical'
+            spacing:15
+            padding:sp(0),sp(80),sp(0),sp(0)
+            pos:0,0
+            canvas.before:
+                Color:
+                    rgb:1,1,1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+        
+            BoxLayout:
+                size_hint: 1, None
+                height: 80
+                canvas.after:
+                    Rectangle:
+                        size:80,80
+                        pos: (self.center_x - 40, self.pos[1])
+                        source: 'src/images/logo120.png'
+
+            FloatLayout:
+                size_hint: 1, None
+                height:180
+                canvas.before:
+                    Color:
+                        rgb:1,1,1
+                    Rectangle:
+                        pos: (self.center_x - 90, self.pos[1])
+                        size: 180,180
+                Image:
+                    id:qr_login
+                    size_hint:1,1
+                    pos:0,0
+                ImageButton:
+                    source:'src/icons/f5.png'
+                    size_hint:1,1
+                    pos:0,0
+
+    
+            Label:
+                text: 'Use PiepMe app to scan QR code'
+                size_hint: 1, .1
+                color: .0,.0,.0,1
+                font_size: sp(14)
+                valign:"middle"
+                halign:"center"
+                multiline: False
+
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint: 1, .1
+                height:30
+                padding:10
+                Widget:
+                Button:
+                    text: 'Cancel'
+                    font_size: sp(14)
+                    on_press: root._cancel()
+                Widget:
+        Image:
+            size_hint:None,None
+            #width:180
+            pos: (-29, 420)
+            source: 'src/images/oval1-min.png'
+        Image:
+            size_hint:None,None
+            height:60
+            pos: (root.width - self.width -16, 100)
+            source: 'src/images/oval2-min.png'
+            

@@ -1,0 +1,69 @@
+#:kivy 1.10.1
+#File name: piepme.py
+
+
+<BoxLayout>:
+    orientation: 'vertical'
+        
+<Box11@BoxLayout>:
+    canvas.before:
+        Color:
+            rgb: .1,.1,.1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+<Box25@BoxLayout>:
+    canvas.before:
+        Color:
+            rgb: .25,.25,.25
+        Rectangle:
+            pos: self.pos
+            size: self.size
+<Box90@BoxLayout>:
+    canvas.before:
+        Color:
+            rgb: .9,.9,.9
+        Rectangle:
+            pos: self.pos
+            size: self.size
+<Button>:
+    background_color:.29,.41,.55,1
+    color:1,1,1,1
+    font_size:13
+    size_hint:None, None
+    height:30
+    canvas.before:
+        Color:
+            rgb: 0,0,0
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+# <PiepMeViewer>:
+#     Splash:
+#         name: 'PgSplash'
+#         AnchorLayout:
+#             Image:
+#                 source: 'src/imagse/splash.png'
+#                 size_hint: 1,1
+#     MainScreen:
+#         name: 'MainScreen'
+<MainView>:
+    id:mainView
+    size_hint:1,1
+    right_content: right_content
+    canvas.before:
+        Color:
+            rgb:.12, .15, .18
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    BoxLayout:#MainWrapper
+        orientation:'horizontal'
+        size_hint: None,None
+        size: root.width, root.height
+        cols:2
+        pos: 0,0
+
+        RightContent:
+            id:right_content

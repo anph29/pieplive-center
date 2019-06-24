@@ -1,0 +1,553 @@
+
+<BottomLeft>:
+    stream_server : stream_server
+    stream_key : stream_key
+    list_source : list_source
+    list_mixer : list_mixer
+
+    BoxLayout:
+        canvas.before:
+            Color:
+                rgb: .1,.1,.1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        orientation:'vertical'
+        padding:1
+        size_hint:1,1
+        spacing:1
+        Label:
+            canvas.before:
+                Color:
+                    rgb: .25,.25,.25
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            size_hint:1, None
+            height: dp(26)
+            font_size:sp(11)
+            text: '[color=ffffff]Sources[/color]'
+            markup: True
+        ListSource:
+            id:list_source
+            viewclass: 'RCVItemSource'
+            size_hint:1,None
+            height: self.parent.height - dp(52)
+            scroll_type: ['bars', 'content']
+            bar_width: 10
+            BoxSource:
+                spacing: 1
+                default_size: None, 22
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                multiselect: False
+                touch_multiselect: False
+        
+        BoxLayout:
+            canvas.before:
+                Color:
+                    rgb: .25,.25,.25
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            size_hint: 1,None
+            height:dp(24)
+            orientation:'horizontal'
+            padding:5
+            spacing:10
+            ImageButton:
+                size_hint:None,1
+                padding: 5
+                width: 16
+                source: 'src/icons/addW-sq.png'
+                on_release: root.open_add_source(self.parent)
+            ImageButton:
+                size_hint:None,1
+                padding: 5
+                width: 16
+                source: 'src/icons/pen.png'
+                on_release: list_source.edit_source()
+            ImageButton:
+                size_hint:None,1
+                padding: 5
+                width: 16
+                source: 'src/icons/trash.png'
+                on_release: list_source.confirmDelete()
+    
+    BoxLayout:
+        canvas.before:
+            Color:
+                rgb: .1,.1,.1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        orientation:'vertical'
+        size_hint:1,1
+        padding:1
+        Label:
+            canvas.before:
+                Color:
+                    rgb: .25,.25,.25
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            size_hint:1, None
+            height: dp(26)
+            font_size:sp(11)
+            text: '[color=ffffff]Mixer[/color]'
+            markup: True
+        ListMixer:
+            id:list_mixer
+            viewclass: 'RCVItemMixer'
+            size_hint:1,None
+            height: self.parent.height - dp(28)
+            scroll_type: ['bars', 'content']
+            bar_width: 10
+            BoxMixer:
+                default_size_hint: 1, None
+                default_size: None, 75
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                multiselect: False
+                touch_multiselect: False
+
+    BoxLayout:
+        canvas.before:
+            Color:
+                rgb: .1,.1,.1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        orientation:'vertical'
+        size_hint:1,1
+        padding:1
+        Label:
+            canvas.before:
+                Color:
+                    rgb: .25,.25,.25
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            size_hint:1, None
+            height: dp(26)
+            font_size:sp(11)
+            text: '[color=ffffff]Stream[/color]'
+            markup: True
+        
+        BoxLayout:
+            orientation:'vertical'
+            size_hint:1,None
+            height: self.parent.height - dp(28)
+            padding:0,5,0,5
+            spacing:5
+            TextInput:
+                id: stream_server
+                size_hint: 1, None
+                height: 26
+                font_size:sp(12)
+                color: 0,0,0,1
+                multiline:False
+                hint_text:'Sever'
+            TextInput:
+                id: stream_key
+                size_hint: 1, None
+                height: 26
+                font_size:sp(12)
+                color: 1,1,1,1
+                multiline:False
+                hint_text:'Key'
+            Widget:
+
+<TextDialog>:
+    inp_name:inp_name
+    inp_text:inp_text
+    inp_font:inp_font
+    inp_size:inp_size
+    inp_color: inp_color
+
+    title: 'Add Text'
+    size_hint: None, None
+    width: 600
+    height:660
+    auto_dismiss: False
+    BoxLayout:
+        orientation: 'vertical'
+        pos: self.pos
+        size: root.size
+        padding:0,5,0,0
+        spacing:10
+        Label:
+            canvas.before:
+                Color:
+                    rgb: .25,.25,.25
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            id:preview_text
+            text: '[color='+str(inp_color.hex_color)+']'+inp_text.text+'[/color]'
+            font_name:inp_font.text
+            font_size:sp(30)
+            markup:True
+            size_hint: 1, None
+            height:80
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint:1,None
+            height:26
+            Label:
+                text: 'Name'
+                size_hint: None, 1
+                width: 135
+                valign:"top"
+                halign:"right"
+            TextInput:
+                id: inp_name
+                size_hint: None, 1
+                width: self.parent.width - 135
+                multiline: False
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint:1,None
+            height:60
+            Label:
+                text: 'Text'
+                size_hint: None, 1
+                width: 135
+                valign:"top"
+                halign:"right"
+
+            TextInput:
+                id: inp_text
+                size_hint: None, 1
+                width: self.parent.width - 135
+                multiline: True
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint:1,None
+            height:240
+            Label:
+                text: 'Color'
+                size_hint: None, 1
+                width: 135
+                valign:"top"
+                halign:"right"
+            ColorPicker:
+                id:inp_color
+                size_hint: None, 1
+                width: self.parent.width - 135
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint:1,None
+            height:26
+            Label:
+                text: 'Font'
+                size_hint: None, 1
+                width: 135
+                valign:"top"
+                halign:"right"
+            Spinner:
+                id:inp_font
+                size_hint: None, 1
+                width: self.parent.width - 135
+                text:'opensans'
+                values:'opensans', 'roboto', 'awkward-alone', 'good-brush'
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint:1,None
+            height:26
+            Label:
+                text: 'Size'
+                size_hint: None, 1
+                width: 135
+                valign:"top"
+                halign:"right"
+            TextInput:
+                id:inp_size
+                size_hint: None, 1
+                width: self.parent.width - 135
+                text:'30'
+                input_filter:"int"
+
+        Widget:
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, None
+            height:30
+            spacing:5
+            Widget:
+            Button:
+                text: 'Enter'
+                background_color: 1,1,1,1
+                on_press: root._enter()
+
+            Button:
+                text: 'Cancel'
+                background_color: 1,1,1,1
+                on_press: root._cancel()
+
+
+<ImageDialog>:
+    inp_name: inp_name
+    inp_source:inp_source
+    inp_width:inp_width
+    inp_height:inp_height
+    title: 'Add Image'
+    size_hint: None, None
+    width: 400
+    height:500
+    auto_dismiss: False
+    BoxLayout:
+        orientation: 'vertical'
+        pos: self.pos
+        size: root.size
+        padding:0,5,0,0
+        spacing:10
+        Widget:
+        BoxLayout:
+            canvas.before:
+                Color:
+                    rgb: .25,.25,.25
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            orientation: 'horizontal'
+            size_hint:1,None
+            height:150
+            Widget:
+            Image:
+                id:preview_image
+                source:inp_source.text
+                size_hint: None, None
+                width:100
+                # size:(100,100)
+            Widget:
+        Widget:
+        
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint:1,None
+            height:30
+            Label:
+                text: 'Name'
+                size_hint: None, 1
+                width: 135
+                color: 1,1,1,1
+                font_size: sp(14)
+                valign:"top"
+                halign:"right"
+            TextInput:
+                id: inp_name
+                size_hint: None, 1
+                width: 240
+                font_size: sp(14)
+                multiline: False
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint:1,None
+            height:30
+            Label:
+                text: 'source'
+                size_hint: None, 1
+                width: 135
+                font_size: sp(14)
+                color: 1,1,1,1
+                valign:"top"
+                halign:"right"
+
+            TextInput:
+                id: inp_source
+                size_hint: None, 1
+                width: 180
+                font_size: sp(14)
+                multiline: False
+            Button:
+                text:'choose'
+                size_hint: None, 1
+                width: 60
+                font_size: sp(14)
+                color: 1,1,1,1
+                background_color: 1,1,1,1
+                on_press: root._choose_image()
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint:1,None
+            height:30
+            Label:
+                text: 'Size'
+                size_hint: None, 1
+                width: 135
+                color: 1,1,1,1
+                font_size: sp(14)
+                valign:"top"
+                halign:"right"
+            TextInput:
+                id:inp_width
+                size_hint: None, 1
+                width: 100
+                font_size: sp(14)
+                text:'80'
+                input_filter:"int"
+            Label:
+                text: 'x'
+                color: 1,1,1,1
+                font_size: sp(14)
+                size_hint: None, 1
+                width: 38
+            TextInput:
+                id:inp_height
+                size_hint: None, 1
+                width: 100
+                font_size: sp(14)
+                text:'80'
+                input_filter:"int"    
+
+        Widget:
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, None
+            height:30
+            spacing:5
+            Widget:
+            Button:
+                text: 'Enter'
+                background_color: 1,1,1,1
+                font_size: sp(14)
+                on_press: root._enter()
+            Button:
+                text: 'Cancel'
+                background_color: 1,1,1,1
+                font_size: sp(14)
+                on_press: root._cancel()
+
+<AudioDialog>:
+    inp_name:inp_name
+    inp_source:inp_source
+    inp_volume:inp_volume
+
+    title: 'Add Audio'
+    size_hint: None, None
+    width: 400
+    height:500
+    auto_dismiss: False
+    BoxLayout:
+        orientation: 'vertical'
+        pos: self.pos
+        size: root.size
+        padding:0,5,0,0
+        spacing:10
+        # BoxLayout:
+        #     canvas.before:
+        #         Color:
+        #             rgb: .25,.25,.25
+        #         Rectangle:
+        #             pos: self.pos
+        #             size: self.size
+        #     size_hint:1,None
+        #     height:150
+        #     Widget:
+        #     Sound:
+        #         id:preview_audio
+        #         #load:"src/musics/anh-nang-trong-anh.mp3"
+        #         size_hint: 1, 1
+        #     Widget:
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint:1,None
+            height:30
+            Label:
+                text: 'Name'
+                size_hint: None, 1
+                width: 135
+                color: 1,1,1,1
+                font_size: sp(14)
+                valign:"top"
+                halign:"right"
+            TextInput:
+                id: inp_name
+                size_hint: None, 1
+                width: 240
+                font_size: sp(14)
+                multiline: False
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint:1,None
+            height:30
+            Label:
+                text: 'source'
+                size_hint: None, 1
+                width: 135
+                font_size: sp(14)
+                color: 1,1,1,1
+                valign:"top"
+                halign:"right"
+
+            TextInput:
+                id: inp_source
+                size_hint: None, 1
+                width: 180
+                font_size: sp(14)
+                multiline: False
+            Button:
+                text:'choose'
+                size_hint: None, 1
+                width: 60
+                font_size: sp(14)
+                color: 1,1,1,1
+                background_color: 1,1,1,1
+                on_press: root._choose_audio()
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint:1,None
+            height:100
+            Label:
+                text: 'Volume'
+                size_hint: None, 1
+                width: 135
+                color: 1,1,1,1
+                font_size: sp(14)
+                valign:"top"
+                halign:"right"
+            Knob:
+                id:inp_volume
+                size: 100, 100
+                value: 100
+                show_marker: True
+                knobimg_source: "src/images/knob_metal.png"
+                marker_img: "src/images/bline.png"
+                markeroff_color: 0.3, 0.3, .3, 1
+            Label:
+                text: str(int(inp_volume.value))
+                size_hint: None, 1
+                width: 53
+                color: 1,1,1,1
+                font_size: sp(14)
+        Widget:
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, None
+            height:30
+            spacing:5
+            Widget:
+            Button:
+                text: 'Enter'
+                background_color: 1,1,1,1
+                font_size: sp(14)
+                on_press: root._enter()
+            Button:
+                text: 'Cancel'
+                background_color: 1,1,1,1
+                font_size: sp(14)
+                on_press: root._cancel()

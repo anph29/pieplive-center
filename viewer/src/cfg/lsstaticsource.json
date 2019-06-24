@@ -1,0 +1,61 @@
+[
+    {
+        "type": "text",
+        "active": 0,
+        "name": "text",
+        "label": "PiepMe - QueenB - PiepLive",
+        "pos_x": 120,
+        "pos_y": 780,
+        "font": "opensans",
+        "size": 70,
+        "color": "ffffff",
+        "shadow_color": null,
+        "shadow_x": 5,
+        "shadow_y": 5,
+        "box": 1,
+        "box_color": null,
+        "idx": 0,
+        "total": 4
+    },
+    {
+        "type": "image",
+        "active": 1,
+        "name": "logo",
+        "src": "src/images/logo.png",
+        "pos_x": 21.0,
+        "pos_y": 689.0000000000001,
+        "width": 100,
+        "height": 100,
+        "timeStart": null,
+        "timeEnd": null,
+        "idx": 1,
+        "total": 4
+    },
+    {
+        "type": "audio",
+        "active": 1,
+        "name": "mp3",
+        "src": "src/musics/khi-long-ta-hieu.mp3",
+        "volume": 100,
+        "idx": 2,
+        "total": 4
+    },
+    {
+        "type": "text",
+        "active": 1,
+        "name": "text new",
+        "label": "huynnh quang thong",
+        "pos_x": 1062.0,
+        "pos_y": -213.99999999999997,
+        "font": "opensans",
+        "size": "20",
+        "color": "ffffff",
+        "shadow_color": null,
+        "shadow_x": 0,
+        "shadow_y": 0,
+        "box": null,
+        "box_color": null,
+        "idx": 3,
+        "total": 4
+    }
+]

@@ -1,0 +1,119 @@
+{
+    "_id": 2660,
+    "NV101": "\u00c2  n831",
+    "NV101_STEM": "a  n831",
+    "NV102": "l8fYAM3nA80SYU4dwuyhmX/sKHSuM",
+    "NV106": "\u00c2  n",
+    "NV107": "831",
+    "NV108": "#000000",
+    "NN109": 66,
+    "NN110": 0,
+    "NV111": "ftYDysa_f-0:APA91bHjbJnm5Qxv6eqs4EYzjSRP6gC_j0SU3u2Bz6t7gGTPdTnwXISiG9TpUTO73SebQOFlrhGk497wpMWbtr7v0EV67p8Ar2oOSM02XcWqTp4iWt5LL318NQyPzckQkNiuTn2iIXqK",
+    "NN112": 1988,
+    "NN113": 0,
+    "NV114": "android",
+    "NV118": "NE",
+    "NN119": 0,
+    "NN120": 0,
+    "FO100": 4033,
+    "FO100_RE": 1414,
+    "NO122": {
+        "type": "Point",
+        "coordinates": [
+            106.68098770000006,
+            10.7782998
+        ],
+        "ADDRESS": "134/1/19 C\u00e1ch M\u1ea1ng Th\u00e1ng 8, Ho Chi Minh City, Vietnam"
+    },
+    "NO123": {
+        "type": "Point",
+        "coordinates": [
+            106.679597,
+            10.7795286
+        ]
+    },
+    "NV124": "vn",
+    "NV126": "https://media.piepme.com/4033/images/avartaoohhay?t=1551668971938",
+    "NV127": "l8fYAM3nA80SYU4dwuyhmX/sKHSuM5V2+9lRBnZguuw=",
+    "NV128": "AS",
+    "NL194": "UPDATED",
+    "NL197": "2019-05-25T03:24:21.651Z",
+    "NL198": "2017-11-11T03:07:08.170Z",
+    "NV117": "GP2Y6B",
+    "NA126": [
+        1932,
+        3010,
+        2599
+    ],
+    "NV130": "vi",
+    "A100": {
+        "FO100C": 1932,
+        "AV101": "\u00c2n",
+        "AV102": "\u00c2n",
+        "AV103": "147852369",
+        "LICENSE_IMGS": [
+            "https://d2g7dc0hcuz3eo.cloudfront.net/4033/1510369591940-fileupload.jpg"
+        ],
+        "AV105": "CON",
+        "AV107": "0984398831",
+        "AD110": "2017-11-11T10:04:55.000Z",
+        "AV111": "134/1/19",
+        "AD106": "2017-11-11T03:06:37.694Z",
+        "AD108": "2017-11-11T03:07:08.170Z"
+    },
+    "A100_CON": {
+        "FO100C": 1932,
+        "AV101": "\u00c2n",
+        "AV102": "\u00c2n",
+        "AV103": "147852369",
+        "LICENSE_IMGS": [
+            "https://d2g7dc0hcuz3eo.cloudfront.net/4033/1510369591940-fileupload.jpg"
+        ],
+        "AV105": "CON",
+        "AV107": "0984398831",
+        "AD110": "2017-11-11T10:04:55.000Z",
+        "AV111": "134/1/19",
+        "AD106": "2017-11-11T03:06:37.694Z",
+        "AD108": "2017-11-11T03:07:08.170Z"
+    },
+    "NL193": 21779,
+    "NL192": "BETA",
+    "NO133": {
+        "NV133_C": "vn",
+        "NV133_M": "+84",
+        "NV133_P": "984398831",
+        "NV133_S": "M",
+        "NV133_T": "TT",
+        "NV133_V": "228368"
+    },
+    "NA136": [
+        {
+            "KEY": "Je",
+            "KEY_STEM": "je"
+        },
+        {
+            "KEY": "suis",
+            "KEY_STEM": "suis"
+        },
+        {
+            "KEY": "mon",
+            "KEY_STEM": "mon"
+        },
+        {
+            "KEY": "enemy",
+            "KEY_STEM": "enemy"
+        },
+        {
+            "KEY": "!!false",
+            "KEY_STEM": "!!false"
+        }
+    ],
+    "NV137": "Y",
+    "NN139": 0,
+    "NL191": "2019-04-22T02:34:33.376Z",
+    "NV125": "XMFza67pqI3P5hUPzQeksESJtzYLZfZJOrzX9igB62wQN8SlEk",
+    "token": "ei1tQklNOUV5VV9vRTBsR0FBQ3cjI3FiIyNXaW5kb3dzIDEwIC0gUGllcExpdmUgQ2VudGVy",
+    "appType": "viewer",
+    "pvPROV": "CA",
+    "UUID": "00a4a3103e3309c8"
+}

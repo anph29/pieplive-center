@@ -1,0 +1,46 @@
+#:kivy 1.10.1
+#File name: control.py
+<Button>:
+    size:120, 25
+    color:1,1,1,1
+    
+<Control>:
+    btn_start:btn_start
+    btn_record:btn_record
+    btn_setting:btn_setting
+    
+    size_hint:1, None
+    height:40
+    padding:5
+    pos_hint:{'x': 0, 'y': 0}
+    canvas.before:
+        Color:
+            rgb: .75,.75,.75
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    BoxLayout:
+        spacing:5
+        size_hint:None,1
+        orientation:'horizontal'
+        #pos_hint:{'x': (self.parent.width - 495) / 2 / self.parent.width}
+        pos_hint:{'x': (self.parent.width - 620) / 2 / self.parent.width} # parent - btn.width + spacing(5) * quantity
+
+        Button:
+            id:btn_start
+            text:'Start Streaming'
+            on_press: app.root.mClick('start')
+        Button:
+            id:btn_record
+            text:'Start Recording'
+            on_press: app.root.mClick('record')
+        Button:
+            id:btn_setting
+            text:'Settings'
+            on_press: app.root.openSetting()
+        Button:
+            text:'Exit'
+            on_press: app.root.openSetting()
+        Button:
+            text:'Login'
+            on_press: app.root.openLogin()

@@ -1,0 +1,102 @@
+#:kivy 1.10.1
+#File name: rightcontentviewer.py
+<RightContentViewer>:
+    tab_camera:tab_camera
+    tab_presenter:tab_presenter
+    tab_width: self.size[0] / 2
+    size_hint:1,1
+    pos_hint:{'y': 0, 'center_x': .5}
+    do_default_tab: False
+    canvas:
+        Color:
+            rgb: .25,.25,.25
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    TabbedPanelItem:
+        text: 'Media source'
+        Box25:
+            padding:5
+            TabCameraViewer:
+                id:tab_camera
+            
+    TabbedPanelItem:
+        text:'Presenter'
+        Box25:
+            padding:5
+            TabPresenterViewer:
+                id:tab_presenter
+
+<TabCameraViewer>:
+    ls_camera:ls_camera
+    ListCamera:
+        id:ls_camera
+        canvas.before:
+            Color:
+                rgb: .25,.25,.25
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        viewclass: 'ItemCameraViewer'
+        size_hint: 1,None
+        height: int(self.parent.height - 50)
+        scroll_type: ['bars', 'content']
+        bar_width: 10
+        GridCamera:
+            cols:5
+            spacing:5
+            default_size_hint: .2, None
+            default_size:self.parent.size[0]/5 ,self.parent.size[0]/5 / 16 * 9
+            multiselect: False
+            touch_multiselect: False
+            size_hint_y: None
+            height: self.minimum_height
+
+    BoxLayout:
+        size_hint:None, None
+        pos_hint:{'x':0,'right':1  }
+        height:45
+        width:45
+        ImageButton:
+            source:'src/icons/addW-sq.png'
+            pos_hint:{'x':0,'y':0}
+            size_hint:1,1
+            on_release: root.open_add_camera()
+
+<TabPresenterViewer>:
+    ls_presenter:ls_presenter
+    ListPresenter:
+        id:ls_presenter
+        canvas.before:
+            Color:
+                rgb: .25,.25,.25
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        viewclass: 'ItemCameraViewer'
+        size_hint:1,None
+        height: int(self.parent.height - 50)
+        scroll_type: ['bars', 'content']
+        bar_width: 10
+        GridCamera:
+            cols:5
+            spacing:5
+            default_size_hint: .2,None
+            default_size:self.parent.size[0]/5 ,self.parent.size[0]/5 / 16 * 9
+            multiselect: False
+            touch_multiselect: False
+            size_hint_y: None
+            height: self.minimum_height
+
+    # BoxLayout:
+    #     size_hint:None, None
+    #     pos_hint:{'x':0,'right':1  }
+    #     height:45
+    #     width:45
+    #     ImageButton:
+    #         source:'src/icons/addW-sq.png'
+    #         pos_hint:{'x':0,'y':0}
+    #         size_hint:1,1
+    #         on_release: root.open_add_presenter()
+
+

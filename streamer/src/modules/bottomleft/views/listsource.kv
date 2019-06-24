@@ -1,0 +1,28 @@
+<RCVItemSource>:
+    canvas.before:
+        Color: 
+            rgb:((.1,.1,.1),(.25,.25,.25))[root.selected]
+        Rectangle:
+            size:self.size
+            pos:self.pos
+    padding: 0,1,0,1
+    BoxLayout:
+        orientation:'horizontal'
+        size_hint: 1, None
+        height: 22
+        spacing:5
+        ImageButton:
+            size_hint: None, 1
+            width: 20
+            source:'src/icons/eye.png'
+            opacity: 1 if root.active == 1 else 0.2
+            on_release: root.on_change_check()
+
+        Label:
+            font_size: 13
+            text: root.name
+            text_size: self.width, self.height
+            valign: 'center'
+            halign: 'justify'
+            color: 1,1,1,1
+            markup: True

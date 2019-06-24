@@ -13,7 +13,7 @@ from kivy.lang import Builder
 from kivy.graphics import Rectangle, Color
 from src.modules.custom.popup import PiepMeConfirmPopup
 
-Builder.load_file('src/modules/bottomleft/views/listsource.kv')
+Builder.load_file('src/ui/listsource.kv')
 
 class ListSource(RecycleView):
     list_source = ObjectProperty()

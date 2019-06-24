@@ -6,7 +6,7 @@ from kivy.lang import Builder
 from src.utils import helper
 
 
-Builder.load_file('src/modules/rightcontentview/views/itemcamera.kv')
+Builder.load_file('src/ui/itemcamera.kv')
 class ItemCamera(RecycleDataViewBehavior, FloatLayout):
     index = NumericProperty(0)
     dt_capture = ObjectProperty()

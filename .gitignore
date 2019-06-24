@@ -1,4 +1,11 @@
+/.history/*
+/lib/*
+*/.vscode/*
+/share/*
+*/bin/*
+.idea/
 */.idea/*
+/include/*
 *__pycache__*
 */__pycache__/*
 .DS_Store

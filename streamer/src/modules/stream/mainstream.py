@@ -1,11 +1,7 @@
 import kivy
 import subprocess
 import cv2
-#import numpy as np
-#import os
 import src.utils.helper as helper
-#import time
-# import sounddevice as sd
 from threading import Thread, Event
 from kivy.clock import Clock, mainthread
 from kivy.graphics import Fbo, ClearColor, ClearBuffers, Scale, Translate
@@ -24,7 +20,7 @@ import numpy as np
 import array
 import audioread
 
-Builder.load_file('src/modules/stream/mainstream_stream.kv')
+Builder.load_file('src/ui/mainstream.kv')
 class MainStream(RelativeLayout):
     camera= ObjectProperty()
     f_parent= ObjectProperty(None)

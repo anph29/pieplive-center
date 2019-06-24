@@ -22,46 +22,40 @@
         BoxLayout:#LeftContent
             size_hint_x: None
             size_hint_y: 1
-            width:root.width - 375
+            width:root.width - 200
             spacing:5
             padding:5
-
-            Box11:#TopLeft
-                size_hint:1,.8
-                AnchorLayout:
-                    size_hint:1, None
-                    height: (self.parent.height - 40)
-                    canvas.before:
-                        Color:
-                            rgb:.12, .15, .18
-                        Rectangle:
-                            pos: self.pos
-                            size: self.size
-                    MainStream:
-                        id: mainStream
-                        size_hint:1, 1
-                        anchor_x: 'center'
-                        anchor_y: 'center'
+            RelativeLayout:
+                size_hint:1, None
+                height: (self.parent.height - 220)
+                canvas.before:
+                    Color:
+                        rgb:.12, .15, .18
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                MainStream:
+                    id: mainStream
+                    size:self.f_width, self.f_height
+                    # anchor_x:'center'
+                    # anchor_y:'center'
+                    pos:0,0
                       
-                Control:
-                    id: control
-                    size_hint: 1, None
-                    height: 40
+            Control:
+                id: control
+                size_hint: 1, None
+                height: 40
                 
             BottomLeft:
                 id:bottom_left
-                size_hint:1,.2
+                size_hint:1,None
+                height: 160
                 rows:1
                 cols:3
                 spacing:5
 
-        RightContent:
+        RightContentStream:
             id:right_content
-        
-        # BoxLayout:
-        #     orientation:'vertical'
-        #     size_hint: 1,1
-        #     Label:
-        #         text:'Setting'
-        #         size_hint: 1,None
-        #         height: dp(26)
+            size_hint_x: None
+            size_hint_y: 1
+            width:200

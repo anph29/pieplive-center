@@ -15,19 +15,19 @@ import src.utils.helper as helper
 from src.modules.custom.choosefile import ChooseFile
 # import sounddevice as sd
 from kivy.app import App
-from src.modules.bottomleft.controllers.dropdownsource import DropDownSource
+from src.modules.bottomleft.dropdownsource import DropDownSource
 from src.modules.custom.mylabel import MyLabel
-from src.modules.bottomleft.controllers.listmixer import ListMixer 
-from src.modules.bottomleft.controllers.listmixer import BoxMixer 
-from src.modules.bottomleft.controllers.listmixer import RCVItemMixer 
-from src.modules.bottomleft.controllers.listsource import ListSource 
-from src.modules.bottomleft.controllers.listsource import BoxSource 
-from src.modules.bottomleft.controllers.listsource import RCVItemSource
+from src.modules.bottomleft.listmixer import ListMixer 
+from src.modules.bottomleft.listmixer import BoxMixer 
+from src.modules.bottomleft.listmixer import RCVItemMixer 
+from src.modules.bottomleft.listsource import ListSource 
+from src.modules.bottomleft.listsource import BoxSource 
+from src.modules.bottomleft.listsource import RCVItemSource
 from kivy.garden.knob import Knob
 from src.utils import ftype, helper
 from src.modules.custom.filechoose import FileChooser
 
-Builder.load_file('src/modules/bottomleft/views/bottomleft.kv')
+Builder.load_file('src/ui/bottomleft.kv')
 class BottomLeft(GridLayout):
     def __init__(self, **kwargs):
         super(BottomLeft, self).__init__(**kwargs)

@@ -4,7 +4,7 @@ from kivy.uix.image import Image
 from kivy.clock import Clock
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
 from kivy.graphics.texture import Texture
-from src.modules.rightcontentview.controllers.itemcamera import ItemCamera
+from src.modules.rightcontentview.itemcamera import ItemCamera
 from threading import Thread, Event
 import subprocess
 

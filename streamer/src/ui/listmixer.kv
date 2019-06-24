@@ -1,6 +1,3 @@
-
-#:import icon kivy.garden.iconfonts.icon
-
 <RCVItemMixer>:
     audio_status : audio_status
     audio_volume : audio_volume
@@ -25,15 +22,10 @@
         orientation:'horizontal'
         size_hint: 1,None
         height:30
-        Label:
-            #size_hint: None,1
-            #width:16
-            text:icon('icon-emo-happy')
-            color: 1,1,1,1
-            text_size: self.width, 16
-            valign: 'center'
-            halign: 'justify'
-            markup: True
+        ImageButton:
+            size_hint: None, 1
+            width: 16
+            source:'src/icons/icon-volume.png'
 
         Slider:
             id: audio_volume

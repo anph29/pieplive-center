@@ -11,10 +11,8 @@ from kivy.graphics import Color, Line, Rectangle
 from kivy.uix.filechooser import FileChooserListView, FileChooserIconView
 from kivy.uix.filechooser import FileSystemLocal
 from kivy.properties import ObjectProperty, NumericProperty, ObjectProperty, BooleanProperty, StringProperty
-import src.utils.helper as helper
-from src.modules.custom.choosefile import ChooseFile
-# import sounddevice as sd
-from kivy.app import App
+
+
 from src.modules.bottomleft.dropdownsource import DropDownSource
 from src.modules.custom.mylabel import MyLabel
 from src.modules.bottomleft.listmixer import ListMixer 

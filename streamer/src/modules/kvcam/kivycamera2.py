@@ -39,7 +39,7 @@ class KivyCamera(Image):
         try:
             if self.resource_type == "M3U8":
                 # command = ["src/ffmpeg-win/ffmpeg.exe","-y","-i",f"{input['url']}","-ab","128k","-ac","2","-ar","44100","-vb","3072k","-r","25",f"src/export/{'output'}.flv", f"src/export/{'output'}.wav"]
-                command = ["src/ffmpeg-win/ffmpeg.exe","-y","-i",f"{input['url']}","-ab","128k","-ac","2","-ar","44100","-vb","3072k","-r","25",f"src/export/{'output'}.flv"]
+                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",f"{input['url']}","-ab","128k","-ac","2","-ar","44100","-vb","3072k","-r","25",f"src/export/{'output'}.flv"]
                 self.pipe = subprocess.Popen(command)
                 self.url = 'src/export/{}.flv'.format('output')
             # elif self.resource_type == "VIDEO":

@@ -1,4 +1,3 @@
-# import sounddevice as sd
 import numpy as np
 from kivy.uix.recycleview import RecycleView
 from src.modules.recyclelayout.recyclegridlayout import SelectableGrid
@@ -10,11 +9,9 @@ from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.uix.scrollview import ScrollView
 import src.utils.helper as helper
 from kivy.lang import Builder
-from kivy.core.audio import SoundLoader
-from kivy.app import App
 from kivy.clock import Clock
-
 from functools import partial
+
 Builder.load_file('src/ui/listmixer.kv')
 
 class ListMixer(RecycleView):

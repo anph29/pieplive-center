@@ -51,7 +51,7 @@ class MainStream(RelativeLayout):
 
     def _load(self):
         try:
-            command =  'src/ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i src/musics/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 src/export/output.flv'
+            command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i src/musics/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 src/export/output.flv'
             self.pipe2 = subprocess.Popen(command)
             Clock.schedule_once(lambda x: self.pipe2.kill() , 10)
         except IOError:
@@ -173,7 +173,7 @@ class MainStream(RelativeLayout):
 
     def prepare(self):
         try:
-            self.command = ['src/ffmpeg-win/ffmpeg.exe','-y', '-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', '{}x{}'.format(self.f_width, self.f_height), '-i', '-']
+            self.command = ['ffmpeg-win/ffmpeg.exe','-y', '-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', '{}x{}'.format(self.f_width, self.f_height), '-i', '-']
             
             self.command.extend(self.draw_element())
             # encode

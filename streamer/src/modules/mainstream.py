@@ -1,4 +1,3 @@
-import kivy
 import subprocess
 import cv2
 import src.utils.helper as helper
@@ -11,10 +10,6 @@ from src.modules.custom.pieplabel import PiepLabel
 from src.modules.custom.piepimage import PiepImage
 from kivy.properties import ObjectProperty
 from kivy.lang import Builder
-
-from kivy.core.window import Window
-from kivy.animation import Animation
-from kivy.factory import Factory
 
 import numpy as np
 import array
@@ -51,7 +46,7 @@ class MainStream(RelativeLayout):
 
     def _load(self):
         try:
-            command =  'ffmpeg-win/ffmpeg.exe -y -loglevel quiet -loop 1 -i src/images/splash.jpg -i src/musics/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 src/export/output.flv'
+            command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i src/musics/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 src/export/output.flv'
             self.pipe2 = subprocess.Popen(command)
             Clock.schedule_once(lambda x: self.pipe2.kill() , 10)
         except IOError:
@@ -180,8 +175,16 @@ class MainStream(RelativeLayout):
             self.command.extend(['-vb', str(self.v_bitrate), '-preset', 'veryfast', '-g', '25', '-r', '25'])
             # tream
             self.command.extend(['-f', 'flv', self.urlStream])
+
+            aa=['ffmpeg-win/ffmpeg.exe', '-y', '-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', '1280x720', '-i', '-',
+                '-stream_loop', '-1', '-i', 'src/musics/default.mp3',
+                '-i', 'C:/Users/Thong/Desktop/piep-source/musics/hay-buong-tay-em.mp3',
+                '-i', 'C:/Users/Thong/Desktop/piep-source/musics/cau-chuyen-dem-v1.mp3',
+                '-f', 'dshow', '-i', 'audio=Microphone (Realtek High Definition Audio)',
+                '-filter_complex', '[a1]volume=0.0[a1],[a2]volume=1[a2],[a3]volume=0[a3],[a4]volume=0[a4],[EMP]amix=inputs=4[EMP]',
+                '-vb', '3072k', '-preset', 'veryfast', '-g', '25', '-r', '25', '-f', 'flv', 'rtmp://livevn.piepme.com/cam/7421.bf586e24e22cfc1a058ba9e8cf96afee?token=bf586e24e22cfc1a058ba9e8cf96afee&SRC=WEB&FO100=7421&PL300=7940&LN301=180&LV302=115.73.208.139&LV303=0982231325&LL348=1554461547035&UUID=247cbf2ee3f0bda1&NV124=vn&PN303=15&POS=1']
             
-            self.pipe = subprocess.Popen(self.command, stdin=subprocess.PIPE)
+            self.pipe = subprocess.Popen(aa, stdin=subprocess.PIPE)
             
             return True
 

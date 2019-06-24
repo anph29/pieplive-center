@@ -165,7 +165,9 @@ class MainView(Widget):
 
     def add_text(self, index, name, label, font, size, color, pos_x, pos_y):
         if index == -1:
-            idx = self.lsSource[len(self.lsSource)-1]['total']
+            idx = 0
+            if len(self.lsSource) > 0:
+                idx = self.lsSource[len(self.lsSource)-1]['total']
             text = {
                 "type": "text",
                 "active": 1,
@@ -200,7 +202,9 @@ class MainView(Widget):
 
     def add_image(self, index, name, src, pos_x, pos_y, width, height):
         if index == -1:
-            idx = self.lsSource[len(self.lsSource)-1]['total']
+            idx = 0
+            if len(self.lsSource) > 0:
+                idx = self.lsSource[len(self.lsSource)-1]['total']
             image = {
                 "type": "image",
                 "active": 1,
@@ -230,7 +234,9 @@ class MainView(Widget):
 
     def add_audio(self, index, name, src, volume):
         if index == -1:
-            idx = self.lsSource[len(self.lsSource)-1]['total']
+            idx = 0
+            if len(self.lsSource) > 0:
+                idx = self.lsSource[len(self.lsSource)-1]['total']
             audio = {
                 "type": "audio",
                 "active": 1,

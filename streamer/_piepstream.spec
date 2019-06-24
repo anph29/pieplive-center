@@ -16,7 +16,7 @@ added_files = [
   ('Lib\\site-packages\\_sounddevice_data\\portaudio-binaries\\libportaudio32bit.dll', '_sounddevice_data\\portaudio-binaries')
 ]
 
-a = Analysis(['piepstream.py'],
+a = Analysis(['piepstream.pyw'],
              pathex=['D:\\QueenB\\PiepLive-Center\\streamer'],
              binaries=[],
              datas=added_files,

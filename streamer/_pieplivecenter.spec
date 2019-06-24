@@ -3,7 +3,11 @@ from kivy_deps import sdl2, glew
 block_cipher = None
 
 added_files = [
-  ( 'src', 'src' ),
+  ( 'src\\ui', 'src\\' ),
+  ( 'src\\cfg', 'src\\' ),
+  ( 'src\\musics', 'src\\' ),
+  ( 'src\\images', 'src\\' ),
+  ( 'src\\fonts', 'src\\' ),
   ( 'pieplivecenter.kv', '.' ),
   ('Lib\\site-packages\\cv2\\opencv_ffmpeg410.dll', 'cv2'),
   ('Lib\\site-packages\\_sounddevice_data\\portaudio-binaries\\libportaudio32bit.dll', '_sounddevice_data\\portaudio-binaries')

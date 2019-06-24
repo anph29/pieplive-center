@@ -1,0 +1,43 @@
+[
+    {
+        "name": "anm3u8",
+        "url": "https://livevn.piepme.com/camhls/1932.5f5f30ad8904730b14d25fcb07212490_720p/index.m3u8",
+        "type": "M3U8"
+    },
+    {
+        "name": "Ân real",
+        "url": "rtmp://livevn.piepme.com/cam/1932.5f5f30ad8904730b14d25fcb07212490?token=5f5f30ad8904730b14d25fcb07212490&SRC=WEB&FO100=1932&PL300=8133&LN301=180&LV302=63.143.42.251&LV303=0984398831&LL348=1557819696226&UUID=00a4a3103e3309c8&NV124=vn&PN303=15&POS=0",
+        "type": "M3U8"
+    },
+    {
+        "name": "thongm3u8",
+        "url": "https://livevn.piepme.com/camhls/1932.bedaa61838e03e9ffe9a595770bb19b1_720p/index.m3u8",
+        "type": "M3U8"
+    },
+    {
+        "name": "Thông real",
+        "url": "rtmp://livevn.piepme.com/cam/1932.bedaa61838e03e9ffe9a595770bb19b1?token=bedaa61838e03e9ffe9a595770bb19b1&SRC=WEB&FO100=1932&PL300=8153&LN301=180&LV302=115.73.208.139&LV303=0984398831&LL348=1557902645902&UUID=00a4a3103e3309c8&NV124=vn&PN303=15&POS=0",
+        "type": "M3U8"
+    },
+    {
+        "name": "LaoOng",
+        "url": "https://livevn.piepme.com/camhls/1932.6f19f4836179431f3e0670c7599de27e_720p/index.m3u8",
+        "type": "M3U8"
+    },
+    {
+        "name": "A Phong",
+        "url": "https://livevn.piepme.com/camhls/1932.899a9e107f0f1402e95758c571b27228_720p/index.m3u8",
+        "type": "M3U8"
+    },
+    {
+        "name": "A Phong real",
+        "url": "rtmp://livevn.piepme.com/cam/1932.899a9e107f0f1402e95758c571b27228?token=899a9e107f0f1402e95758c571b27228&SRC=WEB&FO100=1932&PL300=8374&LN301=180&LV302=63.143.42.251&LV303=0984398831&LL348=1560825171555&UUID=00a4a3103e3309c8&NV124=vn&PN303=15&POS=0",
+        "type": "M3U8"
+    }
+]
+
+stream_domain = 'rtmp://livevn.piepme.com/cam/'
+#stream_key = '7421.bf586e24e22cfc1a058ba9e8cf96afee?token=bf586e24e22cfc1a058ba9e8cf96afee&SRC=WEB&FO100=7421&PL300=7940&LN301=180&LV302=115.73.208.139&LV303=0982231325&LL348=1554461547035&UUID=247cbf2ee3f0bda1&NV124=vn&PN303=15&POS=1'
+# https://livevn.piepme.com/camhls/7421.bf586e24e22cfc1a058ba9e8cf96afee.m3u8
+stream_key = '7421.b99e3cde588f1a8a25c0f002050f0893?token=b99e3cde588f1a8a25c0f002050f0893&SRC=WEB&FO100=7421&PL300=7939&LN301=180&LV302=115.73.208.139&LV303=0982231325&LL348=1554458516364&UUID=247cbf2ee3f0bda1&NV124=vn&PN303=15&POS=0'
+# https://livevn.piepme.com/camhls/7421.b99e3cde588f1a8a25c0f002050f0893.m3u8

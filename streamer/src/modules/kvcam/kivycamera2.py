@@ -38,10 +38,12 @@ class KivyCamera(Image):
         self.release()
         try:
             if self.resource_type == "M3U8":
-                # command = ["src/ffmpeg-win/ffmpeg.exe","-y","-i",f"{input['url']}","-ab","128k","-ac","2","-ar","44100","-vb","3072k","-r","25",f"src/export/{'output'}.flv", f"src/export/{'output'}.wav"]
-                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",f"{input['url']}","-ab","128k","-ac","2","-ar","44100","-vb","3072k","-r","25",f"src/export/{'output'}.flv"]
-                self.pipe = subprocess.Popen(command)
+                command = ["ffmpeg-win/ffmpeg.exe","-y", "-loglevel", "quiet","-i",f"{input['url']}","-ab","128k","-ac","2","-ar","44100","-vb","3072k","-r","25",f"src/export/{'output'}.flv"]
+                si = subprocess.STARTUPINFO()
+                si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+                self.pipe = subprocess.Popen(command, startupinfo=si)
                 self.url = 'src/export/{}.flv'.format('output')
+                # self.url = 'hls+'+input['url']
             # elif self.resource_type == "VIDEO":
             #     command = ["src/ffmpeg-win/ffmpeg.exe","-y","-i",f"{input['url']}","-ab","128k","-ac","2","-ar","44100","src/export/output.wav"]
             #     # command = ["src/ffmpeg-win/ffmpeg.exe","-y","-i",f"{input['url']}","-ab","128k","-ac","2","-ar","44100","-vb","3072k","-r","25",f"src/export/{'output'}.flv", f"src/export/{'output'}.wav"]
@@ -57,7 +59,6 @@ class KivyCamera(Image):
         if 'capture' in input and input['capture'] is not None:
             capture = input['capture']
         self.init_capture(capture)
-        # self.f_parent.refresh_stream()
 
     def init_capture(self, capture=None):
         try:

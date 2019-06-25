@@ -13,8 +13,9 @@ from kivy.lang import Builder
 
 import numpy as np
 import array
-import pyaudio
-import audioread
+# import pyaudio
+# from pydub import AudioSegment
+# from pydub.utils import make_chunks
 
 Builder.load_file('src/ui/mainstream.kv')
 class MainStream(RelativeLayout):
@@ -34,6 +35,7 @@ class MainStream(RelativeLayout):
         self.isStream = False
         self.isRecord = False
         self.pipe = None
+        self.pipe2 = None
         self.lsSource = []
         self.command = []
         self.event = None
@@ -44,31 +46,38 @@ class MainStream(RelativeLayout):
             "url": "src/images/splash.jpg",
             "type": "IMG"
         }
-        self.setupAudio()
+        # self.setupAudio()
 
     def _load(self):
         try:
-            command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i src/musics/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 src/export/output.flv'
-            self.pipe2 = subprocess.Popen(command)
+            command =  'ffmpeg-win/ffmpeg.exe -y -loglevel quiet -loop 1 -i src/images/splash.jpg -i src/musics/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 src/export/output.flv'
+            si = subprocess.STARTUPINFO()
+            si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+            self.pipe2 = subprocess.Popen(command, startupinfo=si)
             Clock.schedule_once(lambda x: self.pipe2.kill() , 10)
         except IOError:
             pass
 
     def setupAudio(self):
-        pao = pyaudio.PyAudio()
-        CHUNK = 1024
-        FORMAT = pyaudio.paInt16
-        CHANNELS = 2
-        RATE = 44100
-        RECORD_SECONDS = 150
-        WAVE_OUTPUT_FILENAME = "C:/Users/hqtho/Dropbox/music/Nguoi Nao Do - JustaTee.mp3"
+        # chunk = 1024
+        # self.wf = wave.open('C:/Users/Thong/Desktop/piep-source/musics/nhac-doc-sach.mp3', 'rb')
+        # pao = pyaudio.PyAudio()
+        # CHUNK = 1024
+        # FORMAT = pyaudio.paInt16
+        # CHANNELS = 2
+        # RATE = 44100
+        # RECORD_SECONDS = 150
 
-        self.streamAudio= pao.open(format=FORMAT,
-                        channels=CHANNELS,
-                        rate=RATE,
-                        input=True,
-                        output=True,
-                        frames_per_buffer=CHUNK)
+        # self.streamAudio= pao.open(
+        #                     format = pao.get_format_from_width(self.wf.getsampwidth()),
+        #                     channels = self.wf.getnchannels(),
+        #                     rate = self.wf.getframerate(),
+        #                     output = True)
+        # data = self.wf.readframes(1024)
+        # while data != '':
+        #     stream.write(data)
+        #     data = wf.readframes(1024)
+        pass
     
     def _set_capture(self, data_src):
         self.dataCam = data_src
@@ -110,17 +119,7 @@ class MainStream(RelativeLayout):
         
 
     def _process(self):
-        # self.event = Clock.schedule_interval(self.stream, 1/30)
-        for i in range(0, int(44100 / 1024 * 150)):
-            data = self.streamAudio.read(1024)
-            self.pipe.stdin.write(data)
-
-    def _audio(self):
-        with audioread.audio_open('src/videos/xin-mot-lan-ngoai-le.mp4') as f:
-            print('------------------------------------',f.channels, f.samplerate, f.duration)
-            for buf in f:
-                if self.isStream:
-                    self.pipe.stdin.write(buf)
+        self.event = Clock.schedule_interval(self.stream, 1/30)
 
     @mainthread
     def stream(self, fps):
@@ -153,11 +152,12 @@ class MainStream(RelativeLayout):
     def draw_element(self):
         numau = 0
         inp = []
-        txt = ''
+        txt = _map = ''
 
         numau += 1
         inp.extend(['-stream_loop','-1',"-i", 'src/musics/default.mp3'])
-        txt += "[EMP];[EMP]volume=0"
+        txt += f"[{numau}:a]volume=0[a{numau}];"
+        _map += f'[a{numau}]'
 
         if self.dataCam['type'] == "VIDEO" or self.dataCam['type'] == "M3U8":
             url = self.dataCam['url']
@@ -165,25 +165,28 @@ class MainStream(RelativeLayout):
                 url = 'src/export/output.flv'
             numau += 1
             inp.extend(["-i", url,'-vn'])
-            txt += "[EMP];[EMP]volume=1"
+            txt += f"[{numau}:a]volume=1[a{numau}];"
+            _map += f'[a{numau}]'
 
         if len(self.lsSource) > 0:
             for value in self.lsSource:
                 if value['active'] == 1:
                     if(value['type'] == 'audio'):
                         inp.extend(["-i", value['src']])
-                        txt += '[EMP];[EMP]volume={}'.format(str(value['volume']/100))
                         numau += 1
+                        txt += f'[{numau}:a]volume={str(value["volume"]/100)}[a{numau}];'
+                        _map += f'[a{numau}]'
         if self.devAudio is not None:
             inp.extend(['-f', 'dshow', '-i', 'audio={}'.format(self.devAudio)])
             numau += 1
-            txt += "[EMP];[EMP]volume={}".format(self.deviceVolume/100)
+            txt += f"[{numau}:a]volume={str(self.deviceVolume/100)}[a{numau}];"
+            _map += f'[a{numau}]'
 
         if numau > 0:
-            txt = 'amix=inputs={}'.format(str(numau)) + txt
+            txt += _map + f'amix={str(numau)}[a]'
 
         if len(txt) > 0:
-            inp.extend(['-filter_complex', txt])
+            inp.extend(['-filter_complex', txt,'-map','0:v', '-map','[a]'])
             
         return inp
 
@@ -197,20 +200,9 @@ class MainStream(RelativeLayout):
             # tream
             self.command.extend(['-f', 'flv', self.urlStream])
 
-            aa=['ffmpeg-win/ffmpeg.exe', '-y', 
-                #'-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', '1280x720', '-i', '-',
-                '-f', 's16le',
-                '-i', '-',
-
-                # '-stream_loop', '-1', '-i', 'src/musics/default.mp3',
-                # '-i', 'C:/Users/hqtho/Dropbox/music/Goc Khuat Sau Hanh Phuc - Phan Manh Quynh.mp3',
-                # '-i', 'C:/Users/hqtho/Dropbox/music/Khi Long Ta Hieu - Phan Manh Quynh.mp3',
-
-                # '-filter_complex', 'volume=0.0,[EMP]amix=inputs=3[EMP]',
-                
-                '-vb', '3072k', '-preset', 'veryfast', '-g', '25', '-r', '25', 'output.flv']
-            
-            self.pipe = subprocess.Popen(aa, stdin=subprocess.PIPE)
+            si = subprocess.STARTUPINFO()
+            si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+            self.pipe = subprocess.Popen(self.command, stdin=subprocess.PIPE, startupinfo=si)
             
             return True
 
@@ -223,7 +215,6 @@ class MainStream(RelativeLayout):
             self.event.cancel()
         if self.pipe is not None:
             self.pipe.kill()
-        # self.fbo.remove(self.mainview.canvas)
         self.fbo.remove(self.canvas)
         if self.stop is not None:
             self.stop.set()

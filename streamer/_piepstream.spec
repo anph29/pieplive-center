@@ -9,6 +9,7 @@ added_files = [
   ( 'src\\images', 'src\\images' ),
   ( 'src\\fonts', 'src\\fonts' ),
   ( 'src\\icons', 'src\\icons' ),
+  ( 'src\\export', 'src\\export' ),
   ( 'ffmpeg-win\\', 'ffmpeg-win\\' ),
   ( 'piepstream.kv', '.' ),
   ('Lib\\site-packages\\cv2\\opencv_ffmpeg410.dll', 'cv2'),

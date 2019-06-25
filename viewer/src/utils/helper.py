@@ -3,26 +3,23 @@ import re
 import pyqrcode
 import base64
 
-__GLOBALPATH__ = "__globalpath__"
-__LOCALPATH__ = "__localpath__"
-LOGO = "logo"
-LSCAMERA = "lscamera"
-LSPRESENTER = "lspresenter"
-LSSTATICSOURCE = "lsstaticsource"
-
 
 def _read_setting(key=None):
     with open('src/cfg/setting.json', 'r', encoding='utf-8') as json_setting:
         setting = json.load(json_setting)
         return setting[key] if key is not None else setting
 
-
+__GLOBALPATH__ = "__globalpath__"
+__LOCALPATH__ = "__localpath__"
 _SETTING = _read_setting()
-_BASE_PATH = _SETTING[__LOCALPATH__]  # switch to local here
-_LOGO_PATH = _BASE_PATH + _SETTING[LOGO]
-_LSCAM_PATH = _BASE_PATH + _SETTING[LSCAMERA]
-_LS_PRESENTER_PATH = _BASE_PATH + _SETTING[LSPRESENTER]
-_LS_LSSTATICSOURCE_PATH = _BASE_PATH + _SETTING[LSSTATICSOURCE]
+_BASE_PATH = _SETTING[__LOCALPATH__]  # switch to local here [__GLOBALPATH__]
+_LOGO_PATH = _BASE_PATH + _SETTING["logo"]
+_LSCAM_PATH = _BASE_PATH + _SETTING["lscamera"]
+_LS_PRESENTER_PATH = _BASE_PATH + _SETTING["lspresenter"]
+_LS_LSSTATICSOURCE_PATH = _BASE_PATH + _SETTING["lsstaticsource"]
+_FONT_SETTING_PATH = _BASE_PATH + _SETTING["font_setting"]
+
+###########################################################################################################################################
 
 
 def _load_lscam():
@@ -60,7 +57,7 @@ def _write_lsStaticSource(data):
         json.dump(data, json_lscam, indent=4)
 
 
-##################################################################s#########################################################################
+###########################################################################################################################################
 
 
 def removeUnicode(str):
@@ -94,7 +91,7 @@ def removeUnicodeLowerRmvSpace(str):
 
 
 def _load_fonts():
-    with open('src/cfg/lsfont.json', 'r', encoding='utf-8') as json_lsfont:
+    with open(_FONT_SETTING_PATH, 'r', encoding='utf-8') as json_lsfont:
         return json.load(json_lsfont)
 
 

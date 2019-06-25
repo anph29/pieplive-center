@@ -4,5 +4,6 @@
     "logo": "icons/logo-viewer.png",
     "lscamera": "cfg/lscam.json",
     "lspresenter": "cfg/lspresenter.json",
-    "lsstaticsource": "cfg/lsstaticsource.json"
+    "lsstaticsource": "cfg/lsstaticsource.json",
+    "font_setting": "cfg/lsfont.json"
 }

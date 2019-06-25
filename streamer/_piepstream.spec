@@ -8,7 +8,6 @@ added_files = [
   ( 'src\\musics', 'src\\musics' ),
   ( 'src\\images', 'src\\images' ),
   ( 'src\\fonts', 'src\\fonts' ),
-  ( 'src\\export', 'src\\export' ),
   ( 'src\\icons', 'src\\icons' ),
   ( 'ffmpeg-win\\', 'ffmpeg-win\\' ),
   ( 'piepstream.kv', '.' ),
@@ -38,7 +37,7 @@ exe = EXE(pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=False, icon='src\\icons\\logo_stream.ico')
+          console=False, icon='src\\icons\\logo_streamer.ico')
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,

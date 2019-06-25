@@ -1,13 +1,8 @@
 {
-    "application_resolution": [
-        "1600",
-        "900"
-    ],
-    "ouput_resolution": [
-        1280,
-        720
-    ],
-    "vbitrate": "3072k",
-    "stream_server": "rtmp://livevn.piepme.com/cam/",
-    "stream_key": "7421.bf586e24e22cfc1a058ba9e8cf96afee?token=bf586e24e22cfc1a058ba9e8cf96afee&SRC=WEB&FO100=7421&PL300=7940&LN301=180&LV302=115.73.208.139&LV303=0982231325&LL348=1554461547035&UUID=247cbf2ee3f0bda1&NV124=vn&PN303=15&POS=1"
+    "__globalpath__": "../resource/",
+    "__localpath__": "src/",
+    "logo": "icons/logo-viewer.png",
+    "lscamera": "cfg/lscam.json",
+    "lspresenter": "cfg/lspresenter.json",
+    "lsstaticsource": "cfg/lsstaticsource.json"
 }

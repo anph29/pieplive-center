@@ -40,6 +40,7 @@ class MediaBox(tk.Frame):
         # vlc
         self.Instance = vlc.Instance()
         self.player = self.Instance.media_player_new()
+        self.player.audio_set_volume(0) 
         self.initPlayerMedia()
         self.player.set_hwnd(top.winfo_id())
         self.play()

@@ -4,47 +4,60 @@ import pyqrcode
 import base64
 
 
-def _load_lscam():
-    with open('src/cfg/lscam.json', 'r', encoding='utf-8') as json_lscam:
-        return json.load(json_lscam)
-
-
-def _write_lscam(data):
-    with open('src/cfg/lscam.json', 'w', encoding='utf-8') as json_lscam:
-        json.dump(data, json_lscam, indent=4)
-
-
-def _add_to_lscam(data):
-    with open('src/cfg/lscam.json', 'r', encoding='utf-8') as rcam:
-        jcam = json.load(rcam)
-        jcam.append(data)
-    with open('src/cfg/lscam.json', 'w', encoding='utf-8') as wcam:
-        json.dump(jcam, wcam, indent=4)
-
-
-def _load_ls_presenter():
-    with open('src/cfg/lspresenter.json', 'r', encoding='utf-8') as json_lscam:
-        return json.load(json_lscam)
-
-
-def _load_lsStaticSource():
-    with open('src/cfg/lsstaticsource.json', 'r',
-              encoding='utf-8') as json_lscam:
-        return json.load(json_lscam)
-
-
-def _write_lsStaticSource(data):
-    with open('src/cfg/lsstaticsource.json', 'w',
-              encoding='utf-8') as json_lscam:
-        json.dump(data, json_lscam, indent=4)
-
-
 def _read_setting(key=None):
     with open('src/cfg/setting.json', 'r', encoding='utf-8') as json_setting:
         setting = json.load(json_setting)
         return setting[key] if key is not None else setting
 
-##################################################################s#########################################################################
+__GLOBALPATH__ = "__globalpath__"
+__LOCALPATH__ = "__localpath__"
+_SETTING = _read_setting()
+_BASE_PATH = _SETTING[__LOCALPATH__]  # switch to local here [__GLOBALPATH__]
+_LOGO_PATH = _BASE_PATH + _SETTING["logo"]
+_LSCAM_PATH = _BASE_PATH + _SETTING["lscamera"]
+_LS_PRESENTER_PATH = _BASE_PATH + _SETTING["lspresenter"]
+_LS_LSSTATICSOURCE_PATH = _BASE_PATH + _SETTING["lsstaticsource"]
+_FONT_SETTING_PATH = _BASE_PATH + _SETTING["font_setting"]
+
+###########################################################################################################################################
+
+
+def _load_lscam():
+    with open(_LSCAM_PATH, 'r', encoding='utf-8') as json_lscam:
+        return json.load(json_lscam)
+
+
+def _write_lscam(data):
+    with open(_LSCAM_PATH, 'w', encoding='utf-8') as json_lscam:
+        json.dump(data, json_lscam, indent=4)
+
+
+def _add_to_lscam(data):
+    with open(_LSCAM_PATH, 'r', encoding='utf-8') as rcam:
+        jcam = json.load(rcam)
+        jcam.append(data)
+    with open(_LSCAM_PATH, 'w', encoding='utf-8') as wcam:
+        json.dump(jcam, wcam, indent=4)
+
+
+def _load_ls_presenter():
+    with open(_LS_PRESENTER_PATH, 'r', encoding='utf-8') as json_lscam:
+        return json.load(json_lscam)
+
+
+def _load_lsStaticSource():
+    with open(_LS_LSSTATICSOURCE_PATH, 'r',
+              encoding='utf-8') as json_lscam:
+        return json.load(json_lscam)
+
+
+def _write_lsStaticSource(data):
+    with open(_LS_LSSTATICSOURCE_PATH, 'w',
+              encoding='utf-8') as json_lscam:
+        json.dump(data, json_lscam, indent=4)
+
+
+###########################################################################################################################################
 
 
 def removeUnicode(str):
@@ -78,7 +91,7 @@ def removeUnicodeLowerRmvSpace(str):
 
 
 def _load_fonts():
-    with open('src/cfg/lsfont.json', 'r', encoding='utf-8') as json_lsfont:
+    with open(_FONT_SETTING_PATH, 'r', encoding='utf-8') as json_lsfont:
         return json.load(json_lsfont)
 
 

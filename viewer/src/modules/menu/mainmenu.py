@@ -29,7 +29,7 @@ class MainMenu():
         # H
         helpmenu = tk.Menu(menubar, tearoff=0)
         helpmenu.add_command(label="Login", command=login.open)
-        editmenu.add_separator()
+        helpmenu.add_separator()
         helpmenu.add_command(label="Help Index", command=lambda: False)
         helpmenu.add_command(label="About..", command=lambda: False)
         menubar.add_cascade(label="Help", menu=helpmenu)

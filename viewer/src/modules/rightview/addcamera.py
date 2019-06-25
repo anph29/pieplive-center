@@ -2,6 +2,7 @@
 from src.utils import ftype, helper
 import tkinter as tk
 from tkinter import filedialog
+from src.utils import tk_helper
 
 
 class AddCamera(object):
@@ -13,16 +14,12 @@ class AddCamera(object):
         self.parent = parent
 
     def openAddCamera(self, evt):
+        # first destroy
         if None is not self.addCamPopup:
             self.addCamPopup.destroy()
-        self.addCamPopup = tk.Toplevel(padx=20, pady=10)
-        self.addCamPopup.wm_title("Add Media")
-        self.addCamPopup.geometry("300x200+400+300")
-        imgicon = tk.PhotoImage(file="src/images/logo.png")
-        self.addCamPopup.tk.call(
-            'wm', 'iconphoto', self.addCamPopup._w, imgicon)
-        self.addCamPopup.resizable(0, 0)
-        self.addCamPopup.attributes('-topmost', 'true')
+        # init
+        self.addCamPopup = tk_helper.makePiepMePopup(
+            'Add Media', "300x200+400+300")
         # var
         self.name = tk.StringVar()
         self.url = tk.StringVar()
@@ -50,7 +47,6 @@ class AddCamera(object):
         self.f_error = tk.Frame(self.addCamPopup)
         l_error = tk.Label(self.f_error, text="File not allowed!", fg="#f00")
         l_error.pack(side=tk.LEFT, fill=tk.Y)
-        # self.f_error.pack(side=tk.TOP, fill=tk.X)
         # bot button
         f_btn = tk.Frame(self.addCamPopup, pady=10)
         btn_cancel = tk.Button(f_btn, text="Cancel", bd=2, relief=tk.RAISED,

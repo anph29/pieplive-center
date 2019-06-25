@@ -7,12 +7,14 @@ firebase = pyrebase.initialize_app({
     # "serviceAccount": "path/to/serviceAccountCredentials.json"
 })
 db = firebase.database()
-# print(db.child("messenger_Client").get().val())
+auth = firebase.auth()
 
 
 
 def stream_handler(message):
-    print(message) 
+    print(message)
     my_stream.close()
+    print(auth.sign_in_with_phone_number('0984398831'))
+
 
 my_stream = db.child("messenger_Client").stream(stream_handler)

@@ -6,7 +6,6 @@ from src.utils import store
 import os
 from datetime import datetime
 import json
-from kivy.clock import Clock
 
 # https://nodeinfo.piepme.com/
 SOCKET_SERVER = 'https://nodeinfodev.piepme.com:444/'

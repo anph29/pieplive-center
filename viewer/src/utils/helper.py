@@ -4,32 +4,6 @@ import pyqrcode
 import base64
 
 
-def getApRoot():
-    app = App.get_running_app()
-    return app.root
-
-
-def getAppType():
-    root = getApRoot()
-    if bool(root):
-        if bool(root.right_content):
-            return root.right_content.app_type
-
-    return ''
-
-
-def isAppViewer():
-    return getAppType() == 'VIEWER'
-
-
-def isAppStream():
-    return getAppType() == 'STREAM'
-
-
-def isAppMain():
-    return getAppType() == 'MAIN'
-
-
 def _load_lscam():
     with open('src/cfg/lscam.json', 'r', encoding='utf-8') as json_lscam:
         return json.load(json_lscam)

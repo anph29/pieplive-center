@@ -13,9 +13,6 @@ from kivy.lang import Builder
 
 import numpy as np
 import array
-# import pyaudio
-# from pydub import AudioSegment
-# from pydub.utils import make_chunks
 
 Builder.load_file('src/ui/mainstream.kv')
 class MainStream(RelativeLayout):
@@ -50,7 +47,7 @@ class MainStream(RelativeLayout):
 
     def _load(self):
         try:
-            command =  'ffmpeg-win/ffmpeg.exe -y -loglevel quiet -loop 1 -i src/images/splash.jpg -i src/musics/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 src/export/output.flv'
+            command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i src/musics/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 src/export/output.flv'
             si = subprocess.STARTUPINFO()
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             self.pipe2 = subprocess.Popen(command, startupinfo=si)
@@ -83,7 +80,6 @@ class MainStream(RelativeLayout):
         self.dataCam = data_src
         self.camera.f_parent = self
         self.camera.set_data_source(data_src)
-        self.refresh_stream()
 
     def refresh_stream(self):
         if self.isStream is True:
@@ -207,7 +203,10 @@ class MainStream(RelativeLayout):
             return True
 
         except IOError:
-            return False
+            return 
+            
+    def prepare_audio(self):
+        pass
 
     def stopStream(self):
         self.isStream = False

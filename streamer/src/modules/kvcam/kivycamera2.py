@@ -44,7 +44,6 @@ class KivyCamera(Image):
                 si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
                 self.pipe = subprocess.Popen(command, startupinfo=si)
                 self.url = 'src/export/{}.flv'.format('output')
-                self.f_parent.refresh_stream()
             else:
                 if self.typeOld == 'M3U8':
                     command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i src/musics/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 src/export/output.flv'
@@ -52,11 +51,11 @@ class KivyCamera(Image):
                     si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
                     self.pipe = subprocess.Popen(command, startupinfo=si)
                     Clock.schedule_once(lambda x: self.pipe.kill() , 5)
-
-            if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
-                self.f_parent.refresh_stream()
-            elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
-                self.f_parent.refresh_stream()
+            if self.f_parent is not None:
+                if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
+                    self.f_parent.refresh_stream()
+                elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
+                    self.f_parent.refresh_stream()
             self.typeOld = input['type']
 
         except Exception as e:
@@ -85,8 +84,8 @@ class KivyCamera(Image):
 
                 if self.capture is not None and self.capture.isOpened():
                     print(">>CAPTURE FINED:")
-                    sp.call(self._process())
-                    # self.event_capture = Clock.schedule_interval(self.update, 1.0 / 30)
+                    # sp.call(self._process())
+                    self.event_capture = Clock.schedule_interval(self.update, 1.0 / 30)
                 else:
                     print("cv2.error:")
                     if self.capture is not None:

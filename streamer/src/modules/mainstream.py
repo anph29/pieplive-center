@@ -168,7 +168,7 @@ class MainStream(RelativeLayout):
             for value in self.lsSource:
                 if value['active'] == 1:
                     if(value['type'] == 'audio'):
-                        inp.extend(["-i", value['src']])
+                        inp.extend(['-stream_loop','-1',"-i", value['src']])
                         numau += 1
                         txt += f'[{numau}:a]volume={str(value["volume"]/100)}[a{numau}];'
                         _map += f'[a{numau}]'

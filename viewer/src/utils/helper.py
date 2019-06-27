@@ -1,32 +1,23 @@
-import json
-import re
-import pyqrcode
-import base64
 import os
+import re
+import json
+import base64
 import zipfile
+import pyqrcode
+
+_BASE_PATH = os.path.dirname(os.path.abspath('../resource/a')).replace('\\', '/') + '/'
+_LOGO_PATH = _BASE_PATH + 'icons/logo-viewer.png'
+_LSCAM_PATH = _BASE_PATH + 'cfg/lscam.json'
+_LS_PRESENTER_PATH = _BASE_PATH + 'cfg/lspresenter.json'
+_LS_LSSTATICSOURCE_PATH = _BASE_PATH + 'cfg/lsstaticsource.json'
+_STORE_SETTING = _BASE_PATH + 'cfg/store.json'
+_SETTING_PATH = _BASE_PATH + 'cfg/setting.json'
 
 
 def _read_setting(key=None):
-    with open('src/cfg/setting.json', 'r', encoding='utf-8') as json_setting:
+    with open(_SETTING_PATH, 'r', encoding='utf-8') as json_setting:
         setting = json.load(json_setting)
         return setting[key] if key is not None else setting
-
-
-__GLOBALPATH__ = "__globalpath__"
-__LOCALPATH__ = "__localpath__"
-_SETTING = _read_setting()
-# switch to local here [__LOCALPATH__]
-basePath = os.path.dirname(os.path.abspath(_SETTING[__GLOBALPATH__] + '/a'))
-_BASE_PATH = basePath.replace('\\', '/') + '/'
-_LOGO_PATH = _BASE_PATH + _SETTING["logo"]
-_LSCAM_PATH = _BASE_PATH + _SETTING["lscamera"]
-_LS_PRESENTER_PATH = _BASE_PATH + _SETTING["lspresenter"]
-_LS_LSSTATICSOURCE_PATH = _BASE_PATH + _SETTING["lsstaticsource"]
-_FONT_SETTING_PATH = _BASE_PATH + _SETTING["font_setting"]
-_STORE_SETTING = _BASE_PATH + _SETTING["store_setting"]
-
-###########################################################################################################################################
-
 
 def _load_lscam():
     with open(_LSCAM_PATH, 'r', encoding='utf-8') as json_lscam:

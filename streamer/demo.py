@@ -133,8 +133,8 @@ class MyWidget(FloatLayout):
         return True       
 
     def setupAudio(self):
-        filename = 'C:/Users/Thong/Desktop/piep-source/musics/nhac-doc-sach.mp3'
-        sound = AudioSegment.from_file(filename)
+        filename = 'C:/Users/Thong/Desktop/piep-source/musics/hay-buong-tay-em.mp3'
+        sound = AudioSegment.from_mp3(filename)
         player = pyaudio.PyAudio()
 
         stream = player.open(format = player.get_format_from_width(sound.sample_width),
@@ -142,32 +142,32 @@ class MyWidget(FloatLayout):
             rate = sound.frame_rate,
             output = True)
         
-        while True:
-            for chunks in make_chunks(playchunk, millisecondchunk*1000):
-                self.time += millisecondchunk
-                stream.write(chunks._data)
-                if not self.loop:
-                    break
-                if self.time >= start+length:
-                    break
-        chunk = 1024
+        # while True:
+        #     for chunks in make_chunks(playchunk, millisecondchunk*1000):
+        #         self.time += millisecondchunk
+        #         stream.write(chunks._data)
+        #         if not self.loop:
+        #             break
+        #         if self.time >= start+length:
+        #             break
+        # chunk = 1024
         
-        pao = pyaudio.PyAudio()
-        CHUNK = 1024
-        FORMAT = pyaudio.paInt16
-        CHANNELS = 2
-        RATE = 44100
-        RECORD_SECONDS = 150
+        # pao = pyaudio.PyAudio()
+        # CHUNK = 1024
+        # FORMAT = pyaudio.paInt16
+        # CHANNELS = 2
+        # RATE = 44100
+        # RECORD_SECONDS = 150
 
-        self.streamAudio= pao.open(
-                            format = pao.get_format_from_width(self.wf.getsampwidth()),
-                            channels = self.wf.getnchannels(),
-                            rate = self.wf.getframerate(),
-                            output = True)
-        data = self.wf.readframes(1024)
-        while data != '':
-            stream.write(data)
-            data = wf.readframes(1024) 
+        # self.streamAudio= pao.open(
+        #                     format = pao.get_format_from_width(self.wf.getsampwidth()),
+        #                     channels = self.wf.getnchannels(),
+        #                     rate = self.wf.getframerate(),
+        #                     output = True)
+        # data = self.wf.readframes(1024)
+        # while data != '':
+        #     stream.write(data)
+        #     data = wf.readframes(1024) 
                 
 
 class MyApp(App):

@@ -1,6 +1,6 @@
 import sys
 import hashlib
-
+import re
 
 def createTokenV2(input, isRecursive=False):
     try:
@@ -32,7 +32,6 @@ def createTokenV3(input, isRecursive=False):
         if isRecursive is False:
             input['v'] = 'v1'
             input['keyToken'] = 'Piepme2017'
-
         sorted_key = sorted(input)
 
         # improve non-charater from v2
@@ -41,11 +40,11 @@ def createTokenV3(input, isRecursive=False):
                 after_regex = re.sub(r"[^a-zA-Z0-9]", '', str(input[v]))
                 return f'{v}={after_regex}'
             else:
-                return createTokenV2(input[v], True)
+                return createTokenV3(input[v], True)
 
         maped_ls = map(lambdaX, sorted_key)
         paramStr = '&'.join(list(maped_ls))
-
+        
         return paramStr if isRecursive else hash_md5(paramStr)
     except:
         print(sys.exc_info())

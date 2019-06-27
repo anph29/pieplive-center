@@ -38,7 +38,7 @@ class HTTP_REQUEST():
         #2. add some param
         param['SRC'] = 'WEB'
         #3. add token
-        param['token'] = scryto.createTokenV2(param)
+        param['token'] = scryto.createTokenV3(param)
         #4. del secret param
         del param['keyToken']
         del param['v']

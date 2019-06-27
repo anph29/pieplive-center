@@ -19,7 +19,7 @@ class AddCamera(object):
             self.addCamPopup.destroy()
         # init
         self.addCamPopup = tk_helper.makePiepMePopup(
-            'Add Media', "300x200+400+300")
+            'Add Media', w=300, h=200)
         # var
         self.name = tk.StringVar()
         self.url = tk.StringVar()

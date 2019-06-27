@@ -1,11 +1,11 @@
 import socketio
 import platform
-from src.utils import helper
 import asyncio
-from src.utils import store
+from src.utils import helper, store, timeloop
 import os
 from datetime import datetime
 import json
+
 
 # https://nodeinfo.piepme.com/
 SOCKET_SERVER = 'https://nodeinfodev.piepme.com:444/'
@@ -17,13 +17,16 @@ sio = socketio.AsyncClient(reconnection=True)
 
 
 class LoginListener(socketio.AsyncClientNamespace):
-    fpath = 'src/images/login.png'
+    fpath = 'src/modules/login/code.png'
 
     async def on_connect(self):
         token = self.create_login_token(sio.eio.sid)
         print('Connected:', sio.eio.sid, token)
         helper.generate_qr(token, self.fpath)
-        Clock.schedule_once(lambda x: self.renew_qr(), 2)
+
+        # self.after(1000, self.renew_qr)
+        timeloop.timeout(self.renew_qr, 1000)
+
         await sio.emit('webClientJoin', data={"token": token})
 
         # async def my_background_task(my_argument)
@@ -35,7 +38,8 @@ class LoginListener(socketio.AsyncClientNamespace):
     # update with timeout -> UI
 
     def renew_qr(self):
-        helper.getApRoot().login_popup.qr_login = self.fpath
+        pass
+        # helper.getApRoot().login_popup.qr_login = self.fpath
 
     async def on_webClientRecieve(self, json_str):
         data = json.loads(json_str)
@@ -55,9 +59,11 @@ class LoginListener(socketio.AsyncClientNamespace):
         return helper.stringToBase64(token)
 
 
+#
 sio.register_namespace(LoginListener('/'))
 
 
+#
 def open():
     async def start():
         await sio.connect(SOCKET_SERVER)

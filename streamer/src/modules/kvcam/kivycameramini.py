@@ -4,14 +4,27 @@ from kivy.uix.image import Image
 from kivy.clock import Clock
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
 from kivy.graphics.texture import Texture
+from kivy.uix.behaviors import DragBehavior
+from kivy.graphics import Rectangle, Color
 from src.modules.rightcontentview.itemcamera import ItemCamera
 from threading import Thread, Event
 import subprocess as sp
+from kivy.lang import Builder
+from functools import partial
 
 _CAM_NUMS_FRAME = '-2562047788015215'
 
+kv = '''
+<KivyCameraMini>:
+    drag_rectangle: self.x, self.y, self.width, self.height
+    drag_timeout: 10000000
+    drag_distance: 0
+    keep_ratio: True
+'''
 
-class KivyCamera(Image):
+Builder.load_string(kv)
+
+class KivyCameraMini(DragBehavior, Image):
     capture = ObjectProperty(None)
     crFrame = ObjectProperty(None)
     name = StringProperty('')
@@ -24,9 +37,25 @@ class KivyCamera(Image):
     typeOld = ''
 
     def __init__(self, **kwargs):
-        super(KivyCamera, self).__init__(**kwargs)
+        super(KivyCameraMini, self).__init__(**kwargs)
         self.show_captured_img(self.default_frame)
         self.stop = Event()
+
+    def on_touch_up(self, touch):
+        if self._get_uid('svavoid') in touch.ud:
+            return super(DragBehavior, self).on_touch_up(touch)
+
+        if self._drag_touch and self in [x() for x in touch.grab_list]:
+            touch.ungrab(self)
+            self._drag_touch = None
+            ud = touch.ud[self._get_uid()]
+            if ud['mode'] == 'unknown':
+                super(DragBehavior, self).on_touch_down(touch)
+                Clock.schedule_once(partial(self._do_touch_up, touch), .1)
+        else:
+            if self._drag_touch is not touch:
+                super(DragBehavior, self).on_touch_up(touch)
+        return self._get_uid() in touch.ud
 
     def set_data_source(self, input):
         if self.capture is not None:
@@ -34,57 +63,22 @@ class KivyCamera(Image):
         self.stop_update_capture()
         self.name = input['name']
         self.url = input['url']
-        self.source = input['url']
         self.resource_type = input['type']
         self.release()
-        try:
-            if self.resource_type == "M3U8":
-                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",f"{input['url']}","-ab","128k","-ac","2","-ar","44100","-vb","3072k","-r","25",f"src/export/{'output'}.flv"]
-                si = subprocess.STARTUPINFO()
-                si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-                self.pipe = subprocess.Popen(command, startupinfo=si)
-                self.url = 'src/export/{}.flv'.format('output')
-            else:
-                if self.typeOld == 'M3U8':
-                    command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i src/musics/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 src/export/output.flv'
-                    si = subprocess.STARTUPINFO()
-                    si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-                    self.pipe = subprocess.Popen(command, startupinfo=si)
-                    Clock.schedule_once(lambda x: self.pipe.kill() , 5)
-            if self.f_parent is not None:
-                if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
-                    self.f_parent.refresh_stream()
-                elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
-                    self.f_parent.refresh_stream()
-            self.typeOld = input['type']
+        self.init_capture()
 
-        except Exception as e:
-            print("Exception:", e)
-            if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
-                self.f_parent.refresh_stream()
-            elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
-                self.f_parent.refresh_stream()
-            self.typeOld = input['type']
-
-
-        capture = None
-        if 'capture' in input and input['capture'] is not None:
-            capture = input['capture']
-        self.init_capture(capture)
-
-    def init_capture(self, capture=None):
+    def init_capture(self):
         try:
             if self.resource_type == 'IMG':
                 self.show_captured_img(self.url)
             else:
-                if capture is not None:
-                    self.capture = capture 
+                if self.resource_type == 'CAMERA':
+                    self.capture = cv2.VideoCapture(int(self.url))
                 else:
                     self.capture = cv2.VideoCapture(self.url)
 
                 if self.capture is not None and self.capture.isOpened():
                     print(">>CAPTURE FINED:")
-                    # sp.call(self._process())
                     self.event_capture = Clock.schedule_interval(self.update, 1.0 / 30)
                 else:
                     print("cv2.error:")
@@ -137,3 +131,5 @@ class KivyCamera(Image):
     def release(self):
         if self.pipe is not None:
             self.pipe.kill()
+        if self.capture is not None:
+            self.capture.release()

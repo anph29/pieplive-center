@@ -27,12 +27,26 @@ from src.modules.custom.filechoose import FileChooser
 
 Builder.load_file('src/ui/bottomleft.kv')
 class BottomLeft(GridLayout):
+
+    display_mini = False
+    v_display_mini = ObjectProperty()
+
     def __init__(self, **kwargs):
         super(BottomLeft, self).__init__(**kwargs)
     
     def open_add_source(self, instance):
         dropdown = DropDownSource()
         dropdown.open(instance)
+
+    def changeDisplayMini(self):
+        if self.display_mini:
+            self.display_mini = False
+            self.v_display_mini.opacity = 0.2
+            self.f_parent.mainStream.hide_camera_mini()
+        else:
+            self.display_mini = True
+            self.v_display_mini.opacity = 1
+            self.f_parent.mainStream.show_camera_mini()
 
 class TextDialog(Popup):
     inp_name = ObjectProperty()

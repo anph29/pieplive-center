@@ -1,7 +1,15 @@
 
 <MainStream>:
     camera:camera
-    KivyCamera:
+    cameraMini:cameraMini
+    KivyCameraMain:
         id:camera
         idx:-1
         pos:0, 0
+    KivyCameraMini:
+        id:cameraMini
+        size_hint: 0.3,0.3
+        idx:-1
+        y:10
+        x: root.width - self.width - 10
+        opacity:0

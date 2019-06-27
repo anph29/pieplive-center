@@ -5,7 +5,8 @@ from threading import Thread, Event
 from kivy.clock import Clock, mainthread
 from kivy.graphics import Fbo, ClearColor, ClearBuffers, Scale, Translate
 from kivy.uix.relativelayout import RelativeLayout
-from src.modules.kvcam.kivycamera2 import KivyCamera
+from src.modules.kvcam.kivycameramain import KivyCameraMain
+from src.modules.kvcam.kivycameramini import KivyCameraMini
 from src.modules.custom.pieplabel import PiepLabel
 from src.modules.custom.piepimage import PiepImage
 from kivy.properties import ObjectProperty
@@ -17,6 +18,7 @@ import array
 Builder.load_file('src/ui/mainstream.kv')
 class MainStream(RelativeLayout):
     camera= ObjectProperty()
+    cameraMini= ObjectProperty()
     f_parent= ObjectProperty(None)
 
     def __init__(self, **kwargs):
@@ -54,6 +56,18 @@ class MainStream(RelativeLayout):
             Clock.schedule_once(lambda x: self.pipe2.kill() , 10)
         except IOError:
             pass
+
+    def show_camera_mini(self):
+        self.cameraMini.opacity = 1
+        self.cameraMini.set_data_source({
+            "name": "camera mini",
+            "url": "0",
+            "type": "CAMERA"
+        })
+
+    def hide_camera_mini(self):
+        self.cameraMini.opacity = 0
+        self.cameraMini.release()
 
     def setupAudio(self):
         # chunk = 1024

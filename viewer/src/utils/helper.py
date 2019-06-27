@@ -2,6 +2,8 @@ import json
 import re
 import pyqrcode
 import base64
+import os
+import zipfile
 
 
 def _read_setting(key=None):
@@ -9,15 +11,19 @@ def _read_setting(key=None):
         setting = json.load(json_setting)
         return setting[key] if key is not None else setting
 
+
 __GLOBALPATH__ = "__globalpath__"
 __LOCALPATH__ = "__localpath__"
 _SETTING = _read_setting()
-_BASE_PATH = _SETTING[__LOCALPATH__]  # switch to local here [__GLOBALPATH__]
+# switch to local here [__LOCALPATH__]
+basePath = os.path.dirname(os.path.abspath(_SETTING[__GLOBALPATH__] + '/a'))
+_BASE_PATH = basePath.replace('\\', '/') + '/'
 _LOGO_PATH = _BASE_PATH + _SETTING["logo"]
 _LSCAM_PATH = _BASE_PATH + _SETTING["lscamera"]
 _LS_PRESENTER_PATH = _BASE_PATH + _SETTING["lspresenter"]
 _LS_LSSTATICSOURCE_PATH = _BASE_PATH + _SETTING["lsstaticsource"]
 _FONT_SETTING_PATH = _BASE_PATH + _SETTING["font_setting"]
+_STORE_SETTING = _BASE_PATH + _SETTING["store_setting"]
 
 ###########################################################################################################################################
 

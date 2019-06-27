@@ -1,4 +1,4 @@
-from src.models.http_request import HTTP_REQUEST
+from src.utils.http_request import HTTP_REQUEST
 # from http_request import HTTP_REQUEST
 from src.utils import helper
 

@@ -36,14 +36,17 @@ class MediaBox(tk.Frame):
     def initTOP(self):
         top = tk.Frame(self, bd=1, relief=tk.FLAT, bg="#ccc",
                        borderwidth=0, width=self.cell_width, height=self.cell_height)
-        top.bind("<Button-1>", self.playOrPause)
+        top.bind("<Button-1>", self.playOrPauseClick)
         # vlc
         self.Instance = vlc.Instance()
         self.player = self.Instance.media_player_new()
-        self.player.audio_set_volume(0) 
+        self.player.audio_set_volume(0)
         self.initPlayerMedia()
         self.player.set_hwnd(top.winfo_id())
         self.play()
+        #
+        if self.mtype == 'VIDEO':
+            self.after(100, self.playOrPause)
 
         top.pack(side=tk.TOP, expand=True)
 
@@ -75,7 +78,7 @@ class MediaBox(tk.Frame):
             imagePlay = ImageTk.PhotoImage(Image.open("src/icons/pause-b.png"))
             self.lblPlay = tk.Label(bottom, image=imagePlay, cursor='hand2')
             self.lblPlay.image = imagePlay
-            self.lblPlay.bind("<Button-1>", self.playOrPause)
+            self.lblPlay.bind("<Button-1>", self.playOrPauseClick)
             self.lblPlay.pack(side=tk.LEFT)
         # label
         lbl_name = PLabel(bottom, text=self.name, justify=tk.LEFT, elipsis=25, font=(
@@ -97,13 +100,12 @@ class MediaBox(tk.Frame):
                 self.finished = False
             #
             self.after(1000,  self.updateProgress)
-
         self.player.play()
 
-        if self.mtype == 'VIDEO':
-            self.after(100, lambda: self.playOrPause(None))
+    def playOrPauseClick(self, _):
+        self.playOrPause()
 
-    def playOrPause(self, _):
+    def playOrPause(self):
         # z
         if self.player.is_playing():
             self.player.pause()

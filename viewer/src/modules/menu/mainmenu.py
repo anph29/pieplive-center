@@ -4,7 +4,7 @@ from src.modules.login import Login
 
 class MainMenu():
     def __init__(self, root):
-        login = Login(self)
+        login = Login(root)
         menubar = tk.Menu(root)
         # F
         filemenu = tk.Menu(menubar, tearoff=0)

@@ -1,8 +1,8 @@
 # Use Tkinter for python 2, tkinter for python 3
 import tkinter as tk
-
 from src.modules.menu.mainmenu import MainMenu
 from src.modules.rightview import RightView
+from src.modules.login import Login
 
 
 class MainApplication(tk.Frame):
@@ -13,8 +13,11 @@ class MainApplication(tk.Frame):
         self.after(100, self.init_layout)
 
     def init_layout(self):
-        right = RightView(self, borderwidth=0, bg='#000')
-        right.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+        # right = RightView(self, borderwidth=0, bg='#000')
+        # right.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+        # #
+        login = Login(root)
+        login.open()
 
 
 if __name__ == "__main__":

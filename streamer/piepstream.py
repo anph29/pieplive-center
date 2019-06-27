@@ -40,7 +40,7 @@ for font in KIVY_FONTS:
     LabelBase.register(**font)
 
 class PiepStream(App):
-    title = "Piep-Live-Center"
+    title = "Piep-Live-Center-Streamer"
     mainView = ObjectProperty()
 
     def __init__(self, **kwargs):

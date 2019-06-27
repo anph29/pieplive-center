@@ -28,6 +28,7 @@ class MainView(Widget):
     def on_start(self):
         self.mainStream._load()
         self.mainStream.f_parent = self
+        self.bottom_left.f_parent = self
         setting = helper._read_setting()
         if setting['ouput_resolution'] is not None:
             self.f_width = self.mainStream.f_width = setting['ouput_resolution'][0]

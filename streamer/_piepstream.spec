@@ -9,13 +9,15 @@ added_files = [
   ( 'src\\images', 'src\\images' ),
   ( 'src\\fonts', 'src\\fonts' ),
   ( 'src\\icons', 'src\\icons' ),
+  ( 'src\\export', 'src\\export' ),
   ( 'ffmpeg-win\\', 'ffmpeg-win\\' ),
   ( 'piepstream.kv', '.' ),
+  ( 'Lib\\site-packages\\kivy\\garden', 'kivy\\garden' ),
   ('Lib\\site-packages\\cv2\\opencv_ffmpeg410.dll', 'cv2'),
   ('Lib\\site-packages\\_sounddevice_data\\portaudio-binaries\\libportaudio32bit.dll', '_sounddevice_data\\portaudio-binaries')
 ]
 
-a = Analysis(['piepstream.pyw'],
+a = Analysis(['piepstream.py'],
              pathex=['D:\\QueenB\\PiepLive-Center\\streamer'],
              binaries=[],
              datas=added_files,

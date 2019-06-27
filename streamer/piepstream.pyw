@@ -20,6 +20,8 @@ from kivy.core.text import LabelBase
 from kivy.properties import ObjectProperty
 from kivy.factory import Factory
 
+from kivy.garden.iconfonts import iconfonts
+
 from src.modules.mainview import MainView
 
 from src.modules.custom.imagebutton import ImageButton
@@ -37,6 +39,8 @@ from src.modules.rightcontentview.gridview import GridCamera
 from src.modules.rightcontentview.itemlabel import ItemLabel
 from src.modules.rightcontentview.listview import ListPresenter
 
+iconfonts.register('default_font', 'src/fonts/iconfont_sample.ttf','src/fonts/iconfont_sample.fontd')
+iconfonts.register('fontawesome', 'src/fonts/fontawesome.ttf','src/fonts/fontawesome.fontd')
 KIVY_FONTS = helper._load_fonts()
 for font in KIVY_FONTS:
     LabelBase.register(**font)

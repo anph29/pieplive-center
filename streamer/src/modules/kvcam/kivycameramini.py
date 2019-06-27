@@ -108,7 +108,7 @@ class KivyCameraMini(DragBehavior, Image):
     def update(self, dt):
         try:
             # stoped
-            if not self.capture or not self.capture.grab():
+            if not self.capture.grab():
                 return False
             # playing
             if self.capture.isOpened():
@@ -118,6 +118,7 @@ class KivyCameraMini(DragBehavior, Image):
 
         except IOError:
             print('update interval fail--')
+            return False
 
     def update_texture_from_frame(self, frame):
         fshape = frame.shape

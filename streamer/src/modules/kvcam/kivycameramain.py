@@ -86,7 +86,6 @@ class KivyCameraMain(Image):
 
                 if self.capture is not None and self.capture.isOpened():
                     print(">>CAPTURE FINED:")
-                    # sp.call(self._process())
                     self.event_capture = Clock.schedule_interval(self.update, 1.0 / 30)
                 else:
                     print("cv2.error:")
@@ -116,7 +115,7 @@ class KivyCameraMain(Image):
     def update(self, dt):
         try:
             # stoped
-            if not self.capture or not self.capture.grab():
+            if not self.capture.grab():
                 return False
             # playing
             if self.capture.isOpened():
@@ -126,6 +125,7 @@ class KivyCameraMain(Image):
 
         except IOError:
             print('update interval fail--')
+            return False
 
     def update_texture_from_frame(self, frame):
         fshape = frame.shape

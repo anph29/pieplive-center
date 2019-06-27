@@ -250,7 +250,7 @@ class MainView(Widget):
                 'total': idx+1
             }
             self.lsSource.append(audio)
-            helper._write_lsStaticSource(self.lsSource)
+            kv_helper._write_lsStaticSource(self.lsSource)
             self.bottom_left.list_source.add_source(audio)
             self.bottom_left.list_mixer.add_source({'name': name,'value': src,'volume': volume,'idx': idx})
         else:
@@ -264,7 +264,7 @@ class MainView(Widget):
         if self.lsSource[index]['type'] == 'audio':
             self.bottom_left.list_mixer.del_source(self.lsSource[index]['idx'])
         del(self.lsSource[index])
-        helper._write_lsStaticSource(self.lsSource)
+        kv_helper._write_lsStaticSource(self.lsSource)
 
     def openLogin(self):
         self.login_popup = Login(self)
@@ -279,7 +279,7 @@ class MainView(Widget):
             if _s['idx'] == idx:
                 _s['pos_x'] = pos_x
                 _s['pos_y'] = pos_y
-                helper._write_lsStaticSource(self.lsSource)
+                kv_helper._write_lsStaticSource(self.lsSource)
                 break
 
     def on_edit_source(self,index):

@@ -7,7 +7,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.uix.scrollview import ScrollView
-import src.utils.helper as helper
+import src.utils.kivyhelper as kv_helper
 from kivy.lang import Builder
 from kivy.clock import Clock
 from functools import partial
@@ -83,7 +83,7 @@ class RCVItemMixer(RecycleDataViewBehavior, BoxLayout):
     def onChangeVolume(self, value):
         if self.clock is not None:
             self.clock.cancel()
-        self.clock = Clock.schedule_once(lambda x:helper.getApRoot().changeAudioVolume(self.idx, self.audio_volume.value), 1)
+        self.clock = Clock.schedule_once(lambda x:kv_helper.getApRoot().changeAudioVolume(self.idx, self.audio_volume.value), 1)
 
     def print_sound(self,indata, outdata, frames, time, status):
         volume_norm = np.linalg.norm(indata)*100

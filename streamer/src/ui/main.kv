@@ -3,8 +3,10 @@
     mainStream: mainStream
     right_content: right_content
     bottom_left:bottom_left
-    control:control
     listMixer: bottom_left.list_mixer
+    btn_start:btn_start
+    btn_record:btn_record
+    btn_setting:btn_setting
     canvas.before:
         Color:
             rgb:.12, .15, .18
@@ -39,10 +41,42 @@
                     # anchor_y:'center'
                     pos:0,0
                       
-            Control:
+            BoxLayout:
                 id: control
-                size_hint: 1, None
-                height: 40
+                size_hint:1, None
+                height:40
+                padding:5
+                pos_hint:{'x': 0, 'y': 0}
+                canvas.before:
+                    Color:
+                        rgb: .75,.75,.75
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                BoxLayout:
+                    spacing:5
+                    size_hint:None,1
+                    orientation:'horizontal'
+                    pos_hint:{'x': (self.parent.width - 620) / 2 / self.parent.width}
+
+                    Button:
+                        id:btn_start
+                        text:'Start Streaming'
+                        on_press: app.root.mClick('start')
+                    Button:
+                        id:btn_record
+                        text:'Start Recording'
+                        on_press: app.root.mClick('record')
+                    Button:
+                        id:btn_setting
+                        text:'Settings'
+                        on_press: app.root.openSetting()
+                    Button:
+                        text:'Exit'
+                        on_press: app.root.openSetting()
+                    Button:
+                        text:'Login'
+                        on_press: app.root.openLogin()
                 
             BottomLeft:
                 id:bottom_left

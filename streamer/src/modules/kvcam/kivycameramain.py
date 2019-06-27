@@ -69,7 +69,9 @@ class KivyCameraMain(Image):
         capture = None
         if 'capture' in input and input['capture'] is not None:
             capture = input['capture']
-        self.init_capture(capture)
+        th = Thread(target=self.init_capture(capture))
+        th.start()
+        
 
     def init_capture(self, capture=None):
         try:

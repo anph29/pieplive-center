@@ -7,7 +7,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.uix.scrollview import ScrollView
-import src.utils.helper as helper
+import src.utils.kivyhelper as kv_helper
 from kivy.lang import Builder
 from kivy.graphics import Rectangle, Color
 from src.modules.custom.popup import PiepMeConfirmPopup
@@ -44,7 +44,7 @@ class ListSource(RecycleView):
     def delete_source(self):
         for child in self.children[0].children:
             if child.selected:
-                helper.getApRoot().delete_source(child.index)
+                kv_helper.getApRoot().delete_source(child.index)
                 del(self.data[child.index])
     
     def on_change_check(self, index, active):
@@ -56,7 +56,7 @@ class ListSource(RecycleView):
     def edit_source(self):
         for child in self.children[0].children:
             if child.selected:
-                helper.getApRoot().on_edit_source(child.index)
+                kv_helper.getApRoot().on_edit_source(child.index)
 
 class BoxSource(SelectableBox):
     """ Adds selection and focus behaviour to the view. """
@@ -95,4 +95,4 @@ class RCVItemSource(RecycleDataViewBehavior, BoxLayout):
         elif self.active == 0:
             self.active = 1
         self.parent.parent.on_change_check(self.index,self.active)
-        helper.getApRoot().on_off_source(self.index,self.active)
+        kv_helper.getApRoot().on_off_source(self.index,self.active)

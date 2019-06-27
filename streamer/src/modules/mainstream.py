@@ -1,6 +1,6 @@
 import subprocess
 import cv2
-import src.utils.helper as helper
+import src.utils.kivyhelper as kv_helper
 from threading import Thread, Event
 from kivy.clock import Clock, mainthread
 from kivy.graphics import Fbo, ClearColor, ClearBuffers, Scale, Translate
@@ -125,7 +125,7 @@ class MainStream(RelativeLayout):
             self.isStream = True
             Thread(target=self._process).start()
         except IOError:
-            helper.getApRoot().triggerStop()
+            kv_helper.getApRoot().triggerStop()
         
 
     def _process(self):
@@ -145,7 +145,7 @@ class MainStream(RelativeLayout):
                 if self.parent is not None and self.canvas_parent_index > -1:
                     self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
         except IOError:
-            helper.getApRoot().triggerStop()
+            kv_helper.getApRoot().triggerStop()
             self.pipe.kill()
             self.fbo.remove(self.canvas)
             if self.event is not None:
@@ -252,7 +252,7 @@ class MainStream(RelativeLayout):
                 for _s in self.lsSource:
                     if _s['idx'] == idx:
                         _s['volume'] = value
-                        helper._write_lsStaticSource(self.lsSource)
+                        kv_helper._write_lsStaticSource(self.lsSource)
                         break
             else:
                 self.deviceVolume = value

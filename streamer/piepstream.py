@@ -1,6 +1,6 @@
 import kivy
 from kivy.config import Config
-import src.utils.helper as helper
+import src.utils.kivyhelper as kivy_helper
 #app_width, app_height = helper._read_setting('application_resolution')
 #1490 x 940
 Config.set('graphics', 'width', 1492)
@@ -26,8 +26,6 @@ from src.modules.custom.imagebutton import ImageButton
 from src.modules.custom.popup import PiepMePopup
 from src.modules.custom.pieplabel import PiepLabel
 from src.modules.custom.piepimage import PiepImage
-from src.modules.controlview.control import Control
-from src.modules.kvcam.kivycamera import KivyCameraHeadless
 
 from src.modules.bottomleft.bottomleft import BottomLeft
 
@@ -37,7 +35,7 @@ from src.modules.rightcontentview.gridview import GridCamera
 from src.modules.rightcontentview.itemlabel import ItemLabel
 from src.modules.rightcontentview.listview import ListPresenter
 
-KIVY_FONTS = helper._load_fonts()
+KIVY_FONTS = kivy_helper._load_fonts()
 for font in KIVY_FONTS:
     LabelBase.register(**font)
 
@@ -52,10 +50,10 @@ class PiepStream(App):
         return self.mainView
 
     def on_start(self):
-        helper.getApRoot().on_start()
+        kivy_helper.getApRoot().on_start()
 
     def on_stop(self):
-        helper.getApRoot().on_stop()
+        kivy_helper.getApRoot().on_stop()
 
 if __name__ == '__main__':
     PiepStream().run()

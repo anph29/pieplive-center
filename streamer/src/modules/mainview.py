@@ -5,7 +5,7 @@ from src.modules.bottomleft.bottomleft import ImageDialog
 from src.modules.bottomleft.bottomleft import AudioDialog
 # from src.modules.login import Login
 from src.modules.mainstream import MainStream
-from src.utils import helper
+from src.utils import kivyhelper as kv_helper
 from kivy.lang import Builder
 import sounddevice as sd
 
@@ -14,7 +14,9 @@ Builder.load_file('src/ui/main.kv')
 class MainView(Widget):
     mainStream = ObjectProperty()
     bottom_left = ObjectProperty()
-    control = ObjectProperty()
+    btn_start = ObjectProperty()
+    btn_record = ObjectProperty()
+    btn_setting = ObjectProperty()
     login_popup = ObjectProperty()
     right_content = ObjectProperty()
 
@@ -29,7 +31,7 @@ class MainView(Widget):
         self.mainStream._load()
         self.mainStream.f_parent = self
         self.bottom_left.f_parent = self
-        setting = helper._read_setting()
+        setting = kv_helper._read_setting()
         if setting['ouput_resolution'] is not None:
             self.f_width = self.mainStream.f_width = setting['ouput_resolution'][0]
             self.f_height = self.mainStream.f_height = setting['ouput_resolution'][1]
@@ -72,7 +74,7 @@ class MainView(Widget):
             print("Exception:", e)
 
     def initSource(self):
-        self.lsSource = helper._load_lsStaticSource()
+        self.lsSource = kv_helper._load_lsStaticSource()
         self.mainStream.lsSource = self.lsSource
         self.bottom_left.list_source.set_source(self.lsSource)
         for idx, _s in enumerate(self.lsSource):
@@ -111,26 +113,26 @@ class MainView(Widget):
                     self.bottom_left.stream_server.text+self.bottom_left.stream_key.text)
                 if bool(self.mainStream.prepare()):
                     self.mainStream.startStream()
-                    self.control.btn_start.text = "Stop Streaming"
-                    self.control.btn_start.background_color = .29, .41, .15, 0.9
+                    self.btn_start.text = "Stop Streaming"
+                    self.btn_start.background_color = .29, .41, .15, 0.9
 
             elif self.mainStream.isStream is True:
                 self.mainStream.stopStream()
-                self.control.btn_start.text = "Start Streaming"
-                self.control.btn_start.background_color = .29, .41, .55, 1
+                self.btn_start.text = "Start Streaming"
+                self.btn_start.background_color = .29, .41, .55, 1
         elif obj == 'record':
             if self.mainStream.isRecord is False:
-                self.control.btn_record.text = "Stop Record"
-                self.control.btn_record.background_color = .29, .41, .15, 0.9
+                self.btn_record.text = "Stop Record"
+                self.btn_record.background_color = .29, .41, .15, 0.9
             elif self.mainStream.isStream is True:
-                self.control.btn_record.text = "Start Record"
-                self.control.btn_record.background_color = .29, .41, .55, 1
+                self.btn_record.text = "Start Record"
+                self.btn_record.background_color = .29, .41, .55, 1
             self.mainStream.record()
 
     def triggerStop(self):
         self.mainStream.stopStream()
-        self.control.btn_start.text = "Start Streaming"
-        self.control.btn_start.background_color = .29, .41, .55, 1
+        self.btn_start.text = "Start Streaming"
+        self.btn_start.background_color = .29, .41, .55, 1
 
     def on_off_source(self, index, value):
         ite = self.lsSource[index]
@@ -145,7 +147,7 @@ class MainView(Widget):
             self.mainStream.on_off_source(ite['idx'], value)
 
         self.lsSource[index]["active"] = value
-        helper._write_lsStaticSource(self.lsSource)
+        kv_helper._write_lsStaticSource(self.lsSource)
         self.mainStream._set_source(self.lsSource)
         if ite['type'] == 'audio':
             self.mainStream.on_change_audio()
@@ -188,7 +190,7 @@ class MainView(Widget):
                 'total': idx+1
             }
             self.lsSource.append(text)
-            helper._write_lsStaticSource(self.lsSource)
+            kv_helper._write_lsStaticSource(self.lsSource)
             self.bottom_left.list_source.add_source(text)
             self.mainStream.show_text(label, font, size, color, pos_x, pos_y, 1, idx, True)
         else:
@@ -197,7 +199,7 @@ class MainView(Widget):
             self.lsSource[index]['font'] = font
             self.lsSource[index]['size'] = int(size)
             self.lsSource[index]['color'] = color
-            helper._write_lsStaticSource(self.lsSource)
+            kv_helper._write_lsStaticSource(self.lsSource)
             self.bottom_left.list_source.update_source(index,{"name":name, "active": self.lsSource[index]["active"]})
             self.mainStream.show_text(label, font, int(size), color, pos_x, pos_y, self.lsSource[index]["active"], self.lsSource[index]['idx'], False)
 
@@ -221,7 +223,7 @@ class MainView(Widget):
                 'total': idx+1
             }
             self.lsSource.append(image)
-            helper._write_lsStaticSource(self.lsSource)
+            kv_helper._write_lsStaticSource(self.lsSource)
             self.bottom_left.list_source.add_source(image)
             self.mainStream.show_image(src, pos_x, pos_y, width, height, 1, idx,True)
         else:
@@ -229,7 +231,7 @@ class MainView(Widget):
             self.lsSource[index]['src'] = src
             self.lsSource[index]['width'] = int(width)
             self.lsSource[index]['height'] = int(height)
-            helper._write_lsStaticSource(self.lsSource)
+            kv_helper._write_lsStaticSource(self.lsSource)
             self.bottom_left.list_source.update_source(index,{"name":name, "active": self.lsSource[index]["active"]})
             self.mainStream.show_image(src, pos_x, pos_y, int(width), int(height), self.lsSource[index]["active"], self.lsSource[index]['idx'], False)
 

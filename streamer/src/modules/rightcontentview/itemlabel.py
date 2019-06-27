@@ -4,7 +4,7 @@ from kivy.properties import ObjectProperty, NumericProperty, ObjectProperty, Boo
 from src.modules.custom.popup import PiepMeConfirmPopup
 from src.modules.kvcam.labelcamera import LabelCamera
 from kivy.lang import Builder
-from src.utils import helper
+from src.utils import kivyhelper as kv_helper
 
 
 Builder.load_file('src/ui/itemlabel.kv')
@@ -34,7 +34,7 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
         """ Respond to the selection of items in the view """
         self.selected = is_selected
         if self.selected:
-            helper.getApRoot().changeSrc(self.kvcam.get_data_source())
+            kv_helper.getApRoot().changeSrc(self.kvcam.get_data_source())
 
     def open_confirm_rmv(self):
         if not self.selected:

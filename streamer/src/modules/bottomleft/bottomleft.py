@@ -22,7 +22,8 @@ from src.modules.bottomleft.listsource import ListSource
 from src.modules.bottomleft.listsource import BoxSource 
 from src.modules.bottomleft.listsource import RCVItemSource
 from kivy.garden.knob import Knob
-from src.utils import ftype, helper
+from src.utils import ftype
+from src.utils import kivyhelper as kv_helper
 from src.modules.custom.filechoose import FileChooser
 
 Builder.load_file('src/ui/bottomleft.kv')
@@ -72,7 +73,7 @@ class TextDialog(Popup):
         pass
 
     def _enter(self):
-        helper.getApRoot().add_text(self.index,self.inp_name.text,self.inp_text.text,self.inp_font.text,self.inp_size.text,self.txt_color,0,0)
+        kv_helper.getApRoot().add_text(self.index,self.inp_name.text,self.inp_text.text,self.inp_font.text,self.inp_size.text,self.txt_color,0,0)
         self.dismiss()
 
     def _cancel(self):
@@ -93,7 +94,7 @@ class ImageDialog(Popup):
             self.inp_height.text = str(data['height'])
 
     def _enter(self):
-        helper.getApRoot().add_image(self.index, self.inp_name.text, self.inp_source.text, 0, 0, self.inp_width.text, self.inp_height.text)
+        kv_helper.getApRoot().add_image(self.index, self.inp_name.text, self.inp_source.text, 0, 0, self.inp_width.text, self.inp_height.text)
         self.dismiss()
 
     def _cancel(self):
@@ -134,7 +135,7 @@ class AudioDialog(Popup):
             self.inp_volume.value = data['volume']
 
     def _enter(self):
-        helper.getApRoot().add_audio(self.index, self.inp_name.text, self.inp_source.text, self.inp_volume.value)
+        kv_helper.getApRoot().add_audio(self.index, self.inp_name.text, self.inp_source.text, self.inp_volume.value)
         self.dismiss()
 
     def _cancel(self):

@@ -122,7 +122,6 @@ class KivyCameraMain(Image):
                 ret, frame = self.capture.retrieve()
                 if ret:
                     self.update_texture_from_frame(frame)
-
         except IOError:
             print('update interval fail--')
             return False

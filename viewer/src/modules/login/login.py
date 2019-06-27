@@ -104,6 +104,7 @@ class Login(object):
             if res['status'] == 'success':
                 # save login
                store._new(res['elements'])
+               self.loginPopup.destroy()
             else:
                 self.fTokenInvalid.pack(side=tk.LEFT, fill=tk.Y)
         else:

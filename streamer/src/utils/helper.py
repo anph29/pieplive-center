@@ -34,12 +34,24 @@ def _add_to_lscam(data):
     with open('src/cfg/lscam.json', 'w', encoding='utf-8') as wcam:
         json.dump(jcam, wcam, indent=4)
 
-
 def _load_ls_presenter():
-    with open('src/cfg/lspresenter.json', 'r', encoding='utf-8') as json_lscam:
-        return json.load(json_lscam)
+    with open('src/cfg/lspresenter.json', 'r', encoding='utf-8') as json_lspresenter:
+        return json.load(json_lspresenter)
 
+def _load_ls_schedule():
+    with open('src/cfg/lsschedule.json', 'r', encoding='utf-8') as json_lsschedule:
+        return json.load(json_lsschedule)
 
+def _write_lsschedule(data):
+    with open('src/cfg/lsschedule.json', 'w', encoding='utf-8') as json_lsschedule:
+        json.dump(data, json_lsschedule, indent=4)
+
+def _add_to_lsschedule(data):
+    with open('src/cfg/lsschedule.json', 'r', encoding='utf-8') as rcam:
+        jcam = json.load(rcam)
+        jcam.append(data)
+    with open('src/cfg/lsschedule.json', 'w', encoding='utf-8') as wcam:
+        json.dump(jcam, wcam, indent=4)
 
 """###################################################################################################
 # """

@@ -23,3 +23,12 @@ class ListPresenter(RecycleView):
 
     def set_data(self):
         self.data = [c for c in helper._load_ls_presenter()]
+
+class ListSchedule(RecycleView):
+    app_type = StringProperty()
+
+    def __init__(self, **kwargs):
+        super(ListSchedule, self).__init__(**kwargs)
+
+    def set_data(self):
+        self.data = [c for c in helper._load_ls_schedule()]

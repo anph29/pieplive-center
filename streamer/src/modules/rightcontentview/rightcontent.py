@@ -11,6 +11,7 @@ Builder.load_file('src/ui/rightcontent.kv')
 class RightContent(TabbedPanel):
     tab_camera = ObjectProperty()
     tab_presenter = ObjectProperty()
+    tab_schedule = ObjectProperty()
 
     def __init__(self, *args, **kwargs):
         super(RightContent, self).__init__(*args, **kwargs)
@@ -32,3 +33,11 @@ class TabPresenter(BoxLayout):
     def openAddPresenter(self):
         self.add_presenter_pop = AddCamera(self)
         self.add_presenter_pop.open()
+
+class TabSchedule(BoxLayout):
+    add_schedule_pop = ObjectProperty()
+    ls_schedule = ObjectProperty()
+
+    def openAddSchedule(self):
+        self.add_schedule_pop = AddCamera(self)
+        self.add_schedule_pop.open()

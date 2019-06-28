@@ -2,7 +2,8 @@
 <RightContent>:
     tab_camera:tab_camera
     tab_presenter:tab_presenter
-    tab_width: self.size[0] / 2
+    tab_schedule:tab_schedule
+    tab_width: self.size[0] / 3
     size_hint:1,1
     pos_hint:{'y': 0, 'center_x': .5}
     do_default_tab: False
@@ -25,6 +26,18 @@
             padding:2
             TabPresenter:
                 id:tab_presenter
+                canvas.before:
+                    Color:
+                        rgb: .0,.0,.0
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+    TabbedPanelItem:
+        text:'Schedule'
+        Box25:
+            padding:2
+            TabSchedule:
+                id:tab_schedule
                 canvas.before:
                     Color:
                         rgb: .0,.0,.0
@@ -93,3 +106,23 @@
     #         pos_hint:{'x':0,'y':0}
     #         size_hint:1,1
     #         on_release: root.open_add_presenter()
+
+<TabSchedule>:
+    ls_schedule:ls_schedule
+    ListSchedule:
+        id:ls_schedule
+        viewclass: 'ItemLabel'
+        size_hint:1,None
+        height: int(self.parent.height - 30)
+        scroll_type: ['bars', 'content']
+        bar_width: 10
+        GridCamera:
+            cols:1
+            spacing:1
+            padding:1
+            default_size_hint: 1, None
+            default_size: None, 30
+            multiselect: False
+            touch_multiselect: False
+            size_hint_y: None
+            height: self.minimum_height

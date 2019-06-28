@@ -4,7 +4,7 @@ from src.modules.custom.popup import PiepMeConfirmPopupContent
 from kivy.uix.popup import Popup
 import re
 import base64
-
+import math
 def isAppViewer():
     return getAppType() == 'VIEWER'
 
@@ -84,15 +84,14 @@ def base64ToString(b):
 
 # seconds in number -> toObj ? {h,m,s} : [hh:]mm:ss
 def convertSecNoToHMS(seconds, toObj=False) :
-    toObj = toObj | False
     seconds = math.floor(seconds)
     h = math.floor(seconds / 3600)
     m = math.floor((seconds % 3600) / 60)
     s = seconds - h * 3600 - m * 60
-    hs =('0' if h < 10 else '') + str(h)
-    ms = ('0' if m < 10 else '') + str(m)
-    ss = ('0' if s < 10  else '') + str(s)
+    hs = ('','0')[h < 10] + str(h)
+    ms = ('','0')[m < 10] + str(m)
+    ss = ('','0')[s < 10] + str(s)
     if toObj:
         return { 'h': hs, 'm': ms, 's': ss } 
     else:
-        return (hs + ':' if h>0 else '') + ms + ':' + ss
+        return (('',hs + ':')[h>0]) + ms + ':' + ss

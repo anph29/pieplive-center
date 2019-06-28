@@ -19,7 +19,7 @@ class AddCamera(object):
             self.addCamPopup.destroy()
         # init
         self.addCamPopup = tk_helper.makePiepMePopup(
-            'Add Media', w=300, h=200)
+            'Add Media', w=400, h=200)
         # var
         self.name = tk.StringVar()
         self.url = tk.StringVar()
@@ -35,7 +35,7 @@ class AddCamera(object):
         f_url = tk.Frame(self.addCamPopup,  pady=10)
         l_url = tk.Label(f_url, text="URL:", width=6, anchor=tk.W)
         l_url.pack(side=tk.LEFT, fill=tk.Y)
-        self.e_url = tk.Entry(f_url, textvariable=self.url,
+        self.e_url = tk.Entry(f_url, textvariable=self.url, width=36,
                               borderwidth=5, relief=tk.FLAT)
         self.e_url.pack(side=tk.LEFT, fill=tk.X)
         btn_choose = tk.Button(

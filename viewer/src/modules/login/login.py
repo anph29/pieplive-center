@@ -3,7 +3,8 @@ from PIL import Image, ImageTk
 from src.utils import helper, tk_helper, store
 import re
 from src.models.n100_model import N100_model
-
+from uuid import getnode as get_mac
+from src.utils import store
 
 class Login(object):
     loginPopup = None
@@ -12,6 +13,10 @@ class Login(object):
     def __init__(self, parent):
         self.parent = parent
         super(Login, self).__init__()
+    
+    def logout(self):
+        store._new({})
+        self.open()
 
     def open(self):
          # first destroy
@@ -114,7 +119,7 @@ class Login(object):
         n100 = N100_model()
         return n100.getOtpViaNV117({
             'NV117': nv117,  # PiepMeID
-            'LOGIN': 'ANPH',  # IP hoặc Mac address (của máy)
+            'LOGIN': hex(get_mac())  # IP hoặc Mac address (của máy)
         })
 
     def pieplivecenterLogin(self, nv117, pv161):
@@ -122,5 +127,5 @@ class Login(object):
         return n100.pieplivecenterLogin({
             'NV117': nv117,  # PiepMeID
             'PV161': pv161,  # OTP (login)
-            'LOGIN': 'ANPH',  # IP hoặc Mac address (của máy)
+            'LOGIN': hex(get_mac())  # IP hoặc Mac address (của máy)
         })

@@ -1,37 +1,44 @@
 import tkinter as tk
 from src.modules.login import Login
-
+from src.utils import store
 
 class MainMenu():
     def __init__(self, root):
-        login = Login(root)
-        menubar = tk.Menu(root)
+        self.login = Login(root)
+        self.menubar = tk.Menu(root)
         # F
-        filemenu = tk.Menu(menubar, tearoff=0)
-        filemenu.add_command(label="New", command=lambda: False)
-        filemenu.add_command(label="Open", command=lambda: False)
-        filemenu.add_command(label="Save", command=lambda: False)
-        filemenu.add_command(label="Save as...", command=lambda: False)
-        filemenu.add_command(label="Close", command=lambda: False)
-        filemenu.add_separator()
-        filemenu.add_command(label="Exit", command=root.quit)
-        menubar.add_cascade(label="File", menu=filemenu)
+        self.filemenu = tk.Menu(self.menubar, tearoff=0)
+        self.filemenu.add_command(label="New", command=lambda: False)
+        self.filemenu.add_command(label="Open", command=lambda: False)
+        self.filemenu.add_command(label="Save", command=lambda: False)
+        self.filemenu.add_command(label="Save as...", command=lambda: False)
+        self.filemenu.add_command(label="Close", command=lambda: False)
+        self.filemenu.add_separator()
+        self.filemenu.add_command(label="Exit", command=root.quit)
+        self.menubar.add_cascade(label="File", menu=self.filemenu)
         # E
-        editmenu = tk.Menu(menubar, tearoff=0)
-        editmenu.add_command(label="Undo", command=lambda: False)
-        editmenu.add_separator()
-        editmenu.add_command(label="Cut", command=lambda: False)
-        editmenu.add_command(label="Copy", command=lambda: False)
-        editmenu.add_command(label="Paste", command=lambda: False)
-        editmenu.add_command(label="Delete", command=lambda: False)
-        editmenu.add_command(label="Select All", command=lambda: False)
-        menubar.add_cascade(label="Edit", menu=editmenu)
+        self.editmenu = tk.Menu(self.menubar, tearoff=0)
+        self.editmenu.add_command(label="Undo", command=lambda: False)
+        self.editmenu.add_separator()
+        self.editmenu.add_command(label="Cut", command=lambda: False)
+        self.editmenu.add_command(label="Copy", command=lambda: False)
+        self.editmenu.add_command(label="Paste", command=lambda: False)
+        self.editmenu.add_command(label="Delete", command=lambda: False)
+        self.editmenu.add_command(label="Select All", command=lambda: False)
+        self.menubar.add_cascade(label="Edit", menu=self.editmenu)
         # H
-        helpmenu = tk.Menu(menubar, tearoff=0)
-        helpmenu.add_command(label="Login", command=login.open)
-        helpmenu.add_separator()
-        helpmenu.add_command(label="Help Index", command=lambda: False)
-        helpmenu.add_command(label="About..", command=lambda: False)
-        menubar.add_cascade(label="Help", menu=helpmenu)
+        self.initHelpMenu()
 
-        root.config(menu=menubar)
+        root.config(menu=self.menubar)
+        
+    def initHelpMenu(self):
+        self.helpmenu = tk.Menu(self.menubar, tearoff=0)
+        # if not lign
+        if store._get('FO100') == None:
+            self.helpmenu.add_command(label="Login", command=self.login.open)
+        else:
+            self.helpmenu.add_command(label="Logout", command=self.login.logout)
+        self.helpmenu.add_separator()
+        self.helpmenu.add_command(label="Help Index", command=lambda: False)
+        self.helpmenu.add_command(label="About..", command=lambda: False)
+        self.menubar.add_cascade(label="Help", menu=self.helpmenu)

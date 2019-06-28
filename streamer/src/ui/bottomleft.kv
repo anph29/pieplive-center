@@ -5,6 +5,7 @@
     list_source : list_source
     list_mixer : list_mixer
     v_display_mini : v_display_mini
+    v_display_switch : v_display_switch
 
     BoxLayout:
         canvas.before:
@@ -166,7 +167,7 @@
                 orientation:'horizontal'
                 size_hint: 1,None
                 height:30
-                padding: 5,0,0,0
+                padding: 5,0,5,0
                 canvas.before:
                     Color: 
                         rgb:(.15,.15,.15)
@@ -184,6 +185,13 @@
                     size_hint: None, 1
                     font_size:13
                     text:'Display Mini'
+                Widget:
+                ImageButton:
+                    id: v_display_switch
+                    size_hint: None, 1
+                    width: 0
+                    source:'src/icons/switch.png'
+                    on_release: root.switchDisplay()
 
 
 <TextDialog>:

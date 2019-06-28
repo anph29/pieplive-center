@@ -59,15 +59,38 @@ class MainStream(RelativeLayout):
 
     def show_camera_mini(self):
         self.cameraMini.opacity = 1
+        # self.cameraMini.set_data_source({
+        #     "name": "camera mini",
+        #     "url": "0",
+        #     "type": "CAMERA"
+        # })
         self.cameraMini.set_data_source({
             "name": "camera mini",
-            "url": "0",
-            "type": "CAMERA"
+            "url": "rtsp://viewer:FB1D2631C12FE8F7EE8951663A8A108@14.241.131.216:554",
+            "type": "RTSP"
         })
 
     def hide_camera_mini(self):
         self.cameraMini.opacity = 0
         self.cameraMini.release()
+
+    def switch_display(self, _val):
+        # if _val:
+        #     print("111111111111111111111")
+        #     self.cameraMini.width = 340
+        #     self.cameraMini.height = 144
+        #     self.camera.width = 1280
+        #     self.camera.height = 720
+        # else:
+        #     print("22222222222222222222222222222222")
+        #     self.cameraMini.width = 1280
+        #     self.cameraMini.height = 720
+        #     self.camera.width = 340
+        #     self.camera.height = 144
+        temp = self.camera.capture
+        self.camera.capture = self.cameraMini.capture
+        self.cameraMini.capture = temp
+        del temp
 
     def setupAudio(self):
         # chunk = 1024

@@ -3,7 +3,6 @@ from kivy.app import App
 from src.modules.custom.popup import PiepMeConfirmPopupContent
 from kivy.uix.popup import Popup
 import re
-import pyqrcode
 import base64
 
 def isAppViewer():
@@ -75,10 +74,6 @@ def removeUnicodeLowerRmvSpace(str):
     str = re.replace("[\s:\/.]", "", str)
     return str
 
-def generate_qr(token, fpath):
-    qr_code = pyqrcode.create(token)
-    qr_code.png(fpath, scale=8)
-
 
 def stringToBase64(s):
     return base64.b64encode(s.encode('utf-8'))
@@ -86,3 +81,18 @@ def stringToBase64(s):
 
 def base64ToString(b):
     return base64.b64decode(b).decode('utf-8')
+
+# seconds in number -> toObj ? {h,m,s} : [hh:]mm:ss
+def convertSecNoToHMS(seconds, toObj=False) :
+    toObj = toObj | False
+    seconds = math.floor(seconds)
+    h = math.floor(seconds / 3600)
+    m = math.floor((seconds % 3600) / 60)
+    s = seconds - h * 3600 - m * 60
+    hs =('0' if h < 10 else '') + str(h)
+    ms = ('0' if m < 10 else '') + str(m)
+    ss = ('0' if s < 10  else '') + str(s)
+    if toObj:
+        return { 'h': hs, 'm': ms, 's': ss } 
+    else:
+        return (hs + ':' if h>0 else '') + ms + ':' + ss

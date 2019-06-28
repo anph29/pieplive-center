@@ -19,6 +19,7 @@ class MainView(Widget):
     btn_setting = ObjectProperty()
     login_popup = ObjectProperty()
     right_content = ObjectProperty()
+    videoBuffer = ObjectProperty()
 
     def __init__(self, **kwargs):
         super(MainView, self).__init__(**kwargs)

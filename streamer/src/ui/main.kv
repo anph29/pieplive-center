@@ -7,6 +7,7 @@
     btn_start:btn_start
     btn_record:btn_record
     btn_setting:btn_setting
+    videoBuffer:videoBuffer
     canvas.before:
         Color:
             rgb:.12, .15, .18
@@ -27,7 +28,7 @@
             padding:5
             RelativeLayout:
                 size_hint:1, None
-                height: (self.parent.height - 220)
+                height: (self.parent.height - 230)
                 canvas.before:
                     Color:
                         rgb:.12, .15, .18
@@ -37,10 +38,25 @@
                 MainStream:
                     id: mainStream
                     size:self.f_width, self.f_height
-                    # anchor_x:'center'
-                    # anchor_y:'center'
                     pos:0,0
                       
+            BoxLayout:#MainWrapper
+                orientation:'horizontal'
+                size_hint: 1,None
+                height:10
+                ProgressBar:
+                    id:videoBuffer
+                    size_hint: None,1
+                    width: self.parent.width - videoDuration.width
+                    max: 100
+                    value: root.mainStream.camera.buffer_rate * 100
+                    opacity:1
+                Label:
+                    id: videoDuration
+                    size_hint: None,1
+                    text: root.mainStream.camera.duration +"/"+root.mainStream.camera.duration_total
+                    font_size: 13
+
             BoxLayout:
                 id: control
                 size_hint:1, None

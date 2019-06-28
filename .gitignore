@@ -26,3 +26,4 @@
 */.vscode/*
 */share/*
 */bin/*
+.vscode/settings.json

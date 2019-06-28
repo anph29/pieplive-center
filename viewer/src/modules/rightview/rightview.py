@@ -31,13 +31,13 @@ class RightView(tk.Frame):
         nb = ttk.Notebook(self)
         nb.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
         # Make 1st tab
-        self.tab_camera = DynamicGrid(self, borderwidth=0, bg="#fff")
+        self.tab_camera = DynamicGrid(self, borderwidth=0, bg="#ccc")
         self.mkTabCamera()
         # Add the tab
         nb.add(self.tab_camera, text="Camera")
 
         # Make 2nd tab
-        self.tab_presenter = DynamicGrid(self, borderwidth=0, bg="#fff")
+        self.tab_presenter = DynamicGrid(self, borderwidth=0, bg="#ccc")
         self.mkTabPresenter()
         # Add 2nd tab
         nb.add(self.tab_presenter, text="Presenter")
@@ -58,25 +58,23 @@ class RightView(tk.Frame):
 
     def addToTabCamera(self, cam):
         ctxt = self.tab_camera.getContext()
-        box = MediaBox(ctxt, camera=cam, bg="#fff",
+        box = MediaBox(ctxt, camera=cam, bg="#ccc",
                        relief=tk.FLAT, borderwidth=5, width=240, height=135)
         self.tab_camera.after_effect(box)
 
     def addToTabPresenter(self, cam):
         ctxt = self.tab_presenter.getContext()
-        box = MediaBox(ctxt, camera=cam, bg="#fff",
+        box = MediaBox(ctxt, camera=cam, bg="#ccc",
                        relief=tk.FLAT, borderwidth=5, width=240, height=135)
         self.tab_presenter.after_effect(box)
 
     def showAddCamBtn(self):
         addcamera = AddCamera(self)
         # add camera
-        btnAddCamera = tk.Frame(
-            self,  relief=tk.FLAT, bg='#fff', borderwidth=5)
-        imageAdd = ImageTk.PhotoImage(Image.open("src/icons/add-b.png"))
-        lblAdd = tk.Label(btnAddCamera, image=imageAdd,
-                          cursor='hand2', bg="#f2f2f2")
+        btnAddCamera = tk.Frame(self,  relief=tk.FLAT)
+        imageAdd = ImageTk.PhotoImage(Image.open(helper._ICONS_PATH + "add-b.png"))
+        lblAdd = tk.Label(btnAddCamera, image=imageAdd, cursor='hand2', bg="#f2f2f2")
         lblAdd.image = imageAdd
         lblAdd.bind("<Button-1>", addcamera.openAddCamera)
         lblAdd.pack(fill=tk.BOTH, expand=True)
-        self.tab_camera.after_effect(btnAddCamera)
+        btnAddCamera.place(rely=1.0, relx=1.0, x=-20, y=-20, anchor=tk.SE)

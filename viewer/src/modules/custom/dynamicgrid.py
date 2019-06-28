@@ -6,7 +6,7 @@ import random
 class DynamicGrid(tk.Frame):
     def __init__(self, parent,  *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
-        self.context = ScrolledText(self, wrap="char", borderwidth=0, highlightthickness=0,
+        self.context = ScrolledText(self, wrap="char", borderwidth=0, highlightthickness=0, bg='#f2f2f2',
                                     state="disabled")
         self.boxes = []
         self.context.pack(fill=tk.BOTH, expand=True)

@@ -1,17 +1,20 @@
 import os
 import re
 import json
+import math
 import base64
 import zipfile
 import pyqrcode
+import ctypes
 
-_BASE_PATH = os.path.dirname(os.path.abspath('../resource/a')).replace('\\', '/') + '/'
-_LOGO_PATH = _BASE_PATH + 'icons/logo-viewer.png'
-_LSCAM_PATH = _BASE_PATH + 'cfg/lscam.json'
-_LS_PRESENTER_PATH = _BASE_PATH + 'cfg/lspresenter.json'
+_BASE_PATH              = os.path.dirname(os.path.abspath('../resource/a')).replace('\\', '/') + '/'
 _LS_LSSTATICSOURCE_PATH = _BASE_PATH + 'cfg/lsstaticsource.json'
-_STORE_SETTING = _BASE_PATH + 'cfg/store.json'
-_SETTING_PATH = _BASE_PATH + 'cfg/setting.json'
+_LS_PRESENTER_PATH      = _BASE_PATH + 'cfg/lspresenter.json'
+_LOGO_PATH              = _BASE_PATH + 'icons/logo-viewer.png'
+_SETTING_PATH           = _BASE_PATH + 'cfg/setting.json'
+_STORE_SETTING          = _BASE_PATH + 'cfg/store.json'
+_LSCAM_PATH             = _BASE_PATH + 'cfg/lscam.json'
+_ICONS_PATH             = _BASE_PATH + 'icons/'
 
 
 def _read_setting(key=None):
@@ -103,3 +106,22 @@ def stringToBase64(s):
 
 def base64ToString(b):
     return base64.b64decode(b).decode('utf-8')
+
+# seconds in number -> toObj ? {h,m,s} : [hh:]mm:ss
+def convertSecNoToHMS(seconds, toObj=False) :
+    seconds = math.floor(seconds)
+    h = math.floor(seconds / 3600)
+    m = math.floor((seconds % 3600) / 60)
+    s = seconds - h * 3600 - m * 60
+    hs = ('','0')[h < 10] + str(h)
+    ms = ('','0')[m < 10] + str(m)
+    ss = ('','0')[s < 10] + str(s)
+    if toObj:
+        return { 'h': hs, 'm': ms, 's': ss } 
+    else:
+        return (('',hs + ':')[h>0]) + ms + ':' + ss
+
+def getCenterX(w):
+    user32 = ctypes.windll.user32
+    screen_w = user32.GetSystemMetrics(0)
+    return int(screen_w / 2 - w / 2)

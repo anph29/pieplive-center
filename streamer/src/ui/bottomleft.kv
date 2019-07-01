@@ -1,4 +1,4 @@
-
+#:import helper src.utils.helper
 <BottomLeft>:
     stream_server : stream_server
     stream_key : stream_key
@@ -63,19 +63,19 @@
                 size_hint:None,1
                 padding: 5
                 width: 16
-                source: 'src/icons/addW-sq.png'
+                source: helper._ICONS_PATH + 'addW-sq.png'
                 on_release: root.open_add_source(self.parent)
             ImageButton:
                 size_hint:None,1
                 padding: 5
                 width: 16
-                source: 'src/icons/pen.png'
+                source: helper._ICONS_PATH + 'pen.png'
                 on_release: list_source.edit_source()
             ImageButton:
                 size_hint:None,1
                 padding: 5
                 width: 16
-                source: 'src/icons/trash.png'
+                source: helper._ICONS_PATH + 'trash.png'
                 on_release: list_source.confirmDelete()
     
     BoxLayout:
@@ -178,7 +178,7 @@
                     id: v_display_mini
                     size_hint: None, 1
                     width: 16
-                    source:'src/icons/checked.png'
+                    source:helper._ICONS_PATH + 'checked.png'
                     opacity: (0.2,1) [root.display_mini == True]
                     on_release: root.changeDisplayMini()
                 Label:
@@ -190,7 +190,7 @@
                     id: v_display_switch
                     size_hint: None, 1
                     width: 0
-                    source:'src/icons/switch.png'
+                    source:helper._ICONS_PATH + 'switch.png'
                     on_release: root.switchDisplay()
 
 

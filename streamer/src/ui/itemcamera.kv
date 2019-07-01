@@ -1,4 +1,4 @@
-
+#:import helper src.utils.helper
 <ItemCamera>:
     kvcam:kvcam
     size_hint: 1,1
@@ -12,7 +12,7 @@
     Image:
         size_hint:((0,0),(.4,.4))[root.selected]
         pos_hint: {'right':1,'top':1}
-        source: 'src/icons/rect-chk-B.png'
+        source: helper._ICONS_PATH + 'rect-chk-B.png'
 
     BoxLayout:
         orientation:'horizontal'
@@ -29,7 +29,7 @@
         ImageButton:
             size_hint:.15,1
             pos_hint:{'top':1, 'right':1}
-            source: ('src/icons/play-w.png','src/icons/pause.png')[root.kvcam.is_playing]
+            source: (helper._ICONS_PATH + 'play-w.png',helper._ICONS_PATH + 'pause.png')[root.kvcam.is_playing]
             on_release:(root.kvcam._play, root.kvcam._pause)[root.kvcam.is_playing]()
 
         Label:
@@ -46,7 +46,7 @@
             size_hint:.15,1
             opacity:(1,0)[root.selected]
             pos_hint:{'top':1, 'right':1}
-            source: 'src/icons/trash.png'
+            source: helper._ICONS_PATH+'trash.png'
             on_release:root.open_confirm_rmv()
 
     #Buffer
@@ -74,5 +74,5 @@
         ImageButton:
             size_hint:.2,.2
             pos_hint:{'x':.4,'y':.6}
-            source: 'src/icons/play.png'
+            source: helper._ICONS_PATH+'play.png'
             on_press:root.kvcam._play()

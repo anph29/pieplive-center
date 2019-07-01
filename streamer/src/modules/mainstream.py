@@ -1,5 +1,6 @@
 import subprocess
 import cv2
+import time
 import src.utils.kivyhelper as kv_helper
 from threading import Thread, Event
 from kivy.clock import Clock, mainthread
@@ -41,6 +42,7 @@ class MainStream(RelativeLayout):
         self.event = None
         self.canvas_parent_index = 0
         self.stop = Event()
+        self.reconnect = False
         self.dataCam = {
             "name": "defaul",
             "url": "src/images/splash.jpg",
@@ -168,20 +170,36 @@ class MainStream(RelativeLayout):
                 self.fbo.remove(self.canvas)
                 if self.parent is not None and self.canvas_parent_index > -1:
                     self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
+                self.reconnect = False
         except IOError as e:
-            kv_helper.getApRoot().triggerStop()
-            self.pipe.kill()
-            self.fbo.remove(self.canvas)
-            if self.event is not None:
-                self.event.cancel()
-            if self.parent is not None and self.canvas_parent_index > -1:
-                self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
+            self.stopStream()
             normal = Normal_model()
             key = self.f_parent.bottom_left.stream_key.text.split("?")[0]
             normal.reset_link_stream(key)
+            time.sleep(1)
+            if self.reconnect == False:
+                self.reconnecting()
+            else:
+                kv_helper.getApRoot().triggerStop()
             
     def reconnecting(self):
-        pass
+        self.reconnect = True
+        if bool(self.prepare()):
+            self.startStream()
+    
+    def stopStream(self):
+        self.isStream = False
+        if self.event is not None:
+            self.event.cancel()
+        if self.pipe is not None:
+            self.pipe.kill()
+        self.fbo.remove(self.canvas)
+        if self.stop is not None:
+            self.stop.set()
+        self.fbo.remove(self.canvas)
+        if self.parent is not None and self.canvas_parent_index > -1:
+            self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
+        print("--- STOP ---")
         
     def set_url_stream(self, urlStream):
         self.urlStream = urlStream
@@ -251,19 +269,6 @@ class MainStream(RelativeLayout):
             
     def prepare_audio(self):
         pass
-
-    def stopStream(self):
-        self.isStream = False
-        if self.event is not None:
-            self.event.cancel()
-        if self.pipe is not None:
-            self.pipe.kill()
-        self.fbo.remove(self.canvas)
-        if self.stop is not None:
-            self.stop.set()
-        if self.parent is not None and self.canvas_parent_index > -1:
-            self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
-        print("--- STOP ---")
 
     def release(self):
         if self.event is not None:

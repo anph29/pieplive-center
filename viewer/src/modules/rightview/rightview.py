@@ -4,7 +4,7 @@ from src.utils import helper
 from src.modules.custom import DynamicGrid
 from .mediabox import MediaBox
 from PIL import Image, ImageTk
-from .addcamera import AddCamera
+from .addresource import AddResource
 
 
 class RightView(tk.Frame):
@@ -15,35 +15,44 @@ class RightView(tk.Frame):
 
     def set_style(self):
         style = ttk.Style()
-        style.theme_create("AnphStyle", parent="alt", settings={
+        style.theme_create("TabStyle", parent="alt", settings={
             "TNotebook": {
-                "configure": {"tabmargins": [0, 0, 0, 0]}  # L T B R
+                "configure": {"tabmargins": [10, 0, 0, 10]}  # L T B R
             },
             "TNotebook.Tab": {
                 "configure": {"padding": [15, 5, 15, 5]}
             }
         })
-        style.theme_use("AnphStyle")
+        style.theme_use("TabStyle")
 
     def initGUI(self):
         self.set_style()
-        # Make the notebook
+        #
         nb = ttk.Notebook(self)
         nb.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        # Make 1st tab
-        self.tab_camera = DynamicGrid(self, borderwidth=0, bg="#ccc")
-        self.mkTabCamera()
-        # Add the tab
-        nb.add(self.tab_camera, text="Camera")
-
-        # Make 2nd tab
-        self.tab_presenter = DynamicGrid(self, borderwidth=0, bg="#ccc")
-        self.mkTabPresenter()
-        # Add 2nd tab
-        nb.add(self.tab_presenter, text="Presenter")
         #
-        nb.select(self.tab_camera)
+        self.tab_custom = self.makeGirdForTab()
+        # self.mkTabCamera()
+        nb.add(self.tab_custom, text="Custom Resource")
+        #
+        self.tab_schedule = self.makeGirdForTab()
+        # self.mkTabPresenter()
+        nb.add(self.tab_schedule, text="Schedule")
+        #
+        self.tab_camera = self.makeGirdForTab()
+        self.mkTabCamera()
+        nb.add(self.tab_camera, text="Camera")
+        #
+        self.tab_presenter = self.makeGirdForTab()
+        self.mkTabPresenter()
+        nb.add(self.tab_presenter, text="Presenter")
+
+        #
+        nb.select(self.tab_custom)
         nb.enable_traversal()
+
+    def makeGirdForTab(self):
+        return DynamicGrid(self, borderwidth=0, bg="#ccc")
 
     def mkTabCamera(self):
         self.showAddCamBtn()
@@ -69,12 +78,12 @@ class RightView(tk.Frame):
         self.tab_presenter.after_effect(box)
 
     def showAddCamBtn(self):
-        addcamera = AddCamera(self)
+        addresource = AddResource(self)
         # add camera
-        btnAddCamera = tk.Frame(self,  relief=tk.FLAT)
+        btnAddResource = tk.Frame(self,  relief=tk.FLAT)
         imageAdd = ImageTk.PhotoImage(Image.open(helper._ICONS_PATH + "add-b.png"))
-        lblAdd = tk.Label(btnAddCamera, image=imageAdd, cursor='hand2', bg="#f2f2f2")
+        lblAdd = tk.Label(btnAddResource, image=imageAdd, cursor='hand2', bg="#f2f2f2")
         lblAdd.image = imageAdd
-        lblAdd.bind("<Button-1>", addcamera.openAddCamera)
+        lblAdd.bind("<Button-1>", addresource.initGUI)
         lblAdd.pack(fill=tk.BOTH, expand=True)
-        btnAddCamera.place(rely=1.0, relx=1.0, x=-20, y=-20, anchor=tk.SE)
+        btnAddResource.place(rely=1.0, relx=1.0, x=-20, y=-20, anchor=tk.SE)

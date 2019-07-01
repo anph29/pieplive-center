@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from src.modules.custom import PLabel
 from PIL import Image, ImageTk
-from src.utils import helper
+from src.utils import helper, scryto
 
 
 class MediaBox(tk.Frame):
@@ -18,12 +18,13 @@ class MediaBox(tk.Frame):
         self.after(100, self.initGUI)
 
     def get_data(self):
-        return {'name': self.name, 'url': self.url, 'type': self.mtype}
+        return {'id':self.id, 'name': self.name, 'url': self.url, 'type': self.mtype}
 
     def set_data(self, camera):
         self.name = camera['name']
         self.url = camera['url']
         self.mtype = camera['type']
+        self.id = scryto.hash_md5_with_time(self.url)
 
     def initGUI(self):
         self.initTOP()
@@ -59,7 +60,7 @@ class MediaBox(tk.Frame):
         events = self.player.event_manager()
         events.event_attach(
             vlc.EventType.MediaPlayerEndReached, self.on_end)
-        nwidth = self.player.get_time() / self.media.get_duration() * self.cell_width
+        nwidth = 0 if 0 == self.media.get_duration() else self.player.get_time() / self.media.get_duration() * self.cell_width
         self.buffer.config(width=nwidth)
         if self.finished:
             self.buffer.configure(width=self.cell_width)

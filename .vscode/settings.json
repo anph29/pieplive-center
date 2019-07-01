@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "viewer\\Scripts\\python.exe"
+    "python.pythonPath": "viewer\\Scripts\\python.exe",
+    "python.formatting.provider": "autopep8"
 }

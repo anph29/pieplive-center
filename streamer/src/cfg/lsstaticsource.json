@@ -1,7 +1,7 @@
 [
     {
         "type": "audio",
-        "active": 1,
+        "active": 0,
         "name": "aaaa",
         "src": "C:/Users/Thong/Desktop/piep-source/musics/nhac-doc-sach.mp3",
         "volume": 95.05494505494505,

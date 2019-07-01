@@ -1,6 +1,26 @@
 import sys
 import hashlib
+import re
+import time
 
+def createToken(input, keysIgnor=[]):
+    try:
+        if 'token' in input:
+            del input['token']
+        #
+        input['v'] = 'v1'
+        input['keyToken'] = 'Piepme2017'  #
+        #
+        sorted_key = sorted(input)
+        def lambdaX(v):
+            return f'{v}={input[v]}' if v not in keysIgnor else ''
+        #
+        maped_ls = map(lambdaX, sorted_key)
+        paramStr = '&'.join(list(maped_ls))
+        #
+        return hash_md5(paramStr)
+    except:
+        print(sys.exc_info())
 
 def createTokenV2(input, isRecursive=False):
     try:
@@ -13,8 +33,8 @@ def createTokenV2(input, isRecursive=False):
 
         sorted_key = sorted(input)
 
-        lambdaX = lambda v: f'{v}={input[v]}' if type(input[
-            v]) is not dict else createTokenV2(input[v], True)
+        def lambdaX(v):
+            return f'{v}={input[v]}' if type(input[v]) is not dict else createTokenV2(input[v], True)
 
         maped_ls = map(lambdaX, sorted_key)
         paramStr = '&'.join(list(maped_ls))
@@ -24,10 +44,39 @@ def createTokenV2(input, isRecursive=False):
         print(sys.exc_info())
 
 
-def hash_md5(str):
-    str = str.encode('utf-8')
+def createTokenV3(input, isRecursive=False):
+    try:
+        if 'token' in input:
+            del input['token']
+
+        if isRecursive is False:
+            input['v'] = 'v1'
+            input['keyToken'] = 'Piepme2017'
+        sorted_key = sorted(input)
+
+        # improve non-charater from v2
+        def lambdaX(v):
+            if type(input[v]) is not dict:
+                after_regex = re.sub(r"[^a-zA-Z0-9]", '', str(input[v]))
+                return f'{v}={after_regex}'
+            else:
+                return createTokenV3(input[v], True)
+
+        maped_ls = map(lambdaX, sorted_key)
+        paramStr = '&'.join(list(maped_ls))
+        
+        return paramStr if isRecursive else hash_md5(paramStr)
+    except:
+        print(sys.exc_info())
+
+def hash_md5_with_time(s):
+    timestamp = time.time()
+    return hash_md5(s + str(timestamp))
+
+def hash_md5(s):
+    s = s.encode('utf-8')
     m = hashlib.md5()
-    m.update(str)
+    m.update(s)
     return m.hexdigest()
 
 # // ---------------------------------------------------------------------------------------------

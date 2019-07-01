@@ -1,9 +1,8 @@
-from src.models.http_request import HTTP_REQUEST
-# from http_request import HTTP_REQUEST
+from . import HTTP_MODEL
 from src.utils import helper
 
 
-class L500_model(HTTP_REQUEST):
+class L500_model(HTTP_MODEL):
     def __init__(self):
         super(L500_model, self).__init__()
 

@@ -16,7 +16,6 @@ SOCKET_SERVER = 'https://nodeinfodev.piepme.com:444/'
 
 sio = socketio.AsyncClient(reconnection=True)
 
-
 class LoginListener(socketio.AsyncClientNamespace):
     fpath = 'src/images/login.png'
 

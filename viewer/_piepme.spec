@@ -7,7 +7,7 @@ added_files = [
 ]
 
 a = Analysis(['piepme.py'],
-             pathex=["D:\\QueenB\\PiepLive-Center\\viewer", "C:/Program Files (x86)/VideoLAN/VLC/"],
+             pathex=["D:\\anph\\python\\PiepLive-Center\\viewer", "C:/Program Files (x86)/VideoLAN/VLC/"],
              binaries=[("C:/Program Files (x86)/VideoLAN/VLC/plugins/*", "plugins"),("C:/Program Files (x86)/VideoLAN/VLC/libvlc.dll", ".")],
              datas=added_files,
              hiddenimports=['packaging','packaging.version','python-vlc'],
@@ -28,7 +28,7 @@ exe = EXE(pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=False, icon='src\\icons\\logo-viewer.ico')
+          console=True, icon='..\\resource\\icons\\logo-viewer.ico')
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,

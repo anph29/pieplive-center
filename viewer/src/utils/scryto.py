@@ -1,6 +1,26 @@
 import sys
 import hashlib
 import re
+import time
+
+def createToken(input, keysIgnor=[]):
+    try:
+        if 'token' in input:
+            del input['token']
+        #
+        input['v'] = 'v1'
+        input['keyToken'] = 'Piepme2017'  #
+        #
+        sorted_key = sorted(input)
+        def lambdaX(v):
+            return f'{v}={input[v]}' if v not in keysIgnor else ''
+        #
+        maped_ls = map(lambdaX, sorted_key)
+        paramStr = '&'.join(list(maped_ls))
+        #
+        return hash_md5(paramStr)
+    except:
+        print(sys.exc_info())
 
 def createTokenV2(input, isRecursive=False):
     try:
@@ -49,11 +69,14 @@ def createTokenV3(input, isRecursive=False):
     except:
         print(sys.exc_info())
 
+def hash_md5_with_time(s):
+    timestamp = time.time()
+    return hash_md5(s + str(timestamp))
 
-def hash_md5(str):
-    str = str.encode('utf-8')
+def hash_md5(s):
+    s = s.encode('utf-8')
     m = hashlib.md5()
-    m.update(str)
+    m.update(s)
     return m.hexdigest()
 
 # // ---------------------------------------------------------------------------------------------

@@ -5,60 +5,88 @@ import math
 import base64
 import zipfile
 import pyqrcode
-import ctypes
-
-_BASE_PATH              = os.path.dirname(os.path.abspath('../resource/a')).replace('\\', '/') + '/'
-_LS_LSSTATICSOURCE_PATH = _BASE_PATH + 'cfg/lsstaticsource.json'
-_LS_PRESENTER_PATH      = _BASE_PATH + 'cfg/lspresenter.json'
+"""
+"""
+_BASE_PATH              = os.path.abspath('../resource').replace('\\', '/') + '/'
+_PATH_CUSTOM_RESOURCE   = _BASE_PATH+ 'cfg/custom_resource.json'
+_PATH_CAMERA            = _BASE_PATH + 'cfg/lscam.json'
+_PATH_PRESENTER         = _BASE_PATH + 'cfg/lspresenter.json'
+_PATH_STATICSOURCE      = _BASE_PATH + 'cfg/lsstaticsource.json'
 _LOGO_PATH              = _BASE_PATH + 'icons/logo-viewer.png'
 _SETTING_PATH           = _BASE_PATH + 'cfg/setting.json'
-_STORE_SETTING          = _BASE_PATH + 'cfg/store.json'
-_LSCAM_PATH             = _BASE_PATH + 'cfg/lscam.json'
+_PATH_STORE             = _BASE_PATH + 'cfg/store.json'
 _ICONS_PATH             = _BASE_PATH + 'icons/'
+"""
+"""
 
+"""
+ls camera
+"""
+def _load_lscam():
+    return loadJSON(_PATH_CAMERA)
+
+def _write_lscam(data):
+    writeJSON(_PATH_CAMERA, data)
+
+def _add_to_lscam(data):
+    appendJSON(_PATH_CAMERA, data)
+"""
+ls custom resource
+"""
+def _load_custom_resource():
+    loadJSON(_PATH_CUSTOM_RESOURCE)
+
+def _write_custom_resource(data):
+    writeJSON(_PATH_CUSTOM_RESOURCE, data)
+
+def _add_to_custom_resource(data):
+    appendJSON(_PATH_CUSTOM_RESOURCE, data)
+"""
+ls presenter
+"""
+def _load_ls_presenter():
+    return loadJSON(_PATH_PRESENTER)
+
+def _write_lspresenter(data):
+    writeJSON(_PATH_PRESENTER, data)
+
+def _add_to_spresenter(data):
+    appendJSON(_PATH_PRESENTER, data)
+"""
+ls static source
+"""
+def _load_lsStaticSource():
+    loadJSON(_PATH_STATICSOURCE)
+
+def _write_lsStaticSource(data):
+   writeJSON(_PATH_STATICSOURCE, data)
+   
+def _add_to_lsStaticSource(data):
+    appendJSON(_PATH_STATICSOURCE, data)
+"""
+setting
+"""
 
 def _read_setting(key=None):
     with open(_SETTING_PATH, 'r', encoding='utf-8') as json_setting:
         setting = json.load(json_setting)
         return setting[key] if key is not None else setting
 
-def _load_lscam():
-    with open(_LSCAM_PATH, 'r', encoding='utf-8') as json_lscam:
-        return json.load(json_lscam)
+"""
+"""
 
+def loadJSON(path):
+    with open(path, 'r', encoding='utf-8') as jdata:
+        return json.load(jdata)
 
-def _write_lscam(data):
-    with open(_LSCAM_PATH, 'w', encoding='utf-8') as json_lscam:
-        json.dump(data, json_lscam, indent=4)
+def writeJSON(path, data):
+     with open(path, 'w', encoding='utf-8') as jdata:
+        json.dump(data, jdata, indent=2)
 
-
-def _add_to_lscam(data):
-    with open(_LSCAM_PATH, 'r', encoding='utf-8') as rcam:
-        jcam = json.load(rcam)
-        jcam.append(data)
-    with open(_LSCAM_PATH, 'w', encoding='utf-8') as wcam:
-        json.dump(jcam, wcam, indent=4)
-
-
-def _load_ls_presenter():
-    with open(_LS_PRESENTER_PATH, 'r', encoding='utf-8') as json_lscam:
-        return json.load(json_lscam)
-
-
-def _load_lsStaticSource():
-    with open(_LS_LSSTATICSOURCE_PATH, 'r',
-              encoding='utf-8') as json_lscam:
-        return json.load(json_lscam)
-
-
-def _write_lsStaticSource(data):
-    with open(_LS_LSSTATICSOURCE_PATH, 'w',
-              encoding='utf-8') as json_lscam:
-        json.dump(data, json_lscam, indent=4)
-
-
-###########################################################################################################################################
-
+def appendJSON(path, data, auto_increment=False):
+    jcam = loadJSON(path)
+    jcam.append(data)
+    writeJSON(path,data)
 
 def removeUnicode(str):
     str = re.sub(r"[àáạảãâầấậẩẫăằắặẳẵÄä]", 'a', str)
@@ -119,9 +147,5 @@ def convertSecNoToHMS(seconds, toObj=False) :
     if toObj:
         return { 'h': hs, 'm': ms, 's': ss } 
     else:
-        return (('',hs + ':')[h>0]) + ms + ':' + ss
+        return (('', hs + ':')[h>0]) + ms + ':' + ss
 
-def getCenterX(w):
-    user32 = ctypes.windll.user32
-    screen_w = user32.GetSystemMetrics(0)
-    return int(screen_w / 2 - w / 2)

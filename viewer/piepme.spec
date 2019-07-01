@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['piepme.py'],
-             pathex=['D:\\anph\\python\\pieplive-center-v2'],
+             pathex=['D:\\anph\\python\\PiepLive-Center\\viewer'],
              binaries=[],
              datas=[],
              hiddenimports=[],

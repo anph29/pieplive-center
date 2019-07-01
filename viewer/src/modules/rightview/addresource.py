@@ -4,8 +4,7 @@ import tkinter as tk
 from tkinter import filedialog
 from src.utils import tk_helper
 
-
-class AddCamera(object):
+class AddResource(object):
     use_local = False
     addCamPopup = None
     error = False
@@ -13,7 +12,7 @@ class AddCamera(object):
     def __init__(self, parent):
         self.parent = parent
 
-    def openAddCamera(self, evt):
+    def initGUI(self, evt):
         # first destroy
         if None is not self.addCamPopup:
             self.addCamPopup.destroy()

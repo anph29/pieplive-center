@@ -50,7 +50,7 @@ class Login(object):
         #
         btnLogin = tk.Button(self.fPid, text="Login", bd=2, bg="#ff2d55",
                              fg="#fff", relief=tk.RAISED, command=self.onSendNV117)
-        btnLogin.configure(width=7, font=self.font)
+        btnLogin.config(width=7, font=self.font)
         btnLogin.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
         # Verify TOKEN
         self.fToken = tk.Frame(loginMainFrame, pady=15)
@@ -63,8 +63,12 @@ class Login(object):
         #
         btnVerify = tk.Button(self.fToken, text="Verify", bd=2, bg="#ff2d55",
                               fg="#fff", relief=tk.RAISED, command=self.onVerify)
-        btnVerify.configure(width=7, font=self.font)
+        btnVerify.config(width=7, font=self.font)
         btnVerify.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
+        #
+        lblCommand = tk.Label(self.fToken, text="Check your PiepMe message to get verify token!")
+        btnVerify.config(font=self.font)
+        btnVerify.pack()
         # nv117 invalid
         self.fInvalid = tk.Frame(loginMainFrame, pady=5)
         lblError = tk.Label(

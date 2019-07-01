@@ -3,7 +3,7 @@ import tkinter as tk
 from src.modules.menu.mainmenu import MainMenu
 from src.modules.rightview import RightView
 from src.modules.login import Login
-from src.utils import helper, store
+from src.utils import helper, store, tk_helper
 
 class MainApplication(tk.Frame):
     def __init__(self, parent):
@@ -24,7 +24,7 @@ class MainApplication(tk.Frame):
 if __name__ == "__main__":
     root = tk.Tk()
     w = 1280
-    x = helper.getCenterX(w)
+    x = tk_helper.getCenterX(w)
     root.geometry(f"{w}x900+{x}+20")
     root.title("PiepLive Center V2")
     imgicon = tk.PhotoImage(file=helper._LOGO_PATH)

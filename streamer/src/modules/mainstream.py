@@ -11,6 +11,7 @@ from src.modules.custom.pieplabel import PiepLabel
 from src.modules.custom.piepimage import PiepImage
 from kivy.properties import ObjectProperty
 from kivy.lang import Builder
+from src.models.normal_model import Normal_model
 
 import numpy as np
 import array
@@ -167,7 +168,7 @@ class MainStream(RelativeLayout):
                 self.fbo.remove(self.canvas)
                 if self.parent is not None and self.canvas_parent_index > -1:
                     self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
-        except IOError:
+        except IOError as e:
             kv_helper.getApRoot().triggerStop()
             self.pipe.kill()
             self.fbo.remove(self.canvas)
@@ -175,7 +176,13 @@ class MainStream(RelativeLayout):
                 self.event.cancel()
             if self.parent is not None and self.canvas_parent_index > -1:
                 self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
-
+            normal = Normal_model()
+            key = self.f_parent.bottom_left.stream_key.text.split("?")[0]
+            normal.reset_link_stream(key)
+            
+    def reconnecting(self):
+        pass
+        
     def set_url_stream(self, urlStream):
         self.urlStream = urlStream
 

@@ -5,17 +5,6 @@ from kivy.uix.popup import Popup
 import re
 import base64
 import math
-def isAppViewer():
-    return getAppType() == 'VIEWER'
-
-
-def isAppStream():
-    return getAppType() == 'STREAM'
-
-
-def isAppMain():
-    return getAppType() == 'MAIN'
-
 
 def _load_lscam():
     with open('src/cfg/lscam.json', 'r', encoding='utf-8') as json_lscam:

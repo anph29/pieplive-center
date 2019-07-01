@@ -25,7 +25,7 @@ class GridCamera(SelectableGrid):
     def remove(self, index):
         if self.parent.data:
             self.parent.data.pop(index)
-            # helper._write_lscam(self.clean_data_to_save_json())
+            helper._write_lscam(self.clean_data_to_save_json())
 
     def clean_data_to_save_json(self):
         return list(

@@ -25,7 +25,6 @@ class TabCamera(BoxLayout):
         self.add_cam_pop = AddCamera(self)
         self.add_cam_pop.open()
 
-
 class TabPresenter(BoxLayout):
     add_presenter_pop = ObjectProperty()
     ls_presenter = ObjectProperty()

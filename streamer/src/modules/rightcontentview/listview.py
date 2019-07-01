@@ -6,7 +6,6 @@ from kivy.clock import Clock
 
 
 class ListCamera(RecycleView):
-    app_type = StringProperty()
 
     def __init__(self, **kwargs):
         super(ListCamera, self).__init__(**kwargs)
@@ -16,7 +15,6 @@ class ListCamera(RecycleView):
 
 
 class ListPresenter(RecycleView):
-    app_type = StringProperty()
 
     def __init__(self, **kwargs):
         super(ListPresenter, self).__init__(**kwargs)
@@ -25,7 +23,6 @@ class ListPresenter(RecycleView):
         self.data = [c for c in helper._load_ls_presenter()]
 
 class ListSchedule(RecycleView):
-    app_type = StringProperty()
 
     def __init__(self, **kwargs):
         super(ListSchedule, self).__init__(**kwargs)

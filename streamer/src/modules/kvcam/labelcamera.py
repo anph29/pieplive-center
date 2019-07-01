@@ -24,7 +24,6 @@ class LabelCamera(Label):
         self.name = input['name']
         self.text = input['name']
         self.url = input['url']
-        self.source = input['url']
         self.resource_type = input['type']
         capture = None
         if 'capture' in input and input['capture'] is not None:

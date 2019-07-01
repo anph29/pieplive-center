@@ -188,7 +188,7 @@ class MainStream(RelativeLayout):
         txt = _map = ''
 
         numau += 1
-        inp.extend(['-stream_loop','-1',"-i", 'src/musics/default.mp3'])
+        inp.extend(['-stream_loop','-1',"-i", 'src/musics/muted.mp3'])
         txt += f"[{numau}:a]volume=0[a{numau}];"
         _map += f'[a{numau}]'
 
@@ -197,7 +197,7 @@ class MainStream(RelativeLayout):
             if self.dataCam['type'] == 'M3U8':
                 url = 'src/export/output.flv'
             numau += 1
-            inp.extend(["-i", url,'-vn'])
+            inp.extend(["-i", url])
             txt += f"[{numau}:a]volume=1[a{numau}];"
             _map += f'[a{numau}]'
 

@@ -34,6 +34,7 @@ from src.modules.rightcontentview.listview import ListCamera
 from src.modules.rightcontentview.gridview import GridCamera
 from src.modules.rightcontentview.itemlabel import ItemLabel
 from src.modules.rightcontentview.listview import ListPresenter
+from src.modules.rightcontentview.listview import ListSchedule
 
 KIVY_FONTS = kivy_helper._load_fonts()
 for font in KIVY_FONTS:

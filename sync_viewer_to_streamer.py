@@ -18,7 +18,7 @@ str_module = f"{str_src}modules/"
 commands = [
     #util
       f"{vwr_util}__init__.py#anph#{str_util}__init__.py"
-    ,  f"{vwr_util}helper.py#anph#{str_util}helper.py"
+    , f"{vwr_util}helper.py#anph#{str_util}helper.py"
     , f"{vwr_util}scryto.py#anph#{str_util}scryto.py"
     , f"{vwr_util}ftype.py#anph#{str_util}ftype.py"
     , f"{vwr_util}store.py#anph#{str_util}store.py"

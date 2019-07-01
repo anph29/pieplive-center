@@ -8,15 +8,16 @@ import pyqrcode
 """
 """
 _BASE_PATH              = os.path.abspath('../resource').replace('\\', '/') + '/'
-_PATH_CUSTOM_RESOURCE   = _BASE_PATH+ 'cfg/custom_resource.json'
-_PATH_CAMERA            = _BASE_PATH + 'cfg/lscam.json'
-_PATH_PRESENTER         = _BASE_PATH + 'cfg/lspresenter.json'
-_PATH_STATICSOURCE      = _BASE_PATH + 'cfg/lsstaticsource.json'
-_LOGO_STREAMER          = _BASE_PATH + 'icons/logo-streamer.png'
-_LOGO_VIEWER            = _BASE_PATH + 'icons/logo-viewer.png'
 _SETTING_PATH           = _BASE_PATH + 'cfg/setting.json'
 _PATH_STORE             = _BASE_PATH + 'cfg/store.json'
+_PATH_CUSTOM_RESOURCE   = _BASE_PATH + 'cfg/custom_resource.json'
+_PATH_CAMERA            = _BASE_PATH + 'cfg/camera.json'
+_PATH_PRESENTER         = _BASE_PATH + 'cfg/presenter.json'
+_PATH_SCHEDULE          = _BASE_PATH + 'cfg/schedule.json'
+_PATH_STATICSOURCE      = _BASE_PATH + 'cfg/staticsource.json'
 _ICONS_PATH             = _BASE_PATH + 'icons/'
+_LOGO_STREAMER          = _ICONS_PATH + 'logo-streamer.ico'
+_LOGO_VIEWER            = _ICONS_PATH + 'logo-viewer.png'
 """
 """
 

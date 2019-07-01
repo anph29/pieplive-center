@@ -33,7 +33,7 @@ class Login(object):
         # logo
         fLogo = tk.Frame(loginMainFrame, pady=10)
         fLogo.pack()
-        imgLogo = ImageTk.PhotoImage(Image.open(helper._LOGO_PATH))
+        imgLogo = ImageTk.PhotoImage(Image.open(helper._LOGO_VIEWER))
         lblLogo = tk.Label(fLogo, image=imgLogo, bg="#f2f2f2")
         lblLogo.photo = imgLogo
         lblLogo.pack(side=tk.TOP, fill=tk.BOTH, expand=True)

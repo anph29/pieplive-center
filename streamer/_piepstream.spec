@@ -38,7 +38,7 @@ exe = EXE(pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=True, icon='src\\icons\\logo_streamer.ico')
+          console=True, icon='..\\resource\\icons\\logo-streamer.ico')
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,

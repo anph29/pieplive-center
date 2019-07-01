@@ -12,7 +12,8 @@ _PATH_CUSTOM_RESOURCE   = _BASE_PATH+ 'cfg/custom_resource.json'
 _PATH_CAMERA            = _BASE_PATH + 'cfg/lscam.json'
 _PATH_PRESENTER         = _BASE_PATH + 'cfg/lspresenter.json'
 _PATH_STATICSOURCE      = _BASE_PATH + 'cfg/lsstaticsource.json'
-_LOGO_PATH              = _BASE_PATH + 'icons/logo-viewer.png'
+_LOGO_STREAMER          = _BASE_PATH + 'icons/logo-streamer.png'
+_LOGO_VIEWER            = _BASE_PATH + 'icons/logo-viewer.png'
 _SETTING_PATH           = _BASE_PATH + 'cfg/setting.json'
 _PATH_STORE             = _BASE_PATH + 'cfg/store.json'
 _ICONS_PATH             = _BASE_PATH + 'icons/'
@@ -67,8 +68,13 @@ def _add_to_lsStaticSource(data):
 setting
 """
 
-def _read_setting(key=None):
+def _read_global_setting(key=None):
     with open(_SETTING_PATH, 'r', encoding='utf-8') as json_setting:
+        setting = json.load(json_setting)
+        return setting[key] if key is not None else setting
+
+def _read_setting(key=None):
+    with open('src/cfg/setting.json', 'r', encoding='utf-8') as json_setting:
         setting = json.load(json_setting)
         return setting[key] if key is not None else setting
 

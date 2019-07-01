@@ -27,7 +27,7 @@ if __name__ == "__main__":
     x = tk_helper.getCenterX(w)
     root.geometry(f"{w}x900+{x}+20")
     root.title("PiepLive Center V2")
-    imgicon = tk.PhotoImage(file=helper._LOGO_PATH)
+    imgicon = tk.PhotoImage(file=helper._LOGO_VIEWER)
     root.tk.call('wm', 'iconphoto', root._w, imgicon)
     MainApplication(root).pack(side=tk.TOP, fill=tk.BOTH, expand=True)
     root.mainloop()

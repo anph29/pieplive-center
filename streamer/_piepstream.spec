@@ -8,7 +8,6 @@ added_files = [
   ( 'src\\musics', 'src\\musics' ),
   ( 'src\\images', 'src\\images' ),
   ( 'src\\fonts', 'src\\fonts' ),
-  ( 'src\\icons', 'src\\icons' ),
   ( 'src\\export', 'src\\export' ),
   ( 'ffmpeg-win\\', 'ffmpeg-win\\' ),
   ( 'piepstream.kv', '.' ),

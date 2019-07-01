@@ -6,6 +6,15 @@
         "src": "C:/Users/Thong/Desktop/piep-source/musics/nhac-doc-sach.mp3",
         "volume": 95.05494505494505,
         "idx": 0,
-        "total": 1
+        "total": 2
+    },
+    {
+        "type": "audio",
+        "active": 1,
+        "name": "asd",
+        "src": "C:/Users/Thong/Desktop/piep-source/musics/cau-chuyen-dem-v2.mp3",
+        "volume": 100,
+        "idx": 1,
+        "total": 2
     }
 ]

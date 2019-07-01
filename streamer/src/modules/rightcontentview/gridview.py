@@ -30,7 +30,7 @@ class GridCamera(SelectableGrid):
     def clean_data_to_save_json(self):
         return list(
             map(
-                lambda cam: {'name': cam['name'], 'url': cam['url']},
+                lambda cam: {'name': cam['name'], 'url': cam['url'], 'type': cam['type']},
                 list(self.parent.data)
             )
         )

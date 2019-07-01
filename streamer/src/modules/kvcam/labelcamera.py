@@ -14,6 +14,7 @@ class LabelCamera(Label):
     name = StringProperty('')
     url = StringProperty('')
     resource_type = StringProperty('')
+    
 
     def __init__(self, **kwargs):
         super(LabelCamera, self).__init__(**kwargs)

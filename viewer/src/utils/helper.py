@@ -93,7 +93,7 @@ def writeJSON(path, data):
 def appendJSON(path, data, auto_increment=False):
     jcam = loadJSON(path)
     jcam.append(data)
-    writeJSON(path,data)
+    writeJSON(path,jcam)
 
 def removeUnicode(str):
     str = re.sub(r"[àáạảãâầấậẩẫăằắặẳẵÄä]", 'a', str)

@@ -1,4 +1,4 @@
-
+#:import helper src.utils.helper
 <Login>:
     qr_login:qr_login
     title: 'Login'
@@ -31,7 +31,7 @@
                     Rectangle:
                         size:80,80
                         pos: (self.center_x - 40, self.pos[1])
-                        source: 'src/images/logo120.png'
+                        source: helper._ICONS_PATH + 'logo120.png'
 
             FloatLayout:
                 size_hint: 1, None
@@ -47,7 +47,7 @@
                     size_hint:1,1
                     pos:0,0
                 ImageButton:
-                    source:'src/icons/f5.png'
+                    source:helper._ICONS_PATH + 'f5.png'
                     size_hint:1,1
                     pos:0,0
 
@@ -76,10 +76,10 @@
             size_hint:None,None
             #width:180
             pos: (-29, 420)
-            source: 'src/images/oval1-min.png'
+            source: helper._ICONS_PATH + 'oval1-min.png'
         Image:
             size_hint:None,None
             height:60
             pos: (root.width - self.width -16, 100)
-            source: 'src/images/oval2-min.png'
+            source: helper._ICONS_PATH + 'oval2-min.png'
             

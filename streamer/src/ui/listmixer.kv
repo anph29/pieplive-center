@@ -1,3 +1,4 @@
+#:import helper src.utils.helper
 <RCVItemMixer>:
     audio_status : audio_status
     audio_volume : audio_volume
@@ -33,7 +34,7 @@
         ImageButton:
             size_hint: None, 1
             width: 16
-            source:'src/icons/icon-volume.png'
+            source: helper._ICONS_PATH + 'icon-volume.png'
 
         Slider:
             id: audio_volume

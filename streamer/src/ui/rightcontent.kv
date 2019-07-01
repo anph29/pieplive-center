@@ -1,4 +1,4 @@
-
+#:import helper src.utils.helper
 <RightContent>:
     tab_camera:tab_camera
     tab_presenter:tab_presenter
@@ -71,7 +71,7 @@
         height:45
         width:45
         ImageButton:
-            source:'src/icons/addW-sq.png'
+            source: helper._ICONS_PATH + 'addW-sq.png'
             pos_hint:{'x':0,'y':0}
             size_hint:1,1
             on_release: root.open_add_camera()

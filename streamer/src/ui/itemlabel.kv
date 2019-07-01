@@ -1,4 +1,4 @@
-
+#:import helper src.utils.helper
 <ItemLabel>:
     kvcam:kvcam
     size_hint: 1,1
@@ -18,7 +18,7 @@
             size_hint:None,1
             width: 20
             pos_hint:{'top':1, 'right':1}
-            source: ('src/icons/play-w.png','src/icons/pause.png')[root.kvcam.is_playing]
+            source: (helper._ICONS_PATH+'play-w.png',helper._ICONS_PATH+'pause.png')[root.kvcam.is_playing]
             on_release:root.kvcam._pause()
         LabelCamera:
             id:kvcam
@@ -33,5 +33,5 @@
             size_hint:.15,1
             opacity:(1,0)[root.selected]
             pos_hint:{'top':1, 'right':1}
-            source: 'src/icons/trash.png'
+            source: helper._ICONS_PATH+'trash.png'
             on_release:root.open_confirm_rmv()

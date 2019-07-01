@@ -23,7 +23,7 @@ _LOGO_VIEWER            = _ICONS_PATH + 'logo-viewer.png'
 
 """
 ls camera
-"""
+"""     
 def _load_lscam():
     return loadJSON(_PATH_CAMERA)
 

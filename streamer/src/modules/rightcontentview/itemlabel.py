@@ -18,7 +18,6 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
 
     def refresh_view_attrs(self, rv, index, data):
         """ Catch and handle the view changes """
-        print('camera','111111111111111111111')
         self.index = index
         self.name = data['name']
         self.kvcam.set_data_source(data)
@@ -27,7 +26,6 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
 
     def on_touch_down(self, touch):
         """ Add selection on touch down """
-        print('camera','222222222222222222222222')
         self.is_changing = True
         if super(ItemLabel, self).on_touch_down(touch):
             return True
@@ -36,7 +34,6 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
 
     def apply_selection(self, rv, index, is_selected):
         """ Respond to the selection of items in the view """
-        print('camera','333333333333333333')
         self.selected = is_selected
         if self.selected and self.is_changing:
             self.is_changing = False

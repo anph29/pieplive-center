@@ -1,12 +1,13 @@
 
 from kivy.uix.tabbedpanel import TabbedPanel
+from kivy.uix.boxlayout import BoxLayout
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty, StringProperty
 from src.modules.rightcontentview.addcamera import AddCamera
 from src.modules.rightcontentview.addmedia import AddMedia
 from src.modules.rightcontentview.itemlabel import ItemLabel
 from src.modules.rightcontentview.itemschedule import ItemSchedule
-from kivy.uix.boxlayout import BoxLayout
+from src.utils import helper
 
 Builder.load_file('src/ui/rightcontent.kv')
 
@@ -18,6 +19,11 @@ class RightContent(TabbedPanel):
 
     def __init__(self, *args, **kwargs):
         super(RightContent, self).__init__(*args, **kwargs)
+        self.is_schedule = False
+    
+    def play_schedule(self):
+        self.is_schedule = True
+        print('RightContent')
 
 
 class TabMedia(BoxLayout):

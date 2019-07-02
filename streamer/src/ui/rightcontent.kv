@@ -53,6 +53,7 @@
             padding:2
             TabSchedule:
                 id:tab_schedule
+                f_root:root
                 canvas.before:
                     Color:
                         rgb: .0,.0,.0
@@ -81,15 +82,27 @@
             height: self.minimum_height
 
     BoxLayout:
-        size_hint:None, None
-        pos_hint:{'x':0,'right':1  }
-        height:45
-        width:45
+        orientation:'horizontal'
+        size_hint:1, None
+        height:30
+        padding:5
+        spacing:8
+        canvas.before:
+            Color:
+                rgb:.20, .20, .20
+            Rectangle:
+                pos: self.pos
+                size: self.size
         ImageButton:
             source: helper._ICONS_PATH + 'addW-sq.png'
-            pos_hint:{'x':0,'y':0}
-            size_hint:1,1
+            size_hint:None,None
+            size: 20,20
             on_release: root.open_add_media()
+        ImageButton:
+            source: helper._ICONS_PATH + 'f5W.png'
+            size_hint:None,None
+            size: 20,20
+            on_release: ls_media.refresh_list()
 
 
 <TabCamera>:
@@ -111,16 +124,29 @@
             touch_multiselect: False
             size_hint_y: None
             height: self.minimum_height
+
     BoxLayout:
-        size_hint:None, None
-        pos_hint:{'x':0,'right':1  }
-        height:45
-        width:45
+        orientation:'horizontal'
+        size_hint:1, None
+        height:30
+        padding:5
+        spacing:8
+        canvas.before:
+            Color:
+                rgb:.20, .20, .20
+            Rectangle:
+                pos: self.pos
+                size: self.size
         ImageButton:
             source: helper._ICONS_PATH + 'addW-sq.png'
-            pos_hint:{'x':0,'y':0}
-            size_hint:1,1
+            size_hint:None,None
+            size: 20,20
             on_release: root.open_add_camera()
+        ImageButton:
+            source: helper._ICONS_PATH + 'f5W.png'
+            size_hint:None,None
+            size: 20,20
+            on_release: ls_camera.refresh_list()
 
 <TabPresenter>:
     ls_presenter:ls_presenter
@@ -142,6 +168,24 @@
             size_hint_y: None
             height: self.minimum_height
 
+    BoxLayout:
+        orientation:'horizontal'
+        size_hint:1, None
+        height:30
+        padding:5
+        spacing:8
+        canvas.before:
+            Color:
+                rgb:.20, .20, .20
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        ImageButton:
+            source: helper._ICONS_PATH + 'f5W.png'
+            size_hint:None,None
+            size: 20,20
+            on_release: ls_presenter.refresh_list()
+
 <TabSchedule>:
     ls_schedule:ls_schedule
     ListSchedule:
@@ -161,3 +205,26 @@
             touch_multiselect: False
             size_hint_y: None
             height: self.minimum_height
+
+    BoxLayout:
+        orientation:'horizontal'
+        size_hint:1, None
+        height:30
+        padding:5
+        spacing:8
+        canvas.before:
+            Color:
+                rgb:.20, .20, .20
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        ImageButton:
+            source: helper._ICONS_PATH + 'play-w.png'
+            size_hint:None,None
+            size: 20,20
+            on_release: root.f_root.play_schedule()
+        ImageButton:
+            source: helper._ICONS_PATH + 'f5W.png'
+            size_hint:None,None
+            size: 20,20
+            on_release: ls_schedule.refresh_list()

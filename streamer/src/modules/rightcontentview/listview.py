@@ -1,4 +1,3 @@
-
 from kivy.uix.recycleview import RecycleView
 import src.utils.helper as helper
 from kivy.properties import StringProperty
@@ -24,6 +23,9 @@ class ListMedia(RecycleView):
             )
         )
 
+    def refresh_list(self):
+        self.set_data()
+
 class ListCamera(RecycleView):
 
     def __init__(self, **kwargs):
@@ -45,6 +47,8 @@ class ListCamera(RecycleView):
             )
         )
 
+    def refresh_list(self):
+        self.set_data()
 
 class ListPresenter(RecycleView):
 
@@ -67,6 +71,9 @@ class ListPresenter(RecycleView):
             )
         )
 
+    def refresh_list(self):
+        self.set_data()
+
 class ListSchedule(RecycleView):
 
     def __init__(self, **kwargs):
@@ -87,3 +94,6 @@ class ListSchedule(RecycleView):
                 list(self.data)
             )
         )
+    
+    def refresh_list(self):
+        self.set_data()

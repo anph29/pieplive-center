@@ -1,7 +1,7 @@
 import os
 import tkinter as tk
 from src.modules.menu.mainmenu import MainMenu
-from src.modules.rightview import RightView
+from src.modules.mainview import MainView
 from src.modules.login import Login
 from src.utils import helper, store, tk_helper, zip_helper
 
@@ -13,8 +13,8 @@ class MainApplication(tk.Frame):
         self.after(100, self.init_layout)
 
     def init_layout(self):
-        right = RightView(self, borderwidth=0, bg='#000')
-        right.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+        main = MainView(self, borderwidth=0, bg='#000')
+        main.pack(fill=tk.BOTH, expand=True)
         # if not lign
         if store._get('FO100') == None:
             login = Login(self.parent)

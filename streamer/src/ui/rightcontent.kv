@@ -111,13 +111,23 @@
             touch_multiselect: False
             size_hint_y: None
             height: self.minimum_height
+    BoxLayout:
+        size_hint:None, None
+        pos_hint:{'x':0,'right':1  }
+        height:45
+        width:45
+        ImageButton:
+            source: helper._ICONS_PATH + 'addW-sq.png'
+            pos_hint:{'x':0,'y':0}
+            size_hint:1,1
+            on_release: root.open_add_camera()
 
 <TabPresenter>:
     ls_presenter:ls_presenter
     ListPresenter:
         id:ls_presenter
         viewclass: 'ItemLabel'
-        size_hint:1,None
+        size_hint: 1,None
         height: int(self.parent.height - 30)
         scroll_type: ['bars', 'content']
         bar_width: 10
@@ -136,8 +146,8 @@
     ls_schedule:ls_schedule
     ListSchedule:
         id:ls_schedule
-        viewclass: 'ItemLabel'
-        size_hint:1,None
+        viewclass: 'ItemSchedule'
+        size_hint: 1,None
         height: int(self.parent.height - 30)
         scroll_type: ['bars', 'content']
         bar_width: 10

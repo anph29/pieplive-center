@@ -1,5 +1,5 @@
 #:import helper src.utils.helper
-<ItemLabel>:
+<ItemSchedule>:
     kvcam:kvcam
     size_hint: 1,1
     #pos_hint: {'x':0,'y':0}
@@ -14,7 +14,12 @@
         size_hint: 1, 1
         pos_hint:{'x':0, 'y':0}
         spacing:5
-        padding: 5,0,0,0
+        ImageButton:
+            size_hint:None,1
+            width: 20
+            pos_hint:{'top':1, 'right':1}
+            source: (helper._ICONS_PATH+'play-w.png',helper._ICONS_PATH+'pause.png')[root.kvcam.is_playing]
+            on_release:root.kvcam._pause()
         LabelCamera:
             id:kvcam
             size_hint: .7, 1

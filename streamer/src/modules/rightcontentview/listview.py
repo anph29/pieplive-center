@@ -34,4 +34,4 @@ class ListSchedule(RecycleView):
         super(ListSchedule, self).__init__(**kwargs)
 
     def set_data(self):
-        self.data = [c for c in helper._load_ls_schedule()]
+        self.data = [c for c in helper._load_schedule()]

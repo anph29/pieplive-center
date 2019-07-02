@@ -28,11 +28,11 @@ class AddMedia(Popup):
         self.dismiss()
 
     def on_ok(self):
-        if self.use_local:#
+        if self.use_local:
             self.add_to_lsmedia()
-        elif len(self.name.text) > 0:#
-            resource_type = self.get_type_from_link()
-            if resource_type:
+        elif len(self.url.text) > 0:
+            self.resource_type = self.get_type_from_link()
+            if self.resource_type:
                 self.add_to_lsmedia()
             else:
                 self.error = True
@@ -65,9 +65,11 @@ class AddMedia(Popup):
         URL = self.url.text.upper()
         if 'RTSP' in URL:
             return 'RTSP'
-        elif 'MP4' in URL:
-            return 'MP4'
-        elif 'M3U8' in URL:
+        elif '.MP4' in URL or '.AVI' in URL:
+            return 'VIDEO'
+        elif '.M3U8' in URL:
             return 'M3U8'
+        elif '.JPG' in URL or '.PNG' in URL or '.GIF' in URL or '.JPGE' in URL:
+            return 'IMG'
         else:
             return False

@@ -48,5 +48,4 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
                                callback_cancel=lambda: True)
 
     def rmv_capture(self):
-        # self.kvcam.capture.release()
-        self.parent.remove(self.index)
+        self.parent.parent.remove(self.index)

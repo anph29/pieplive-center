@@ -49,15 +49,11 @@
                 id:url
                 valign: 'middle'
                 halign: 'auto'
-                size_hint_x:.6
+                size_hint_x:.8
                 multiline:False
                 font_size:sp(12)
                 hint_text:'URL'
                 color: 0,0,0,1
-            Button:
-                text: 'Choose file..'
-                on_release: root.open_file_browser()
-                size_hint:.2,1
 
         BoxLayout:
             size_hint:((0,0),(1,None))[root.error]

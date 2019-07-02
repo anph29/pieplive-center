@@ -20,7 +20,17 @@ _LOGO_STREAMER          = _ICONS_PATH + 'logo-streamer.ico'
 _LOGO_VIEWER            = _ICONS_PATH + 'logo-viewer.png'
 """
 """
+"""
+ls schedule
+"""     
+def _load_schedule():
+    return loadJSON(_PATH_SCHEDULE)
 
+def _write_schedule(data):
+    writeJSON(_PATH_SCHEDULE, data)
+
+def _add_to_schedule(data):
+    appendJSON(_PATH_SCHEDULE, data)
 """
 ls camera
 """     
@@ -123,16 +133,6 @@ def removeUnicodeLowerRmvSpace(str):
     str = str.replace(r"đ", "d", str)
     str = str.replace(r"[\s:\/.]", "", str)
     return str
-
-
-def _load_fonts():
-    with open(_FONT_SETTING_PATH, 'r', encoding='utf-8') as json_lsfont:
-        return json.load(json_lsfont)
-
-
-def generate_qr(token, fpath):
-    qr_code = pyqrcode.create(token)
-    qr_code.png(fpath, scale=8)
 
 
 def stringToBase64(s):

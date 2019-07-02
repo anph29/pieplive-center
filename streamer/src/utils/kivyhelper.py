@@ -3,7 +3,6 @@ from kivy.app import App
 from src.modules.custom.popup import PiepMeConfirmPopupContent
 from kivy.uix.popup import Popup
 import re
-import pyqrcode
 import base64
 
 

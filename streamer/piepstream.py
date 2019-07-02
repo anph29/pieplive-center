@@ -1,7 +1,8 @@
+import os
 import kivy
 from kivy.config import Config
 import src.utils.kivyhelper as kivy_helper
-import src.utils.helper as helper
+from src.utils import helper, zip_helper
 #app_width, app_height = helper._read_setting('application_resolution')
 #1532 x 940
 Config.set('graphics', 'width', 1532)
@@ -59,4 +60,8 @@ class PiepStream(App):
         kivy_helper.getApRoot().on_stop()
 
 if __name__ == '__main__':
+    existedResource = os.path.exists("../resource")
+    if not existedResource:
+        zip_helper.extractZip('./resource.zip', '../')
+
     PiepStream().run()

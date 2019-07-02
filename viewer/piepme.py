@@ -1,9 +1,9 @@
-# Use Tkinter for python 2, tkinter for python 3
+import os
 import tkinter as tk
 from src.modules.menu.mainmenu import MainMenu
 from src.modules.rightview import RightView
 from src.modules.login import Login
-from src.utils import helper, store, tk_helper
+from src.utils import helper, store, tk_helper, zip_helper
 
 class MainApplication(tk.Frame):
     def __init__(self, parent):
@@ -17,11 +17,11 @@ class MainApplication(tk.Frame):
         right.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
         # if not lign
         if store._get('FO100') == None:
-            login = Login(root)
+            login = Login(self.parent)
             login.open()
 
 
-if __name__ == "__main__":
+def run():
     root = tk.Tk()
     w = 1280
     x = tk_helper.getCenterX(w)
@@ -31,3 +31,11 @@ if __name__ == "__main__":
     root.tk.call('wm', 'iconphoto', root._w, imgicon)
     MainApplication(root).pack(side=tk.TOP, fill=tk.BOTH, expand=True)
     root.mainloop()
+
+if __name__ == "__main__":
+    existedResource = os.path.exists("../resource")
+    if not existedResource:
+        zip_helper.extractZip('./resource.zip', '../')
+    run()
+
+   

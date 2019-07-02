@@ -18,10 +18,10 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
 
     def refresh_view_attrs(self, rv, index, data):
         """ Catch and handle the view changes """
+        self.is_changing = False
         self.index = index
         self.name = data['name']
         self.kvcam.set_data_source(data)
-        is_changing = False
         return super(ItemLabel, self).refresh_view_attrs(rv, index, data)
 
     def on_touch_down(self, touch):
@@ -36,10 +36,8 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
         """ Respond to the selection of items in the view """
         self.selected = is_selected
         if self.selected and self.is_changing:
-            self.is_changing = False
-            kv_helper.getApRoot().changeSrc(self.kvcam.get_data_source())
-        else:
-            self.is_changing = False
+            kv_helper.getApRoot().changeSrc(self.kvcam.get_data_source(),'')
+        self.is_changing = False
 
     def open_confirm_rmv(self):
         if not self.selected:

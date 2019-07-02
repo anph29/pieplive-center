@@ -1,5 +1,6 @@
 import sys
 import cv2
+import time
 from kivy.uix.image import Image
 from kivy.clock import Clock
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
@@ -32,9 +33,7 @@ class KivyCameraMain(Image):
         self.stop = Event()
 
     def set_data_source(self, input):
-        if self.capture is not None:
-            self.capture.release()
-        self.stop_update_capture()
+        
         self.name = input['name']
         self.url = input['url']
         self.resource_type = input['type']
@@ -43,19 +42,22 @@ class KivyCameraMain(Image):
         self.duration = '00:00:00'
         self.release()
         try:
-            if self.resource_type == "M3U8":
-                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",f"{input['url']}","-ab","128k","-ac","2","-ar","44100","-vb","3072k","-r","25",f"src/export/{'output'}.flv"]
-                si = subprocess.STARTUPINFO()
-                si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-                self.pipe = subprocess.Popen(command, startupinfo=si)
-                self.url = 'src/export/{}.flv'.format('output')
+            if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
+                print('------------','vao')
+                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-ab","128k","-ac","2","-ar","44100","-vb","3072k","-r","25","src/export/output.flv"]
+                si = sp.STARTUPINFO()
+                si.dwFlags |= sp.STARTF_USESHOWWINDOW
+                self.pipe = sp.Popen(command, startupinfo=si)
+                self.url = 'src/export/output.flv'
+                time.sleep(1)
             else:
-                if self.typeOld == 'M3U8':
+                if self.typeOld == 'M3U8' or self.typeOld == 'VIDEO':
                     command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i src/musics/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 src/export/output.flv'
-                    si = subprocess.STARTUPINFO()
-                    si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-                    self.pipe = subprocess.Popen(command, startupinfo=si)
+                    si = sp.STARTUPINFO()
+                    si.dwFlags |= sp.STARTF_USESHOWWINDOW
+                    self.pipe = sp.Popen(command, startupinfo=si)
                     Clock.schedule_once(lambda x: self.pipe.kill() , 5)
+
             if self.f_parent is not None:
                 if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
                     self.f_parent.refresh_stream()
@@ -70,7 +72,9 @@ class KivyCameraMain(Image):
             elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
                 self.f_parent.refresh_stream()
             self.typeOld = input['type']
-
+        if self.capture is not None:
+            self.capture.release()
+        self.stop_update_capture()
         capture = None
         if 'capture' in input and input['capture'] is not None:
             capture = input['capture']
@@ -89,6 +93,7 @@ class KivyCameraMain(Image):
                         self.capture = cv2.VideoCapture(int(self.url))
                     else:
                         self.capture = cv2.VideoCapture(self.url)
+                        print('url',self.url)
 
                 if self.capture is not None and self.capture.isOpened():
                     print(">>CAPTURE FINED:")
@@ -154,3 +159,13 @@ class KivyCameraMain(Image):
             self.pipe.kill()
         if self.capture is not None:
             self.capture.release()
+
+    # let openGL do not need resize
+    # def resizeFrame(self, frame):
+    #     if frame is None:
+    #         return frame
+    #     h, w, c = frame.shape
+    #     r = w / h
+    #     nH = self.f_height
+    #     nW = int(nH * r)
+    #     return cv2.resize(frame, (nW, nH), interpolation=cv2.INTER_AREA)

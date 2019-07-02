@@ -108,9 +108,9 @@ class MainView(Widget):
                 self.lsAudio.append(_audio)
 
 
-    def changeSrc(self, data_src):
+    def changeSrc(self, data_src, data_type):
         if bool(data_src) and self.mainStream is not None:
-            self.mainStream._set_capture(data_src)
+            self.mainStream._set_capture(data_src, data_type)
 
     def changeAudio(self, value):
         if value is not None and self.mainStream is not None:

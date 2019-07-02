@@ -2,14 +2,14 @@ import tkinter as tk
 from tkinter import ttk
 from src.utils import helper
 from src.modules.custom import DynamicGrid
-from .mediabox import MediaBox
+from src.modules.mediabox import MediaBox
 from PIL import Image, ImageTk
-from .addresource import AddResource
+from src.modules.addresource import AddResource
 
 
-class RightView(tk.Frame):
+class MainView(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
-        super(RightView, self).__init__(parent, *args, **kwargs)
+        super(MainView, self).__init__(parent, *args, **kwargs)
         self.parent = parent
         self.after(100, self.initGUI)
 

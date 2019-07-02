@@ -6,7 +6,7 @@ from src.utils import helper, zip_helper
 #app_width, app_height = helper._read_setting('application_resolution')
 #1532 x 940
 Config.set('graphics', 'width', 1552)
-Config.set('graphics', 'height', 940)
+Config.set('graphics', 'height', 955)
 Config.set('graphics', 'position', 'custom')
 Config.set('graphics', 'top', '30')
 Config.set('graphics', 'left', '20')

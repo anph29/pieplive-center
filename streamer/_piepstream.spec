@@ -11,6 +11,7 @@ added_files = [
   ( 'src\\export', 'src\\export' ),
   ( 'ffmpeg-win\\', 'ffmpeg-win\\' ),
   ( 'piepstream.kv', '.' ),
+  ( 'source.zip', '.' ),
   ( 'Lib\\site-packages\\kivy\\garden', 'kivy\\garden' ),
   ('Lib\\site-packages\\cv2\\opencv_ffmpeg410.dll', 'cv2'),
   ('Lib\\site-packages\\_sounddevice_data\\portaudio-binaries\\libportaudio32bit.dll', '_sounddevice_data\\portaudio-binaries')

@@ -29,6 +29,7 @@ class KivyCameraMain(Image):
 
     def __init__(self, **kwargs):
         super(KivyCameraMain, self).__init__(**kwargs)
+        self.f_height = 720
         self.show_captured_img(self.default_frame)
         self.stop = Event()
 
@@ -143,6 +144,7 @@ class KivyCameraMain(Image):
             return False
 
     def update_texture_from_frame(self, frame):
+        frame = self.resizeFrame(frame)
         fshape = frame.shape
         texture = Texture.create(size=(fshape[1], fshape[0]), colorfmt='bgr')
         buf1 = cv2.flip(frame, 0)
@@ -160,12 +162,11 @@ class KivyCameraMain(Image):
         if self.capture is not None:
             self.capture.release()
 
-    # let openGL do not need resize
-    # def resizeFrame(self, frame):
-    #     if frame is None:
-    #         return frame
-    #     h, w, c = frame.shape
-    #     r = w / h
-    #     nH = self.f_height
-    #     nW = int(nH * r)
-    #     return cv2.resize(frame, (nW, nH), interpolation=cv2.INTER_AREA)
+    def resizeFrame(self, frame):
+        if frame is None:
+            return frame
+        h, w, c = frame.shape
+        r = w / h
+        nH = self.f_height
+        nW = int(nH * r)
+        return cv2.resize(frame, (nW, nH), interpolation=cv2.INTER_AREA)

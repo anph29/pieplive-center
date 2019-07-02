@@ -23,17 +23,18 @@
         BoxLayout:#LeftContent
             size_hint_x: None
             size_hint_y: 1
-            width:root.width - 260
+            width:root.width - 262
             spacing:5
             padding:5
             RelativeLayout:
                 size_hint:1, None
-                height: (self.parent.height - 230)
+                # height: (self.parent.height - 230)
+                height: 720
                 canvas.before:
                     Color:
-                        rgb:.12, .15, .18
+                        rgb:0, 0, 0
                     Rectangle:
-                        pos: self.pos
+                        pos: 0,0
                         size: self.size
                 MainStream:
                     id: mainStream

@@ -36,7 +36,7 @@ def _add_to_lscam(data):
 ls custom resource
 """
 def _load_custom_resource():
-    loadJSON(_PATH_CUSTOM_RESOURCE)
+    return loadJSON(_PATH_CUSTOM_RESOURCE)
 
 def _write_custom_resource(data):
     writeJSON(_PATH_CUSTOM_RESOURCE, data)
@@ -58,7 +58,7 @@ def _add_to_spresenter(data):
 ls static source
 """
 def _load_lsStaticSource():
-    loadJSON(_PATH_STATICSOURCE)
+    return loadJSON(_PATH_STATICSOURCE)
 
 def _write_lsStaticSource(data):
    writeJSON(_PATH_STATICSOURCE, data)

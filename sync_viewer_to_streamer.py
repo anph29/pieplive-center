@@ -29,9 +29,6 @@ commands = [
     , f"{vwr_model}l500_model.py#anph#{str_model}l500_model.py"
     , f"{vwr_model}n100_model.py#anph#{str_model}n100_model.py"
     , f"{vwr_model}q170_model.py#anph#{str_model}q170_model.py"
-    #module
-    #module
 ]
 for command in commands:
-    a, b = command.split('#anph#')
-    shutil.copyfile(a, b)
+    shutil.copyfile(*command.split('#anph#'))

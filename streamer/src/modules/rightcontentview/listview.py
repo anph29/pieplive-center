@@ -1,9 +1,15 @@
-import cv2
+
 from kivy.uix.recycleview import RecycleView
 import src.utils.helper as helper
 from kivy.properties import StringProperty
-from kivy.clock import Clock
 
+class ListMedia(RecycleView):
+ 
+    def __init__(self, **kwargs):
+        super(ListMedia, self).__init__(**kwargs)
+
+    def set_data(self):
+        self.data = [c for c in helper._load_custom_resource()]
 
 class ListCamera(RecycleView):
 

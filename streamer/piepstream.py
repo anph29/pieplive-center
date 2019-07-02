@@ -31,11 +31,12 @@ from src.modules.custom.piepimage import PiepImage
 from src.modules.bottomleft.bottomleft import BottomLeft
 
 from src.modules.rightcontentview.rightcontent import RightContent
+from src.modules.rightcontentview.listview import ListMedia
 from src.modules.rightcontentview.listview import ListCamera
-from src.modules.rightcontentview.gridview import GridCamera
-from src.modules.rightcontentview.itemlabel import ItemLabel
 from src.modules.rightcontentview.listview import ListPresenter
 from src.modules.rightcontentview.listview import ListSchedule
+from src.modules.rightcontentview.gridview import GridCamera
+from src.modules.rightcontentview.itemlabel import ItemLabel
 
 KIVY_FONTS = kivy_helper._load_fonts()
 for font in KIVY_FONTS:

@@ -1,14 +1,29 @@
 #:import helper src.utils.helper
 <RightContent>:
+    tab_media:tab_media
     tab_camera:tab_camera
     tab_presenter:tab_presenter
     tab_schedule:tab_schedule
-    tab_width: self.size[0] / 3
+    tab_width: self.size[0] / 4
     size_hint:1,1
     pos_hint:{'y': 0, 'center_x': .5}
     do_default_tab: False
+
     TabbedPanelItem:
-        text: 'Media source'
+        text: 'Media'
+        Box25:
+            padding:2
+            TabMedia:
+                id:tab_media
+                canvas.before:
+                    Color:
+                        rgb: .0,.0,.0
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+    TabbedPanelItem:
+        text: 'Camera'
         Box25:
             padding:2
             TabCamera:
@@ -45,10 +60,10 @@
                         pos: self.pos
                         size: self.size
 
-<TabCamera>:
-    ls_camera:ls_camera
-    ListCamera:
-        id:ls_camera
+<TabMedia>:
+    ls_media:ls_media
+    ListMedia:
+        id:ls_media
         viewclass: 'ItemLabel'
         size_hint: 1,None
         height: int(self.parent.height - 30)
@@ -74,7 +89,28 @@
             source: helper._ICONS_PATH + 'addW-sq.png'
             pos_hint:{'x':0,'y':0}
             size_hint:1,1
-            on_release: root.open_add_camera()
+            on_release: root.open_add_media()
+
+
+<TabCamera>:
+    ls_camera:ls_camera
+    ListCamera:
+        id:ls_camera
+        viewclass: 'ItemLabel'
+        size_hint: 1,None
+        height: int(self.parent.height - 30)
+        scroll_type: ['bars', 'content']
+        bar_width: 10
+        GridCamera:
+            cols:1
+            spacing:1
+            padding:1
+            default_size_hint: 1, None
+            default_size: None, 30
+            multiselect: False
+            touch_multiselect: False
+            size_hint_y: None
+            height: self.minimum_height
 
 <TabPresenter>:
     ls_presenter:ls_presenter
@@ -95,17 +131,6 @@
             touch_multiselect: False
             size_hint_y: None
             height: self.minimum_height
-
-    # BoxLayout:
-    #     size_hint:None, None
-    #     pos_hint:{'x':0,'right':1  }
-    #     height:45
-    #     width:45
-    #     ImageButton:
-    #         source:'src/icons/addW-sq.png'
-    #         pos_hint:{'x':0,'y':0}
-    #         size_hint:1,1
-    #         on_release: root.open_add_presenter()
 
 <TabSchedule>:
     ls_schedule:ls_schedule

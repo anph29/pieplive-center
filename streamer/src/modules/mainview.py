@@ -49,14 +49,22 @@ class MainView(Widget):
         self.initAudio()
         self.initSource()
         self.bottom_left.list_mixer.set_source(self.lsAudio)
+        self.init_right_content_media()
         self.init_right_content_cam()
         self.init_right_content_presenter()
+        self.init_right_content_schedule()
+
+    def init_right_content_media(self):
+        self.right_content.tab_media.ls_media.set_data()
 
     def init_right_content_cam(self):
         self.right_content.tab_camera.ls_camera.set_data()
 
     def init_right_content_presenter(self):
         self.right_content.tab_presenter.ls_presenter.set_data()
+
+    def init_right_content_schedule(self):
+        self.right_content.tab_schedule.ls_schedule.set_data()
 
     def initAudio(self):
         try:

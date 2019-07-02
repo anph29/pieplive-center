@@ -9,6 +9,7 @@ from kivy.uix.boxlayout import BoxLayout
 Builder.load_file('src/ui/rightcontent.kv')
 
 class RightContent(TabbedPanel):
+    tab_media = ObjectProperty()
     tab_camera = ObjectProperty()
     tab_presenter = ObjectProperty()
     tab_schedule = ObjectProperty()
@@ -16,6 +17,14 @@ class RightContent(TabbedPanel):
     def __init__(self, *args, **kwargs):
         super(RightContent, self).__init__(*args, **kwargs)
 
+
+class TabMedia(BoxLayout):
+    add_media_pop = ObjectProperty()
+    ls_media = ObjectProperty()
+
+    def open_add_media(self):
+        self.add_media_pop = AddCamera(self)
+        self.add_media_pop.open()
 
 class TabCamera(BoxLayout):
     add_cam_pop = ObjectProperty()

@@ -23,8 +23,9 @@ class ListSource(RecycleView):
         
     def set_source(self,sources):
         self.data = []
-        for i in sources:
-            self.data.append({"name":i["name"], "active": i["active"]})
+        if sources is not None:
+            for i in sources:
+                self.data.append({"name":i["name"], "active": i["active"]})
 
     def add_source(self, item):
         self.data.append({"name":item["name"], "active": item["active"]})

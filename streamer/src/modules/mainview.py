@@ -6,6 +6,7 @@ from src.modules.bottomleft.bottomleft import AudioDialog
 # from src.modules.login import Login
 from src.modules.mainstream import MainStream
 from src.utils import kivyhelper as kv_helper
+from src.utils import helper as helper
 from kivy.lang import Builder
 import sounddevice as sd
 
@@ -75,7 +76,13 @@ class MainView(Widget):
             print("Exception:", e)
 
     def initSource(self):
-        self.lsSource = kv_helper._load_lsStaticSource()
+        self.lsSource = helper._load_lsStaticSource()
+
+        print(  self.lsSource ,'aaaaaaaaaaaaaaaaaaaaaaaaa')
+
+
+
+        #if self.lsSource is not None:
         self.mainStream.lsSource = self.lsSource
         self.bottom_left.list_source.set_source(self.lsSource)
         for idx, _s in enumerate(self.lsSource):
@@ -84,10 +91,10 @@ class MainView(Widget):
             # if _s['active'] == 1:
             if _s['type'] == 'text':
                 self.mainStream.show_text(_s['label'], _s['font'], _s['size'],
-                                          _s['color'], _s['pos_x'], _s['pos_y'], _s['active'], idx, True)
+                                        _s['color'], _s['pos_x'], _s['pos_y'], _s['active'], idx, True)
             elif _s['type'] == 'image':
                 self.mainStream.show_image(_s['src'], _s['pos_x'], _s['pos_y'],
-                                           _s['width'], _s['height'], _s['active'], idx, True)
+                                        _s['width'], _s['height'], _s['active'], idx, True)
             elif _s['type'] == 'audio' and _s['active'] == 1:
                 _audio = {'name': _s['name'],'value': _s['src'],'volume': _s['volume'],'idx': idx}
                 self.lsAudio.append(_audio)
@@ -148,7 +155,7 @@ class MainView(Widget):
             self.mainStream.on_off_source(ite['idx'], value)
 
         self.lsSource[index]["active"] = value
-        kv_helper._write_lsStaticSource(self.lsSource)
+        helper._write_lsStaticSource(self.lsSource)
         self.mainStream._set_source(self.lsSource)
         if ite['type'] == 'audio':
             self.mainStream.on_change_audio()
@@ -191,7 +198,7 @@ class MainView(Widget):
                 'total': idx+1
             }
             self.lsSource.append(text)
-            kv_helper._write_lsStaticSource(self.lsSource)
+            helper._write_lsStaticSource(self.lsSource)
             self.bottom_left.list_source.add_source(text)
             self.mainStream.show_text(label, font, size, color, pos_x, pos_y, 1, idx, True)
         else:
@@ -200,7 +207,7 @@ class MainView(Widget):
             self.lsSource[index]['font'] = font
             self.lsSource[index]['size'] = int(size)
             self.lsSource[index]['color'] = color
-            kv_helper._write_lsStaticSource(self.lsSource)
+            helper._write_lsStaticSource(self.lsSource)
             self.bottom_left.list_source.update_source(index,{"name":name, "active": self.lsSource[index]["active"]})
             self.mainStream.show_text(label, font, int(size), color, pos_x, pos_y, self.lsSource[index]["active"], self.lsSource[index]['idx'], False)
 
@@ -224,7 +231,7 @@ class MainView(Widget):
                 'total': idx+1
             }
             self.lsSource.append(image)
-            kv_helper._write_lsStaticSource(self.lsSource)
+            helper._write_lsStaticSource(self.lsSource)
             self.bottom_left.list_source.add_source(image)
             self.mainStream.show_image(src, pos_x, pos_y, width, height, 1, idx,True)
         else:
@@ -232,14 +239,14 @@ class MainView(Widget):
             self.lsSource[index]['src'] = src
             self.lsSource[index]['width'] = int(width)
             self.lsSource[index]['height'] = int(height)
-            kv_helper._write_lsStaticSource(self.lsSource)
+            helper._write_lsStaticSource(self.lsSource)
             self.bottom_left.list_source.update_source(index,{"name":name, "active": self.lsSource[index]["active"]})
             self.mainStream.show_image(src, pos_x, pos_y, int(width), int(height), self.lsSource[index]["active"], self.lsSource[index]['idx'], False)
 
     def add_audio(self, index, name, src, volume):
         if index == -1:
             idx = 0
-            if len(self.lsSource) > 0:
+            if self.lsSource is not None and len(self.lsSource) > 0:
                 idx = self.lsSource[len(self.lsSource)-1]['total']
             audio = {
                 "type": "audio",
@@ -251,7 +258,7 @@ class MainView(Widget):
                 'total': idx+1
             }
             self.lsSource.append(audio)
-            kv_helper._write_lsStaticSource(self.lsSource)
+            helper._write_lsStaticSource(self.lsSource)
             self.bottom_left.list_source.add_source(audio)
             self.bottom_left.list_mixer.add_source({'name': name,'value': src,'volume': volume,'idx': idx})
         else:
@@ -265,7 +272,7 @@ class MainView(Widget):
         if self.lsSource[index]['type'] == 'audio':
             self.bottom_left.list_mixer.del_source(self.lsSource[index]['idx'])
         del(self.lsSource[index])
-        kv_helper._write_lsStaticSource(self.lsSource)
+        helper._write_lsStaticSource(self.lsSource)
 
     def openLogin(self):
         self.login_popup = Login(self)
@@ -280,7 +287,7 @@ class MainView(Widget):
             if _s['idx'] == idx:
                 _s['pos_x'] = pos_x
                 _s['pos_y'] = pos_y
-                kv_helper._write_lsStaticSource(self.lsSource)
+                helper._write_lsStaticSource(self.lsSource)
                 break
 
     def on_edit_source(self,index):

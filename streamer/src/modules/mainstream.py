@@ -11,6 +11,7 @@ from src.modules.custom.piepimage import PiepImage
 from kivy.properties import ObjectProperty
 from kivy.lang import Builder
 from src.models.normal_model import Normal_model
+# from src.utils.mytimer import MyTimer
 import subprocess
 import cv2
 import time
@@ -65,16 +66,16 @@ class MainStream(RelativeLayout):
 
     def show_camera_mini(self):
         self.cameraMini.opacity = 1
-        # self.cameraMini.set_data_source({
-        #     "name": "camera mini",
-        #     "url": "0",
-        #     "type": "CAMERA"
-        # })
         self.cameraMini.set_data_source({
             "name": "camera mini",
-            "url": "rtsp://viewer:FB1D2631C12FE8F7EE8951663A8A108@14.241.131.216:554",
-            "type": "RTSP"
+            "url": "0",
+            "type": "CAMERA"
         })
+        # self.cameraMini.set_data_source({
+        #     "name": "camera mini",
+        #     "url": "rtsp://viewer:FB1D2631C12FE8F7EE8951663A8A108@14.241.131.216:554",
+        #     "type": "RTSP"
+        # })
 
     def hide_camera_mini(self):
         self.cameraMini.opacity = 0
@@ -288,6 +289,8 @@ class MainStream(RelativeLayout):
             self.camera.release()
         if self.pipe2 is not None:
             self.pipe2.kill()
+        if self.mgrSchedule is not None:
+            self.mgrSchedule.cancel()
         print("--- release ---")
 
     def on_change_Volume(self, idx, value):

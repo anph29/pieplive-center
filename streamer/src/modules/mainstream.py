@@ -15,7 +15,6 @@ import cv2
 import time
 import numpy as np
 import array
-import datetime
 
 Builder.load_file('src/ui/mainstream.kv')
 class MainStream(RelativeLayout):
@@ -44,6 +43,7 @@ class MainStream(RelativeLayout):
         self.stop = Event()
         self.reconnect = False
         self.streamType = ''
+        self.mgrSchedule = None
         self.dataCam = {
             "name": "defaul",
             "url": "src/images/splash.jpg",
@@ -117,11 +117,16 @@ class MainStream(RelativeLayout):
         #     data = wf.readframes(1024)
         pass
     
-    def _set_capture(self, data_src, data_type):
+    def _set_capture(self, data_src, data_type, is_from_schedule):
         self.streamType = data_type
         self.dataCam = data_src
         self.camera.f_parent = self
         self.camera.set_data_source(data_src)
+        if self.streamType == "SCHEDULE":
+            if is_from_schedule == False:
+                self.start_schedule(True)
+        elif self.mgrSchedule is not None:
+            self.mgrSchedule.cancel()
 
     def refresh_stream(self):
         if self.isStream is True:
@@ -391,17 +396,24 @@ class MainStream(RelativeLayout):
             self.prepare()
 
     def start_schedule(self, isSchedule):
-        if isSchedule:
-            self.ls_schedule = self.f_parent.right_content.tab_schedule.ls_schedule.get_data()
-            self.mgrSchedule = Clock.schedule_interval(self.process_schedule , 1)
-        else:
+        if self.mgrSchedule is not None:
             self.mgrSchedule.cancel()
-        
+        self.ls_schedule = self.f_parent.right_content.tab_schedule.ls_schedule.get_data()
+
+        if isSchedule:
+            index = self.f_parent.right_content.tab_schedule.ls_schedule.getCurrentIndex()
+            if index != -1:
+                self.mgrSchedule = Clock.schedule_once(self.process_schedule , self.ls_schedule[index]['duration'])
     
     def process_schedule(self, fps):
-        for item in self.ls_schedule:
-            print('item',item['duration'])
-        print(datetime.datetime.now())
-        print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-        print(datetime.datetime.now().time())
+        if self.mgrSchedule is not None:
+            self.mgrSchedule.cancel()
+        _index = self.f_parent.right_content.tab_schedule.ls_schedule.getCurrentIndex() + 1
+        
+        if _index >= len(self.ls_schedule):
+            _index = 0
+        data_src = self.ls_schedule[_index]
+        self.f_parent.right_content.tab_schedule.ls_schedule.setSelected(_index)
+        self._set_capture(data_src, 'SCHEDULE', True)
+        self.mgrSchedule = Clock.schedule_once(self.process_schedule , self.ls_schedule[_index]['duration'])
         

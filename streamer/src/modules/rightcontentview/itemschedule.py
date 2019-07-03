@@ -11,6 +11,7 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
     index = NumericProperty(0)
     dt_capture = ObjectProperty()
     name = StringProperty()
+    duration = NumericProperty()
     selected = BooleanProperty(False)
     selectable = BooleanProperty(True)
     kvcam = ObjectProperty()
@@ -20,6 +21,7 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
         """ Catch and handle the view changes """
         self.index = index
         self.name = data['name']
+        self.duration = data['duration']
         self.kvcam.set_data_source(data)
         is_changing = False
         return super(ItemSchedule, self).refresh_view_attrs(rv, index, data)

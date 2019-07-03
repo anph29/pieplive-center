@@ -5,6 +5,7 @@ from src.modules.custom.popup import PiepMeConfirmPopup
 from src.modules.kvcam.labelcamera import LabelCamera
 from kivy.lang import Builder
 from src.utils import kivyhelper as kv_helper
+from src.modules.custom.addschedule import AddSchedule
 
 Builder.load_file('src/ui/itemlabel.kv')
 class ItemLabel(RecycleDataViewBehavior, FloatLayout):
@@ -22,6 +23,7 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
         self.index = index
         self.name = data['name']
         self.kvcam.set_data_source(data)
+        self.data = data
         return super(ItemLabel, self).refresh_view_attrs(rv, index, data)
 
     def on_touch_down(self, touch):
@@ -47,3 +49,8 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
 
     def rmv_capture(self):
         self.parent.parent.remove(self.index)
+
+    def add_to_schedule(self):
+        kv_helper.getApRoot().open_add_schedule(self.data)
+    
+        

@@ -45,18 +45,19 @@ class KivyCameraMain(Image):
         self.release()
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
-                print('------------','vao')
                 command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-ab","128k","-ac","2","-ar","44100","-vb","3072k","-r","25","src/export/output.flv"]
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
                 self.pipe = sp.Popen(command, startupinfo=si)
                 if self.resource_type == 'VIDEO':
-                    _cap = cv2.VideoCapture(self.url)
-                    if _cap.isOpened():
-                        self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
-                        self.duration_total = helper.convertSecNoToHMS(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS))
-                    del _cap
-
+                    try:
+                        _cap = cv2.VideoCapture(self.url)
+                        if _cap.isOpened():
+                            self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
+                            self.duration_total = helper.convertSecNoToHMS(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS))
+                        del _cap
+                    except Exception as e:
+                        print("Exception:", e)
                 self.url = 'src/export/output.flv'
                 time.sleep(1)
             else:

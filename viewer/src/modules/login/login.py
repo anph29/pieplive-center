@@ -15,7 +15,13 @@ class Login(object):
         super(Login, self).__init__()
     
     def logout(self):
+        # clear store
         store._new({})
+        # clear resource 
+        ##
+        ##
+        ##
+        self.parent.hideToolbar()
         self.open()
 
     def open(self):
@@ -40,29 +46,25 @@ class Login(object):
         # PiepMe ID
         self.fPid = tk.Frame(loginMainFrame, pady=15)
         self.fPid.pack()
-        ePid = tk.Entry(self.fPid, textvariable=self.NV117,
-                        borderwidth=5, relief=tk.FLAT)
+        ePid = tk.Entry(self.fPid, textvariable=self.NV117, borderwidth=5, relief=tk.FLAT)
         ePid.insert(0, 'GP2Y6B')  # 'PiepMe ID')
         ePid.bind("<FocusIn>", lambda args: ePid.delete('0', 'end'))
         ePid.config(font=self.font)
         self.NV117.trace("w", self.autoUpperNV117)
         ePid.pack(side=tk.LEFT, fill=tk.X)
         #
-        btnLogin = tk.Button(self.fPid, text="Login", bd=2, bg="#ff2d55",
-                             fg="#fff", relief=tk.RAISED, command=self.onSendNV117)
+        btnLogin = tk.Button(self.fPid, text="Login", bd=2, bg="#ff2d55", fg="#fff", relief=tk.RAISED, command=self.onSendNV117)
         btnLogin.config(width=7, font=self.font)
         btnLogin.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
         # Verify TOKEN
         self.fToken = tk.Frame(loginMainFrame, pady=15)
-        eToken = tk.Entry(self.fToken, textvariable=self.PV161,
-                          borderwidth=5, relief=tk.FLAT)
+        eToken = tk.Entry(self.fToken, textvariable=self.PV161, borderwidth=5, relief=tk.FLAT)
         eToken.insert(0, 'Token')
         eToken.bind("<FocusIn>", lambda args: eToken.delete('0', 'end'))
         eToken.config(font=self.font)
         eToken.pack(side=tk.LEFT, fill=tk.X)
         #
-        btnVerify = tk.Button(self.fToken, text="Verify", bd=2, bg="#ff2d55",
-                              fg="#fff", relief=tk.RAISED, command=self.onVerify)
+        btnVerify = tk.Button(self.fToken, text="Verify", bd=2, bg="#ff2d55", fg="#fff", relief=tk.RAISED, command=self.onVerify)
         btnVerify.config(width=7, font=self.font)
         btnVerify.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
         #
@@ -71,16 +73,16 @@ class Login(object):
         btnVerify.pack()
         # nv117 invalid
         self.fInvalid = tk.Frame(loginMainFrame, pady=5)
-        lblError = tk.Label(
-            self.fInvalid, text="PiepMe ID invalid!", fg="#f00")
+        lblError = tk.Label(self.fInvalid, text="PiepMe ID invalid!", fg="#f00")
         lblError.config(font=self.font)
         lblError.pack(side=tk.LEFT, fill=tk.Y)
         # pv161 invalid
         self.fTokenInvalid = tk.Frame(loginMainFrame, pady=5)
-        lblTOkenError = tk.Label(
-            self.fTokenInvalid, text="Token invalid!", fg="#f00")
+        lblTOkenError = tk.Label(self.fTokenInvalid, text="Token invalid!", fg="#f00")
         lblTOkenError.config(font=self.font)
         lblTOkenError.pack(side=tk.LEFT, fill=tk.Y)
+
+        # close
 
     def autoUpperNV117(self, *arg):
         self.NV117.set(self.NV117.get().upper())
@@ -113,7 +115,10 @@ class Login(object):
             if res['status'] == 'success':
                 # save login
                store._new(res['elements'])
+               #
+               self.parent.showToolbar()
                self.loginPopup.destroy()
+
             else:
                 self.fTokenInvalid.pack(side=tk.LEFT, fill=tk.Y)
         else:

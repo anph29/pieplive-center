@@ -143,7 +143,7 @@ def base64ToString(b):
     return base64.b64decode(b).decode('utf-8')
 
 # seconds in number -> toObj ? {h,m,s} : [hh:]mm:ss
-def convertSecNoToHMS(seconds, toObj=False) :
+def convertSecNoToHMS(seconds, toObj=False):
     seconds = math.floor(seconds)
     h = math.floor(seconds / 3600)
     m = math.floor((seconds % 3600) / 60)
@@ -155,4 +155,8 @@ def convertSecNoToHMS(seconds, toObj=False) :
         return { 'h': hs, 'm': ms, 's': ss } 
     else:
         return (('', hs + ':')[h>0]) + ms + ':' + ss
+
+def convertHMSNoToSec(hms):
+    h,m,s = hms.values()
+    return int(s) + int(m) * 60 + int(h) * 60 ** 2
 

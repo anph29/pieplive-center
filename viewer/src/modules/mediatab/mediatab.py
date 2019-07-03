@@ -5,8 +5,8 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 from src.utils import helper, store
 from src.modules.mediabox import MediaBox
-from src.models import Q170_model
-from src.enums import TabType, Q180
+from src.models import L500_model
+from src.enums import TabType
 
 
 class MediaTab(DynamicGrid):
@@ -20,8 +20,6 @@ class MediaTab(DynamicGrid):
     def initUI(self):
         if self.tabType == TabType.CUSTOM:
             self.showAddCamBtn()
-        else:
-            self.showCoboboxBU()
 
         for media in self.loadLsMedia():
             self.addMediaBoxToList(media)
@@ -33,28 +31,13 @@ class MediaTab(DynamicGrid):
 
     def showAddCamBtn(self):
         addresource = AddResource(self)
-        btnAddResource = tk.Frame(self,  relief=tk.FLAT)
+        btnAddResource = tk.Frame(self, relief=tk.FLAT)
         imageAdd = ImageTk.PhotoImage(Image.open(helper._ICONS_PATH + "add-b.png"))
         lblAdd = tk.Label(btnAddResource, image=imageAdd, cursor='hand2', bg="#f2f2f2")
         lblAdd.image = imageAdd
         lblAdd.bind("<Button-1>", addresource.initGUI)
         lblAdd.pack(fill=tk.BOTH, expand=True)
         btnAddResource.place(rely=1.0, relx=1.0, x=-20, y=-20, anchor=tk.SE)
-
-    def showCoboboxBU(self):
-        cbxData = {q170['NV106']: q170['FO100'] for q170 in self.loadCbxQ170()}
-
-    def loadCbxQ170(self):
-        q170 = Q170_model()
-        rs = q170.getListProviderWithRole({
-            'FO100': store._get('FO100') or 0,
-            'FQ180': Q180.CAM_LIV_OOF
-        })
-
-        if rs['status'] == 'success':
-            return rs['elements']
-        else:
-            return []
 
     def addMedia(self, Fdata):
         if self.tabType == TabType.CAMERA:

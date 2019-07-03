@@ -3,6 +3,7 @@ from kivy.properties import ObjectProperty
 from src.modules.bottomleft.bottomleft import TextDialog
 from src.modules.bottomleft.bottomleft import ImageDialog
 from src.modules.bottomleft.bottomleft import AudioDialog
+from src.modules.custom.addschedule import AddSchedule
 # from src.modules.login import Login
 from src.modules.mainstream import MainStream
 from src.utils import kivyhelper as kv_helper
@@ -104,7 +105,7 @@ class MainView(Widget):
 
     def changeSrc(self, data_src, data_type):
         if bool(data_src) and self.mainStream is not None:
-            self.mainStream._set_capture(data_src, data_type)
+            self.mainStream._set_capture(data_src, data_type, False)
 
     def changeAudio(self, value):
         if value is not None and self.mainStream is not None:
@@ -303,3 +304,7 @@ class MainView(Widget):
         elif ite['type'] == 'audio':
             obj = AudioDialog(self, ite, index)
             obj.open()
+    
+    def open_add_schedule(self, data):
+        self.add_schedule_pop = AddSchedule(self,data)
+        self.add_schedule_pop.open()

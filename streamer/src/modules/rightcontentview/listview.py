@@ -93,10 +93,23 @@ class ListSchedule(RecycleView):
     def clean_data_to_save_json(self):
         return list(
             map(
-                lambda cam: {'name': cam['name'], 'url': cam['url'], 'type': cam['type']},
+                lambda cam: {'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'duration': cam['duration']},
                 list(self.data)
             )
         )
     
     def refresh_list(self):
         self.set_data()
+
+    def getCurrentIndex(self):
+        for child in self.children[0].children:
+            if child.selected:
+                return child.index
+        return -1
+    
+    def setSelected(self,index):
+        for child in self.children[0].children:
+            if child.index == index:
+                child.selected = True
+            else:
+                child.selected = False

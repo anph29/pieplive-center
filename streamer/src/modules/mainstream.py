@@ -1,4 +1,5 @@
 import src.utils.kivyhelper as kv_helper
+from src.utils import helper
 from threading import Thread, Event
 from kivy.clock import Clock, mainthread
 from kivy.graphics import Fbo, ClearColor, ClearBuffers, Scale, Translate
@@ -295,7 +296,7 @@ class MainStream(RelativeLayout):
                 for _s in self.lsSource:
                     if _s['idx'] == idx:
                         _s['volume'] = value
-                        kv_helper._write_lsStaticSource(self.lsSource)
+                        helper._write_lsStaticSource(self.lsSource)
                         break
             else:
                 self.deviceVolume = value

@@ -22,6 +22,7 @@ class KivyCameraMain(Image):
     duration_total = StringProperty('00:00:00')
     duration_total_n = NumericProperty(0)
     duration = StringProperty('00:00:00')
+    duration_fps = NumericProperty(25)
     event_capture = None
     default_frame = 'src/images/splash.jpg'
     pipe = None
@@ -42,6 +43,7 @@ class KivyCameraMain(Image):
         self.duration_total = '00:00:00'
         self.duration = '00:00:00'
         self.duration_total_n = 0
+        self.duration_fps = 25
         self.release()
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
@@ -54,6 +56,7 @@ class KivyCameraMain(Image):
                         _cap = cv2.VideoCapture(self.url)
                         if _cap.isOpened():
                             self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
+                            self.duration_fps = _cap.get(cv2.CAP_PROP_FPS)
                             self.duration_total = helper.convertSecNoToHMS(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS))
                         del _cap
                     except Exception as e:
@@ -144,7 +147,7 @@ class KivyCameraMain(Image):
                 if ret:
                     if self.resource_type == 'VIDEO':
                         self.buffer_rate = self.capture.get(cv2.CAP_PROP_POS_FRAMES) / self.duration_total_n
-                        self.duration = helper.convertSecNoToHMS(self.capture.get(cv2.CAP_PROP_POS_FRAMES)/self.capture.get(cv2.CAP_PROP_FPS))
+                        self.duration = helper.convertSecNoToHMS(self.capture.get(cv2.CAP_PROP_POS_FRAMES)/self.duration_fps)
                     self.update_texture_from_frame(frame)
         except IOError:
             print('update interval fail--')

@@ -1,6 +1,3 @@
-import subprocess
-import cv2
-import time
 import src.utils.kivyhelper as kv_helper
 from threading import Thread, Event
 from kivy.clock import Clock, mainthread
@@ -13,9 +10,12 @@ from src.modules.custom.piepimage import PiepImage
 from kivy.properties import ObjectProperty
 from kivy.lang import Builder
 from src.models.normal_model import Normal_model
-
+import subprocess
+import cv2
+import time
 import numpy as np
 import array
+import datetime
 
 Builder.load_file('src/ui/mainstream.kv')
 class MainStream(RelativeLayout):
@@ -389,3 +389,19 @@ class MainStream(RelativeLayout):
         if self.isStream is True:
             self.pipe.kill()
             self.prepare()
+
+    def start_schedule(self, isSchedule):
+        if isSchedule:
+            self.ls_schedule = self.f_parent.right_content.tab_schedule.ls_schedule.get_data()
+            self.mgrSchedule = Clock.schedule_interval(self.process_schedule , 1)
+        else:
+            self.mgrSchedule.cancel()
+        
+    
+    def process_schedule(self, fps):
+        for item in self.ls_schedule:
+            print('item',item['duration'])
+        print(datetime.datetime.now())
+        print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        print(datetime.datetime.now().time())
+        

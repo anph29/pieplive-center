@@ -21,9 +21,16 @@ class RightContent(TabbedPanel):
         super(RightContent, self).__init__(*args, **kwargs)
         self.is_schedule = False
     
-    def play_schedule(self):
-        self.is_schedule = True
-        print('RightContent')
+    def play_schedule(self, instance):
+        if self.is_schedule == False:    
+            self.is_schedule = True
+            instance.source = helper._ICONS_PATH + 'pause.png'
+        else:
+            self.is_schedule = False
+            instance.source = helper._ICONS_PATH + 'play-w.png'
+        if self.f_parent is not None:
+            self.f_parent.mainStream.start_schedule(self.is_schedule)
+
 
 
 class TabMedia(BoxLayout):

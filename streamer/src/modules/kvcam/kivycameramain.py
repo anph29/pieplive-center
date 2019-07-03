@@ -20,6 +20,7 @@ class KivyCameraMain(Image):
     resource_type = StringProperty('')
     buffer_rate = NumericProperty(0)
     duration_total = StringProperty('00:00:00')
+    duration_total_n = NumericProperty(0)
     duration = StringProperty('00:00:00')
     event_capture = None
     default_frame = 'src/images/splash.jpg'
@@ -34,13 +35,13 @@ class KivyCameraMain(Image):
         self.stop = Event()
 
     def set_data_source(self, input):
-        
         self.name = input['name']
         self.url = input['url']
         self.resource_type = input['type']
         self.buffer_rate = 0
         self.duration_total = '00:00:00'
         self.duration = '00:00:00'
+        self.duration_total_n = 0
         self.release()
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
@@ -49,6 +50,13 @@ class KivyCameraMain(Image):
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
                 self.pipe = sp.Popen(command, startupinfo=si)
+                if self.resource_type == 'VIDEO':
+                    _cap = cv2.VideoCapture(self.url)
+                    if _cap.isOpened():
+                        self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
+                        self.duration_total = helper.convertSecNoToHMS(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS))
+                    del _cap
+
                 self.url = 'src/export/output.flv'
                 time.sleep(1)
             else:
@@ -98,8 +106,6 @@ class KivyCameraMain(Image):
 
                 if self.capture is not None and self.capture.isOpened():
                     print(">>CAPTURE FINED:")
-                    if self.resource_type == 'VIDEO':
-                        self.duration_total = helper.convertSecNoToHMS(self.capture.get(cv2.CAP_PROP_FRAME_COUNT)/self.capture.get(cv2.CAP_PROP_FPS))
                     self.event_capture = Clock.schedule_interval(self.update, 1.0 / 30)
                 else:
                     print("cv2.error:")
@@ -136,7 +142,7 @@ class KivyCameraMain(Image):
                 ret, frame = self.capture.retrieve()
                 if ret:
                     if self.resource_type == 'VIDEO':
-                        self.buffer_rate = self.capture.get(cv2.CAP_PROP_POS_FRAMES) / self.capture.get(cv2.CAP_PROP_FRAME_COUNT)
+                        self.buffer_rate = self.capture.get(cv2.CAP_PROP_POS_FRAMES) / self.duration_total_n
                         self.duration = helper.convertSecNoToHMS(self.capture.get(cv2.CAP_PROP_POS_FRAMES)/self.capture.get(cv2.CAP_PROP_FPS))
                     self.update_texture_from_frame(frame)
         except IOError:

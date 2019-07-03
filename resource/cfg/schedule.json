@@ -2,16 +2,19 @@
     {
         "name": "beautiful in white",
         "url": "C:/Users/Thong/Desktop/piep-source/videos/beautiful-in-white.mp4",
-        "type": "VIDEO"
+        "type": "VIDEO",
+        "duration":"00:10:40"
     },
     {
         "name": "saaass",
         "url": "C:/Users/Thong/Desktop/piep-source/videos/ca-1.mp4",
-        "type": "VIDEO"
+        "type": "VIDEO",
+        "duration":"00:10:50"
     },
     {
         "name": "aaaa",
         "url": "C:/Users/Thong/Desktop/piep-source/videos/ca-an.mp4",
-        "type": "VIDEO"
+        "type": "VIDEO",
+        "duration":"00:11:00"
     }
 ]

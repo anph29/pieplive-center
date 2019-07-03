@@ -82,6 +82,9 @@ class ListSchedule(RecycleView):
     def set_data(self):
         self.data = [c for c in helper._load_schedule()]
 
+    def get_data(self):
+        return self.data
+
     def remove(self, index):
         if self.data:
             self.data.pop(index)

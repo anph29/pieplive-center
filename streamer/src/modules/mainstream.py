@@ -44,6 +44,7 @@ class MainStream(RelativeLayout):
         self.reconnect = False
         self.streamType = ''
         self.mgrSchedule = None
+        self.is_loop = False
         self.dataCam = {
             "name": "defaul",
             "url": "src/images/splash.jpg",
@@ -411,9 +412,15 @@ class MainStream(RelativeLayout):
         _index = self.f_parent.right_content.tab_schedule.ls_schedule.getCurrentIndex() + 1
         
         if _index >= len(self.ls_schedule):
-            _index = 0
+            if self.is_loop:
+                _index = 0
+            else:
+                return False
         data_src = self.ls_schedule[_index]
         self.f_parent.right_content.tab_schedule.ls_schedule.setSelected(_index)
         self._set_capture(data_src, 'SCHEDULE', True)
         self.mgrSchedule = Clock.schedule_once(self.process_schedule , self.ls_schedule[_index]['duration'])
+
+    def loop_schedule(self,_val):
+        self.is_loop = _val
         

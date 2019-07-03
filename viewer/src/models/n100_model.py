@@ -17,7 +17,7 @@ class N100_model(HTTP_MODEL):
      #
 
     def getOtpViaNV117(self, param):
-        return self._post('/v3/service/plct/n2019_pieplivecenter_getOtpViaNV117_viewer', param)
+        return self.v3_post('/v3/service/plct/n2019_pieplivecenter_getOtpViaNV117_viewer', param)
 
     # POST
     # Hàm login cho pieplive center
@@ -31,4 +31,4 @@ class N100_model(HTTP_MODEL):
     # -1: Dữ liệu này khong Ton Tai
 
     def pieplivecenterLogin(self, param):
-        return self._post('/v3/service/plct/n2019_pieplivecenter_login_viewer', param)
+        return self.v3_post('/v3/service/plct/n2019_pieplivecenter_login_viewer', param)

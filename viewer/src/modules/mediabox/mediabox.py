@@ -9,34 +9,43 @@ from src.utils import helper, scryto
 class MediaBox(tk.Frame):
     finished = False
     cell_width = 240
-    cell_height = 135
+    top_height = 135
+    bot_height = 25
 
-    def __init__(self, parent, camera=None, *args, **kwargs):
+
+    def __init__(self, parent, media=None, *args, **kwargs):
         super(MediaBox, self).__init__(parent, *args, **kwargs)
         self.parent = parent
-        self.set_data(camera)
+        self.set_data(media)
         self.after(100, self.initGUI)
 
     def get_data(self):
-        return {'id':self.id, 'name': self.name, 'url': self.url, 'type': self.mtype}
+        return {
+            'id':self.id,
+            'name': self.name, 
+            'url': self.url, 
+            'type': self.mtype
+        }
 
-    def set_data(self, camera):
-        self.name = camera['name']
-        self.url = camera['url']
-        self.mtype = camera['type']
+    def set_data(self, media):
+        self.name = media['name']
+        self.url = media['url']
+        self.mtype = media['type']
         self.id = scryto.hash_md5_with_time(self.url)
 
     def initGUI(self):
+        ww = self.cell_width + 5
+        wh = 5 + self.top_height + self.bot_height
+        self.wrapper = tk.Frame(self, relief=tk.FLAT, bd=1 ,bg="#BDC3C7", width=ww, height=wh)
         self.initTOP()
         self.initBOTTOM()
         if self.mtype == 'VIDEO':
-            self.buffer = tk.Frame(
-                self, bd=1, relief=tk.FLAT, borderwidth=1, bg='#f00', width=0, height=3)
+            self.buffer = tk.Frame(self, bd=0, relief=tk.SUNKEN, bg='#f00', width=0, height=3)
             self.buffer.pack(side=tk.LEFT, fill=tk.Y)
+        self.wrapper.pack(expand=True)
 
     def initTOP(self):
-        top = tk.Frame(self, bd=1, relief=tk.FLAT, bg="#ccc",
-                       borderwidth=0, width=self.cell_width, height=self.cell_height)
+        top = tk.Frame(self.wrapper, bd=0, relief=tk.FLAT, bg="#ccc", width=self.cell_width, height=self.top_height)
         top.bind("<Button-1>", self.playOrPauseClick)
         # vlc
         self.Instance = vlc.Instance()
@@ -48,8 +57,27 @@ class MediaBox(tk.Frame):
         #
         if self.mtype == 'VIDEO':
             self.after(100, self.playOrPause)
+        top.pack(side=tk.TOP)
 
-        top.pack(side=tk.TOP, expand=True)
+    def initBOTTOM(self):
+        bottom = tk.Frame(self.wrapper, bd=5, relief=tk.FLAT, width=self.cell_width, height=self.bot_height)
+        if self.mtype != 'IMG':
+            # play
+            imagePlay = ImageTk.PhotoImage(Image.open("src/icons/pause-b.png"))
+            self.lblPlay = tk.Label(bottom, image=imagePlay, cursor='hand2')
+            self.lblPlay.image = imagePlay
+            self.lblPlay.bind("<Button-1>", self.playOrPauseClick)
+            self.lblPlay.pack(side=tk.LEFT)
+        # label
+        lbl_name = PLabel(bottom, text=self.name, justify=tk.LEFT, elipsis=25, font=("Roboto", 10), fg="#000")
+        lbl_name.pack(side=tk.LEFT)
+        # bin
+        imageBin = ImageTk.PhotoImage(Image.open("src/icons/trash-b.png"))
+        lbl_trash = tk.Label(bottom, image=imageBin, cursor='hand2')
+        lbl_trash.image = imageBin
+        lbl_trash.bind("<Button-1>", self.deletemedia)
+        lbl_trash.pack(side=tk.RIGHT)
+        bottom.pack(side=tk.BOTTOM, fill=tk.X)
 
     def initPlayerMedia(self):
         self.media = self.Instance.media_new(self.url)
@@ -58,8 +86,7 @@ class MediaBox(tk.Frame):
 
     def updateProgress(self):
         events = self.player.event_manager()
-        events.event_attach(
-            vlc.EventType.MediaPlayerEndReached, self.on_end)
+        events.event_attach(vlc.EventType.MediaPlayerEndReached, self.on_end)
         nwidth = 0 if 0 == self.media.get_duration() else self.player.get_time() / self.media.get_duration() * self.cell_width
         self.buffer.config(width=nwidth)
         if self.finished:
@@ -71,27 +98,6 @@ class MediaBox(tk.Frame):
         self.finished = True
         self.updatePlayIcon('f5')
 
-    def initBOTTOM(self):
-        bottom = tk.Frame(self, bd=1, relief=tk.FLAT, borderwidth=0,
-                          width=self.cell_width, height=25)
-        if self.mtype != 'IMG':
-            # play
-            imagePlay = ImageTk.PhotoImage(Image.open("src/icons/pause-b.png"))
-            self.lblPlay = tk.Label(bottom, image=imagePlay, cursor='hand2')
-            self.lblPlay.image = imagePlay
-            self.lblPlay.bind("<Button-1>", self.playOrPauseClick)
-            self.lblPlay.pack(side=tk.LEFT)
-        # label
-        lbl_name = PLabel(bottom, text=self.name, justify=tk.LEFT, elipsis=25, font=(
-            "Roboto", 10), fg="#000")
-        lbl_name.pack(side=tk.LEFT)
-        # bin
-        imageBin = ImageTk.PhotoImage(Image.open("src/icons/trash-b.png"))
-        lbl_trash = tk.Label(bottom, image=imageBin, cursor='hand2')
-        lbl_trash.image = imageBin
-        lbl_trash.bind("<Button-1>", self.deleteCamera)
-        lbl_trash.pack(side=tk.RIGHT)
-        bottom.pack(side=tk.BOTTOM, fill=tk.X)
 
     def play(self):
         if self.mtype == 'VIDEO':
@@ -122,10 +128,8 @@ class MediaBox(tk.Frame):
         self.lblPlay.configure(image=imagetk)
         self.lblPlay.image = imagetk
 
-    def deleteCamera(self, evt):
+    def deletemedia(self, evt):
         if messagebox.askyesno("PiepMe", "Are you sure to delete this resource?"):
-            pass
-        else:
             pass
 
     def remove(self, index):

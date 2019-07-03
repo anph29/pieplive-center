@@ -154,5 +154,5 @@ def convertSecNoToHMS(seconds, toObj=False) :
     if toObj:
         return { 'h': hs, 'm': ms, 's': ss } 
     else:
-        return (('', hs + ':')[h>0]) + ms + ':' + ss
+        return (('', hs + ':')[h > 0]) + ms + ':' + ss
 

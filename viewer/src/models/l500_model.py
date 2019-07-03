@@ -7,7 +7,7 @@ class L500_model(HTTP_MODEL):
         super(L500_model, self).__init__()
 
     def l2019_listoftabL500_prov(self, param):
-        return self._get('/v2/service/l500/l2019_listoftabL500_prov', param)
+        return self.v3_get('/v2/service/l500/l2019_listoftabL500_prov', param)
 
     # /**
     #      * POST

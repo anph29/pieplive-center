@@ -26,19 +26,16 @@ class AddResource(object):
         f_name = tk.Frame(self.addCamPopup, pady=10)
         l_name = tk.Label(f_name, text="Name:", width=6, anchor=tk.W)
         l_name.pack(side=tk.LEFT, fill=tk.Y)
-        self.e_name = tk.Entry(f_name, textvariable=self.name,
-                               width=100,  borderwidth=5, relief=tk.FLAT)
+        self.e_name = tk.Entry(f_name, textvariable=self.name, width=100, borderwidth=5, relief=tk.FLAT)
         self.e_name.pack(side=tk.LEFT, fill=tk.X)
         f_name.pack(side=tk.TOP, fill=tk.X)
         # URL
         f_url = tk.Frame(self.addCamPopup,  pady=10)
         l_url = tk.Label(f_url, text="URL:", width=6, anchor=tk.W)
         l_url.pack(side=tk.LEFT, fill=tk.Y)
-        self.e_url = tk.Entry(f_url, textvariable=self.url, width=36,
-                              borderwidth=5, relief=tk.FLAT)
+        self.e_url = tk.Entry(f_url, textvariable=self.url, width=36, borderwidth=5, relief=tk.FLAT)
         self.e_url.pack(side=tk.LEFT, fill=tk.X)
-        btn_choose = tk.Button(
-            f_url, text="Choose..", relief=tk.RAISED, padx=5, pady=5, command=self.askFileName)
+        btn_choose = tk.Button( f_url, text="Choose..", relief=tk.RAISED, padx=5, pady=5, command=self.askFileName)
         btn_choose.configure(width=7)
         btn_choose.pack(side=tk.RIGHT, fill=tk.Y)
         f_url.pack(side=tk.TOP, fill=tk.X)
@@ -48,12 +45,10 @@ class AddResource(object):
         l_error.pack(side=tk.LEFT, fill=tk.Y)
         # bot button
         f_btn = tk.Frame(self.addCamPopup, pady=10)
-        btn_cancel = tk.Button(f_btn, text="Cancel", bd=2, relief=tk.RAISED,
-                               command=self.addCamPopup.destroy)
+        btn_cancel = tk.Button(f_btn, text="Cancel", bd=2, relief=tk.RAISED, command=self.addCamPopup.destroy)
         btn_cancel.configure(width=7)
         btn_cancel.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
-        btn_ok = tk.Button(f_btn, text="OK", bd=2, bg="#ff2d55", fg="#fff", relief=tk.RAISED,
-                           command=self.on_ok)
+        btn_ok = tk.Button(f_btn, text="OK", bd=2, bg="#ff2d55", fg="#fff", relief=tk.RAISED, command=self.on_ok)
         btn_ok.configure(width=7)
         btn_ok.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
         f_btn.pack(side=tk.BOTTOM, fill=tk.X)
@@ -76,17 +71,16 @@ class AddResource(object):
         dt = {
             "name": str(self.name.get()),
             "url": str(self.url.get()),
-            "type": str(self.mtype)
+            "type": self.mtype
         }
         helper._add_to_lscam(dt)
         self.parent.addToTabCamera(dt)
-
         self.addCamPopup.destroy()
 
     def on_ok(self):
         if self.use_local:
             self.add_to_lscam()
-        elif len(str(self.name.get())) > 0:
+        elif len(self.name.get()) > 0:
             self.mtype = self.validateResouce()
             if self.mtype:
                 self.add_to_lscam()

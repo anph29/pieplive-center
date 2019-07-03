@@ -42,15 +42,19 @@ class MediaTab(DynamicGrid):
         btnAddResource.place(rely=1.0, relx=1.0, x=-20, y=-20, anchor=tk.SE)
 
     def showCoboboxBU(self):
-        self.combobox = ttk.Combobox()
-        self.loadDataCombobox()
+        cbxData = {q170['NV106']: q170['FO100'] for q170 in self.loadCbxQ170()}
 
-    def loadDataCombobox(self):
+    def loadCbxQ170(self):
         q170 = Q170_model()
-        return q170.getListProviderWithRole({
+        rs = q170.getListProviderWithRole({
             'FO100': store._get('FO100') or 0,
             'FQ180': Q180.CAM_LIV_OOF
         })
+
+        if rs['status'] == 'success':
+            return rs['elements']
+        else:
+            return []
 
     def addMedia(self, Fdata):
         if self.tabType == TabType.CAMERA:

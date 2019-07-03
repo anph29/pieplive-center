@@ -88,7 +88,7 @@ class ListSchedule(RecycleView):
     def remove(self, index):
         if self.data:
             self.data.pop(index)
-            helper._write_lsStaticSource(self.clean_data_to_save_json())
+            helper._write_schedule(self.clean_data_to_save_json()) 
 
     def clean_data_to_save_json(self):
         return list(

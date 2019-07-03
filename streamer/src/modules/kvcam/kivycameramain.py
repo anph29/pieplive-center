@@ -20,7 +20,7 @@ class KivyCameraMain(Image):
     resource_type = StringProperty('')
     buffer_rate = NumericProperty(0)
     duration_total = StringProperty('00:00:00')
-    duration_total_n = NumericProperty(0)
+    duration_total_n = NumericProperty(1)
     duration = StringProperty('00:00:00')
     duration_fps = NumericProperty(25)
     event_capture = None
@@ -42,7 +42,7 @@ class KivyCameraMain(Image):
         self.buffer_rate = 0
         self.duration_total = '00:00:00'
         self.duration = '00:00:00'
-        self.duration_total_n = 0
+        self.duration_total_n = 1
         self.duration_fps = 25
         self.release()
         try:

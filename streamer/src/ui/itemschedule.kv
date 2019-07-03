@@ -16,10 +16,16 @@
         spacing:5
         ImageButton:
             size_hint:None,1
-            width: 20
+            width: 12
             pos_hint:{'top':1, 'right':1}
-            source: (helper._ICONS_PATH+'play-w.png',helper._ICONS_PATH+'pause.png')[root.kvcam.is_playing]
-            on_release:root.kvcam._pause()
+            source: helper._ICONS_PATH+'checked.png'
+            opacity: (1,1)[root.kvcam.is_playing]
+        Label:
+            size_hint:None,1
+            width: 54
+            text:"09:32:30"
+            font_size: 12
+            color:1,1,1,1
         LabelCamera:
             id:kvcam
             size_hint: .7, 1

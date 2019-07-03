@@ -14,14 +14,11 @@ class LabelCamera(Label):
     name = StringProperty('')
     url = StringProperty('')
     resource_type = StringProperty('')
-    
 
     def __init__(self, **kwargs):
         super(LabelCamera, self).__init__(**kwargs)
 
     def set_data_source(self, input):
-        # if self.capture is not None:
-        #     self.capture.release()
         self.name = input['name']
         self.text = input['name']
         self.url = input['url']
@@ -38,19 +35,6 @@ class LabelCamera(Label):
             'type': self.resource_type,
             'capture': self.capture
         }
-
-    def _play(self):
-        # cap = cv2.VideoCapture(self.url)
-        # if bool(cap):
-        #     self.init_capture()
-        pass
-
-    def _pause(self, *args):
-        # self.stop_update_capture()
-        # if self.resource_type == 'RTSP':
-        #     self.capture.release()
-        # self.is_playing = False
-        pass
 
     def init_capture(self, capture=None):
         if capture is not None:
@@ -72,3 +56,9 @@ class LabelCamera(Label):
         except Exception as e:
             print("Exception:", e)
         return None
+
+    def play(self):
+        is_playing = True
+
+    def pause(self):
+        is_playing = False

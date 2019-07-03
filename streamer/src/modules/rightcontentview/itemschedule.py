@@ -4,7 +4,7 @@ from kivy.properties import ObjectProperty, NumericProperty, ObjectProperty, Boo
 from src.modules.custom.popup import PiepMeConfirmPopup
 from src.modules.kvcam.labelcamera import LabelCamera
 from kivy.lang import Builder
-from src.utils import kivyhelper as kv_helper
+from src.utils import kivyhelper as kvhelper
 
 Builder.load_file('src/ui/itemschedule.kv')
 class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
@@ -37,7 +37,7 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
         self.selected = is_selected
         if self.selected and self.is_changing:
             self.is_changing = False
-            kv_helper.getApRoot().changeSrc(self.kvcam.get_data_source())
+            kvhelper.getApRoot().changeSrc(self.kvcam.get_data_source(),'SCHEDULE')
         else:
             self.is_changing = False
 

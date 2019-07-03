@@ -43,6 +43,7 @@ class MainStream(RelativeLayout):
         self.canvas_parent_index = 0
         self.stop = Event()
         self.reconnect = False
+        self.streamType = ''
         self.dataCam = {
             "name": "defaul",
             "url": "src/images/splash.jpg",
@@ -56,7 +57,7 @@ class MainStream(RelativeLayout):
             si = subprocess.STARTUPINFO()
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             self.pipe2 = subprocess.Popen(command, startupinfo=si)
-            Clock.schedule_once(lambda x: self.pipe2.kill() , 10)
+            Clock.schedule_once(lambda x: self.pipe2.kill() , 6)
         except IOError:
             pass
 
@@ -116,7 +117,8 @@ class MainStream(RelativeLayout):
         #     data = wf.readframes(1024)
         pass
     
-    def _set_capture(self, data_src):
+    def _set_capture(self, data_src, data_type):
+        self.streamType = data_type
         self.dataCam = data_src
         self.camera.f_parent = self
         self.camera.set_data_source(data_src)
@@ -219,7 +221,7 @@ class MainStream(RelativeLayout):
 
         if self.dataCam['type'] == "VIDEO" or self.dataCam['type'] == "M3U8":
             url = self.dataCam['url']
-            if self.dataCam['type'] == 'M3U8':
+            if self.dataCam['type'] == 'M3U8' or self.dataCam['type'] == "VIDEO":
                 url = 'src/export/output.flv'
             numau += 1
             inp.extend(["-i", url])

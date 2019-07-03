@@ -85,18 +85,11 @@ class MainView(Widget):
 
     def initSource(self):
         self.lsSource = helper._load_lsStaticSource()
-
-        print(  self.lsSource ,'aaaaaaaaaaaaaaaaaaaaaaaaa')
-
-
-
-        #if self.lsSource is not None:
         self.mainStream.lsSource = self.lsSource
         self.bottom_left.list_source.set_source(self.lsSource)
         for idx, _s in enumerate(self.lsSource):
             _s['idx'] = idx
             _s['total'] = len(self.lsSource)
-            # if _s['active'] == 1:
             if _s['type'] == 'text':
                 self.mainStream.show_text(_s['label'], _s['font'], _s['size'],
                                         _s['color'], _s['pos_x'], _s['pos_y'], _s['active'], idx, True)
@@ -108,9 +101,9 @@ class MainView(Widget):
                 self.lsAudio.append(_audio)
 
 
-    def changeSrc(self, data_src):
+    def changeSrc(self, data_src, data_type):
         if bool(data_src) and self.mainStream is not None:
-            self.mainStream._set_capture(data_src)
+            self.mainStream._set_capture(data_src, data_type)
 
     def changeAudio(self, value):
         if value is not None and self.mainStream is not None:

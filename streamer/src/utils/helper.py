@@ -10,7 +10,8 @@ import pyqrcode
 _BASE_PATH              = os.path.abspath('../resource').replace('\\', '/') + '/'
 _SETTING_PATH           = _BASE_PATH + 'cfg/setting.json'
 _PATH_STORE             = _BASE_PATH + 'cfg/store.json'
-_PATH_CUSTOM_RESOURCE   = _BASE_PATH + 'cfg/custom_resource.json'
+_PATH_IMAGE             = _BASE_PATH + 'cfg/image.json'
+_PATH_VIDEO             = _BASE_PATH + 'cfg/video.json'
 _PATH_CAMERA            = _BASE_PATH + 'cfg/camera.json'
 _PATH_PRESENTER         = _BASE_PATH + 'cfg/presenter.json'
 _PATH_SCHEDULE          = _BASE_PATH + 'cfg/schedule.json'
@@ -43,16 +44,27 @@ def _write_lscam(data):
 def _add_to_lscam(data):
     appendJSON(_PATH_CAMERA, data)
 """
-ls custom resource
+ls image resource
 """
-def _load_custom_resource():
-    return loadJSON(_PATH_CUSTOM_RESOURCE)
+def _load_image():
+    return loadJSON(_PATH_IMAGE)
 
-def _write_custom_resource(data):
-    writeJSON(_PATH_CUSTOM_RESOURCE, data)
+def _write_image(data):
+    writeJSON(_PATH_IMAGE, data)
 
-def _add_to_custom_resource(data):
-    appendJSON(_PATH_CUSTOM_RESOURCE, data)
+def _add_to_image(data):
+    appendJSON(_PATH_IMAGE, data)
+"""
+ls video resource
+"""
+def _load_video():
+    return loadJSON(_PATH_VIDEO)
+
+def _write_video(data):
+    writeJSON(_PATH_VIDEO, data)
+
+def _add_to_video(data):
+    appendJSON(_PATH_VIDEO, data)
 """
 ls presenter
 """

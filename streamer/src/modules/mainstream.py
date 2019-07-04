@@ -232,6 +232,7 @@ class MainStream(RelativeLayout):
             if self.dataCam['type'] == 'M3U8' or self.dataCam['type'] == "VIDEO":
                 url = 'src/export/output.flv'
             numau += 1
+            # inp.extend(["-ss", self.camera.duration,"-i", url])
             inp.extend(["-i", url])
             txt += f"[{numau}:a]volume=1[a{numau}];"
             _map += f'[a{numau}]'
@@ -264,7 +265,7 @@ class MainStream(RelativeLayout):
             
             self.command.extend(self.draw_element())
             # encode
-            self.command.extend(['-vb', str(self.v_bitrate), '-preset', 'veryfast', '-g', '25', '-r', '25'])
+            self.command.extend(['-vb', str(self.v_bitrate), '-preset', 'veryfast', '-r', '25'])
             # tream
             self.command.extend(['-f', 'flv', self.urlStream])
 

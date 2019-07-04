@@ -23,7 +23,7 @@ class KivyCameraMain(Image):
     duration_total_n = NumericProperty(1)
     duration = StringProperty('00:00:00')
     duration_fps = NumericProperty(25)
-    
+
     event_capture = None
     default_frame = 'src/images/splash.jpg'
     pipe = None
@@ -58,8 +58,8 @@ class KivyCameraMain(Image):
                         del _cap
                     except Exception as e:
                         print("Exception:", e)
-                print('===================',round(self.duration_fps),'=========',self.duration_fps,'=======')
-                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-filter:v", "setpts=1.0427*PTS", "-filter:a", "atempo=0.959","-ab","128k","-ac","2","-ar","44100","-vb","3072k","-r","25","-crf", "18","src/export/output.flv"]
+                print('===================',round(self.duration_fps),'=========')
+                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-ar","44100","-r","25","src/export/output.flv"]#"-filter:v", f"setpts={self.duration_fps/25}*PTS","-filter:a", f"atempo={25/self.duration_fps}"    "-ab","128k","-ac","2","-ar","44100","-vb","3072k",
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
                 self.pipe = sp.Popen(command, startupinfo=si)

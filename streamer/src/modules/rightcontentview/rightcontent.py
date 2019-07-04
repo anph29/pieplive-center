@@ -1,10 +1,10 @@
-
 from kivy.uix.tabbedpanel import TabbedPanel
 from kivy.uix.boxlayout import BoxLayout
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty, StringProperty
 from src.modules.rightcontentview.addcamera import AddCamera
 from src.modules.rightcontentview.addmedia import AddMedia
+from src.modules.rightcontentview.addimage import AddImage
 from src.modules.rightcontentview.itemlabel import ItemLabel
 from src.modules.rightcontentview.itemschedule import ItemSchedule
 from src.utils import helper
@@ -13,6 +13,7 @@ Builder.load_file('src/ui/rightcontent.kv')
 
 class RightContent(TabbedPanel):
     tab_media = ObjectProperty()
+    tab_image = ObjectProperty()
     tab_camera = ObjectProperty()
     tab_presenter = ObjectProperty()
     tab_schedule = ObjectProperty()
@@ -41,6 +42,14 @@ class TabMedia(BoxLayout):
     def open_add_media(self):
         self.add_media_pop = AddMedia(self)
         self.add_media_pop.open()
+
+class TabImage(BoxLayout):
+    add_image_pop = ObjectProperty()
+    ls_image = ObjectProperty()
+
+    def open_add_image(self):
+        self.add_image_pop = AddImage(self)
+        self.add_image_pop.open()
 
 class TabCamera(BoxLayout):
     add_cam_pop = ObjectProperty()

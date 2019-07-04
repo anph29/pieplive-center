@@ -6,9 +6,9 @@ from src.modules.custom.filechoose import FileChooser
 from src.utils import ftype, helper
 import src.utils.kivyhelper as kv_helper
 
-Builder.load_file('src/ui/addmedia.kv')
+Builder.load_file('src/ui/addimage.kv')
 
-class AddMedia(Popup):
+class AddImage(Popup):
     name = ObjectProperty()
     url = ObjectProperty()
     error = BooleanProperty(False)
@@ -16,20 +16,20 @@ class AddMedia(Popup):
     use_local = False
 
     def __init__(self, parent):
-        super(AddMedia, self).__init__()
+        super(AddImage, self).__init__()
 
-    def add_to_lsmedia(self):
-        helper._add_to_video({
+    def add_to_lsimage(self):
+        helper._add_to_image({
             "name": self.name.text,
             "url": self.url.text,
-            "type": self.resource_type
+            "type": "IMG"
         })
-        kv_helper.getApRoot().init_right_content_media()
+        kv_helper.getApRoot().init_right_content_image()
         self.dismiss()
 
     def on_ok(self):
         if self.use_local:
-            self.add_to_lsmedia()
+            self.add_to_lsimage()
         elif len(self.url.text) > 0:
             self.resource_type = self.get_type_from_link()
             if self.resource_type:
@@ -49,8 +49,8 @@ class AddMedia(Popup):
 
     def choosed_file(self, selection):
         if len(selection) == 1:
-            if ftype.isVideo(selection[0]):
-                self.local_file(selection[0], 'VIDEO')
+            if ftype.isImage(selection[0]):
+                self.local_file(selection[0], 'IMG')
             else:
                 self.error = True
 
@@ -61,11 +61,7 @@ class AddMedia(Popup):
 
     def get_type_from_link(self):
         URL = self.url.text.upper()
-        if 'RTSP' in URL:
-            return 'RTSP'
-        elif '.MP4' in URL or '.AVI' in URL:
-            return 'VIDEO'
-        elif '.M3U8' in URL:
-            return 'M3U8'
+        if '.JPG' in URL or '.PNG' in URL or '.GIF' in URL or '.JPGE' in URL:
+            return 'IMG'
         else:
             return False

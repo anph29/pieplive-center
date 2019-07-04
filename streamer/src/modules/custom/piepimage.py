@@ -27,7 +27,6 @@ class PiepImage(DragBehavior, Image):
         self.parentName = parentName
 
     def on_touch_up(self, touch):
-        
         if self._get_uid('svavoid') in touch.ud:
             return super(DragBehavior, self).on_touch_up(touch)
 

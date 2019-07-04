@@ -8,12 +8,36 @@ class ListMedia(RecycleView):
         super(ListMedia, self).__init__(**kwargs)
 
     def set_data(self):
-        self.data = [c for c in helper._load_custom_resource()]
+        self.data = [c for c in helper._load_video()]
 
     def remove(self, index):
         if self.data:
             self.data.pop(index)
-            helper._write_custom_resource(self.clean_data_to_save_json())
+            helper._write_video(self.clean_data_to_save_json())
+
+    def clean_data_to_save_json(self):
+        return list(
+            map(
+                lambda cam: {'name': cam['name'], 'url': cam['url'], 'type': cam['type']},
+                list(self.data)
+            )
+        )
+
+    def refresh_list(self):
+        self.set_data()
+
+class ListImage(RecycleView):
+ 
+    def __init__(self, **kwargs):
+        super(ListImage, self).__init__(**kwargs)
+
+    def set_data(self):
+        self.data = [c for c in helper._load_image()]
+
+    def remove(self, index):
+        if self.data:
+            self.data.pop(index)
+            helper._write_image(self.clean_data_to_save_json())
 
     def clean_data_to_save_json(self):
         return list(

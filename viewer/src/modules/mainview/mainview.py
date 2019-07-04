@@ -43,7 +43,7 @@ class MainView(tk.Frame):
         self.masterTab.add(self.tab_image, text="Images")
         #
         self.tab_video = self.initTabContent(TabType.VIDEO)
-        self.masterTab.add(self.tab_video, text="Visdeos")
+        self.masterTab.add(self.tab_video, text="Videos")
         #
         self.tab_camera = self.initTabContent(TabType.CAMERA)
         self.masterTab.add(self.tab_camera, text="Cameras")

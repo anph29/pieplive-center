@@ -3,7 +3,7 @@ from tkinter import ttk, messagebox
 from src.utils import helper, store
 from src.modules.mediatab import MediaTab, TabType
 from src.models import Q170_model, L500_model
-from src.enums import Q180
+from src.enums import Q180, WS
 from src.modules.custom import LabeledCombobox
 from PIL import Image, ImageTk
 from src.modules.menu import MainMenu
@@ -105,7 +105,8 @@ class MainView(tk.Frame):
             'FO100': store._get('FO100') or 0,
             'FQ180': Q180.CAM_LIV_OOF
         })
-        return rs['elements'] if rs['status'] == 'success' else []
+        print(WS.STATUS)
+        return rs[WS.ELEMENTS] if rs[WS.STATUS] == WS.SUCCESS else []
         
 
     def loadLsL500(self, fo100):
@@ -119,4 +120,4 @@ class MainView(tk.Frame):
             'LIMIT': 200,
             'LOGIN': 'PiepLive Center'
         })
-        return rs['elements'] if rs['status'] == 'success' else []
+        return rs[WS.ELEMENTS] if rs[WS.STATUS] == WS.SUCCESS else []

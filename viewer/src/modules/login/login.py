@@ -6,6 +6,7 @@ from src.models.n100_model import N100_model
 from uuid import getnode as get_mac
 from src.utils import store
 from tkinter import messagebox
+from src.enums import WS
 class Login(object):
     loginPopup = None
     font = ("Arial", 10)
@@ -99,7 +100,7 @@ class Login(object):
         nv117 = self.NV117.get()
         if regex.match(nv117):
             res = self.getOtpViaNV117(nv117)
-            if res['status'] == 'success':
+            if res[WS.STATUS] == WS.SUCCESS:
                 self.fPid.pack_forget()
                 self.fToken.pack(side=tk.LEFT, fill=tk.X)
             else:
@@ -113,9 +114,9 @@ class Login(object):
         pv161 = self.PV161.get()
         if regex.match(pv161):
             res = self.pieplivecenterLogin(self.NV117.get(), pv161)
-            if res['status'] == 'success':
+            if res[WS.STATUS] == WS.SUCCESS:
                 # save login
-               store._new(res['elements'])
+               store._new(res[WS.ELEMENTS])
                #
                self.parent.showToolbar()
                self.loginPopup.destroy()

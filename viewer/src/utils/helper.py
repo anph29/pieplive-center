@@ -166,7 +166,7 @@ def convertSecNoToHMS(seconds, toObj=False):
     if toObj:
         return { 'h': hs, 'm': ms, 's': ss } 
     else:
-        return (('', hs + ':')[h>0]) + ms + ':' + ss
+        return f'{hs}:{ms}:{ss}'
 
 def convertHMSNoToSec(hms):
     h,m,s = hms.values()

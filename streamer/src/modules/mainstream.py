@@ -11,7 +11,6 @@ from src.modules.custom.piepimage import PiepImage
 from kivy.properties import ObjectProperty
 from kivy.lang import Builder
 from src.models.normal_model import Normal_model
-# from src.utils.mytimer import MyTimer
 import subprocess
 import cv2
 import time
@@ -232,9 +231,9 @@ class MainStream(RelativeLayout):
             if self.dataCam['type'] == 'M3U8' or self.dataCam['type'] == "VIDEO":
                 url = 'src/export/output.flv'
             numau += 1
-            print("++======+___--",self.camera.duration,"===")
-            inp.extend(["-ss", self.camera.duration,"-i", url])
-            # inp.extend(["-i", url])
+            # print("++======+___--",self.camera.duration,"===")
+            # inp.extend(["-ss", self.camera.duration,"-i", url])
+            inp.extend(["-i", url])
             txt += f"[{numau}:a]volume=1[a{numau}];"
             _map += f'[a{numau}]'
 

@@ -2,7 +2,7 @@ from kivy.uix.label import Label
 from kivy.app import App
 from kivy.uix.behaviors import DragBehavior
 from kivy.graphics import Rectangle, Color
-from src.utils import helper
+from src.utils import kivyhelper
 from kivy.clock import Clock
 from kivy.lang import Builder
 from functools import partial
@@ -41,7 +41,7 @@ class PiepLabel(DragBehavior, Label):
             if self._drag_touch is not touch:
                 super(DragBehavior, self).on_touch_up(touch)
         if self.parentName != 'canvas':
-            helper.getApRoot().mainStream.on_change_position(self.idx,self.x,self.y, self.parentName)
+            kivyhelper.getApRoot().mainStream.on_change_position(self.idx,self.x,self.y, self.parentName)
         return self._get_uid() in touch.ud
 
      

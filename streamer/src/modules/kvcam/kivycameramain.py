@@ -20,8 +20,9 @@ class KivyCameraMain(Image):
     resource_type = StringProperty('')
     buffer_rate = NumericProperty(0)
     duration_total = StringProperty('00:00:00')
-    duration_total_n = NumericProperty(0)
+    duration_total_n = NumericProperty(1)
     duration = StringProperty('00:00:00')
+    duration_fps = NumericProperty(25)
     event_capture = None
     default_frame = 'src/images/splash.jpg'
     pipe = None
@@ -41,23 +42,27 @@ class KivyCameraMain(Image):
         self.buffer_rate = 0
         self.duration_total = '00:00:00'
         self.duration = '00:00:00'
-        self.duration_total_n = 0
+        self.duration_total_n = 1
+        self.duration_fps = 30
         self.release()
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
-                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-ab","128k","-ac","2","-ar","44100","-vb","3072k","-r","25","src/export/output.flv"]
-                si = sp.STARTUPINFO()
-                si.dwFlags |= sp.STARTF_USESHOWWINDOW
-                self.pipe = sp.Popen(command, startupinfo=si)
                 if self.resource_type == 'VIDEO':
                     try:
                         _cap = cv2.VideoCapture(self.url)
                         if _cap.isOpened():
                             self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
+                            self.duration_fps = round(_cap.get(cv2.CAP_PROP_FPS))
                             self.duration_total = helper.convertSecNoToHMS(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS))
                         del _cap
                     except Exception as e:
                         print("Exception:", e)
+                print('===================',round(self.duration_fps),'=========',self.duration_fps,'=======')
+                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-ab","128k","-ac","2","-ar","44100","-vb","3072k","src/export/output.flv"]
+                si = sp.STARTUPINFO()
+                si.dwFlags |= sp.STARTF_USESHOWWINDOW
+                self.pipe = sp.Popen(command, startupinfo=si)
+                
                 self.url = 'src/export/output.flv'
                 time.sleep(1)
             else:
@@ -106,8 +111,10 @@ class KivyCameraMain(Image):
                         print('url',self.url)
 
                 if self.capture is not None and self.capture.isOpened():
+                    if self.resource_type != 'VIDEO':
+                        self.duration_fps = round(self.capture.get(cv2.CAP_PROP_FPS))
                     print(">>CAPTURE FINED:")
-                    self.event_capture = Clock.schedule_interval(self.update, 1.0 / 30)
+                    self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
                 else:
                     print("cv2.error:")
                     if self.capture is not None:

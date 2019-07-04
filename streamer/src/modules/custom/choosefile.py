@@ -2,7 +2,6 @@ import kivy
 from kivy.properties import StringProperty, ObjectProperty
 from kivy.lang import Builder
 from kivy.uix.popup import Popup
-from kivy.lang import Builder
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
 from kivy.core.audio import SoundLoader

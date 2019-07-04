@@ -21,17 +21,7 @@ def getAppType():
 def _load_fonts():
     with open('src/cfg/lsfont.json', 'r', encoding='utf-8') as json_lsfont:
         return json.load(json_lsfont)
-
-def _load_lsStaticSource():
-    with open('src/cfg/lsstaticsource.json', 'r',
-              encoding='utf-8') as json_lscam:
-        return json.load(json_lscam)
-
-def _write_lsStaticSource(data):
-    with open('src/cfg/lsstaticsource.json', 'w',
-              encoding='utf-8') as json_lscam:
-        json.dump(data, json_lscam, indent=4)
-
+        
 def _read_setting(key=None):
     with open('src/cfg/setting.json', 'r', encoding='utf-8') as json_setting:
         setting = json.load(json_setting)

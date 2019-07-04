@@ -30,8 +30,9 @@ class RightContent(TabbedPanel):
             instance.source = helper._ICONS_PATH + 'play-w.png'
         if self.f_parent is not None:
             self.f_parent.mainStream.start_schedule(self.is_schedule)
-
-
+    
+    def change_schedule_loop(self, _val):
+        self.f_parent.mainStream.loop_schedule(_val)
 
 class TabMedia(BoxLayout):
     add_media_pop = ObjectProperty()

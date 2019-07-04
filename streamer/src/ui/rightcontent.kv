@@ -211,7 +211,7 @@
         size_hint:1, None
         height:30
         padding:5
-        spacing:8
+        spacing:0
         canvas.before:
             Color:
                 rgb:.20, .20, .20
@@ -228,3 +228,33 @@
             size_hint:None,None
             size: 20,20
             on_release: ls_schedule.refresh_list()
+        Widget:
+            size_hint:None,1
+            width: 8
+        CheckBox:
+            size_hint:None,1
+            width: 20
+            on_active: root.f_root.change_schedule_loop(self.active)
+            canvas.before:
+                Color:
+                    rgb: 1,1,1
+                Rectangle:
+                    pos:self.center_x-8, self.center_y-8
+                    size:[16,16]
+                Color:
+                    rgb: 0,0,0
+                Rectangle:
+                    pos:self.center_x-7, self.center_y-7
+                    size:[14,14]
+        Label:
+            size_hint:None,1
+            color: 1.0,1.0,1.0,1
+            font_size: 12
+            padding: 2,0
+            text: 'Loop'
+            text_size: self.width, 24
+            valign: 'center'
+            halign: 'left'
+            markup: True
+        Widget:
+                

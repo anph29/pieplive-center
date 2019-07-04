@@ -60,8 +60,5 @@ class PiepStream(App):
         kivy_helper.getApRoot().on_stop()
 
 if __name__ == '__main__':
-    existedResource = os.path.exists("../resource")
-    if not existedResource:
-        zip_helper.extractZip('./resource.zip', '../')
-
+    helper.makeSureResourceFolderExisted()
     PiepStream().run()

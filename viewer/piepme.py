@@ -1,4 +1,3 @@
-import os
 import tkinter as tk
 from src.modules.mainview import MainView
 from src.modules.login import Login
@@ -33,9 +32,7 @@ def run():
     root.mainloop()
 
 if __name__ == "__main__":
-    existedResource = os.path.exists("../resource")
-    if not existedResource:
-        zip_helper.extractZip('./resource.zip', '../')
+    helper.makeSureResourceFolderExisted()
     run()
 
    

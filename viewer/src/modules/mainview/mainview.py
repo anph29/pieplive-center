@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from src.utils import helper, store
 from src.modules.mediatab import MediaTab, TabType
 from src.models import Q170_model, L500_model
@@ -67,30 +67,34 @@ class MainView(tk.Frame):
         self.toolbar.pack(side=tk.TOP, fill=tk.X)
         #
         imgCheck = ImageTk.PhotoImage(Image.open(helper._ICONS_PATH+'close-pink.png'))
-        lblCommandClear = tk.Label(self.toolbar, image=imgCheck, bg="#ccc")
+        lblCommandClear = tk.Label(self.toolbar, bd=1, image=imgCheck, bg="#ccc")
         lblCommandClear.photo = imgCheck
-        lblCommandClear.pack(side=tk.RIGHT, fill=tk.Y, padx=(0, 10), pady=5)
+        lblCommandClear.pack(side=tk.RIGHT, fill=tk.Y, padx=(0, 15), pady=5)
         lblCommandClear.bind('<Button-1>', self.onClearResource)
         #
         imgCheck = ImageTk.PhotoImage(Image.open(helper._ICONS_PATH+'check-green.png'))
-        lblCommandCheck = tk.Label(self.toolbar, image=imgCheck, bg="#ccc")
+        lblCommandCheck = tk.Label(self.toolbar, bd=1, image=imgCheck, bg="#ccc")
         lblCommandCheck.photo = imgCheck
         lblCommandCheck.pack(side=tk.RIGHT, fill=tk.Y, padx=(5, 0), pady=5)
         lblCommandCheck.bind('<Button-1>', self.onNewResource)
         #
         cbxData = {q170['NV106']: q170['FO100'] for q170 in self.loadCbxQ170()}
-        cbxQ170 = LabeledCombobox(self.toolbar, cbxData, callback=self.loadMediaByFO100BU, bd=1, relief=tk.FLAT)
+        cbxQ170 = LabeledCombobox(self.toolbar, cbxData, callback=self.onSelectBussiness, bd=1, relief=tk.FLAT)
         cbxQ170.pack(side=tk.RIGHT, padx=10, pady=10)
         #
         self.updateMenu()
 
-    def onClearResource(self):
-        
-    def onNewResource(self):
-        
+    def onSelectBussiness(self, fo100):
+        self.FO100BU = fo100
 
-    def loadMediaByFO100BU(self, fo100):
-        self.loadLsL500(fo100)
+    def onClearResource(self, evt):
+        if messagebox.askyesno("PiepMe", "Are you sure to clear resource?"):
+            pass
+    def onNewResource(self, evt):
+        if messagebox.askyesno("PiepMe", "Are you sure to renew resource?"):
+            lsL500 = self.loadLsL500(self.FO100BU)
+            presenter = list(filter(lambda l500: l500['LN508'] == 1, lsL500))
+            camera = list(filter(lambda l500: l500['LN508'] == 0, lsL500))
 
     def loadCbxQ170(self):
         q170 = Q170_model()

@@ -160,3 +160,24 @@ def convertHMSNoToSec(hms):
     h,m,s = hms.values()
     return int(s) + int(m) * 60 + int(h) * 60 ** 2
 
+def makeSureResourceFolderExisted():
+    resrcPth = '../resource'
+    #
+    if not os.path.exists(resrcPth):
+        zip_helper.extractZip('./resource.zip', '../')
+    #
+    if not os.path.exists(resrcPth + '/cfg'):
+        os.mkdir(resrcPth + '/cfg')
+    #
+    checkResourceExistAndWriteIfNot('store', data={})
+    checkResourceExistAndWriteIfNot('video')
+    checkResourceExistAndWriteIfNot('image')
+    checkResourceExistAndWriteIfNot('camera')
+    checkResourceExistAndWriteIfNot('schedule')
+    checkResourceExistAndWriteIfNot('presenter')
+    checkResourceExistAndWriteIfNot('staticsource')
+
+def checkResourceExistAndWriteIfNot(target, data=[]):
+    path = f'{_BASE_PATH}cfg/{target}.json'
+    if not os.path.isfile(path):
+        writeJSON(path, data)

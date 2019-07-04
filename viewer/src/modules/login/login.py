@@ -5,7 +5,7 @@ import re
 from src.models.n100_model import N100_model
 from uuid import getnode as get_mac
 from src.utils import store
-
+from tkinter import messagebox
 class Login(object):
     loginPopup = None
     font = ("Arial", 10)
@@ -15,14 +15,15 @@ class Login(object):
         super(Login, self).__init__()
     
     def logout(self):
-        # clear store
-        store._new({})
-        # clear resource 
-        ##
-        ##
-        ##
-        self.parent.hideToolbar()
-        self.open()
+        if messagebox.askyesno("PiepMe", "Are you sure to logout?"):
+            # clear store
+            store._new({})
+            # clear resource 
+            ##
+            ##
+            ##
+            self.parent.hideToolbar()
+            self.open()
 
     def open(self):
          # first destroy

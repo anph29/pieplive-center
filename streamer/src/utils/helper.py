@@ -143,7 +143,7 @@ def base64ToString(b):
     return base64.b64decode(b).decode('utf-8')
 
 # seconds in number -> toObj ? {h,m,s} : [hh:]mm:ss
-def convertSecNoToHMS(seconds, toObj=False) :
+def convertSecNoToHMS(seconds, toObj=False):
     seconds = math.floor(seconds)
     h = math.floor(seconds / 3600)
     m = math.floor((seconds % 3600) / 60)
@@ -154,5 +154,30 @@ def convertSecNoToHMS(seconds, toObj=False) :
     if toObj:
         return { 'h': hs, 'm': ms, 's': ss } 
     else:
-        return (('', hs + ':')[h > 0]) + ms + ':' + ss
+        return (('', hs + ':')[h>0]) + ms + ':' + ss
 
+def convertHMSNoToSec(hms):
+    h,m,s = hms.values()
+    return int(s) + int(m) * 60 + int(h) * 60 ** 2
+
+def makeSureResourceFolderExisted():
+    resrcPth = '../resource'
+    #
+    if not os.path.exists(resrcPth):
+        zip_helper.extractZip('./resource.zip', '../')
+    #
+    if not os.path.exists(resrcPth + '/cfg'):
+        os.mkdir(resrcPth + '/cfg')
+    #
+    checkResourceExistAndWriteIfNot('store', data={})
+    checkResourceExistAndWriteIfNot('video')
+    checkResourceExistAndWriteIfNot('image')
+    checkResourceExistAndWriteIfNot('camera')
+    checkResourceExistAndWriteIfNot('schedule')
+    checkResourceExistAndWriteIfNot('presenter')
+    checkResourceExistAndWriteIfNot('staticsource')
+
+def checkResourceExistAndWriteIfNot(target, data=[]):
+    path = f'{_BASE_PATH}cfg/{target}.json'
+    if not os.path.isfile(path):
+        writeJSON(path, data)

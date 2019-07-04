@@ -13,7 +13,7 @@ class L500_model(HTTP_MODEL):
     # 'LIMIT': 20,
     # 'LOGIN': 'Ân'
     def l2019_listoftabL500_prov(self, param):
-        return self.v3_get('/v2/service/l500/l2019_listoftabL500_prov', param)
+        return self.v2_get('/v2/service/l500/l2019_listoftabL500_prov', param)
 
 #POST
 

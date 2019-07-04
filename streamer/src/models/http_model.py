@@ -17,7 +17,7 @@ class HTTP_MODEL():
                                                     createToken
     -------------------------------------------------------------------------------------------------------------------------"""
     def _get(self, path, param):
-        return self.http_request(path, param, 'GET', tokenMethod=scryto.createTokenV2)
+        return self.http_request(path, param, 'GET', tokenMethod=scryto.createToken)
 
     def _post(self, path, param):
         return self.http_request(path, param, 'POST', tokenMethod=scryto.createToken)
@@ -33,36 +33,36 @@ class HTTP_MODEL():
     """-------------------------------------------------------------------------------------------------------------------------
                                                     createTokenV2
     -------------------------------------------------------------------------------------------------------------------------"""
-    def _get(self, path, param):
+    def v2_get(self, path, param):
         return self.http_request(path, param, 'GET', tokenMethod=scryto.createTokenV2)
 
-    def _post(self, path, param):
+    def v2_post(self, path, param):
         return self.http_request(path, param, 'POST', tokenMethod=scryto.createTokenV2)
 
-    def _put(self, path, param):
+    def v2_put(self, path, param):
         return self.http_request(path, param, 'PUT', tokenMethod=scryto.createTokenV2)
 
-    def _delete(self, path, param):
+    def v2_delete(self, path, param):
         return self.http_request(path, param, 'DELETE', tokenMethod=scryto.createTokenV2)
 
-    def _patch(self, path, param):
+    def v2_patch(self, path, param):
         return self.http_request(path, param, 'PATCH', tokenMethod=scryto.createTokenV2)
     """-------------------------------------------------------------------------------------------------------------------------
                                                     createTokenV3
     -------------------------------------------------------------------------------------------------------------------------"""
-    def _get(self, path, param):
+    def v3_get(self, path, param):
         return self.http_request(path, param, 'GET')
 
-    def _post(self, path, param):
+    def v3_post(self, path, param):
         return self.http_request(path, param, 'POST')
 
-    def _put(self, path, param):
+    def v3_put(self, path, param):
         return self.http_request(path, param, 'PUT')
 
-    def _delete(self, path, param):
+    def v3_delete(self, path, param):
         return self.http_request(path, param, 'DELETE')
 
-    def _patch(self, path, param):
+    def v3_patch(self, path, param):
         return self.http_request(path, param, 'PATCH')
 
     """-------------------------------------------------------------------------------------------------------------------------

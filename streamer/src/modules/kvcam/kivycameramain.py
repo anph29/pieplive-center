@@ -58,7 +58,7 @@ class KivyCameraMain(Image):
                     except Exception as e:
                         print("Exception:", e)
                 print('===================',round(self.duration_fps),'=========',self.duration_fps,'=======')
-                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-ab","128k","-ac","2","-ar","44100","-vb","3072k","src/export/output.flv"]
+                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-ab","128k","-ac","2","-ar","44100","-vb","3072k","-r","25","src/export/output.flv"]
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
                 self.pipe = sp.Popen(command, startupinfo=si)
@@ -111,9 +111,10 @@ class KivyCameraMain(Image):
                         print('url',self.url)
 
                 if self.capture is not None and self.capture.isOpened():
-                    if self.resource_type != 'VIDEO':
-                        self.duration_fps = round(self.capture.get(cv2.CAP_PROP_FPS))
+                    # if self.resource_type != 'VIDEO':
+                    self.duration_fps = round(self.capture.get(cv2.CAP_PROP_FPS))
                     print(">>CAPTURE FINED:")
+                    print("FPS:",self.duration_fps)
                     self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
                 else:
                     print("cv2.error:")

@@ -264,7 +264,7 @@ class MainStream(RelativeLayout):
             
             self.command.extend(self.draw_element())
             # encode
-            self.command.extend(['-vb', str(self.v_bitrate), '-preset', 'veryfast', '-g', '25', '-r', '25'])
+            self.command.extend(['-vb', str(self.v_bitrate), '-preset', 'veryfast', '-r', '25'])
             # tream
             self.command.extend(['-f', 'flv', self.urlStream])
 

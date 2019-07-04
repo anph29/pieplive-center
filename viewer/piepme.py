@@ -8,10 +8,9 @@ class MainApplication(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.parent = parent
 
-        
-        self.after(100, self.init_layout)
+        self.after(100, self.initGUI)
 
-    def init_layout(self):
+    def initGUI(self):
         self.mainview = MainView(self, borderwidth=0, bg='#000')
         self.mainview.pack(fill=tk.BOTH, expand=True)
         # if not login

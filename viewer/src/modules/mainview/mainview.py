@@ -39,14 +39,17 @@ class MainView(tk.Frame):
         self.masterTab = ttk.Notebook(self)
         self.masterTab.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
         #
-        self.tab_custom = self.initTabContent(TabType.CUSTOM)
-        self.masterTab.add(self.tab_custom, text="Custom Resource")
+        self.tab_image = self.initTabContent(TabType.IMAGE)
+        self.masterTab.add(self.tab_image, text="Images")
+        #
+        self.tab_video = self.initTabContent(TabType.VIDEO)
+        self.masterTab.add(self.tab_video, text="Visdeos")
         #
         self.tab_camera = self.initTabContent(TabType.CAMERA)
-        self.masterTab.add(self.tab_camera, text="Camera")
+        self.masterTab.add(self.tab_camera, text="Cameras")
         #
         self.tab_presenter = self.initTabContent(TabType.PRESENTER)
-        self.masterTab.add(self.tab_presenter, text="Presenter")
+        self.masterTab.add(self.tab_presenter, text="Presenters")
         #
         self.masterTab.select(self.tab_camera)
         self.masterTab.enable_traversal()

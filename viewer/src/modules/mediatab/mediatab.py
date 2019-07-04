@@ -18,7 +18,7 @@ class MediaTab(DynamicGrid):
         self.initUI()
 
     def initUI(self):
-        if self.tabType == TabType.CUSTOM:
+        if self.tabType == TabType.IMAGE or self.tabType == TabType.VIDEO:
             self.showAddCamBtn()
 
         for media in self.loadLsMedia():
@@ -42,24 +42,30 @@ class MediaTab(DynamicGrid):
     def addMedia(self, Fdata):
         if self.tabType == TabType.CAMERA:
             helper._add_to_lscam(data)
-        elif self.tabType == TabType.CUSTOM:
-            helper._add_to_custom_resource(data)
+        elif self.tabType == TabType.IMAGE:
+            helper._add_to_image(data)
+        elif self.tabType == TabType.VIDEO:
+            helper._add_to_video(data)
         elif self.tabType == TabType.PRESENTER:
             helper._add_to_spresenter(data)
 
     def loadLsMedia(self):
         if self.tabType == TabType.CAMERA:
             return helper._load_lscam()
-        elif self.tabType == TabType.CUSTOM:
-            return helper._load_custom_resource()
+        elif self.tabType == TabType.IMAGE:
+            return helper._load_image()
+        elif self.tabType == TabType.VIDEO:
+            return helper._load_video()
         elif self.tabType == TabType.PRESENTER:
             return helper._load_ls_presenter()
 
     def writeLsMedia(self, data):
         if self.tabType == TabType.CAMERA:
             helper._write_lscam(data)
-        elif self.tabType == TabType.CUSTOM:
-            helper._write_custom_resource(data)
+        elif self.tabType == TabType.IMAGE:
+            helper._write_image(data)
+        elif self.tabType == TabType.VIDEO:
+            helper._write_video(data)
         elif self.tabType == TabType.PRESENTER:
            helper._write_lspresenter(data)
 

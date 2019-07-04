@@ -61,7 +61,7 @@ class AddImage(Popup):
 
     def get_type_from_link(self):
         URL = self.url.text.upper()
-        if '.JPG' in URL or '.PNG' in URL or '.GIF' in URL or '.JPGE' in URL:
+        if '.JPG' in URL or '.PNG' in URL or '.GIF' in URL or '.JPGE' in URL or '.JPX' in URL or '.WEBP' in URL or '.CR2' in URL or '.TIF' in URL or '.BMP' in URL or '.JXR' in URL or '.ICO' in URL:
             return 'IMG'
         else:
             return False

@@ -63,7 +63,7 @@ class AddMedia(Popup):
         URL = self.url.text.upper()
         if 'RTSP' in URL:
             return 'RTSP'
-        elif '.MP4' in URL or '.AVI' in URL:
+        elif '.MP4' in URL or '.AVI' in URL or '.M4V' in URL or '.MKV' in URL or '.WEBM' in URL or '.MOV' in URL or '.WMV' in URL or '.MPG' in URL or '.FLV' in URL:
             return 'VIDEO'
         elif '.M3U8' in URL:
             return 'M3U8'

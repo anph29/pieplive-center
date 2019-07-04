@@ -409,8 +409,8 @@ class MainStream(RelativeLayout):
 
         if isSchedule:
             index = self.f_parent.right_content.tab_schedule.ls_schedule.getCurrentIndex()
-            if index != -1:
-                self.mgrSchedule = Clock.schedule_once(self.process_schedule , self.ls_schedule[index]['duration'])
+            # if index != -1:
+            self.mgrSchedule = Clock.schedule_once(self.process_schedule , self.ls_schedule[index]['duration'])
     
     def process_schedule(self, fps):
         if self.mgrSchedule is not None:

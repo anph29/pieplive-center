@@ -30,6 +30,7 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
         """ Add selection on touch down """
         self.is_changing = True
         if super(ItemSchedule, self).on_touch_down(touch):
+            self.is_changing = False
             return True
         if self.collide_point(*touch.pos) and self.selectable:
             return self.parent.select_with_touch(self.index, touch)

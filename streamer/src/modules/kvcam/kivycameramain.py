@@ -58,8 +58,7 @@ class KivyCameraMain(Image):
                         del _cap
                     except Exception as e:
                         print("Exception:", e)
-                print('===================',round(self.duration_fps),'=========')
-                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-ar","44100","-r","25","src/export/output.flv"]#"-filter:v", f"setpts={self.duration_fps/25}*PTS","-filter:a", f"atempo={25/self.duration_fps}"    "-ab","128k","-ac","2","-ar","44100","-vb","3072k",
+                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-ar","44100","-r","25","src/export/output.flv"]
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
                 self.pipe = sp.Popen(command, startupinfo=si)

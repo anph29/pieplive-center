@@ -182,12 +182,8 @@ def makeSureResourceFolderExisted():
         os.mkdir(resrcPth + '/cfg')
     #
     checkResourceExistAndWriteIfNot('store', data={})
-    checkResourceExistAndWriteIfNot('video')
-    checkResourceExistAndWriteIfNot('image')
-    checkResourceExistAndWriteIfNot('camera')
-    checkResourceExistAndWriteIfNot('schedule')
-    checkResourceExistAndWriteIfNot('presenter')
-    checkResourceExistAndWriteIfNot('staticsource')
+    for target in ['video', 'image', 'camera', 'schedule', 'presenter', 'staticsource']:
+        checkResourceExistAndWriteIfNot(target)
 
 def checkResourceExistAndWriteIfNot(target, data=[]):
     path = f'{_BASE_PATH}cfg/{target}.json'

@@ -52,12 +52,16 @@ class MainView(Widget):
         self.initSource()
         self.bottom_left.list_mixer.set_source(self.lsAudio)
         self.init_right_content_media()
+        self.init_right_content_image()
         self.init_right_content_cam()
         self.init_right_content_presenter()
         self.init_right_content_schedule()
 
     def init_right_content_media(self):
         self.right_content.tab_media.ls_media.set_data()
+        
+    def init_right_content_image(self):
+        self.right_content.tab_image.ls_image.set_data()
 
     def init_right_content_cam(self):
         self.right_content.tab_camera.ls_camera.set_data()

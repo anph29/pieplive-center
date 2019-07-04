@@ -1,10 +1,11 @@
 #:import helper src.utils.helper
 <RightContent>:
     tab_media:tab_media
+    tab_image:tab_image
     tab_camera:tab_camera
     tab_presenter:tab_presenter
     tab_schedule:tab_schedule
-    tab_width: self.size[0] / 4
+    tab_width: self.size[0] / 5
     size_hint:1,1
     pos_hint:{'y': 0, 'center_x': .5}
     do_default_tab: False
@@ -15,6 +16,19 @@
             padding:2
             TabMedia:
                 id:tab_media
+                canvas.before:
+                    Color:
+                        rgb: .0,.0,.0
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+    TabbedPanelItem:
+        text: 'Image'
+        Box25:
+            padding:2
+            TabImage:
+                id:tab_image
                 canvas.before:
                     Color:
                         rgb: .0,.0,.0
@@ -103,6 +117,49 @@
             size_hint:None,None
             size: 20,20
             on_release: ls_media.refresh_list()
+            
+<TabImage>:
+    ls_image:ls_image
+    ListImage:
+        id:ls_image
+        viewclass: 'ItemLabel'
+        size_hint: 1,None
+        height: int(self.parent.height - 30)
+        scroll_type: ['bars', 'content']
+        bar_width: 10
+        GridCamera:
+            cols:1
+            spacing:1
+            padding:1
+            default_size_hint: 1, None
+            default_size: None, 30
+            multiselect: False
+            touch_multiselect: False
+            size_hint_y: None
+            height: self.minimum_height
+
+    BoxLayout:
+        orientation:'horizontal'
+        size_hint:1, None
+        height:30
+        padding:5
+        spacing:8
+        canvas.before:
+            Color:
+                rgb:.20, .20, .20
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        ImageButton:
+            source: helper._ICONS_PATH + 'addW-sq.png'
+            size_hint:None,None
+            size: 20,20
+            on_release: root.open_add_image()
+        ImageButton:
+            source: helper._ICONS_PATH + 'f5W.png'
+            size_hint:None,None
+            size: 20,20
+            on_release: ls_image.refresh_list()
 
 
 <TabCamera>:

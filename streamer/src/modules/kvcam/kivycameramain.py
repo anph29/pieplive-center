@@ -59,7 +59,7 @@ class KivyCameraMain(Image):
                     except Exception as e:
                         print("Exception:", e)
                 self.duration_fps = 25
-                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-ar","44100","-vb","4096k","-r","25","src/export/output.flv"]
+                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-ar","44100","-vb","3072k","-r","25","src/export/output.flv"]
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
                 self.pipe = sp.Popen(command, startupinfo=si)
@@ -109,26 +109,23 @@ class KivyCameraMain(Image):
                         self.capture = cv2.VideoCapture(int(self.url))
                     else:
                         self.capture = cv2.VideoCapture(self.url)
-                        print('url',self.url)
+                        print('url-----',self.url)
 
                 if self.capture is not None and self.capture.isOpened():
                     # if self.resource_type != 'VIDEO':
                     self.duration_fps = round(self.capture.get(cv2.CAP_PROP_FPS))
                     print(">>CAPTURE FINED:")
-                    print("FPS:",self.duration_fps)
                     self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
                 else:
                     print("cv2.error:")
                     if self.capture is not None:
                         self.capture.release()
                     self.show_captured_img(self.default_frame)
-        except cv2.error as e:
-            print("cv2.error:", e)
         except Exception as e:
             print("Exception:", e)
     
     def _process(self):
-        self.event_capture = Clock.schedule_interval(self.update, 1.0 / 30)
+        self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
     
     def show_captured_img(self, url=None):
         cap = cv2.VideoCapture(url or self.url)
@@ -156,7 +153,6 @@ class KivyCameraMain(Image):
                         self.duration = helper.convertSecNoToHMS(self.capture.get(cv2.CAP_PROP_POS_FRAMES)/self.capture.get(cv2.CAP_PROP_FPS))
                     self.update_texture_from_frame(frame)
         except IOError:
-            print('update interval fail--')
             return False
 
     def update_texture_from_frame(self, frame):

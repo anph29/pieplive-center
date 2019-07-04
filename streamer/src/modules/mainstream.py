@@ -60,7 +60,7 @@ class MainStream(RelativeLayout):
             si = subprocess.STARTUPINFO()
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             self.pipe2 = subprocess.Popen(command, startupinfo=si)
-            Clock.schedule_once(lambda x: self.pipe2.kill() , 6)
+            Clock.schedule_once(lambda x: self.pipe2.kill() , 5)
         except IOError:
             pass
 

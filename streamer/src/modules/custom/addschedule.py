@@ -23,7 +23,7 @@ class AddSchedule(Popup):
             if self.data['type'] == 'VIDEO':
                 _cap = cv2.VideoCapture(self.data['url'])
                 if _cap.isOpened():
-                    self.duration.text = str(int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)))
+                    self.duration.text = str(int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)) + 1)
                 del _cap
         except Exception as e:
             print("Exception:", e)

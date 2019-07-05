@@ -15,5 +15,4 @@ def getAppType():
     if bool(root):
         if bool(root.right_content):
             return root.right_content.app_type
-
     return ''

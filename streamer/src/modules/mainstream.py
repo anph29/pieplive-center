@@ -28,7 +28,7 @@ class MainStream(RelativeLayout):
         self.f_width = 1280
         self.f_height = 720
         self.capture = None
-        self.fps = 30
+        self.fps = 25
         self.v_bitrate = "3072k"
         self.urlStream = ''
         self.devAudio = None
@@ -164,7 +164,7 @@ class MainStream(RelativeLayout):
         
 
     def _process(self):
-        self.event = Clock.schedule_interval(self.stream, 1/30)
+        self.event = Clock.schedule_interval(self.stream, 1/25)
 
     @mainthread
     def stream(self, fps):
@@ -231,9 +231,11 @@ class MainStream(RelativeLayout):
             if self.dataCam['type'] == 'M3U8' or self.dataCam['type'] == "VIDEO":
                 url = '../resource/media/output.flv'
             numau += 1
-            # print("++======+___--",self.camera.duration,"===")
-            # inp.extend(["-ss", self.camera.duration,"-i", url])
-            inp.extend(["-i", url])
+            print("++======+___--",self.camera.duration,"===")
+            if self.camera.duration == "00:00:00":
+                inp.extend(["-i", url])
+            else:
+                inp.extend(["-ss", self.camera.duration,"-i", url])
             txt += f"[{numau}:a]volume=1[a{numau}];"
             _map += f'[a{numau}]'
 

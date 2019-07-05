@@ -10,8 +10,6 @@ from threading import Thread, Event
 import subprocess as sp
 import src.utils.helper as helper
 
-_CAM_NUMS_FRAME = '-2562047788015215'
-
 class KivyCameraMain(Image):
     capture = ObjectProperty(None)
     crFrame = ObjectProperty(None)
@@ -44,7 +42,7 @@ class KivyCameraMain(Image):
         self.duration_total = '00:00:00'
         self.duration = '00:00:00'
         self.duration_total_n = 1
-        self.duration_fps = 30
+        self.duration_fps = 25
         self.release()
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
@@ -52,7 +50,8 @@ class KivyCameraMain(Image):
                     try:
                         _cap = cv2.VideoCapture(self.url)
                         if _cap.isOpened():
-                            self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
+                            self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
+
                             self.duration_fps = round(_cap.get(cv2.CAP_PROP_FPS))
                             self.duration_total = helper.convertSecNoToHMS(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS))
                         del _cap
@@ -65,7 +64,7 @@ class KivyCameraMain(Image):
                 self.pipe = sp.Popen(command, startupinfo=si)
                 
                 self.url = '../resource/media/output.flv'
-                time.sleep(1)
+                Clock.schedule_once(self.refresh_stream , 1)
             else:
                 if self.typeOld == 'M3U8' or self.typeOld == 'VIDEO':
                     command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 ../resource/media/output.flv'
@@ -73,45 +72,39 @@ class KivyCameraMain(Image):
                     si.dwFlags |= sp.STARTF_USESHOWWINDOW
                     self.pipe = sp.Popen(command, startupinfo=si)
                     Clock.schedule_once(lambda x: self.pipe.kill() , 5)
-
-            if self.f_parent is not None:
-                if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
-                    self.f_parent.refresh_stream()
-                elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
-                    self.f_parent.refresh_stream()
-            self.typeOld = input['type']
-
+                Clock.schedule_once(self.refresh_stream , 0)
         except Exception as e:
             print("Exception:", e)
-            if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
-                self.f_parent.refresh_stream()
-            elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
-                self.f_parent.refresh_stream()
-            self.typeOld = input['type']
+            Clock.schedule_once(self.refresh_stream , 0)
+        
+
+    def refresh_stream(self,dd):
         if self.capture is not None:
             self.capture.release()
         self.stop_update_capture()
-        capture = None
-        if 'capture' in input and input['capture'] is not None:
-            capture = input['capture']
-        th = Thread(target=self.init_capture(capture))
+        th = Thread(target=self.init_capture())
         th.start()
 
-    def init_capture(self, capture=None):
+
+    def init_capture(self):
         try:
             if self.resource_type == 'IMG':
                 self.show_captured_img(self.url)
             else:
-                if capture is not None:
-                    self.capture = capture 
+                
+                if self.resource_type == 'CAMERA':
+                    self.capture = cv2.VideoCapture(int(self.url))
                 else:
-                    if self.resource_type == 'CAMERA':
-                        self.capture = cv2.VideoCapture(int(self.url))
-                    else:
-                        self.capture = cv2.VideoCapture(self.url)
-                        print('url-----',self.url)
+                    self.capture = cv2.VideoCapture(self.url)
+                    print('url-----',self.url)
 
                 if self.capture is not None and self.capture.isOpened():
+                    if self.f_parent is not None:
+                        if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
+                            self.f_parent.refresh_stream()
+                        elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
+                            self.f_parent.refresh_stream()
+                    self.typeOld = self.resource_type
                     # if self.resource_type != 'VIDEO':
                     self.duration_fps = round(self.capture.get(cv2.CAP_PROP_FPS))
                     print(">>CAPTURE FINED:")

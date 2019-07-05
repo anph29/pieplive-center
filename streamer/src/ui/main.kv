@@ -5,8 +5,8 @@
     bottom_left:bottom_left
     listMixer: bottom_left.list_mixer
     btn_start:btn_start
-    btn_record:btn_record
-    btn_setting:btn_setting
+    # btn_record:btn_record
+    # btn_setting:btn_setting
     videoBuffer:videoBuffer
     canvas.before:
         Color:
@@ -75,25 +75,26 @@
                     size_hint:None,1
                     orientation:'horizontal'
                     pos_hint:{'x': (self.parent.width - 620) / 2 / self.parent.width}
-
+                    Widget:
                     Button:
                         id:btn_start
                         text:'Start Streaming'
                         on_press: app.root.mClick('start')
-                    Button:
-                        id:btn_record
-                        text:'Start Recording'
-                        on_press: app.root.mClick('record')
-                    Button:
-                        id:btn_setting
-                        text:'Settings'
-                        on_press: app.root.openSetting()
-                    Button:
-                        text:'Exit'
-                        on_press: app.root.openSetting()
-                    Button:
-                        text:'Login'
-                        on_press: app.root.openLogin()
+                    # Button:
+                    #     id:btn_record
+                    #     text:'Start Recording'
+                    #     on_press: app.root.mClick('record')
+                    # Button:
+                    #     id:btn_setting
+                    #     text:'Settings'
+                    #     on_press: app.root.openSetting()
+                    # Button:
+                    #     text:'Exit'
+                    #     on_press: app.root.openSetting()
+                    # Button:
+                    #     text:'Login'
+                    #     on_press: app.root.openLogin()
+                    Widget:
                 
             BottomLeft:
                 id:bottom_left

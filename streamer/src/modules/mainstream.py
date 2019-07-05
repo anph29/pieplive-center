@@ -28,7 +28,7 @@ class MainStream(RelativeLayout):
         self.f_width = 1280
         self.f_height = 720
         self.capture = None
-        self.fps = 25
+        self.fps = 30
         self.v_bitrate = "3072k"
         self.urlStream = ''
         self.devAudio = None
@@ -46,16 +46,16 @@ class MainStream(RelativeLayout):
         self.streamType = ''
         self.mgrSchedule = None
         self.is_loop = False
+        self.current_schedule = -1
         self.dataCam = {
             "name": "defaul",
             "url": "src/images/splash.jpg",
             "type": "IMG"
         }
-        # self.setupAudio()
 
     def _load(self):
         try:
-            command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 ../resource/media/output.flv'
+            command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 30 ../resource/media/output.flv'
             si = subprocess.STARTUPINFO()
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             self.pipe2 = subprocess.Popen(command, startupinfo=si)
@@ -81,43 +81,10 @@ class MainStream(RelativeLayout):
         self.cameraMini.release()
 
     def switch_display(self, _val):
-        # if _val:
-        #     print("111111111111111111111")
-        #     self.cameraMini.width = 340
-        #     self.cameraMini.height = 144
-        #     self.camera.width = 1280
-        #     self.camera.height = 720
-        # else:
-        #     print("22222222222222222222222222222222")
-        #     self.cameraMini.width = 1280
-        #     self.cameraMini.height = 720
-        #     self.camera.width = 340
-        #     self.camera.height = 144
         temp = self.camera.capture
         self.camera.capture = self.cameraMini.capture
         self.cameraMini.capture = temp
         del temp
-
-    def setupAudio(self):
-        # chunk = 1024
-        # self.wf = wave.open('C:/Users/Thong/Desktop/piep-source/musics/nhac-doc-sach.mp3', 'rb')
-        # pao = pyaudio.PyAudio()
-        # CHUNK = 1024
-        # FORMAT = pyaudio.paInt16
-        # CHANNELS = 2
-        # RATE = 44100
-        # RECORD_SECONDS = 150
-
-        # self.streamAudio= pao.open(
-        #                     format = pao.get_format_from_width(self.wf.getsampwidth()),
-        #                     channels = self.wf.getnchannels(),
-        #                     rate = self.wf.getframerate(),
-        #                     output = True)
-        # data = self.wf.readframes(1024)
-        # while data != '':
-        #     stream.write(data)
-        #     data = wf.readframes(1024)
-        pass
     
     def _set_capture(self, data_src, data_type, is_from_schedule):
         self.streamType = data_type
@@ -164,7 +131,7 @@ class MainStream(RelativeLayout):
         
 
     def _process(self):
-        self.event = Clock.schedule_interval(self.stream, 1/25)
+        self.event = Clock.schedule_interval(self.stream, 1/30)
 
     @mainthread
     def stream(self, fps):
@@ -231,11 +198,10 @@ class MainStream(RelativeLayout):
             if self.dataCam['type'] == 'M3U8' or self.dataCam['type'] == "VIDEO":
                 url = '../resource/media/output.flv'
             numau += 1
-            print("++======+___--",self.camera.duration,"===")
-            if self.camera.duration == "00:00:00":
-                inp.extend(["-i", url])
-            else:
-                inp.extend(["-ss", self.camera.duration,"-i", url])
+            # if self.camera.duration == "00:00:00":
+            #     inp.extend(["-i", url])
+            # else:
+            inp.extend(["-ss", self.camera.duration,"-i", url])
             txt += f"[{numau}:a]volume=1[a{numau}];"
             _map += f'[a{numau}]'
 
@@ -267,7 +233,7 @@ class MainStream(RelativeLayout):
             
             self.command.extend(self.draw_element())
             # encode
-            self.command.extend(['-vb', str(self.v_bitrate), '-preset', 'veryfast', '-r', '25'])
+            self.command.extend(['-vb', str(self.v_bitrate), '-preset', 'veryfast', '-r', '30'])
             # tream
             self.command.extend(['-f', 'flv', self.urlStream])
 
@@ -410,23 +376,25 @@ class MainStream(RelativeLayout):
 
         if isSchedule:
             index = self.f_parent.right_content.tab_schedule.ls_schedule.getCurrentIndex()
-            # if index != -1:
-            self.mgrSchedule = Clock.schedule_once(self.process_schedule , self.ls_schedule[index]['duration'])
+            self.mgrSchedule = Clock.schedule_once(self.process_schedule , self.ls_schedule[index]['duration']+3)
     
     def process_schedule(self, fps):
         if self.mgrSchedule is not None:
             self.mgrSchedule.cancel()
-        _index = self.f_parent.right_content.tab_schedule.ls_schedule.getCurrentIndex() + 1
+        self.current_schedule = self.f_parent.right_content.tab_schedule.ls_schedule.getCurrentIndex() + 1
         
-        if _index >= len(self.ls_schedule):
+        if self.current_schedule >= len(self.ls_schedule):
             if self.is_loop:
-                _index = 0
+                self.current_schedule = 0
             else:
                 return False
-        data_src = self.ls_schedule[_index]
-        self.f_parent.right_content.tab_schedule.ls_schedule.setSelected(_index)
+        data_src = self.ls_schedule[self.current_schedule]
+        self.f_parent.right_content.tab_schedule.ls_schedule.setSelected(self.current_schedule)
         self._set_capture(data_src, 'SCHEDULE', True)
-        self.mgrSchedule = Clock.schedule_once(self.process_schedule , self.ls_schedule[_index]['duration'])
+        self.mgrSchedule = Clock.schedule_once(self.process_schedule , self.ls_schedule[self.current_schedule]['duration']+3)
+
+    def run_schedule(self):
+        self.mgrSchedule = Clock.schedule_once(self.process_schedule , self.ls_schedule[self.current_schedule]['duration'])
 
     def loop_schedule(self,_val):
         self.is_loop = _val

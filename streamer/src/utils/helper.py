@@ -4,10 +4,12 @@ import json
 import math
 import base64
 import zipfile
+import pyqrcode
 """
 """
 _BASE_PATH              = os.path.abspath('../resource').replace('\\', '/') + '/'
-_SETTING_PATH           = _BASE_PATH + 'cfg/setting.json'
+_PATH_SETTING           = _BASE_PATH + 'cfg/setting.json'
+_PATH_FONT              = _BASE_PATH + 'cfg/font.json'
 _PATH_STORE             = _BASE_PATH + 'cfg/store.json'
 _PATH_IMAGE             = _BASE_PATH + 'cfg/image.json'
 _PATH_VIDEO             = _BASE_PATH + 'cfg/video.json'
@@ -87,20 +89,32 @@ def _write_lsStaticSource(data):
 def _add_to_lsStaticSource(data):
     appendJSON(_PATH_STATICSOURCE, data)
 """
+ls font
+"""
+def _load_font():
+    return loadJSON(_PATH_FONT)
+
+def _write_font(data):
+   writeJSON(_PATH_FONT, data)
+   
+def _add_to_font(data):
+    appendJSON(_PATH_FONT, data)
+"""
 setting
 """
 
-def _read_global_setting(key=None):
-    with open(_SETTING_PATH, 'r', encoding='utf-8') as json_setting:
-        setting = json.load(json_setting)
-        return setting[key] if key is not None else setting
-
 def _read_setting(key=None):
-    with open('src/cfg/setting.json', 'r', encoding='utf-8') as json_setting:
-        setting = json.load(json_setting)
-        return setting[key] if key is not None else setting
+    setting = loadJSON(_PATH_SETTING)
+    return setting[key] if key is not None else setting
+
+def _write_setting(data):
+    writeJSON(_PATH_SETTING, data)
+   
+def _load_setting():
+    return loadJSON(_PATH_SETTING)
 
 """
+JSON helper
 """
 
 def loadJSON(path):
@@ -181,7 +195,7 @@ def makeSureResourceFolderExisted():
         os.mkdir(resrcPth + '/cfg')
     #
     checkResourceExistAndWriteIfNot('store', data={})
-    for target in ['video', 'image', 'camera', 'schedule', 'presenter', 'staticsource']:
+    for target in ['video', 'image', 'camera', 'schedule', 'presenter', 'staticsource', 'setting', 'font']:
         checkResourceExistAndWriteIfNot(target)
 
 def checkResourceExistAndWriteIfNot(target, data=[]):

@@ -4,7 +4,6 @@ import json
 import math
 import base64
 import zipfile
-import pyqrcode
 """
 """
 _BASE_PATH              = os.path.abspath('../resource').replace('\\', '/') + '/'

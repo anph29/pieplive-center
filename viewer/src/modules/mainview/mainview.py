@@ -105,7 +105,7 @@ class MainView(tk.Frame):
             'FO100': store._get('FO100') or 0,
             'FQ180': Q180.CAM_LIV_OOF
         })
-        print(WS.STATUS)
+        print(rs, 'zzzzzzzzzzzzzzzzzzzzzzzz')
         return rs[WS.ELEMENTS] if rs[WS.STATUS] == WS.SUCCESS else []
         
 

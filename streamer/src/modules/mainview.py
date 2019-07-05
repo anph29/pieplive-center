@@ -29,22 +29,23 @@ class MainView(Widget):
         self.lsSource = []
         self.f_width = 1280
         self.f_height = 720
+        self.setting = None
 
     def on_start(self):
         self.mainStream._load()
         self.mainStream.f_parent = self
         self.bottom_left.f_parent = self
         self.right_content.f_parent = self
-        setting = helper._load_setting()
-        if setting['ouput_resolution'] is not None:
-            self.f_width = self.mainStream.f_width = setting['ouput_resolution'][0]
-            self.f_height = self.mainStream.f_height = setting['ouput_resolution'][1]
-        if setting['vbitrate'] is not None:
-            self.v_bitrate = self.mainStream.v_bitrate = setting['vbitrate']
-        if setting['stream_server'] is not None:
-            self.bottom_left.stream_server.text = setting['stream_server']
-        if setting['stream_key'] is not None:
-            self.bottom_left.stream_key.text = setting['stream_key']
+        self.setting = helper._load_setting()
+        if self.setting['ouput_resolution'] is not None:
+            self.f_width = self.mainStream.f_width = self.setting['ouput_resolution'][0]
+            self.f_height = self.mainStream.f_height = self.setting['ouput_resolution'][1]
+        if self.setting['vbitrate'] is not None:
+            self.v_bitrate = self.mainStream.v_bitrate = self.setting['vbitrate']
+        if self.setting['stream_server'] is not None:
+            self.bottom_left.stream_server.text = self.setting['stream_server']
+        if self.setting['stream_key'] is not None:
+            self.bottom_left.stream_key.text = self.setting['stream_key']
 
         self.mainStream.urlStream = self.bottom_left.stream_server.text + \
             self.bottom_left.stream_key.text
@@ -130,6 +131,11 @@ class MainView(Widget):
                     self.mainStream.startStream()
                     self.btn_start.text = "Stop Streaming"
                     self.btn_start.background_color = .29, .41, .15, 0.9
+                    if self.setting['stream_server'] is not None:
+                        self.setting['stream_server'] = self.bottom_left.stream_server.text
+                    if self.setting['stream_key'] is not None:
+                        self.setting['stream_key'] = self.bottom_left.stream_key.text
+                    helper._write_setting(self.setting)
 
             elif self.mainStream.isStream is True:
                 self.mainStream.stopStream()

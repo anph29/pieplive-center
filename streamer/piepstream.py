@@ -39,7 +39,7 @@ from src.modules.rightcontentview.listview import ListSchedule
 from src.modules.rightcontentview.gridview import GridCamera
 from src.modules.rightcontentview.itemlabel import ItemLabel
 
-KIVY_FONTS = kivy_helper._load_fonts()
+KIVY_FONTS = helper._load_font()
 for font in KIVY_FONTS:
     LabelBase.register(**font)
 

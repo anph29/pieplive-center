@@ -59,16 +59,16 @@ class KivyCameraMain(Image):
                     except Exception as e:
                         print("Exception:", e)
                 self.duration_fps = 25
-                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-ar","44100","-vb","3072k","-r","25","src/export/output.flv"]
+                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-ar","44100","-vb","3072k","-r","25","../resource/export/output.flv"]
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
                 self.pipe = sp.Popen(command, startupinfo=si)
                 
-                self.url = 'src/export/output.flv'
+                self.url = '../resource/export/output.flv'
                 time.sleep(1)
             else:
                 if self.typeOld == 'M3U8' or self.typeOld == 'VIDEO':
-                    command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i src/musics/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 src/export/output.flv'
+                    command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i src/musics/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 ../resource/export/output.flv'
                     si = sp.STARTUPINFO()
                     si.dwFlags |= sp.STARTF_USESHOWWINDOW
                     self.pipe = sp.Popen(command, startupinfo=si)

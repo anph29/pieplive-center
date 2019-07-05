@@ -35,7 +35,7 @@ class MainView(Widget):
         self.mainStream.f_parent = self
         self.bottom_left.f_parent = self
         self.right_content.f_parent = self
-        setting = kv_helper._read_setting()
+        setting = helper._load_setting()
         if setting['ouput_resolution'] is not None:
             self.f_width = self.mainStream.f_width = setting['ouput_resolution'][0]
             self.f_height = self.mainStream.f_height = setting['ouput_resolution'][1]

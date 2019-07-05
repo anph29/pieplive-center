@@ -222,7 +222,7 @@ class MainStream(RelativeLayout):
         txt = _map = ''
 
         numau += 1
-        inp.extend(['-stream_loop','-1',"-i", 'src/musics/muted.mp3'])
+        inp.extend(['-stream_loop','-1',"-i", '../resource/media/muted.mp3'])
         txt += f"[{numau}:a]volume=0[a{numau}];"
         _map += f'[a{numau}]'
 

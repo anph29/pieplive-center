@@ -4,11 +4,7 @@ block_cipher = None
 
 added_files = [
   ( 'src\\ui', 'src\\ui' ),
-  ( 'src\\cfg', 'src\\cfg' ),
-  ( 'src\\musics', 'src\\musics' ),
   ( 'src\\images', 'src\\images' ),
-  ( 'src\\fonts', 'src\\fonts' ),
-  ( 'src\\export', 'src\\export' ),
   ( 'ffmpeg-win\\', 'ffmpeg-win\\' ),
   ( 'piepstream.kv', '.' ),
   ( 'resource.zip', '.' ),

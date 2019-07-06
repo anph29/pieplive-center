@@ -202,6 +202,7 @@ class MainStream(RelativeLayout):
                 inp.extend(["-i", url])
             else:
                 inp.extend(["-ss", self.camera.duration,"-i", url])
+            inp.extend(["-ar", "44100", "-ab", "320k"])
             txt += f"[{numau}:a]volume=1[a{numau}];"
             _map += f'[a{numau}]'
 

@@ -3,7 +3,8 @@
 block_cipher = None
 
 added_files = [
-  ( 'src', 'src' )
+  ( 'src', 'src' ),
+  ( 'resource.zip', '.' )
 ]
 
 a = Analysis(['piepme.py'],

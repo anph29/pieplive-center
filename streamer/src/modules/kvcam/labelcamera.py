@@ -5,8 +5,6 @@ from kivy.clock import Clock
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
 from kivy.graphics.texture import Texture
 
-_CAM_NUMS_FRAME = '-2562047788015215'
-
 class LabelCamera(Label):
     is_playing = BooleanProperty(False)
     capture = ObjectProperty(None)

@@ -117,7 +117,7 @@ class ListSchedule(RecycleView):
     def clean_data_to_save_json(self):
         return list(
             map(
-                lambda cam: {'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'duration': cam['duration']},
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'duration': cam['duration']},
                 list(self.data)
             )
         )

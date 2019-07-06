@@ -5,6 +5,7 @@ import math
 import base64
 import zipfile
 import pyqrcode
+from . import zip_helper
 """
 """
 _BASE_PATH              = os.path.abspath('../resource').replace('\\', '/') + '/'

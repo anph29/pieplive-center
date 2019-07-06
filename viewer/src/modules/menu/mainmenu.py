@@ -4,6 +4,7 @@ from src.utils import store
 
 class MainMenu(tk.Menu):
     def __init__(self, parent, *args, **kwargs):
+        self.parent = parent
         super(MainMenu, self).__init__(parent, *args, **kwargs)
 
         self.login = Login(parent)
@@ -16,7 +17,7 @@ class MainMenu(tk.Menu):
         self.add_cascade(label="File", menu=self.filemenu)
         # E
         self.editmenu = tk.Menu(self, tearoff=0)
-        self.editmenu.add_command(label="Delete", command=lambda: False)
+        self.editmenu.add_command(label="Delete", command=self.commandDelete)
         self.editmenu.add_separator()
         self.editmenu.add_command(label="Select..", command=lambda: False)
         self.editmenu.add_command(label="Select All", command=lambda: False)
@@ -35,3 +36,12 @@ class MainMenu(tk.Menu):
         self.helpmenu.add_command(label="Help Index", command=lambda: False)
         self.helpmenu.add_command(label="About..", command=lambda: False)
         self.add_cascade(label="Help", menu=self.helpmenu)
+
+
+    def commandDelete(self):
+        pass
+        # activeTabID = self.parent.masterTab.select()
+        # activeTabIndex = self.parent.masterTab.index(activeTabID)
+
+        # cr = self.parent.masterTab.index("current")
+        # print(cr.lsBox, activeTabIndex, 'xxxxxxxxxxxxxxxxxxx')

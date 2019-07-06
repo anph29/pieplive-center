@@ -9,6 +9,8 @@ from src.modules.custom import LabeledCombobox
 from PIL import Image, ImageTk
 from src.modules.menu import MainMenu
 from uuid import getnode as get_mac
+from src.modules.login import Login
+
 
 
 class MainView(tk.Frame):

@@ -1,6 +1,5 @@
 import tkinter as tk
 from src.modules.mainview import MainView
-from src.modules.login import Login
 from src.utils import helper, store, tk_helper, zip_helper
 
 class MainApplication(tk.Frame):

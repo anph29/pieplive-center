@@ -5,6 +5,7 @@ import math
 import base64
 import zipfile
 import pyqrcode
+from . import zip_helper
 """
 """
 _BASE_PATH              = os.path.abspath('../resource').replace('\\', '/') + '/'
@@ -122,8 +123,8 @@ def loadJSON(path):
         return json.load(jdata)
 
 def writeJSON(path, data):
-     with open(path, 'w', encoding='utf-8') as jdata:
-        json.dump(data, jdata, indent=2)
+     with open(path, 'w', encoding='utf-8') as jflie:
+        json.dump(data, jflie, indent=2)
 
 def appendJSON(path, data, auto_increment=False):
     jcam = loadJSON(path)
@@ -202,3 +203,16 @@ def checkResourceExistAndWriteIfNot(target, data=[]):
     path = f'{_BASE_PATH}cfg/{target}.json'
     if not os.path.isfile(path):
         writeJSON(path, data)
+
+def getMTypeFromUrl(url):
+    URL = url.upper()
+    if 'RTSP' in URL:
+            return 'RTSP'
+    elif 'MP4' in URL:
+            return 'MP4'
+    elif 'M3U8' in URL:
+            return 'M3U8'
+    elif 'JPG' in URL or 'PNG' in URL:
+            return 'IMG'
+    else:
+            return False

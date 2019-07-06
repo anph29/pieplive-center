@@ -75,6 +75,11 @@ class MediaBox(tk.Frame):
 
     def initBOTTOM(self):
         bottom = tk.Frame(self.wrapper, bd=5, relief=tk.FLAT, width=self.cell_width, height=self.bot_height)
+        
+        self.checked = tk.BooleanVar()
+        self.checkbox = tk.Checkbutton(bottom, variable=self.checked, onvalue=True, offvalue=False, height=1, width=1, bd=0, relief=tk.FLAT)
+        self.checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)
+
         if self.mtype != 'IMG':
             # play
             imagePlay = ImageTk.PhotoImage(Image.open("src/icons/pause-b.png"))

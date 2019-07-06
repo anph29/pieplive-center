@@ -48,7 +48,6 @@ class MediaTab(DynamicGrid):
 
     def renewData(self, lsMedia):
         self.clearData()
-        #
         lsMedia = list(map(
                 lambda l500: {
                     "id":  l500['_id'] or '',

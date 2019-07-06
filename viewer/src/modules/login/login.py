@@ -20,9 +20,9 @@ class Login(object):
             # clear store
             store._new({})
             # clear resource 
-            ##
-            ##
-            ##
+            self.parent.tab_camera.clearData()
+            self.parent.tab_presenter.clearData()
+            #
             self.parent.hideToolbar()
             self.open()
 

@@ -40,6 +40,25 @@ class MediaTab(DynamicGrid):
         lblAdd.pack(fill=tk.BOTH, expand=True)
         btnAddResource.place(rely=1.0, relx=1.0, x=-20, y=-20, anchor=tk.SE)
 
+    def clearData(self):
+        self.writeLsMedia([])
+        self.context.config(state=tk.NORMAL)
+        self.context.delete(1.0, tk.END)
+        self.context.config(state=tk.DISABLED)
+
+    def renewData(self, lsMedia):
+        self.clearData()
+        #
+        lsMedia = list(map(
+                lambda l500: {
+                    "id":  l500['_id'] or '',
+                    "name": l500['LV501'] or '',
+                    "url": l500['LV506'] or '',
+                    "type": helper.getMTypeFromUrl(l500['LV506'] or '')
+                }, lsMedia))
+        self.writeLsMedia(lsMedia)
+        self.initLsToGUI()
+
     def addMedia(self, data):
         if self.tabType == TabType.CAMERA:
             helper._add_to_lscam(data)
@@ -70,14 +89,11 @@ class MediaTab(DynamicGrid):
         elif self.tabType == TabType.PRESENTER:
            helper._write_lspresenter(data)
 
-    def delMediaBox(self, id):
+    def delMediaBox(self, lsId):
         ls = self.loadLsMedia()
-        filtered = list(filter(lambda x:x['id'] != id, ls))
+        filtered = list(filter(lambda x:x['id'] not in lsId, ls))
         # clear
-        self.writeLsMedia([])
-        self.context.config(state=tk.NORMAL)
-        self.context.delete(1.0, tk.END)
-        self.context.config(state=tk.DISABLED)
+        self.clearData()
         # new
         self.writeLsMedia(filtered)
         self.initLsToGUI()

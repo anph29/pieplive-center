@@ -32,6 +32,11 @@ class MainView(tk.Frame):
 
     def initGUI(self):
         """"""
+        # if not login
+        if store._get('FO100') == None:
+            login = Login(self)
+            login.open()
+        #
         self.setStyle()
         #
         self.updateMenu()
@@ -117,17 +122,23 @@ class MainView(tk.Frame):
         self.updateMenu()
 
     def onSelectBussiness(self, fo100):
-        """"""
         self.FO100BU = fo100
 
     def onClearResource(self, evt):
-        if messagebox.askyesno("PiepMe", "Are you sure to clear resource?"):
-            pass
+        if messagebox.askyesno("PiepMe", "Are you sure to clear your bussiness resource?"):
+            self.tab_camera.clearData()
+            self.tab_presenter.clearData()
+
     def onNewResource(self, evt):
-        if messagebox.askyesno("PiepMe", "Are you sure to renew resource?"):
+        if messagebox.askyesno("PiepMe", "Are you sure to renew your bussiness resource?"):
             lsL500 = self.loadLsL500(self.FO100BU)
-            presenter = list(filter(lambda l500: l500['LN508'] == 1, lsL500))
-            camera = list(filter(lambda l500: l500['LN508'] == 0, lsL500))
+            if len(lsL500) > 0:
+                #presenter
+                presenter = list(filter(lambda l500: l500['LN508'] == 1, lsL500))
+                self.tab_presenter.renewData(presenter)
+                #camera
+                camera = list(filter(lambda l500: l500['LN508'] == 0, lsL500))
+                self.tab_camera.renewData(camera)
 
     def loadCbxQ170(self):
         q170 = Q170_model()

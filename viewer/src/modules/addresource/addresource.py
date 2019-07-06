@@ -140,9 +140,9 @@ class AddResource(object):
                 isVideo = ftype.isVideo(fpath)
                 if isImg or isVideo:
                     dt = {
+                        "id" : scryto.hash_md5_with_time(fpath),
                         "name": (fpath.split('/')[-1]).split('.')[0],
-                        "url": fpath,
-                        "id" : scryto.hash_md5_with_time(fpath)
+                        "url": fpath
                     }
                     if self.parent.tabType == TabType.IMAGE and isImg:
                         dt["type"] = 'IMG'
@@ -160,7 +160,7 @@ class AddResource(object):
         if self.useLocal:
             self.addSingleToLsMedia()
         elif len(self.name.get()) > 0:
-            self.mtype = self.validateResouce()
+            self.mtype = helper.getMTypeFromUrl(self.url.get())
             if self.mtype:
                 self.addSingleToLsMedia()
             else:
@@ -179,14 +179,3 @@ class AddResource(object):
         self.parent.addMediaBoxToList(dt)
         self.parent.addMedia(dt)
         self.addCamPopup.destroy()
-
-    def validateResouce(self):
-        URL = str(self.url.get()).upper()
-        if 'RTSP' in URL:
-            return 'RTSP'
-        elif 'MP4' in URL:
-            return 'MP4'
-        elif 'M3U8' in URL:
-            return 'M3U8'
-        else:
-            return False

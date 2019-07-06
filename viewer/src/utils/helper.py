@@ -202,3 +202,16 @@ def checkResourceExistAndWriteIfNot(target, data=[]):
     path = f'{_BASE_PATH}cfg/{target}.json'
     if not os.path.isfile(path):
         writeJSON(path, data)
+
+def getMTypeFromUrl(url):
+    URL = url.upper()
+    if 'RTSP' in URL:
+            return 'RTSP'
+    elif 'MP4' in URL:
+            return 'MP4'
+    elif 'M3U8' in URL:
+            return 'M3U8'
+    elif 'JPG' in URL or 'PNG' in URL:
+            return 'IMG'
+    else:
+            return False

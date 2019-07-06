@@ -13,10 +13,6 @@ class MainApplication(tk.Frame):
     def initGUI(self):
         self.mainview = MainView(self, borderwidth=0, bg='#000')
         self.mainview.pack(fill=tk.BOTH, expand=True)
-        # if not login
-        if store._get('FO100') == None:
-            login = Login(self)
-            login.open()
 
 
 def run():

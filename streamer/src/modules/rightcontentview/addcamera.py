@@ -3,7 +3,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty, BooleanProperty
 from kivy.uix.popup import Popup
 from src.modules.custom.filechoose import FileChooser
-from src.utils import ftype, helper
+from src.utils import ftype, helper, scryto
 import src.utils.kivyhelper as kv_helper
 
 Builder.load_file('src/ui/addcamera.kv')
@@ -20,6 +20,7 @@ class AddCamera(Popup):
 
     def add_to_lscam(self):
         helper._add_to_lscam({
+            "id":scryto.hash_md5_with_time(self.url.text.replace('\\', '/')),
             "name": self.name.text,
             "url": self.url.text.replace('\\', '/'),
             "type": 'RTSP'

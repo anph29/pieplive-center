@@ -18,7 +18,7 @@ class ListMedia(RecycleView):
     def clean_data_to_save_json(self):
         return list(
             map(
-                lambda cam: {'name': cam['name'], 'url': cam['url'], 'type': cam['type']},
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type']},
                 list(self.data)
             )
         )
@@ -42,7 +42,7 @@ class ListImage(RecycleView):
     def clean_data_to_save_json(self):
         return list(
             map(
-                lambda cam: {'name': cam['name'], 'url': cam['url'], 'type': cam['type']},
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type']},
                 list(self.data)
             )
         )
@@ -66,7 +66,7 @@ class ListCamera(RecycleView):
     def clean_data_to_save_json(self):
         return list(
             map(
-                lambda cam: {'name': cam['name'], 'url': cam['url'], 'type': cam['type']},
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type']},
                 list(self.data)
             )
         )
@@ -90,7 +90,7 @@ class ListPresenter(RecycleView):
     def clean_data_to_save_json(self):
         return list(
             map(
-                lambda cam: {'name': cam['name'], 'url': cam['url'], 'type': cam['type']},
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type']},
                 list(self.data)
             )
         )

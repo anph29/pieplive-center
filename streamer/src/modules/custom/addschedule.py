@@ -4,7 +4,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty, BooleanProperty
 from kivy.uix.popup import Popup
 from src.modules.custom.filechoose import FileChooser
-from src.utils import ftype, helper
+from src.utils import ftype, helper, scryto
 import src.utils.kivyhelper as kv_helper
 import cv2
 
@@ -30,7 +30,7 @@ class AddSchedule(Popup):
 
     def add_to_schedule(self):
         helper._add_to_schedule({
-            "id":"asdjskdjaslkdjalksdjk",
+            "id":scryto.hash_md5_with_time(self.data['url']),
             "name": self.name.text,
             "url": self.data['url'],
             "type": self.data['type'],

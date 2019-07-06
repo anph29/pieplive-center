@@ -1,22 +1,22 @@
 [
-    {
-        "name": "anm3u8",
-        "url": "https://livevn.piepme.com/camhls/1932.5f5f30ad8904730b14d25fcb07212490_720p/index.m3u8",
-        "type": "M3U8"
-    },
-    {
-        "name": "thongm3u8",
-        "url": "https://livevn.piepme.com/camhls/1932.bedaa61838e03e9ffe9a595770bb19b1_720p/index.m3u8",
-        "type": "M3U8"
-    },
-    {
-        "name": "LaoOng",
-        "url": "https://livevn.piepme.com/camhls/1932.6f19f4836179431f3e0670c7599de27e_720p/index.m3u8",
-        "type": "M3U8"
-    },
-    {
-        "name": "A Phong",
-        "url": "https://livevn.piepme.com/camhls/1932.899a9e107f0f1402e95758c571b27228_720p/index.m3u8",
-        "type": "M3U8"
-    }
+  {
+    "name": "anm3u8",
+    "url": "https://livevn.piepme.com/camhls/1932.5f5f30ad8904730b14d25fcb07212490_720p/index.m3u8",
+    "type": "M3U8"
+  },
+  {
+    "name": "thongm3u8",
+    "url": "https://livevn.piepme.com/camhls/1932.bedaa61838e03e9ffe9a595770bb19b1_720p/index.m3u8",
+    "type": "M3U8"
+  },
+  {
+    "name": "LaoOng",
+    "url": "https://livevn.piepme.com/camhls/1932.6f19f4836179431f3e0670c7599de27e_720p/index.m3u8",
+    "type": "M3U8"
+  },
+  {
+    "name": "A Phong",
+    "url": "https://livevn.piepme.com/camhls/1932.899a9e107f0f1402e95758c571b27228_720p/index.m3u8",
+    "type": "M3U8"
+  }
 ]

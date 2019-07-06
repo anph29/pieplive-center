@@ -24,7 +24,7 @@ def run():
     w = 1280
     x = tk_helper.getCenterX(w)
     root.geometry(f"{w}x900+{x}+20")
-    root.title("PiepLive Center V2")
+    root.title("PiepLive Center Setting")
     imgicon = tk.PhotoImage(file=helper._LOGO_VIEWER)
     root.tk.call('wm', 'iconphoto', root._w, imgicon)
     MainApplication(root).pack(side=tk.TOP, fill=tk.BOTH, expand=True)

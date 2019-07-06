@@ -3,10 +3,10 @@ from . import  helper
 import ctypes
 
 
-def makePiepMePopup(title, w=300, h=200):
+def makePiepMePopup(title, w=300, h=200, padx=20, pady=10):
     x = getCenterX(w)
     y = 100
-    pmPopup = tk.Toplevel(padx=20, pady=10)
+    pmPopup = tk.Toplevel(padx=padx, pady=pady)
     pmPopup.wm_title(title)
     pmPopup.geometry(f"{w}x{h}+{x}+{y}")
     imgicon = tk.PhotoImage(file=helper._LOGO_VIEWER)

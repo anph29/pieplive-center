@@ -9,7 +9,7 @@ def from_store():
 
 def to_store(data):
     with open(helper._PATH_STORE, 'w', encoding='utf-8') as store:
-        json.dump(data, store, indent=4)
+        json.dump(data, store, indent=2)
 
 
 def _all():

@@ -13,9 +13,10 @@ class MediaBox(tk.Frame):
     bot_height = 25
 
 
-    def __init__(self, parent, media=None, *args, **kwargs):
+    def __init__(self, parent, parentTab=None, media=None, *args, **kwargs):
         super(MediaBox, self).__init__(parent, *args, **kwargs)
         self.parent = parent
+        self.parentTab = parentTab
         self.set_data(media)
         self.after(100, self.initGUI)
 
@@ -28,10 +29,10 @@ class MediaBox(tk.Frame):
         }
 
     def set_data(self, media):
+        self.id = media['id']
         self.name = media['name']
         self.url = media['url']
         self.mtype = media['type']
-        self.id = scryto.hash_md5_with_time(self.url)
 
     def initGUI(self):
         ww = self.cell_width + 5
@@ -47,13 +48,26 @@ class MediaBox(tk.Frame):
     def initTOP(self):
         top = tk.Frame(self.wrapper, bd=0, relief=tk.FLAT, bg="#ccc", width=self.cell_width, height=self.top_height)
         top.bind("<Button-1>", self.playOrPauseClick)
-        # vlc
-        self.Instance = vlc.Instance()
-        self.player = self.Instance.media_player_new()
-        self.player.audio_set_volume(0)
-        self.initPlayerMedia()
-        self.player.set_hwnd(top.winfo_id())
-        self.play()
+        if self.mtype == 'IMG':
+            im = Image.open(self.url)
+            w, h = im.size
+            r = w / h   
+            nH = self.top_height
+            nW = int(nH * r)
+            #   
+            resized = im.resize((nW, nH), Image.ANTIALIAS)
+            imgMedia = ImageTk.PhotoImage(resized)
+            lblMedia = tk.Label(top, image=imgMedia, bg="#f2f2f2")
+            lblMedia.photo = imgMedia
+            lblMedia.pack()
+        else:
+            # vlc
+            self.Instance = vlc.Instance()
+            self.player = self.Instance.media_player_new()
+            self.player.audio_set_volume(0)
+            self.initPlayerMedia()
+            self.player.set_hwnd(top.winfo_id())
+            self.play()
         #
         if self.mtype == 'VIDEO':
             self.after(100, self.playOrPause)
@@ -130,19 +144,6 @@ class MediaBox(tk.Frame):
 
     def deletemedia(self, evt):
         if messagebox.askyesno("PiepMe", "Are you sure to delete this resource?"):
-            pass
+            self.parentTab.delMediaBox(self.id)
 
-    def remove(self, index):
-        if self.parent.data:
-            self.parent.data.pop(index)
-            # self.saveLstCamToJSON()
-
-    def saveLstCamToJSON(self):
-        helper._write_lscam(
-            list(
-                map(
-                    lambda cam: {'name': cam['name'], 'url': cam['url']},
-                    list(self.parent.data)
-                )
-            )
-        )
+    

@@ -122,8 +122,8 @@ def loadJSON(path):
         return json.load(jdata)
 
 def writeJSON(path, data):
-     with open(path, 'w', encoding='utf-8') as jdata:
-        json.dump(data, jdata, indent=2)
+     with open(path, 'w', encoding='utf-8') as jflie:
+        json.dump(data, jflie, indent=2)
 
 def appendJSON(path, data, auto_increment=False):
     jcam = loadJSON(path)

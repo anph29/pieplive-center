@@ -1,0 +1,1 @@
+TXT_FONT = ("Arial", 10)

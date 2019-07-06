@@ -3,7 +3,8 @@ from tkinter import ttk, messagebox
 from src.utils import helper, store
 from src.modules.mediatab import MediaTab, TabType
 from src.models import Q170_model, L500_model
-from src.enums import Q180, WS
+from src.enums import Q180
+from src.constants import WS, UI
 from src.modules.custom import LabeledCombobox
 from PIL import Image, ImageTk
 from src.modules.menu import MainMenu
@@ -16,11 +17,12 @@ class MainView(tk.Frame):
         self.parent = parent
         self.after(100, self.initGUI)
 
-    def set_style(self):
+    def setStyle(self):
+        """"""
         style = ttk.Style()
         style.theme_create("TabStyle", parent="alt", settings={
             "TNotebook": {
-                "configure": {"tabmargins": [10, 0, 0, 10]}  # L T B R
+                "configure": {"tabmargins": [5, 0, 0, 5]}  # L T R B
             },
             "TNotebook.Tab": {
                 "configure": {"padding": [15, 5, 15, 5]}
@@ -29,29 +31,32 @@ class MainView(tk.Frame):
         style.theme_use("TabStyle")
 
     def initGUI(self):
-        self.set_style()
+        """"""
+        self.setStyle()
         #
         self.updateMenu()
         #
-        if bool(store._get('FO100')):
-            self.showToolbar()
+        self.showToolbar()
         #
+        self.showMasterTab()
+        
+    def showMasterTab(self):
         self.masterTab = ttk.Notebook(self)
         self.masterTab.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-        #
+        # 1
         self.tab_image = self.initTabContent(TabType.IMAGE)
         self.masterTab.add(self.tab_image, text="Images")
-        #
+        # 2
         self.tab_video = self.initTabContent(TabType.VIDEO)
         self.masterTab.add(self.tab_video, text="Videos")
-        #
+        # 3
         self.tab_camera = self.initTabContent(TabType.CAMERA)
         self.masterTab.add(self.tab_camera, text="Cameras")
-        #
+        # 4
         self.tab_presenter = self.initTabContent(TabType.PRESENTER)
         self.masterTab.add(self.tab_presenter, text="Presenters")
         #
-        self.masterTab.select(self.tab_camera)
+        self.masterTab.select(self.tab_image)
         self.masterTab.enable_traversal()
     
     def updateMenu(self):
@@ -66,28 +71,53 @@ class MainView(tk.Frame):
         self.updateMenu()
 
     def showToolbar(self):
+        """"""
         self.toolbar = tk.Frame(self, relief=tk.FLAT, bg='#ccc')
         self.toolbar.pack(side=tk.TOP, fill=tk.X)
         #
+        self.packLeftToolbar()
+        if bool(store._get('FO100')):
+            self.packRightToolbar()
+    
+    def packLeftToolbar(self):
+        """"""
+        lefToolbar = tk.Frame(self.toolbar, relief=tk.FLAT, bg='#ccc')
+        lefToolbar.pack(side=tk.LEFT, fill=tk.Y)
+        #
+        # Creating a photoimage object to use image 
+        photo = tk.PhotoImage(file=helper._ICONS_PATH+'ic_clock.png') 
+        # Resizing image to fit on button 
+        photoimage = photo.subsample(4,4) 
+        # compound option is used to align image on LEFT side of button 
+        schedule = tk.Button(lefToolbar, text=' Schedule', width=100, relief=tk.FLAT, image=photoimage, font=UI.TXT_FONT, compound=tk.LEFT, height=25, fg='#fff', bg='#ff2d55')
+        schedule.photo = photoimage
+        schedule.pack(side=tk.TOP, padx=10, pady=5) 
+        
+    def packRightToolbar(self):
+        """"""
+        rightToolbar = tk.Frame(self.toolbar, relief=tk.FLAT, bg='#ccc')
+        rightToolbar.pack(side=tk.RIGHT, fill=tk.Y)
+        #
         imgCheck = ImageTk.PhotoImage(Image.open(helper._ICONS_PATH+'close-pink.png'))
-        lblCommandClear = tk.Label(self.toolbar, bd=1, image=imgCheck, bg="#ccc")
+        lblCommandClear = tk.Label(rightToolbar, bd=1, image=imgCheck, bg="#ccc")
         lblCommandClear.photo = imgCheck
         lblCommandClear.pack(side=tk.RIGHT, fill=tk.Y, padx=(0, 15), pady=5)
         lblCommandClear.bind('<Button-1>', self.onClearResource)
         #
         imgCheck = ImageTk.PhotoImage(Image.open(helper._ICONS_PATH+'check-green.png'))
-        lblCommandCheck = tk.Label(self.toolbar, bd=1, image=imgCheck, bg="#ccc")
+        lblCommandCheck = tk.Label(rightToolbar, bd=1, image=imgCheck, bg="#ccc")
         lblCommandCheck.photo = imgCheck
         lblCommandCheck.pack(side=tk.RIGHT, fill=tk.Y, padx=(5, 0), pady=5)
         lblCommandCheck.bind('<Button-1>', self.onNewResource)
         #
         cbxData = {q170['NV106']: q170['FO100'] for q170 in self.loadCbxQ170()}
-        cbxQ170 = LabeledCombobox(self.toolbar, cbxData, callback=self.onSelectBussiness, bd=1, relief=tk.FLAT)
+        cbxQ170 = LabeledCombobox(rightToolbar, cbxData, callback=self.onSelectBussiness, bd=1, relief=tk.FLAT)
         cbxQ170.pack(side=tk.RIGHT, padx=10, pady=10)
         #
         self.updateMenu()
 
     def onSelectBussiness(self, fo100):
+        """"""
         self.FO100BU = fo100
 
     def onClearResource(self, evt):
@@ -105,7 +135,6 @@ class MainView(tk.Frame):
             'FO100': store._get('FO100') or 0,
             'FQ180': Q180.CAM_LIV_OOF
         })
-        print(rs, 'zzzzzzzzzzzzzzzzzzzzzzzz')
         return rs[WS.ELEMENTS] if rs[WS.STATUS] == WS.SUCCESS else []
         
 

@@ -1,11 +1,13 @@
-
+import os
 from src.utils import ftype, helper
 import tkinter as tk
-from tkinter import filedialog
-from src.utils import tk_helper
+from tkinter import filedialog, ttk
+from src.utils import tk_helper, scryto
+from src.constants import UI
+from src.enums import TabType
 
 class AddResource(object):
-    use_local = False
+    useLocal = False
     addCamPopup = None
     error = False
 
@@ -16,82 +18,167 @@ class AddResource(object):
         # first destroy
         if None is not self.addCamPopup:
             self.addCamPopup.destroy()
-        # init
-        self.addCamPopup = tk_helper.makePiepMePopup(
-            'Add Media', w=400, h=200)
+        self.addCamPopup = tk_helper.makePiepMePopup('Add Media', w=400, h=250, padx=0, pady=0)
+        self.makeMasterTab()
+    
+    def makeMasterTab(self):
+        #
+        self.masterTab = ttk.Notebook(self.addCamPopup)
+        self.masterTab.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=(2,0))
+        # 1
+        self.tabFile = self.initTabFileUI()
+        self.masterTab.add(self.tabFile, text="Choose file")
+        # 2
+        self.tabFolder = self.initTabFolderUI()
+        self.masterTab.add(self.tabFolder, text="Choose folder")
+        #
+        self.masterTab.select(self.tabFolder)
+        self.masterTab.enable_traversal()
+
+    def initTabFolderUI(self):
+        fFolder = tk.Frame(self.addCamPopup)
+        # URL
+        fUrl = tk.Frame(fFolder, pady=10, padx=20)
+        lUrl = tk.Label(fUrl, text="URL:", width=6, anchor=tk.W, font=UI.TXT_FONT)
+        lUrl.pack(side=tk.LEFT, fill=tk.Y)
+        self.eUrlFolder = tk.Entry(fUrl, textvariable=self.url, width=36, borderwidth=5, relief=tk.FLAT)
+        self.eUrlFolder.pack(side=tk.LEFT, fill=tk.X)
+        btnChoose = tk.Button(fUrl, text="Choose..", relief=tk.RAISED, padx=5, pady=5, command=self.askFolderName, font=UI.TXT_FONT)
+        btnChoose.configure(width=7)
+        btnChoose.pack(side=tk.RIGHT, fill=tk.Y)
+        fUrl.pack(side=tk.TOP, fill=tk.X)
+        # bot button
+        fBtn = tk.Frame(fFolder,  pady=10, padx=20)
+        btnCancel = tk.Button(fBtn, text="Cancel", bd=2, relief=tk.RAISED, command=self.addCamPopup.destroy)
+        btnCancel.configure(width=7)
+        btnCancel.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
+        btnOk = tk.Button(fBtn, text="OK", bd=2, bg="#ff2d55", fg="#fff", relief=tk.RAISED, command=self.onOkFolder)
+        btnOk.configure(width=7)
+        btnOk.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
+        fBtn.pack(side=tk.BOTTOM, fill=tk.X)
+        return fFolder
+
+    def initTabFileUI(self):
+        fFile = tk.Frame(self.addCamPopup)
         # var
         self.name = tk.StringVar()
         self.url = tk.StringVar()
         # name
-        f_name = tk.Frame(self.addCamPopup, pady=10)
-        l_name = tk.Label(f_name, text="Name:", width=6, anchor=tk.W)
-        l_name.pack(side=tk.LEFT, fill=tk.Y)
-        self.e_name = tk.Entry(f_name, textvariable=self.name, width=100, borderwidth=5, relief=tk.FLAT)
-        self.e_name.pack(side=tk.LEFT, fill=tk.X)
-        f_name.pack(side=tk.TOP, fill=tk.X)
+        fName = tk.Frame(fFile, pady=10, padx=20)
+        lName = tk.Label(fName, text="Name:", width=6, anchor=tk.W, font=UI.TXT_FONT)
+        lName.pack(side=tk.LEFT, fill=tk.Y)
+        self.eName = tk.Entry(fName, textvariable=self.name, width=100, borderwidth=5, relief=tk.FLAT)
+        self.eName.pack(side=tk.LEFT, fill=tk.X)
+        fName.pack(side=tk.TOP, fill=tk.X)
         # URL
-        f_url = tk.Frame(self.addCamPopup,  pady=10)
-        l_url = tk.Label(f_url, text="URL:", width=6, anchor=tk.W)
-        l_url.pack(side=tk.LEFT, fill=tk.Y)
-        self.e_url = tk.Entry(f_url, textvariable=self.url, width=36, borderwidth=5, relief=tk.FLAT)
-        self.e_url.pack(side=tk.LEFT, fill=tk.X)
-        btn_choose = tk.Button( f_url, text="Choose..", relief=tk.RAISED, padx=5, pady=5, command=self.askFileName)
-        btn_choose.configure(width=7)
-        btn_choose.pack(side=tk.RIGHT, fill=tk.Y)
-        f_url.pack(side=tk.TOP, fill=tk.X)
+        fUrl = tk.Frame(fFile, pady=10, padx=20)
+        lUrl = tk.Label(fUrl, text="URL:", width=6, anchor=tk.W, font=UI.TXT_FONT)
+        lUrl.pack(side=tk.LEFT, fill=tk.Y)
+        self.eUrl = tk.Entry(fUrl, textvariable=self.url, width=36, borderwidth=5, relief=tk.FLAT)
+        self.eUrl.pack(side=tk.LEFT, fill=tk.X)
+        btnChoose = tk.Button(fUrl, text="Choose..", relief=tk.RAISED, padx=5, pady=5, command=self.askFileName, font=UI.TXT_FONT)
+        btnChoose.configure(width=7)
+        btnChoose.pack(side=tk.RIGHT, fill=tk.Y)
+        fUrl.pack(side=tk.TOP, fill=tk.X)
         # error msg
-        self.f_error = tk.Frame(self.addCamPopup)
-        l_error = tk.Label(self.f_error, text="File not allowed!", fg="#f00")
-        l_error.pack(side=tk.LEFT, fill=tk.Y)
+        self.fError = tk.Frame(fFile)
+        lError = tk.Label(self.fError, text="File not allowed!", fg="#f00")
+        lError.pack(side=tk.LEFT, fill=tk.Y)
         # bot button
-        f_btn = tk.Frame(self.addCamPopup, pady=10)
-        btn_cancel = tk.Button(f_btn, text="Cancel", bd=2, relief=tk.RAISED, command=self.addCamPopup.destroy)
-        btn_cancel.configure(width=7)
-        btn_cancel.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
-        btn_ok = tk.Button(f_btn, text="OK", bd=2, bg="#ff2d55", fg="#fff", relief=tk.RAISED, command=self.on_ok)
-        btn_ok.configure(width=7)
-        btn_ok.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
-        f_btn.pack(side=tk.BOTTOM, fill=tk.X)
+        fBtn = tk.Frame(fFile, pady=10, padx=20)
+        btnCancel = tk.Button(fBtn, text="Cancel", bd=2, relief=tk.RAISED, command=self.addCamPopup.destroy)
+        btnCancel.configure(width=7)
+        btnCancel.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
+        btnOk = tk.Button(fBtn, text="OK", bd=2, bg="#ff2d55", fg="#fff", relief=tk.RAISED, command=self.onOkFile)
+        btnOk.configure(width=7)
+        btnOk.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
+        fBtn.pack(side=tk.BOTTOM, fill=tk.X)
+
+        return fFile
+
+    def getTypeAllowedFromTabType(self):
+        ''''''
+        if self.parent.tabType == TabType.IMAGE:
+            return (("image files", "*.png *.jpg"),("all files", "*.*"))
+        elif self.parent.tabType == TabType.VIDEO:
+            return (("video files", "*.mov *.mp4"),("all files", "*.*"))
 
     def askFileName(self):
-        self.f_error.pack_forget()
-        fname = filedialog.askopenfilename(initialdir="/", title="Select file", filetypes=(
-            ("video files", "*.mov *.mp4"), ("image files", "*.png *.jpg"), ("all files", "*.*")))
+        self.fError.pack_forget()
+        path = filedialog.askopenfilename(initialdir="/", title="Select file", filetypes=self.getTypeAllowedFromTabType())
+        fname = os.fsdecode(path)
         if ftype.isImage(fname):
-            self.local_file(fname, 'IMG')
+            self.useLocal = True
+            self.mtype = 'IMG'
         elif ftype.isVideo(fname):
-            self.local_file(fname, 'VIDEO')
+            self.useLocal = True
+            self.mtype = 'VIDEO'
         else:
-            self.f_error.pack(side=tk.TOP, fill=tk.X)
+            self.fError.pack(side=tk.TOP, fill=tk.X)
+        # fill data
+        self.eName.delete(0, tk.END)
+        self.eName.insert(0, (fname.split('/')[-1]).split('.')[0])
+        self.eUrl.delete(0, tk.END)
+        self.eUrl.insert(0, fname)
 
-        self.e_url.delete(0, tk.END)
-        self.e_url.insert(0, fname)
+    def localFile(self, ftype):
+        self.useLocal = True
+        self.mtype = ftype
 
-    def add_to_lscam(self):
-        dt = {
-            "name": str(self.name.get()),
-            "url": str(self.url.get()),
-            "type": self.mtype
-        }
-        helper._add_to_lscam(dt)
-        self.parent.addToTabCamera(dt)
+    def askFolderName(self):
+        self.directory = filedialog.askdirectory()
+        self.eUrlFolder.delete(0, tk.END)
+        self.eUrlFolder.insert(0, self.directory)
+
+
+    def onOkFolder(self):
+        for file in os.listdir(self.directory):
+            fname = os.fsdecode(file)
+            fpath = os.path.join(self.directory, fname).replace('\\', '/')
+            if os.path.isfile(fpath):
+                isImg = ftype.isImage(fpath)
+                isVideo = ftype.isVideo(fpath)
+                if isImg or isVideo:
+                    dt = {
+                        "name": (fpath.split('/')[-1]).split('.')[0],
+                        "url": fpath,
+                        "id" : scryto.hash_md5_with_time(fpath)
+                    }
+                    if self.parent.tabType == TabType.IMAGE and isImg:
+                        dt["type"] = 'IMG'
+                        self.parent.addMediaBoxToList(dt)
+                        self.parent.addMedia(dt)
+                    elif self.parent.tabType == TabType.VIDEO and isVideo:
+                        dt["type"] = 'VIDEO'
+                        self.parent.addMediaBoxToList(dt)
+                        self.parent.addMedia(dt)
+        #   
         self.addCamPopup.destroy()
 
-    def on_ok(self):
-        if self.use_local:
-            self.add_to_lscam()
+
+    def onOkFile(self):
+        if self.useLocal:
+            self.addSingleToLsMedia()
         elif len(self.name.get()) > 0:
             self.mtype = self.validateResouce()
             if self.mtype:
-                self.add_to_lscam()
+                self.addSingleToLsMedia()
             else:
-                self.f_error.pack(side=tk.TOP, fill=tk.X)
+                self.fError.pack(side=tk.TOP, fill=tk.X)
         else:
-            self.f_error.pack(side=tk.TOP, fill=tk.X)
+            self.fError.pack(side=tk.TOP, fill=tk.X)
 
-    def local_file(self, fpath, ftype):
-        self.use_local = True
-        self.mtype = ftype
+    def addSingleToLsMedia(self):
+        url = self.url.get()
+        dt = {
+            "name": str(self.name.get()),
+            "url": str(url),
+            "type": self.mtype,
+            "id" : scryto.hash_md5_with_time(url)
+        }
+        self.parent.addMediaBoxToList(dt)
+        self.parent.addMedia(dt)
+        self.addCamPopup.destroy()
 
     def validateResouce(self):
         URL = str(self.url.get()).upper()

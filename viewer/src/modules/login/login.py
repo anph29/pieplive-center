@@ -6,10 +6,10 @@ from src.models.n100_model import N100_model
 from uuid import getnode as get_mac
 from src.utils import store
 from tkinter import messagebox
-from src.enums import WS
+from src.constants import WS, UI
+
 class Login(object):
     loginPopup = None
-    font = ("Arial", 10)
 
     def __init__(self, parent):
         self.parent = parent
@@ -51,37 +51,37 @@ class Login(object):
         ePid = tk.Entry(self.fPid, textvariable=self.NV117, borderwidth=5, relief=tk.FLAT)
         ePid.insert(0, 'GP2Y6B')  # 'PiepMe ID')
         ePid.bind("<FocusIn>", lambda args: ePid.delete('0', 'end'))
-        ePid.config(font=self.font)
+        ePid.config(font=UI.TXT_FONT)
         self.NV117.trace("w", self.autoUpperNV117)
         ePid.pack(side=tk.LEFT, fill=tk.X)
         #
         btnLogin = tk.Button(self.fPid, text="Login", bd=2, bg="#ff2d55", fg="#fff", relief=tk.RAISED, command=self.onSendNV117)
-        btnLogin.config(width=7, font=self.font)
+        btnLogin.config(width=7, font=UI.TXT_FONT)
         btnLogin.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
         # Verify TOKEN
         self.fToken = tk.Frame(loginMainFrame, pady=15)
         eToken = tk.Entry(self.fToken, textvariable=self.PV161, borderwidth=5, relief=tk.FLAT)
         eToken.insert(0, 'Token')
         eToken.bind("<FocusIn>", lambda args: eToken.delete('0', 'end'))
-        eToken.config(font=self.font)
+        eToken.config(font=UI.TXT_FONT)
         eToken.pack(side=tk.LEFT, fill=tk.X)
         #
         btnVerify = tk.Button(self.fToken, text="Verify", bd=2, bg="#ff2d55", fg="#fff", relief=tk.RAISED, command=self.onVerify)
-        btnVerify.config(width=7, font=self.font)
+        btnVerify.config(width=7, font=UI.TXT_FONT)
         btnVerify.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
         #
         lblCommand = tk.Label(self.fToken, text="Check your PiepMe message to get verify token!")
-        btnVerify.config(font=self.font)
+        btnVerify.config(font=UI.TXT_FONT)
         btnVerify.pack()
         # nv117 invalid
         self.fInvalid = tk.Frame(loginMainFrame, pady=5)
         lblError = tk.Label(self.fInvalid, text="PiepMe ID invalid!", fg="#f00")
-        lblError.config(font=self.font)
+        lblError.config(font=UI.TXT_FONT)
         lblError.pack(side=tk.LEFT, fill=tk.Y)
         # pv161 invalid
         self.fTokenInvalid = tk.Frame(loginMainFrame, pady=5)
         lblTOkenError = tk.Label(self.fTokenInvalid, text="Token invalid!", fg="#f00")
-        lblTOkenError.config(font=self.font)
+        lblTOkenError.config(font=UI.TXT_FONT)
         lblTOkenError.pack(side=tk.LEFT, fill=tk.Y)
 
         # close

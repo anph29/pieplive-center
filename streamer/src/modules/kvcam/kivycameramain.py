@@ -20,7 +20,7 @@ class KivyCameraMain(Image):
     duration_total = StringProperty('00:00:00')
     duration_total_n = NumericProperty(1)
     duration = StringProperty('00:00:00')
-    duration_fps = NumericProperty(25)
+    duration_fps = NumericProperty(30)
 
     event_capture = None
     default_frame = 'src/images/splash.jpg'
@@ -42,7 +42,7 @@ class KivyCameraMain(Image):
         self.duration_total = '00:00:00'
         self.duration = '00:00:00'
         self.duration_total_n = 1
-        self.duration_fps = 25
+        self.duration_fps = 30
         self.release()
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
@@ -50,41 +50,37 @@ class KivyCameraMain(Image):
                     try:
                         _cap = cv2.VideoCapture(self.url)
                         if _cap.isOpened():
-                            self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
-
-                            self.duration_fps = round(_cap.get(cv2.CAP_PROP_FPS))
+                            print('======',_cap.get(cv2.CAP_PROP_FPS))
+                            self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*30
                             self.duration_total = helper.convertSecNoToHMS(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS))
                         del _cap
                     except Exception as e:
                         print("Exception:", e)
-                self.duration_fps = 25
-                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-ar","44100","-vb","3072k","-r","25","../resource/media/output.flv"]
+                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-ar","44100","-vb","3072k","-r","30","../resource/media/output.flv"]
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
                 self.pipe = sp.Popen(command, startupinfo=si)
                 
                 self.url = '../resource/media/output.flv'
-                Clock.schedule_once(self.refresh_stream , 1)
+                Clock.schedule_once(self.process_set_data , 1)
             else:
                 if self.typeOld == 'M3U8' or self.typeOld == 'VIDEO':
-                    command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 ../resource/media/output.flv'
+                    command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 30 ../resource/media/output.flv'
                     si = sp.STARTUPINFO()
                     si.dwFlags |= sp.STARTF_USESHOWWINDOW
                     self.pipe = sp.Popen(command, startupinfo=si)
                     Clock.schedule_once(lambda x: self.pipe.kill() , 5)
-                Clock.schedule_once(self.refresh_stream , 0)
+                Clock.schedule_once(self.process_set_data , 0)
         except Exception as e:
             print("Exception:", e)
-            Clock.schedule_once(self.refresh_stream , 0)
+            Clock.schedule_once(self.process_set_data , 0)
         
-
-    def refresh_stream(self,dd):
+    def process_set_data(self, second):
         if self.capture is not None:
             self.capture.release()
         self.stop_update_capture()
         th = Thread(target=self.init_capture())
         th.start()
-
 
     def init_capture(self):
         try:

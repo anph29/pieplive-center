@@ -23,24 +23,26 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
         self.name = data['name']
         self.duration = data['duration']
         self.kvcam.set_data_source(data)
+        print('111')
         is_changing = False
         return super(ItemSchedule, self).refresh_view_attrs(rv, index, data)
 
     def on_touch_down(self, touch):
         """ Add selection on touch down """
+        print('222')
         self.is_changing = True
         if super(ItemSchedule, self).on_touch_down(touch):
-            self.is_changing = False
             return True
         if self.collide_point(*touch.pos) and self.selectable:
             return self.parent.select_with_touch(self.index, touch)
 
     def apply_selection(self, rv, index, is_selected):
         """ Respond to the selection of items in the view """
+        print('333')
         self.selected = is_selected
-        if self.selected and self.is_changing:
-            self.is_changing = False
+        if self.selected and self.is_changing == True:
             kvhelper.getApRoot().changeSrc(self.kvcam.get_data_source(),'SCHEDULE')
+            self.is_changing = False
         else:
             self.is_changing = False
 

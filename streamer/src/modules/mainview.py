@@ -17,8 +17,8 @@ class MainView(Widget):
     mainStream = ObjectProperty()
     bottom_left = ObjectProperty()
     btn_start = ObjectProperty()
-    btn_record = ObjectProperty()
-    btn_setting = ObjectProperty()
+    # btn_record = ObjectProperty()
+    # btn_setting = ObjectProperty()
     login_popup = ObjectProperty()
     right_content = ObjectProperty()
     videoBuffer = ObjectProperty()
@@ -141,14 +141,14 @@ class MainView(Widget):
                 self.mainStream.stopStream()
                 self.btn_start.text = "Start Streaming"
                 self.btn_start.background_color = .29, .41, .55, 1
-        elif obj == 'record':
-            if self.mainStream.isRecord is False:
-                self.btn_record.text = "Stop Record"
-                self.btn_record.background_color = .29, .41, .15, 0.9
-            elif self.mainStream.isStream is True:
-                self.btn_record.text = "Start Record"
-                self.btn_record.background_color = .29, .41, .55, 1
-            self.mainStream.record()
+        # elif obj == 'record':
+        #     if self.mainStream.isRecord is False:
+        #         self.btn_record.text = "Stop Record"
+        #         self.btn_record.background_color = .29, .41, .15, 0.9
+        #     elif self.mainStream.isStream is True:
+        #         self.btn_record.text = "Start Record"
+        #         self.btn_record.background_color = .29, .41, .55, 1
+        #     self.mainStream.record()
 
     def triggerStop(self):
         self.mainStream.stopStream()

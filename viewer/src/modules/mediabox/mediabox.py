@@ -144,6 +144,6 @@ class MediaBox(tk.Frame):
 
     def deletemedia(self, evt):
         if messagebox.askyesno("PiepMe", "Are you sure to delete this resource?"):
-            self.parentTab.delMediaBox(self.id)
+            self.parentTab.delMediaBox([self.id])
 
     

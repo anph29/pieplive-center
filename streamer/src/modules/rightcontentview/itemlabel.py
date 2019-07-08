@@ -15,6 +15,7 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
     selected = BooleanProperty(False)
     selectable = BooleanProperty(True)
     kvcam = ObjectProperty()
+    isCheckItem = ObjectProperty()
     is_changing = BooleanProperty(False)
 
     def refresh_view_attrs(self, rv, index, data):
@@ -24,6 +25,7 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
         self.name = data['name']
         self.kvcam.set_data_source(data)
         self.data = data
+        self.isCheckItem.active = False
         return super(ItemLabel, self).refresh_view_attrs(rv, index, data)
 
     def on_touch_down(self, touch):
@@ -53,4 +55,3 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
     def add_to_schedule(self):
         kv_helper.getApRoot().open_add_schedule(self.data)
     
-        

@@ -1,6 +1,7 @@
 #:import helper src.utils.helper
 <ItemLabel>:
     kvcam:kvcam
+    isCheckItem:isCheckItem
     size_hint: 1,1
     canvas.before:
         Color:
@@ -16,20 +17,35 @@
         padding: 5,0,0,0
         LabelCamera:
             id:kvcam
-            size_hint: None, 1
+            size_hint: 1, 1
             font_size:13
-            width: self.parent.width - 52
             color:1,1,1,1
             text_size: self.size
             halign: 'left'
             valign: 'middle'
             shorten: True
-        Widget:
         ImageButton:
             size_hint:None,1
             width:16
             source: helper._ICONS_PATH+'ic_clock.png'
             on_release:root.add_to_schedule()
+        CheckBox:
+            id: isCheckItem
+            size_hint:None,1
+            width: 20
+            opacity:(1,0)[root.selected]
+            # on_active: root.f_root.change_schedule_loop(self.active)
+            canvas.before:
+                Color:
+                    rgb: 1,1,1
+                Rectangle:
+                    pos:self.center_x-8, self.center_y-8
+                    size:[16,16]
+                Color:
+                    rgb: 0,0,0
+                Rectangle:
+                    pos:self.center_x-7, self.center_y-7
+                    size:[14,14]
         ImageButton:
             size_hint:None,1
             width:16

@@ -15,6 +15,7 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
     selected = BooleanProperty(False)
     selectable = BooleanProperty(True)
     kvcam = ObjectProperty()
+    isCheckItem = ObjectProperty()
     active = BooleanProperty(False)
 
     def refresh_view_attrs(self, rv, index, data):
@@ -24,7 +25,8 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
         self.duration = data['duration']
         self.kvcam.set_data_source(data)
         self.active = data['active']
-        # return super(ItemSchedule, self).refresh_view_attrs(rv, index, data)
+        self.isCheckItem.active = False
+        return super(ItemSchedule, self).refresh_view_attrs(rv, index, data)
 
     def on_touch_down(self, touch):
         """ Add selection on touch down """
@@ -47,5 +49,12 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
         self.parent.parent.remove(self.index)
 
     def play(self):
+        self.isCheckItem.active = False
         self.parent.parent.setPlayed(self.index)
         kvhelper.getApRoot().changeSrc(self.kvcam.get_data_source(),'SCHEDULE')
+
+    def up(self):
+        self.parent.parent.up_list(self.index)
+
+    def down(self):
+        self.parent.parent.down_list(self.index)

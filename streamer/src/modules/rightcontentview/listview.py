@@ -25,6 +25,16 @@ class ListMedia(RecycleView):
 
     def refresh_list(self):
         self.set_data()
+    
+    def remove_selected(self):
+        temp = 0
+        for child in self.children[0].children:
+            if child.isCheckItem.active and child.selected == False:
+                temp = 1
+                if self.data:
+                    self.data.pop(child.index)
+        if temp == 1:
+            helper._write_video(self.clean_data_to_save_json())
 
 class ListImage(RecycleView):
  
@@ -49,6 +59,16 @@ class ListImage(RecycleView):
 
     def refresh_list(self):
         self.set_data()
+    
+    def remove_selected(self):
+        temp = 0
+        for child in self.children[0].children:
+            if child.isCheckItem.active and child.selected == False:
+                temp = 1
+                if self.data:
+                    self.data.pop(child.index)
+        if temp == 1:
+            helper._write_image(self.clean_data_to_save_json())
 
 class ListCamera(RecycleView):
 
@@ -73,6 +93,16 @@ class ListCamera(RecycleView):
 
     def refresh_list(self):
         self.set_data()
+    
+    def remove_selected(self):
+        temp = 0
+        for child in self.children[0].children:
+            if child.isCheckItem.active and child.selected == False:
+                temp = 1
+                if self.data:
+                    self.data.pop(child.index)
+        if temp == 1:
+            helper._write_lscam(self.clean_data_to_save_json())
 
 class ListPresenter(RecycleView):
 
@@ -97,6 +127,16 @@ class ListPresenter(RecycleView):
 
     def refresh_list(self):
         self.set_data()
+
+    def remove_selected(self):
+        temp = 0
+        for child in self.children[0].children:
+            if child.isCheckItem.active and child.selected == False:
+                temp = 1
+                if self.data:
+                    self.data.pop(child.index)
+        if temp == 1:
+            helper._write_lspresenter(self.clean_data_to_save_json())
 
 class ListSchedule(RecycleView):
 
@@ -157,24 +197,26 @@ class ListSchedule(RecycleView):
             else:
                 child.active = False
     
-    def up_list(self):
-        index = 0
-        for child in self.children[0].children:
-            if child.selected:
-                index = child.index
+    def up_list(self,index):
         if index == 0:
             return True
         self.data[index-1], self.data[index] = self.data[index], self.data[index-1]
-        self.setSelected((index-1))
         helper._write_schedule(self.clean_data_to_save_json()) 
 
-    def down_list(self):
-        index = len(self.data)-1
-        for child in self.children[0].children:
-            if child.selected:
-                index = child.index
+    def down_list(self,index):
         if index == len(self.data)-1:
             return True
         self.data[index+1], self.data[index] = self.data[index], self.data[index+1]
-        self.setSelected(index+1)
-        helper._write_schedule(self.clean_data_to_save_json()) 
+        helper._write_schedule(self.clean_data_to_save_json())
+
+    def remove_selected(self):
+        temp = 0
+        for child in self.children[0].children:
+            if child.isCheckItem.active and child.active == False:
+                temp = 1
+                if self.data:
+                    self.data.pop(child.index)
+        if temp == 1:
+            helper._write_schedule(self.clean_data_to_save_json())
+
+                

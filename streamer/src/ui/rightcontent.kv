@@ -287,6 +287,16 @@
             size_hint:None,None
             size: 20,20
             on_release: ls_schedule.refresh_list()
+        ImageButton:
+            source: helper._ICONS_PATH + 'ic_up.png'
+            size_hint:None,None
+            size: 20,20
+            on_release: ls_schedule.up_list()
+        ImageButton:
+            source: helper._ICONS_PATH + 'ic_down.png'
+            size_hint:None,None
+            size: 20,20
+            on_release: ls_schedule.down_list()
         Widget:
             size_hint:None,1
             width: 8

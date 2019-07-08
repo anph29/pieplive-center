@@ -62,10 +62,9 @@ class KivyCameraMain(Image):
                     except Exception as e:
                         print("Exception:", e)
                 
-                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "320k","-vb","3072k","-r","25","../resource/media/output.flv"]
+                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "320k","-vb","3072k","-r","25","../resource/media/output.flv"]
                 if fps < 25:
-                    command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-ar","44100","-ab", "320k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb","3072k","-r","25","../resource/media/output.flv"]
-                #     command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-ar","44100","-ab", "320k","-vb","3072k","-r","25","../resource/media/output.flv"]
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "320k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb","3072k","-r","25","../resource/media/output.flv"]
                 
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW

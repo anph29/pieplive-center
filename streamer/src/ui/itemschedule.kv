@@ -15,10 +15,16 @@
         spacing:5
         ImageButton:
             size_hint:None,1
-            width: 12
+            width: 16
             pos_hint:{'top':1, 'right':1}
             source: helper._ICONS_PATH+'equi.gif'
-            opacity: (1,1)[root.kvcam.is_playing]
+            opacity: (0,1)[root.active]
+        ImageButton:
+            size_hint:None,1
+            width: 12
+            pos_hint:{'top':1, 'right':1}
+            source: helper._ICONS_PATH+'play-w.png'
+            on_release:root.play()
         Label:
             size_hint:None,1
             width: 54
@@ -36,7 +42,7 @@
             shorten: True
         ImageButton:
             size_hint:.15,1
-            opacity:(1,0)[root.selected]
+            opacity:(1,0)[root.active]
             pos_hint:{'top':1, 'right':1}
             source: helper._ICONS_PATH+'trash.png'
             on_release:root.open_confirm_rmv()

@@ -15,7 +15,7 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
     selected = BooleanProperty(False)
     selectable = BooleanProperty(True)
     kvcam = ObjectProperty()
-    is_changing = BooleanProperty(False)
+    active = BooleanProperty(False)
 
     def refresh_view_attrs(self, rv, index, data):
         """ Catch and handle the view changes """
@@ -23,14 +23,11 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
         self.name = data['name']
         self.duration = data['duration']
         self.kvcam.set_data_source(data)
-        print('111')
-        is_changing = False
-        return super(ItemSchedule, self).refresh_view_attrs(rv, index, data)
+        self.active = data['active']
+        # return super(ItemSchedule, self).refresh_view_attrs(rv, index, data)
 
     def on_touch_down(self, touch):
         """ Add selection on touch down """
-        print('222')
-        self.is_changing = True
         if super(ItemSchedule, self).on_touch_down(touch):
             return True
         if self.collide_point(*touch.pos) and self.selectable:
@@ -38,14 +35,8 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
 
     def apply_selection(self, rv, index, is_selected):
         """ Respond to the selection of items in the view """
-        print('333')
         self.selected = is_selected
-        if self.selected and self.is_changing == True:
-            kvhelper.getApRoot().changeSrc(self.kvcam.get_data_source(),'SCHEDULE')
-            self.is_changing = False
-        else:
-            self.is_changing = False
-
+        
     def open_confirm_rmv(self):
         if not self.selected:
             PiepMeConfirmPopup(message='Are you sure to delete this resource?',
@@ -54,3 +45,7 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
 
     def rmv_capture(self):
         self.parent.parent.remove(self.index)
+
+    def play(self):
+        self.parent.parent.setPlayed(self.index)
+        kvhelper.getApRoot().changeSrc(self.kvcam.get_data_source(),'SCHEDULE')

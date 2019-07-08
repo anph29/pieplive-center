@@ -100,11 +100,19 @@ class ListPresenter(RecycleView):
 
 class ListSchedule(RecycleView):
 
+    item_playing = ""
+
     def __init__(self, **kwargs):
         super(ListSchedule, self).__init__(**kwargs)
 
     def set_data(self):
-        self.data = [c for c in helper._load_schedule()]
+        # self.data = [c for c in helper._load_schedule()]
+        self.data = list(
+            map(
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'duration': cam['duration'], 'active': (False,True) [cam['id'] == self.item_playing]},
+                helper._load_schedule()
+            )
+        )
 
     def get_data(self):
         return self.data
@@ -127,13 +135,46 @@ class ListSchedule(RecycleView):
 
     def getCurrentIndex(self):
         for child in self.children[0].children:
-            if child.selected:
+            if child.active:
                 return child.index
         return -1
-    
+
     def setSelected(self,index):
         for child in self.children[0].children:
             if child.index == index:
                 child.selected = True
             else:
                 child.selected = False
+
+    def setPlayed(self,index):
+        self.item_playing = self.data[index]['id']
+        for obj in self.data:
+            obj['active'] = False
+        self.data[index]['active'] = True
+        for child in self.children[0].children:
+            if child.index == index:
+                child.active = True
+            else:
+                child.active = False
+    
+    def up_list(self):
+        index = 0
+        for child in self.children[0].children:
+            if child.selected:
+                index = child.index
+        if index == 0:
+            return True
+        self.data[index-1], self.data[index] = self.data[index], self.data[index-1]
+        self.setSelected((index-1))
+        helper._write_schedule(self.clean_data_to_save_json()) 
+
+    def down_list(self):
+        index = len(self.data)-1
+        for child in self.children[0].children:
+            if child.selected:
+                index = child.index
+        if index == len(self.data)-1:
+            return True
+        self.data[index+1], self.data[index] = self.data[index], self.data[index+1]
+        self.setSelected(index+1)
+        helper._write_schedule(self.clean_data_to_save_json()) 

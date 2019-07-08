@@ -203,6 +203,7 @@ class MainStream(RelativeLayout):
             else:
                 inp.extend(["-ss", self.camera.duration,"-i", url])
             # inp.extend(["-ar", "44100", "-ab", "320k"])
+            
             txt += f"[{numau}:a]volume=1[a{numau}];"
             _map += f'[a{numau}]'
 
@@ -390,7 +391,7 @@ class MainStream(RelativeLayout):
             else:
                 return False
         data_src = self.ls_schedule[self.current_schedule]
-        self.f_parent.right_content.tab_schedule.ls_schedule.setSelected(self.current_schedule)
+        self.f_parent.right_content.tab_schedule.ls_schedule.setPlayed(self.current_schedule)
         self._set_capture(data_src, 'SCHEDULE', True)
         self.mgrSchedule = Clock.schedule_once(self.process_schedule , self.ls_schedule[self.current_schedule]['duration']+3)
 

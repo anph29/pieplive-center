@@ -39,13 +39,9 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
     def apply_selection(self, rv, index, is_selected):
         """ Respond to the selection of items in the view """
         self.selected = is_selected
-        # if self.selected and self.is_changing:
-        #     kv_helper.getApRoot().changeSrc(self.kvcam.get_data_source(),'')
-        
 
     def open_confirm_rmv(self):
-        if not self.selected:
-            PiepMeConfirmPopup(message='Are you sure to delete this resource?',
+        PiepMeConfirmPopup(message='Are you sure to delete this resource?',
                                callback_ok=self.rmv_capture,
                                callback_cancel=lambda: True)
 

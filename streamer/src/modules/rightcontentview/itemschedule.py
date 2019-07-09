@@ -40,10 +40,9 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
         self.selected = is_selected
         
     def open_confirm_rmv(self):
-        if not self.selected:
-            PiepMeConfirmPopup(message='Are you sure to delete this resource?',
-                               callback_ok=self.rmv_capture,
-                               callback_cancel=lambda: True)
+        PiepMeConfirmPopup(message='Are you sure to delete this resource?',
+                            callback_ok=self.rmv_capture,
+                            callback_cancel=lambda: True)
 
     def rmv_capture(self):
         self.parent.parent.remove(self.index)

@@ -1,2 +1,2 @@
 from .q180 import Q180
-from .tabtype import TabType
+from .enums import TabType, ViewMode

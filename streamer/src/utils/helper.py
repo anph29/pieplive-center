@@ -148,7 +148,6 @@ def removeUnicode(str):
     str = re.sub(r"Đ", 'D', str)
     return str
 
-
 def removeUnicodeLowerRmvSpace(str):
     str = str.replace(r"[àáạảãâầấậẩẫăằắặẳẵÄä]", 'a', str)
     str = str.replace(r"[èéẹẻẽêềếệểễ]", 'e', str)
@@ -160,10 +159,8 @@ def removeUnicodeLowerRmvSpace(str):
     str = str.replace(r"[\s:\/.]", "", str)
     return str
 
-
 def stringToBase64(s):
     return base64.b64encode(s.encode('utf-8'))
-
 
 def base64ToString(b):
     return base64.b64decode(b).decode('utf-8')

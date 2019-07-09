@@ -5,3 +5,7 @@ class TabType(Enum):
     IMAGE       = 2
     VIDEO       = 3
     PRESENTER   = 4
+
+class ViewMode(Enum):
+    NORMAL      = 1
+    SCHEDULE    = 2

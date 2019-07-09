@@ -53,10 +53,11 @@ class KivyCameraMain(Image):
                         if _cap.isOpened():
                             print(self.name,'======',_cap.get(cv2.CAP_PROP_FPS),"======")
                             fps = _cap.get(cv2.CAP_PROP_FPS)
-                            self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
                             if fps >= 25:
+                                self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
                                 self.duration_total = helper.convertSecNoToHMS(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS))
                             else:
+                                self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
                                 self.duration_total = helper.convertSecNoToHMS(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/25)
                         del _cap
                     except Exception as e:
@@ -96,12 +97,11 @@ class KivyCameraMain(Image):
             if self.resource_type == 'IMG':
                 self.show_captured_img(self.url)
             else:
-                
                 if self.resource_type == 'CAMERA':
                     self.capture = cv2.VideoCapture(int(self.url))
                 else:
                     self.capture = cv2.VideoCapture(self.url)
-                    print('url-----',self.url)
+                print('url-----',self.url)
 
                 if self.capture is not None and self.capture.isOpened():
                     if self.f_parent is not None:
@@ -110,7 +110,6 @@ class KivyCameraMain(Image):
                         elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
                             self.f_parent.refresh_stream()
                     self.typeOld = self.resource_type
-                    # if self.resource_type != 'VIDEO':
                     self.duration_fps = round(self.capture.get(cv2.CAP_PROP_FPS))
                     print(">>CAPTURE FINED:")
                     self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
@@ -139,7 +138,7 @@ class KivyCameraMain(Image):
 
     def update(self, dt):
         try:
-            # stoped
+            # check is get next
             if not self.capture.grab():
                 return False
             # playing
@@ -162,9 +161,6 @@ class KivyCameraMain(Image):
         texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
         self.texture = texture
         del frame
-
-    def getTotalDuration(self):
-        convertSecNoToHMS
 
     def release(self):
         if self.pipe is not None:

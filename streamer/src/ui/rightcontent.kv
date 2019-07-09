@@ -117,6 +117,11 @@
             size_hint:None,None
             size: 20,20
             on_release: ls_media.refresh_list()
+        ImageButton:
+            source: helper._ICONS_PATH + 'trash.png'
+            size_hint:None,None
+            size: 20,20
+            on_release: ls_media.remove_selected()
             
 <TabImage>:
     ls_image:ls_image
@@ -160,6 +165,11 @@
             size_hint:None,None
             size: 20,20
             on_release: ls_image.refresh_list()
+        ImageButton:
+            source: helper._ICONS_PATH + 'trash.png'
+            size_hint:None,None
+            size: 20,20
+            on_release: ls_image.remove_selected()
 
 
 <TabCamera>:
@@ -204,6 +214,11 @@
             size_hint:None,None
             size: 20,20
             on_release: ls_camera.refresh_list()
+        ImageButton:
+            source: helper._ICONS_PATH + 'trash.png'
+            size_hint:None,None
+            size: 20,20
+            on_release: ls_camera.remove_selected()
 
 <TabPresenter>:
     ls_presenter:ls_presenter
@@ -242,6 +257,11 @@
             size_hint:None,None
             size: 20,20
             on_release: ls_presenter.refresh_list()
+        ImageButton:
+            source: helper._ICONS_PATH + 'trash.png'
+            size_hint:None,None
+            size: 20,20
+            on_release: ls_presenter.remove_selected()
 
 <TabSchedule>:
     ls_schedule:ls_schedule
@@ -287,6 +307,14 @@
             size_hint:None,None
             size: 20,20
             on_release: ls_schedule.refresh_list()
+        Widget:
+            size_hint:None,1
+            width: 2
+        ImageButton:
+            source: helper._ICONS_PATH + 'trash.png'
+            size_hint:None,None
+            size: 20,20
+            on_release: ls_schedule.remove_selected()
         Widget:
             size_hint:None,1
             width: 8

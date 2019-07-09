@@ -4,7 +4,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty, BooleanProperty
 from kivy.uix.popup import Popup
 from src.modules.custom.filechoose import FileChooser
-from src.utils import ftype, helper
+from src.utils import ftype, helper, scryto
 import src.utils.kivyhelper as kv_helper
 import cv2
 
@@ -23,14 +23,17 @@ class AddSchedule(Popup):
             if self.data['type'] == 'VIDEO':
                 _cap = cv2.VideoCapture(self.data['url'])
                 if _cap.isOpened():
-                    self.duration.text = str(int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)))
+                    if _cap.get(cv2.CAP_PROP_FPS) >= 25:
+                        self.duration.text = str(int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)))
+                    else:
+                        self.duration.text = str(int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/25))
                 del _cap
         except Exception as e:
             print("Exception:", e)
 
     def add_to_schedule(self):
         helper._add_to_schedule({
-            "id":"asdjskdjaslkdjalksdjk",
+            "id":scryto.hash_md5_with_time(self.data['url']),
             "name": self.name.text,
             "url": self.data['url'],
             "type": self.data['type'],

@@ -1,10 +1,12 @@
 #:import helper src.utils.helper
 <ItemSchedule>:
     kvcam:kvcam
+    isCheckItem:isCheckItem
     size_hint: 1,1
     canvas.before:
         Color:
-            rgb:((.0,.0,.0),(.25,.25,.25))[root.selected]
+            rgb:(.0,.0,.0)
+            # rgb:((.0,.0,.0),(.25,.25,.25))[root.selected]
         Rectangle:
             pos: self.pos
             size: self.size
@@ -13,12 +15,18 @@
         size_hint: 1, 1
         pos_hint:{'x':0, 'y':0}
         spacing:5
-        # ImageButton:
-        #     size_hint:None,1
-        #     width: 12
-        #     pos_hint:{'top':1, 'right':1}
-        #     source: helper._ICONS_PATH+'checked.png'
-        #     opacity: (1,1)[root.kvcam.is_playing]
+        ImageButton:
+            size_hint:None,1
+            width: 16
+            pos_hint:{'top':1, 'right':1}
+            source: helper._ICONS_PATH+'equi.gif'
+            opacity: (0,1)[root.active]
+        ImageButton:
+            size_hint:None,1
+            width: 12
+            pos_hint:{'top':1, 'right':1}
+            source: helper._ICONS_PATH+'play-w.png'
+            on_release:root.play()
         Label:
             size_hint:None,1
             width: 54
@@ -27,7 +35,7 @@
             color:1,1,1,1
         LabelCamera:
             id:kvcam
-            size_hint: .7, 1
+            size_hint: 1, 1
             font_size:13
             color:1,1,1,1
             text_size: self.size
@@ -35,8 +43,39 @@
             valign: 'middle'
             shorten: True
         ImageButton:
-            size_hint:.15,1
-            opacity:(1,0)[root.selected]
+            size_hint:None,1
+            width: 16
+            # opacity:(0,1)[root.index > 0]
+            pos_hint:{'top':1, 'right':1}
+            source: helper._ICONS_PATH+'ic_up.png'
+            on_release:root.up()
+        ImageButton:
+            size_hint:None,1
+            width: 16
+            pos_hint:{'top':1, 'right':1}
+            source: helper._ICONS_PATH+'ic_down.png'
+            on_release:root.down()
+        CheckBox:
+            id: isCheckItem
+            size_hint:None,1
+            width: 20
+            opacity:(1,0)[root.active]
+            # on_active: root.f_root.change_schedule_loop(self.active)
+            canvas.before:
+                Color:
+                    rgb: 1,1,1
+                Rectangle:
+                    pos:self.center_x-8, self.center_y-8
+                    size:[16,16]
+                Color:
+                    rgb: 0,0,0
+                Rectangle:
+                    pos:self.center_x-7, self.center_y-7
+                    size:[14,14]
+        ImageButton:
+            size_hint:None,1
+            width: 16
+            opacity:(1,0)[root.active]
             pos_hint:{'top':1, 'right':1}
             source: helper._ICONS_PATH+'trash.png'
             on_release:root.open_confirm_rmv()

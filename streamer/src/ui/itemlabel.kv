@@ -5,7 +5,8 @@
     size_hint: 1,1
     canvas.before:
         Color:
-            rgb:((.0,.0,.0),(.25,.25,.25))[root.selected]
+            rgb:(.0,.0,.0)
+            # rgb:((.0,.0,.0),(.25,.25,.25))[root.selected]
         Rectangle:
             pos: self.pos
             size: self.size
@@ -15,6 +16,18 @@
         pos_hint:{'x':0, 'y':0}
         spacing:5
         padding: 5,0,0,0
+        ImageButton:
+            size_hint:None,1
+            width: 16
+            pos_hint:{'top':1, 'right':1}
+            source: helper._ICONS_PATH+'equi.gif'
+            opacity: (0,1)[root.active]
+        ImageButton:
+            size_hint:None,1
+            width: 12
+            pos_hint:{'top':1, 'right':1}
+            source: helper._ICONS_PATH+'play-w.png'
+            on_release:root.play()
         LabelCamera:
             id:kvcam
             size_hint: 1, 1
@@ -33,7 +46,7 @@
             id: isCheckItem
             size_hint:None,1
             width: 20
-            opacity:(1,0)[root.selected]
+            opacity:(1,0)[root.active]
             # on_active: root.f_root.change_schedule_loop(self.active)
             canvas.before:
                 Color:
@@ -49,6 +62,6 @@
         ImageButton:
             size_hint:None,1
             width:16
-            opacity:(1,0)[root.selected]
+            opacity:(1,0)[root.active]
             source: helper._ICONS_PATH+'trash.png'
             on_release:root.open_confirm_rmv()

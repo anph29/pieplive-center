@@ -3,12 +3,19 @@ import src.utils.helper as helper
 from kivy.properties import StringProperty
 
 class ListMedia(RecycleView):
+
+    item_playing = ''
  
     def __init__(self, **kwargs):
         super(ListMedia, self).__init__(**kwargs)
 
     def set_data(self):
-        self.data = [c for c in helper._load_video()]
+        self.data = list(
+            map(
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'active': (False,True) [cam['id'] == self.item_playing]},
+                helper._load_video()
+            )
+        )
 
     def remove(self, index):
         if self.data:
@@ -36,13 +43,31 @@ class ListMedia(RecycleView):
         if temp == 1:
             helper._write_video(self.clean_data_to_save_json())
 
+    def setPlayed(self,index):
+        self.item_playing = self.data[index]['id']
+        for obj in self.data:
+            obj['active'] = False
+        self.data[index]['active'] = True
+        for child in self.children[0].children:
+            if child.index == index:
+                child.active = True
+            else:
+                child.active = False
+
 class ListImage(RecycleView):
  
+    item_playing = ''
+
     def __init__(self, **kwargs):
         super(ListImage, self).__init__(**kwargs)
 
     def set_data(self):
-        self.data = [c for c in helper._load_image()]
+        self.data = list(
+            map(
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'active': (False,True) [cam['id'] == self.item_playing]},
+                helper._load_image()
+            )
+        )
 
     def remove(self, index):
         if self.data:
@@ -70,13 +95,29 @@ class ListImage(RecycleView):
         if temp == 1:
             helper._write_image(self.clean_data_to_save_json())
 
-class ListCamera(RecycleView):
+    def setPlayed(self,index):
+        self.item_playing = self.data[index]['id']
+        for obj in self.data:
+            obj['active'] = False
+        self.data[index]['active'] = True
+        for child in self.children[0].children:
+            if child.index == index:
+                child.active = True
+            else:
+                child.active = False
 
+class ListCamera(RecycleView):
+    item_playing = ""
     def __init__(self, **kwargs):
         super(ListCamera, self).__init__(**kwargs)
 
     def set_data(self):
-        self.data = [c for c in helper._load_lscam()]
+        self.data = list(
+            map(
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'active': (False,True) [cam['id'] == self.item_playing]},
+                helper._load_lscam()
+            )
+        )
 
     def remove(self, index):
         if self.data:
@@ -104,13 +145,31 @@ class ListCamera(RecycleView):
         if temp == 1:
             helper._write_lscam(self.clean_data_to_save_json())
 
+    def setPlayed(self,index):
+        self.item_playing = self.data[index]['id']
+        for obj in self.data:
+            obj['active'] = False
+        self.data[index]['active'] = True
+        for child in self.children[0].children:
+            if child.index == index:
+                child.active = True
+            else:
+                child.active = False
+
 class ListPresenter(RecycleView):
+
+    item_playing = ''
 
     def __init__(self, **kwargs):
         super(ListPresenter, self).__init__(**kwargs)
 
     def set_data(self):
-        self.data = [c for c in helper._load_ls_presenter()]
+        self.data = list(
+            map(
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'active': (False,True) [cam['id'] == self.item_playing]},
+                helper._load_ls_presenter()
+            )
+        )
 
     def remove(self, index):
         if self.data:
@@ -137,6 +196,17 @@ class ListPresenter(RecycleView):
                     self.data.pop(child.index)
         if temp == 1:
             helper._write_lspresenter(self.clean_data_to_save_json())
+    
+    def setPlayed(self,index):
+        self.item_playing = self.data[index]['id']
+        for obj in self.data:
+            obj['active'] = False
+        self.data[index]['active'] = True
+        for child in self.children[0].children:
+            if child.index == index:
+                child.active = True
+            else:
+                child.active = False
 
 class ListSchedule(RecycleView):
 
@@ -146,7 +216,6 @@ class ListSchedule(RecycleView):
         super(ListSchedule, self).__init__(**kwargs)
 
     def set_data(self):
-        # self.data = [c for c in helper._load_schedule()]
         self.data = list(
             map(
                 lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'duration': cam['duration'], 'active': (False,True) [cam['id'] == self.item_playing]},

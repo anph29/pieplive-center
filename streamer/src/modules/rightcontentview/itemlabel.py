@@ -16,7 +16,7 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
     selectable = BooleanProperty(True)
     kvcam = ObjectProperty()
     isCheckItem = ObjectProperty()
-    is_changing = BooleanProperty(False)
+    active = BooleanProperty(False)
 
     def refresh_view_attrs(self, rv, index, data):
         """ Catch and handle the view changes """
@@ -25,12 +25,12 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
         self.name = data['name']
         self.kvcam.set_data_source(data)
         self.data = data
+        self.active = data['active']
         self.isCheckItem.active = False
         return super(ItemLabel, self).refresh_view_attrs(rv, index, data)
 
     def on_touch_down(self, touch):
         """ Add selection on touch down """
-        self.is_changing = True
         if super(ItemLabel, self).on_touch_down(touch):
             return True
         if self.collide_point(*touch.pos) and self.selectable:
@@ -39,9 +39,9 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
     def apply_selection(self, rv, index, is_selected):
         """ Respond to the selection of items in the view """
         self.selected = is_selected
-        if self.selected and self.is_changing:
-            kv_helper.getApRoot().changeSrc(self.kvcam.get_data_source(),'')
-        self.is_changing = False
+        # if self.selected and self.is_changing:
+        #     kv_helper.getApRoot().changeSrc(self.kvcam.get_data_source(),'')
+        
 
     def open_confirm_rmv(self):
         if not self.selected:
@@ -55,3 +55,7 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
     def add_to_schedule(self):
         kv_helper.getApRoot().open_add_schedule(self.data)
     
+    def play(self):
+        self.isCheckItem.active = False
+        self.parent.parent.setPlayed(self.index)
+        kv_helper.getApRoot().changeSrc(self.kvcam.get_data_source(),'')

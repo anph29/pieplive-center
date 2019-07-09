@@ -1,0 +1,16 @@
+import tkinter as tk
+from src.modules.custom import DynamicGrid
+from src.modules.mediabox import MediaBox
+from . import MediaTab
+from src.enums import TabType
+
+
+class MediaGridView(DynamicGrid, MediaTab):
+    def __init__(self, parent, tabType=None, *args, **kwargs):
+        super(MediaGridView, self).__init__(parent, *args, **kwargs)
+        self.parent = parent
+        self.tabType = tabType
+        self.initUI()
+
+    def addMediaBoxToList(self, media):
+        self.after_effect(MediaBox(self.context, parentTab=self, media=media, bg="#f2f2f2", relief=tk.FLAT, bd=3))

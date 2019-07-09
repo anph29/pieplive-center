@@ -41,7 +41,7 @@ class MediaBox(tk.Frame):
         self.initTOP()
         self.initBOTTOM()
         if self.mtype == 'VIDEO':
-            self.buffer = tk.Frame(self, bd=0, relief=tk.SUNKEN, bg='#f00', width=0, height=3)
+            self.buffer = tk.Frame(self.wrapper, bd=0, relief=tk.SUNKEN, bg='#f00', width=0, height=3)
             self.buffer.pack(side=tk.LEFT, fill=tk.Y)
         self.wrapper.pack(expand=True)
 

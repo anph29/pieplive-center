@@ -2,7 +2,7 @@ import sys
 import cv2
 import time
 from kivy.uix.image import Image
-from kivy.clock import Clock
+from kivy.clock import Clock, mainthread
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
 from kivy.graphics.texture import Texture
 from src.modules.rightcontentview.itemcamera import ItemCamera
@@ -44,7 +44,9 @@ class KivyCameraMain(Image):
         self.duration = '00:00:00'
         self.duration_total_n = 1
         self.duration_fps = 25
-        self.release()
+        # self.release()
+        if self.pipe is not None:
+            self.pipe.kill()
         fps = 25
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
@@ -65,13 +67,13 @@ class KivyCameraMain(Image):
                         print("Exception:", e)
                 output = '../resource/media/output.flv'
                 timeout = 1
-                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "320k","-vb","3072k","-r","25",output]
+                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-vb","3072k","-r","25",output]#"-ar","44100"
                 if self.resource_type == "M3U8":
                     self.url = 'hls+'+self.url
-                    timeout=3
+                    timeout=2.5
                     command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-ab", "320k","-vb","3072k","-r","25",output]
                 elif fps < 25:
-                    command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "320k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb","3072k","-r","25",output]
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb","3072k","-r","25",output]
                 
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
@@ -92,9 +94,9 @@ class KivyCameraMain(Image):
             Clock.schedule_once(self.process_set_data , 0)
         
     def process_set_data(self, second):
+        self.stop_update_capture()
         if self.capture is not None:
             self.capture.release()
-        self.stop_update_capture()
         th = Thread(target=self.init_capture())
         th.start()
 
@@ -150,6 +152,7 @@ class KivyCameraMain(Image):
         if self.event_capture is not None:
             self.event_capture.cancel()
 
+    @mainthread
     def update(self, dt):
         try:
             # check is get next
@@ -165,6 +168,7 @@ class KivyCameraMain(Image):
         except IOError:
             print("Exception update:")
 
+    @mainthread
     def update_texture_from_frame(self, frame):
         try:
             frame = self.resizeFrame(frame)

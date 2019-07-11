@@ -21,6 +21,7 @@ class KivyCameraMain(Image):
     duration_total_n = NumericProperty(1)
     duration = StringProperty('00:00:00')
     duration_fps = NumericProperty(25)
+    reconnect = NumericProperty(0)
 
     event_capture = None
     default_frame = 'src/images/splash.jpg'
@@ -63,21 +64,23 @@ class KivyCameraMain(Image):
                     except Exception as e:
                         print("Exception:", e)
                 output = '../resource/media/output.flv'
+                timeout = 1
+                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "320k","-vb","3072k","-r","25",output]
                 if self.resource_type == "M3U8":
                     self.url = 'hls+'+self.url
-                    output= '../resource/media/output_m3u8.flv'
-                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "320k","-vb","3072k","-r","25",output]
-                if fps < 25:
+                    timeout=3
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-ab", "320k","-vb","3072k","-r","25",output]
+                elif fps < 25:
                     command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "320k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb","3072k","-r","25",output]
                 
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
                 self.pipe = sp.Popen(command, startupinfo=si)
                 
-                self.url = '../resource/media/output.flv'
-                Clock.schedule_once(self.process_set_data , 1)
+                self.url = output
+                Clock.schedule_once(self.process_set_data ,timeout)
             else:
-                if self.typeOld == 'M3U8':
+                if self.typeOld == 'M3U8' or self.typeOld == 'VIDEO':
                     command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 ../resource/media/output_m3u8.flv'
                     si = sp.STARTUPINFO()
                     si.dwFlags |= sp.STARTF_USESHOWWINDOW
@@ -107,6 +110,7 @@ class KivyCameraMain(Image):
                 print('url-----',self.url)
 
                 if self.capture is not None and self.capture.isOpened():
+                    self.reconnect = -0
                     if self.f_parent is not None:
                         if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
                             self.f_parent.refresh_stream()
@@ -119,11 +123,17 @@ class KivyCameraMain(Image):
                     self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
                 else:
                     print("cv2.error:")
-                    if self.capture is not None:
-                        self.capture.release()
-                    self.show_captured_img(self.default_frame)
+                    if self.reconnect >= 3:
+                        if self.capture is not None:
+                            self.capture.release()
+                        self.show_captured_img(self.default_frame)
+                    else:
+                        self.reconnect += 1
+                        self.init_capture()
         except Exception as e:
-            print("Exception:", e)
+            print("Exception init_capture:", e)
+        except IOError:
+            print("IOError update:")
     
     def _process(self):
         self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
@@ -153,17 +163,20 @@ class KivyCameraMain(Image):
                         self.duration = helper.convertSecNoToHMS(self.capture.get(cv2.CAP_PROP_POS_FRAMES)/self.capture.get(cv2.CAP_PROP_FPS))
                     self.update_texture_from_frame(frame)
         except IOError:
-            pass
+            print("Exception update:")
 
     def update_texture_from_frame(self, frame):
-        frame = self.resizeFrame(frame)
-        fshape = frame.shape
-        texture = Texture.create(size=(fshape[1], fshape[0]), colorfmt='bgr')
-        buf1 = cv2.flip(frame, 0)
-        buf = buf1.tostring()
-        texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
-        self.texture = texture
-        del frame
+        try:
+            frame = self.resizeFrame(frame)
+            fshape = frame.shape
+            texture = Texture.create(size=(fshape[1], fshape[0]), colorfmt='bgr')
+            buf1 = cv2.flip(frame, 0)
+            buf = buf1.tostring()
+            texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
+            self.texture = texture
+            del frame
+        except IOError:
+            print("Exception update_texture_from_frame:")
 
     def release(self):
         if self.pipe is not None:

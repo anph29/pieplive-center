@@ -42,7 +42,7 @@ class MainStream(RelativeLayout):
         self.event = None
         self.canvas_parent_index = 0
         self.stop = Event()
-        self.reconnect = False
+        self.reconnect = 0
         self.streamType = ''
         self.mgrSchedule = None
         self.is_loop = False
@@ -146,22 +146,21 @@ class MainStream(RelativeLayout):
                 self.fbo.remove(self.canvas)
                 if self.parent is not None and self.canvas_parent_index > -1:
                     self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
-                self.reconnect = False
+                self.reconnect = 0
         except IOError as e:
             self.stopStream()
+            self.reconnect += 2
             normal = Normal_model()
             key = self.f_parent.bottom_left.stream_key.text.split("?")[0]
             normal.reset_link_stream(key)
-            time.sleep(1)
-            if self.reconnect == False:
-                self.reconnecting()
-            else:
-                kv_helper.getApRoot().triggerStop()
+            Clock.schedule_once(self.reconnecting,self.reconnect)
             
-    def reconnecting(self):
-        self.reconnect = True
-        if bool(self.prepare()):
-            self.startStream()
+    def reconnecting(self, dt):
+        if self.reconnect > 10:
+            kv_helper.getApRoot().triggerStop()
+        else:
+            if bool(self.prepare()):
+                self.startStream()
     
     def stopStream(self):
         self.isStream = False
@@ -194,15 +193,12 @@ class MainStream(RelativeLayout):
         _map += f'[a{numau}]'
 
         if self.dataCam['type'] == "VIDEO" or self.dataCam['type'] == "M3U8":
-            url = self.dataCam['url']
-            if self.dataCam['type'] == 'M3U8' or self.dataCam['type'] == "VIDEO":
-                url = '../resource/media/output.flv'
+            url = '../resource/media/output.flv'
             numau += 1
             if self.camera.duration == "00:00:00":
                 inp.extend(["-i", url])
             else:
                 inp.extend(["-ss", self.camera.duration,"-i", url])
-            # inp.extend(["-ar", "44100", "-ab", "320k"])
             
             txt += f"[{numau}:a]volume=1[a{numau}];"
             _map += f'[a{numau}]'
@@ -242,11 +238,11 @@ class MainStream(RelativeLayout):
             si = subprocess.STARTUPINFO()
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             self.pipe = subprocess.Popen(self.command, stdin=subprocess.PIPE, startupinfo=si)
-            
             return True
 
         except IOError:
-            return 
+            print("Exception prepare:")
+            return False
             
     def prepare_audio(self):
         pass
@@ -262,7 +258,6 @@ class MainStream(RelativeLayout):
             self.pipe2.kill()
         if self.mgrSchedule is not None:
             self.mgrSchedule.cancel()
-        print("--- release ---")
 
     def on_change_Volume(self, idx, value):
         if idx is not None and value is not None:

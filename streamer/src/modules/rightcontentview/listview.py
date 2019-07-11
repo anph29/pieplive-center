@@ -287,5 +287,3 @@ class ListSchedule(RecycleView):
                     self.data.pop(child.index)
         if temp == 1:
             helper._write_schedule(self.clean_data_to_save_json())
-
-                

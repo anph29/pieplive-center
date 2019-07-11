@@ -194,15 +194,16 @@ class MainStream(RelativeLayout):
         _map += f'[a{numau}]'
 
         if self.dataCam['type'] == "VIDEO" or self.dataCam['type'] == "M3U8":
-            url = self.dataCam['url']
-            if self.dataCam['type'] == 'M3U8' or self.dataCam['type'] == "VIDEO":
-                url = '../resource/media/output.flv'
+            # url = self.dataCam['url']
+            url = '../resource/media/output.flv'
+            if self.dataCam['type'] == 'M3U8':
+                url = '../resource/media/output_m3u8.flv'
             numau += 1
             if self.camera.duration == "00:00:00":
                 inp.extend(["-i", url])
             else:
                 inp.extend(["-ss", self.camera.duration,"-i", url])
-            # inp.extend(["-ar", "44100", "-ab", "320k"])
+            # inp.extend(["-ar","44100"])
             
             txt += f"[{numau}:a]volume=1[a{numau}];"
             _map += f'[a{numau}]'
@@ -243,6 +244,7 @@ class MainStream(RelativeLayout):
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             self.pipe = subprocess.Popen(self.command, stdin=subprocess.PIPE, startupinfo=si)
             
+            print("huynh quang thong",si)
             return True
 
         except IOError:
@@ -262,7 +264,6 @@ class MainStream(RelativeLayout):
             self.pipe2.kill()
         if self.mgrSchedule is not None:
             self.mgrSchedule.cancel()
-        print("--- release ---")
 
     def on_change_Volume(self, idx, value):
         if idx is not None and value is not None:

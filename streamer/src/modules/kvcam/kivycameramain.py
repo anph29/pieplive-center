@@ -51,8 +51,8 @@ class KivyCameraMain(Image):
                     try:
                         _cap = cv2.VideoCapture(self.url)
                         if _cap.isOpened():
-                            print(self.name,'======',_cap.get(cv2.CAP_PROP_FPS),"======")
                             fps = _cap.get(cv2.CAP_PROP_FPS)
+                            print("===++===",fps,"==+++===")
                             if fps >= 25:
                                 self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
                                 self.duration_total = helper.convertSecNoToHMS(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS))
@@ -62,10 +62,13 @@ class KivyCameraMain(Image):
                         del _cap
                     except Exception as e:
                         print("Exception:", e)
-                
-                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "320k","-vb","3072k","-r","25","../resource/media/output.flv"]
+                output = '../resource/media/output.flv'
+                if self.resource_type == "M3U8":
+                    self.url = 'hls+'+self.url
+                    output= '../resource/media/output_m3u8.flv'
+                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "320k","-vb","3072k","-r","25",output]
                 if fps < 25:
-                    command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "320k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb","3072k","-r","25","../resource/media/output.flv"]
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "320k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb","3072k","-r","25",output]
                 
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
@@ -74,8 +77,8 @@ class KivyCameraMain(Image):
                 self.url = '../resource/media/output.flv'
                 Clock.schedule_once(self.process_set_data , 1)
             else:
-                if self.typeOld == 'M3U8' or self.typeOld == 'VIDEO':
-                    command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 ../resource/media/output.flv'
+                if self.typeOld == 'M3U8':
+                    command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 ../resource/media/output_m3u8.flv'
                     si = sp.STARTUPINFO()
                     si.dwFlags |= sp.STARTF_USESHOWWINDOW
                     self.pipe = sp.Popen(command, startupinfo=si)
@@ -110,7 +113,8 @@ class KivyCameraMain(Image):
                         elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
                             self.f_parent.refresh_stream()
                     self.typeOld = self.resource_type
-                    self.duration_fps = round(self.capture.get(cv2.CAP_PROP_FPS))
+                    if self.resource_type != 'VIDEO' and self.resource_type != "M3U8":
+                        self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
                     print(">>CAPTURE FINED:")
                     self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
                 else:
@@ -140,9 +144,8 @@ class KivyCameraMain(Image):
         try:
             # check is get next
             if not self.capture.grab():
-                return False
-            # playing
-            if self.capture.isOpened():
+                pass
+            elif self.capture.isOpened():
                 ret, frame = self.capture.retrieve()
                 if ret:
                     if self.resource_type == 'VIDEO':
@@ -150,7 +153,7 @@ class KivyCameraMain(Image):
                         self.duration = helper.convertSecNoToHMS(self.capture.get(cv2.CAP_PROP_POS_FRAMES)/self.capture.get(cv2.CAP_PROP_FPS))
                     self.update_texture_from_frame(frame)
         except IOError:
-            return False
+            pass
 
     def update_texture_from_frame(self, frame):
         frame = self.resizeFrame(frame)

@@ -3,6 +3,7 @@ from src.modules.custom import DragDropListbox
 class LeftSchedule(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         super(LeftSchedule, self).__init__(parent, *args, **kwargs)
+        self.initUI()
 
     def initUI(self):
         self.listBox = DragDropListbox(self)

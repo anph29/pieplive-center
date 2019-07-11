@@ -5,19 +5,17 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 from src.utils import helper, store
 from src.models import L500_model
-from src.enums import TabType
+from src.enums import MediaType
 
 
 class MediaTab(object):
 
     def initUI(self):
-        if self.tabType == TabType.IMAGE or self.tabType == TabType.VIDEO:
-            self.showAddCamBtn()
         self.showLsMedia()
 
     def showLsMedia(self):
         for media in self.loadLsMedia():
-            self.addMediaBoxToList(media)
+            self.addMediaToList(media)
 
     def showAddCamBtn(self):
         addresource = AddResource(self)
@@ -29,14 +27,16 @@ class MediaTab(object):
         lblAdd.pack(fill=tk.BOTH, expand=True)
         btnAddResource.place(rely=1.0, relx=1.0, x=-20, y=-20, anchor=tk.SE)
 
-    def clearData(self):
+    def clearData(self, clearView=False):
         self.writeLsMedia([])
-        self.context.config(state=tk.NORMAL)
-        self.context.delete(1.0, tk.END)
-        self.context.config(state=tk.DISABLED)
+        #
+        if clearView:
+            self.context.config(state=tk.NORMAL)
+            self.context.delete(1.0, tk.END)
+            self.context.config(state=tk.DISABLED)
 
     def renewData(self, lsMedia):
-        self.clearData()
+        self.clearData(clearView=True)
         lsMedia = list(map(lambda l500: {
                     "id":  str(l500['_id']) or '',
                     "name": l500['LV501'] or '',
@@ -47,40 +47,39 @@ class MediaTab(object):
         self.showLsMedia()
 
     def addMedia(self, data):
-        if self.tabType == TabType.CAMERA:
+        if self.tabType == MediaType.CAMERA:
             helper._add_to_lscam(data)
-        elif self.tabType == TabType.IMAGE:
+        elif self.tabType == MediaType.IMAGE:
             helper._add_to_image(data)
-        elif self.tabType == TabType.VIDEO:
+        elif self.tabType == MediaType.VIDEO:
             helper._add_to_video(data)
-        elif self.tabType == TabType.PRESENTER:
+        elif self.tabType == MediaType.PRESENTER:
             helper._add_to_spresenter(data)
 
     def loadLsMedia(self):
-        if self.tabType == TabType.CAMERA:
+        if self.tabType == MediaType.CAMERA:
             return helper._load_lscam()
-        elif self.tabType == TabType.IMAGE:
+        elif self.tabType == MediaType.IMAGE:
             return helper._load_image()
-        elif self.tabType == TabType.VIDEO:
+        elif self.tabType == MediaType.VIDEO:
             return helper._load_video()
-        elif self.tabType == TabType.PRESENTER:
+        elif self.tabType == MediaType.PRESENTER:
             return helper._load_ls_presenter()
 
     def writeLsMedia(self, data):
-        if self.tabType == TabType.CAMERA:
+        if self.tabType == MediaType.CAMERA:
             helper._write_lscam(data)
-        elif self.tabType == TabType.IMAGE:
+        elif self.tabType == MediaType.IMAGE:
             helper._write_image(data)
-        elif self.tabType == TabType.VIDEO:
+        elif self.tabType == MediaType.VIDEO:
             helper._write_video(data)
-        elif self.tabType == TabType.PRESENTER:
+        elif self.tabType == MediaType.PRESENTER:
            helper._write_lspresenter(data)
 
-    def delMediaBox(self, lsId):
+    def deleteMediaItem(self, lsId):
         ls = self.loadLsMedia()
         filtered = list(filter(lambda x:x['id'] not in lsId, ls))
         # clear
         self.clearData()
         # new
         self.writeLsMedia(filtered)
-        self.showLsMedia()

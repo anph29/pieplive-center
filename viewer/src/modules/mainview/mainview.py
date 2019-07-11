@@ -10,24 +10,27 @@ from PIL import Image, ImageTk
 from src.modules.menu import MainMenu
 from uuid import getnode as get_mac
 from src.modules.login import Login
-from src.enums import ViewMode
-from src.enums import TabType
+from src.enums import MediaType
 from src.modules.schedule import Schedule
+from PIL import Image, ImageTk
 
 
 class MainView(tk.Frame):
-    masterTab = None
-    schedule = None
+    superWrapper = None
+    mediaListTab = None
+    tab_image = None
+    tab_video = None
+    tab_camera = None
+    tab_presenter = None
 
     def __init__(self, parent, *args, **kwargs):
         super(MainView, self).__init__(parent, *args, **kwargs)
         self.parent = parent
         self.after(100, self.initGUI)
-        self.mode = ViewMode.NORMAL
     #
     def setStyle(self):
         style = ttk.Style()
-        style.t(heme_create("TabSty)le", parent="alt", settings={
+        style.theme_create("TabStyle", parent="alt", settings={
             "TNotebook": {
                 "configure": {"tabmargins": [5, 0, 0, 5]}  # L T R B
             },
@@ -44,56 +47,51 @@ class MainView(tk.Frame):
             login.open()
         #
         self.setStyle()
-        #
         self.updateMenu()
-        #
         self.showToolbar()
-        #
-        self.showNormalTab()
-    #
-    def showScheduleSetting(self):
-        self.changMode(ViewMode.SCHEDULE)
+        self.showBigTabWrapper()
 
+    def showBigTabWrapper(self):
+        self.superWrapper = ttk.Notebook(self)
+        self.superWrapper.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        #
+        icSchedule = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_clock_tab.png')
         self.schedule = Schedule(self)
-        self.schedule.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        self.superWrapper.add(self.schedule, text="Schedule", image=icSchedule, compound=tk.LEFT)
+        #
+        icMedia = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_media_tab.png')
+        self.mediaList =  self.makeMediaListTab()
+        self.superWrapper.add(self.mediaList, text="Media Manager", image=icMedia, compound=tk.LEFT)
+
     #
-    def changMode(self, mode):
-        self.mode = mode
+    def makeMediaListTab(self):
         #
-        if bool(self.masterTab):
-            self.masterTab.pack_forget()
-            self.masterTab = None
-        #
-        if bool(self.schedule):
-            self.schedule.pack_forget()
-            self.schedule = None
-    #
-    def showNormalTab(self):
-        self.changMode(ViewMode.NORMAL)
-        #
-        self.masterTab = ttk.Notebook(self)
-        self.masterTab.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        mediaListTab = ttk.Notebook(self)
+        mediaListTab.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
         # 1
-        self.tab_image = self.initTabGridContent(TabType.IMAGE)
-        self.masterTab.add(self.tab_image, text="Images")
+        icImg = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_image.png')
+        self.tab_image =  self.makeMediaTab(MediaType.IMAGE)
+        mediaListTab.add(self.tab_image, text="Images", image=icImg, compound=tk.LEFT)
         # 2
-        self.tab_video = self.initTabGridContent(TabType.VIDEO)
-        self.masterTab.add(self.tab_video, text="Videos")
+        icVid = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_video.png')
+        self.tab_video =  self.makeMediaTab(MediaType.VIDEO)
+        mediaListTab.add(self.tab_video, text="Videos", image=icVid, compound=tk.LEFT)
         # 3
-        self.tab_camera = self.initTabGridContent(TabType.CAMERA)
-        self.masterTab.add(self.tab_camera, text="Cameras")
+        icCam = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_camera.png')
+        self.tab_camera =  self.makeMediaTab(MediaType.CAMERA)
+        mediaListTab.add(self.tab_camera, text="Cameras", image=icCam, compound=tk.LEFT)
         # 4
-        self.tab_presenter = self.initTabGridContent(TabType.PRESENTER)
-        self.masterTab.add(self.tab_presenter, text="Presenters")
+        icPres = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_presenter.png')
+        self.tab_presenter =  self.makeMediaTab(MediaType.PRESENTER)
+        mediaListTab.add(self.tab_presenter, text="Presenters", image=icPres, compound=tk.LEFT)
         #
-        self.masterTab.select(self.tab_image)
-        self.masterTab.enable_traversal()
+        return mediaListTab
     #
     def updateMenu(self):
         self.menubar = MainMenu(self)
         self.parent.parent.config(menu=self.menubar)
     #
-    def initTabGridContent(self, tType):
+    def makeMediaTab(self, tType):
         return MediaGridView(self, tabType=tType, borderwidth=0, bg="#ccc")
     #
     def hideToolbar(self):
@@ -104,27 +102,27 @@ class MainView(tk.Frame):
         self.toolbar = tk.Frame(self, relief=tk.FLAT, bg='#ccc')
         self.toolbar.pack(side=tk.TOP, fill=tk.X)
         #
-        self.packLeftToolbar()
+        # self.packLeftToolbar()
         if bool(store._get('FO100')):
             self.packRightToolbar()
     #
-    def packLeftToolbar(self):
-        lefToolbar = tk.Frame(self.toolbar, relief=tk.FLAT, bg='#ccc')
-        lefToolbar.pack(side=tk.LEFT, fill=tk.Y)
-        #
-        photo = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_clock.png') 
-        ptSchedule = photo.subsample(4,4) 
-        btnSchedule = tk.Button(lefToolbar, text=' Schedule', width=100, command=self.showScheduleSetting,
-                relief=tk.FLAT, image=ptSchedule, font=UI.TXT_FONT, compound=tk.LEFT, height=25, fg='#fff', bg='#ff2d55')
-        btnSchedule.photo = ptSchedule
-        btnSchedule.pack(side=tk.LEFT, padx=5, pady=5) 
-        #
-        photo1 = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_media.png') 
-        ptMedia = photo1.subsample(3,3) 
-        btnMedia = tk.Button(lefToolbar, text=' Media', width=100, command=self.showNormalTab, 
-                relief=tk.FLAT, image=ptMedia, font=UI.TXT_FONT, compound=tk.LEFT, height=25, fg='#ff2d55', bg='#fff')
-        btnMedia.photo = ptMedia
-        btnMedia.pack(side=tk.LEFT, padx=(0, 5), pady=5)
+    # def packLeftToolbar(self):
+    #     lefToolbar = tk.Frame(self.toolbar, relief=tk.FLAT, bg='#ccc')
+    #     lefToolbar.pack(side=tk.LEFT, fill=tk.Y)
+    #     #
+    #     photo = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_clock.png') 
+    #     ptSchedule = photo.subsample(4,4) 
+    #     btnSchedule = tk.Button(lefToolbar, text=' Schedule', width=100, command=self.showScheduleSetting,
+    #             relief=tk.FLAT, image=ptSchedule, font=UI.TXT_FONT, compound=tk.LEFT, height=25, fg='#fff', bg='#ff2d55')
+    #     btnSchedule.photo = ptSchedule
+    #     btnSchedule.pack(side=tk.LEFT, padx=5, pady=5) 
+    #     #
+    #     photo1 = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_media.png') 
+    #     ptMedia = photo1.subsample(3,3) 
+    #     btnMedia = tk.Button(lefToolbar, text=' Media', width=100, command=self.showNormalTab, 
+    #             relief=tk.FLAT, image=ptMedia, font=UI.TXT_FONT, compound=tk.LEFT, height=25, fg='#ff2d55', bg='#fff')
+    #     btnMedia.photo = ptMedia
+    #     btnMedia.pack(side=tk.LEFT, padx=(0, 5), pady=5)
     #
     def packRightToolbar(self):
         rightToolbar = tk.Frame(self.toolbar, relief=tk.FLAT, bg='#ccc')

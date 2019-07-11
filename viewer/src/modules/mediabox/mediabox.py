@@ -4,14 +4,14 @@ from tkinter import ttk, messagebox
 from src.modules.custom import PLabel
 from PIL import Image, ImageTk
 from src.utils import helper, scryto
-
+from src.constants import UI
 
 class MediaBox(tk.Frame):
     finished = False
     cell_width = 240
     top_height = 135
     bot_height = 25
-
+    buffer = None
 
     def __init__(self, parent, parentTab=None, media=None, *args, **kwargs):
         super(MediaBox, self).__init__(parent, *args, **kwargs)
@@ -46,8 +46,8 @@ class MediaBox(tk.Frame):
         self.wrapper.pack(expand=True)
 
     def initTOP(self):
-        top = tk.Frame(self.wrapper, bd=0, relief=tk.FLAT, bg="#ccc", width=self.cell_width, height=self.top_height)
-        top.bind("<Button-1>", self.playOrPauseClick)
+        self.top = tk.Frame(self.wrapper, bd=0, relief=tk.FLAT, bg="#ccc", width=self.cell_width, height=self.top_height)
+        self.top.bind("<Button-1>", self.playOrPauseClick)
         if self.mtype == 'IMG':
             im = Image.open(self.url)
             w, h = im.size
@@ -57,7 +57,7 @@ class MediaBox(tk.Frame):
             #   
             resized = im.resize((nW, nH), Image.ANTIALIAS)
             imgMedia = ImageTk.PhotoImage(resized)
-            lblMedia = tk.Label(top, image=imgMedia, bg="#f2f2f2")
+            lblMedia = tk.Label(self.top, image=imgMedia, bg="#f2f2f2")
             lblMedia.photo = imgMedia
             lblMedia.pack()
         else:
@@ -66,32 +66,33 @@ class MediaBox(tk.Frame):
             self.player = self.Instance.media_player_new()
             self.player.audio_set_volume(0)
             self.initPlayerMedia()
-            self.player.set_hwnd(top.winfo_id())
+            self.player.set_hwnd(self.top.winfo_id())
             self.play()
         #
         if self.mtype == 'VIDEO':
             self.after(100, self.playOrPause)
-        top.pack(side=tk.TOP)
+        #
+        if self.mtype == 'RTSP':
+            self.after(5000, self.playOrPause)
+        self.top.pack(side=tk.TOP)
 
     def initBOTTOM(self):
         bottom = tk.Frame(self.wrapper, bd=5, relief=tk.FLAT, width=self.cell_width, height=self.bot_height)
-        
         self.checked = tk.BooleanVar()
         self.checkbox = tk.Checkbutton(bottom, variable=self.checked, onvalue=True, offvalue=False, height=1, width=1, bd=0, relief=tk.FLAT)
         self.checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)
-
+        # play
         if self.mtype != 'IMG':
-            # play
-            imagePlay = ImageTk.PhotoImage(Image.open("src/icons/pause-b.png"))
+            imagePlay = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}/pause-b.png"))
             self.lblPlay = tk.Label(bottom, image=imagePlay, cursor='hand2')
             self.lblPlay.image = imagePlay
             self.lblPlay.bind("<Button-1>", self.playOrPauseClick)
             self.lblPlay.pack(side=tk.LEFT)
         # label
-        lbl_name = PLabel(bottom, text=self.name, justify=tk.LEFT, elipsis=25, font=("Roboto", 10), fg="#000")
+        lbl_name = PLabel(bottom, text=self.name, justify=tk.LEFT, elipsis=25, font=UI.TXT_FONT, fg="#000")
         lbl_name.pack(side=tk.LEFT)
         # bin
-        imageBin = ImageTk.PhotoImage(Image.open("src/icons/trash-b.png"))
+        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}/trash-b.png"))
         lbl_trash = tk.Label(bottom, image=imageBin, cursor='hand2')
         lbl_trash.image = imageBin
         lbl_trash.bind("<Button-1>", self.deletemedia)
@@ -117,7 +118,6 @@ class MediaBox(tk.Frame):
         self.finished = True
         self.updatePlayIcon('f5')
 
-
     def play(self):
         if self.mtype == 'VIDEO':
             if self.finished:
@@ -132,7 +132,6 @@ class MediaBox(tk.Frame):
         self.playOrPause()
 
     def playOrPause(self):
-        # z
         if self.player.is_playing():
             self.player.pause()
             self.updatePlayIcon('play')
@@ -141,14 +140,14 @@ class MediaBox(tk.Frame):
             self.updatePlayIcon('pause')
 
     def updatePlayIcon(self, ico):
-        # icon change
-        image = Image.open(f"src/icons/{ico}-b.png")
+        image = Image.open(f"{helper._ICONS_PATH}/{ico}-b.png")
         imagetk = ImageTk.PhotoImage(image)
         self.lblPlay.configure(image=imagetk)
         self.lblPlay.image = imagetk
 
     def deletemedia(self, evt):
         if messagebox.askyesno("PiepMe", "Are you sure to delete this resource?"):
-            self.parentTab.delMediaBox([self.id])
+            self.parentTab.deleteMediaItem([self.id])
+            self.destroy()
 
     

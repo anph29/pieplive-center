@@ -5,6 +5,8 @@ from .rightschedule import RightSchedule
 class Schedule(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         super(Schedule, self).__init__(parent, *args, **kwargs)
+        self.parent = parent
+        self.initUI()
 
     def initUI(self):
         #

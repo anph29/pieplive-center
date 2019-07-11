@@ -4,7 +4,7 @@ import tkinter as tk
 from tkinter import filedialog, ttk
 from src.utils import tk_helper, scryto
 from src.constants import UI
-from src.enums import TabType
+from src.enums import MediaType
 
 class AddResource(object):
     useLocal = False
@@ -96,16 +96,16 @@ class AddResource(object):
 
         return fFile
 
-    def getTypeAllowedFromTabType(self):
+    def getTypeAllowedFromMediaType(self):
         ''''''
-        if self.parent.tabType == TabType.IMAGE:
+        if self.parent.tabType == MediaType.IMAGE:
             return (("image files", "*.png *.jpg"),("all files", "*.*"))
-        elif self.parent.tabType == TabType.VIDEO:
+        elif self.parent.tabType == MediaType.VIDEO:
             return (("video files", "*.mov *.mp4"),("all files", "*.*"))
 
     def askFileName(self):
         self.fError.pack_forget()
-        path = filedialog.askopenfilename(initialdir="/", title="Select file", filetypes=self.getTypeAllowedFromTabType())
+        path = filedialog.askopenfilename(initialdir="/", title="Select file", filetypes=self.getTypeAllowedFromMediaType())
         fname = os.fsdecode(path)
         if ftype.isImage(fname):
             self.useLocal = True
@@ -144,11 +144,11 @@ class AddResource(object):
                         "name": (fpath.split('/')[-1]).split('.')[0],
                         "url": fpath
                     }
-                    if self.parent.tabType == TabType.IMAGE and isImg:
+                    if self.parent.tabType == MediaType.IMAGE and isImg:
                         dt["type"] = 'IMG'
                         self.parent.addMediaBoxToList(dt)
                         self.parent.addMedia(dt)
-                    elif self.parent.tabType == TabType.VIDEO and isVideo:
+                    elif self.parent.tabType == MediaType.VIDEO and isVideo:
                         dt["type"] = 'VIDEO'
                         self.parent.addMediaBoxToList(dt)
                         self.parent.addMedia(dt)

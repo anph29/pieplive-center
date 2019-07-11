@@ -9,6 +9,7 @@ from src.modules.rightcontentview.itemcamera import ItemCamera
 from threading import Thread, Event
 import subprocess as sp
 import src.utils.helper as helper
+import os
 
 class KivyCameraMain(Image):
     capture = ObjectProperty(None)
@@ -68,9 +69,9 @@ class KivyCameraMain(Image):
                 timeout = 1
                 command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-vb","3072k","-r","25",output]
                 if self.resource_type == "M3U8":
-                    self.url = 'hls+'+self.url
-                    timeout=1
-                    command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-i", "../resource/media/muted2.mp3","-ab", "320k","-vb","3072k","-r","25",output]
+                    output = '../resource/media/output_hls.flv'
+                    timeout=0
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-f", "hls","-i",self.url,"-ab", "320k","-vb","3072k","-r","25",output]
                 elif fps < 25:
                     command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb","3072k","-r","25",output]
                 
@@ -81,7 +82,7 @@ class KivyCameraMain(Image):
                 Clock.schedule_once(self.process_set_data ,timeout)
             else:
                 if self.typeOld == 'M3U8' or self.typeOld == 'VIDEO':
-                    command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 ../resource/media/output_m3u8.flv'
+                    command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 ../resource/media/output_m3u8.flv ../resource/media/output_m3u8_hls.flv'
                     si = sp.STARTUPINFO()
                     si.dwFlags |= sp.STARTF_USESHOWWINDOW
                     self.pipe = sp.Popen(command, startupinfo=si)

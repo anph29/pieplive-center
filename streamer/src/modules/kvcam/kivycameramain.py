@@ -44,9 +44,8 @@ class KivyCameraMain(Image):
         self.duration = '00:00:00'
         self.duration_total_n = 1
         self.duration_fps = 25
-        # self.release()
-        if self.pipe is not None:
-            self.pipe.kill()
+        self.release()
+        self.stop_update_capture()
         fps = 25
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
@@ -67,19 +66,18 @@ class KivyCameraMain(Image):
                         print("Exception:", e)
                 output = '../resource/media/output.flv'
                 timeout = 1
-                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-vb","3072k","-r","25",output]#"-ar","44100"
+                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-vb","3072k","-r","25",output]
                 if self.resource_type == "M3U8":
                     self.url = 'hls+'+self.url
-                    timeout=2.5
-                    command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-ab", "320k","-vb","3072k","-r","25",output]
+                    timeout=1
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-i", "../resource/media/muted2.mp3","-ab", "320k","-vb","3072k","-r","25",output]
                 elif fps < 25:
                     command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb","3072k","-r","25",output]
                 
+                self.url = output
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
                 self.pipe = sp.Popen(command, startupinfo=si)
-                
-                self.url = output
                 Clock.schedule_once(self.process_set_data ,timeout)
             else:
                 if self.typeOld == 'M3U8' or self.typeOld == 'VIDEO':
@@ -94,9 +92,6 @@ class KivyCameraMain(Image):
             Clock.schedule_once(self.process_set_data , 0)
         
     def process_set_data(self, second):
-        self.stop_update_capture()
-        if self.capture is not None:
-            self.capture.release()
         th = Thread(target=self.init_capture())
         th.start()
 
@@ -112,17 +107,17 @@ class KivyCameraMain(Image):
                 print('url-----',self.url)
 
                 if self.capture is not None and self.capture.isOpened():
-                    self.reconnect = -0
+                    self.reconnect = 0
+                    if self.resource_type != 'VIDEO' and self.resource_type != "M3U8":
+                        self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
+                    print(">>CAPTURE FINED:")
+                    self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
                     if self.f_parent is not None:
                         if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
                             self.f_parent.refresh_stream()
                         elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
                             self.f_parent.refresh_stream()
                     self.typeOld = self.resource_type
-                    if self.resource_type != 'VIDEO' and self.resource_type != "M3U8":
-                        self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
-                    print(">>CAPTURE FINED:")
-                    self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
                 else:
                     print("cv2.error:")
                     if self.reconnect >= 3:

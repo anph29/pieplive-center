@@ -192,10 +192,11 @@ class MainStream(RelativeLayout):
         txt += f"[{numau}:a]volume=0[a{numau}];"
         _map += f'[a{numau}]'
 
-        if self.dataCam['type'] == "VIDEO" or self.dataCam['type'] == "M3U8":
-            url = '../resource/media/output.flv'
-            if self.dataCam['type'] == "M3U8":
-                url = '../resource/media/output_hls.flv'
+        if (self.dataCam['type'] == "VIDEO" or self.dataCam['type'] == "M3U8") and self.camera.fileStream != "":
+            # url = '../resource/media/output.flv'
+            url = self.camera.fileStream
+            # if self.dataCam['type'] == "M3U8":
+            #     url = '../resource/media/output_hls.flv'
             numau += 1
             print("========================")
             print("========"+self.camera.duration+"========")

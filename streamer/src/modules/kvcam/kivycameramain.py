@@ -11,6 +11,7 @@ import subprocess as sp
 import src.utils.helper as helper
 import os
 from pathlib import Path
+import datetime
 
 class KivyCameraMain(Image):
     capture = ObjectProperty(None)
@@ -31,6 +32,7 @@ class KivyCameraMain(Image):
     pipe2 = None
     f_parent = None
     typeOld = ''
+    fileStream = ''
 
     def __init__(self, **kwargs):
         super(KivyCameraMain, self).__init__(**kwargs)
@@ -52,6 +54,9 @@ class KivyCameraMain(Image):
         fps = 25
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
+                _fileStream = self.fileStream
+                self.fileStream = '../resource/media/{}.flv'.format(datetime.datetime.now().strftime("%d%m%y%H%M%S"))
+                Path(self.fileStream).touch()
                 if self.resource_type == 'VIDEO':
                     try:
                         _cap = cv2.VideoCapture(self.url)
@@ -67,14 +72,15 @@ class KivyCameraMain(Image):
                         del _cap
                     except Exception as e:
                         print("Exception:", e)
-                output = '../resource/media/output.flv'
+                # output = '../resource/media/output.flv'
+                output = self.fileStream
                 timeout = 1
                 command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 if self.resource_type == "M3U8":
-                    output = '../resource/media/output_hls.flv'
+                    # output = '../resource/media/output_hls.flv'
                     os.remove(output)
                     Path(output).touch()
-                    timeout=1
+                    timeout=2
                     command = ["ffmpeg-win/ffmpeg.exe","-y","-f", "hls","-i",self.url,"-ab", "320k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                     # self.duration = '00:00:00'
                 else: 
@@ -92,6 +98,7 @@ class KivyCameraMain(Image):
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
                 self.pipe = sp.Popen(command, startupinfo=si)
                 Clock.schedule_once(self.process_set_data ,timeout)
+                os.remove(_fileStream)
             else:
                 if self.typeOld == 'M3U8' or self.typeOld == 'VIDEO':
                     command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 ../resource/media/output.flv ../resource/media/output_hls.flv'

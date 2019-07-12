@@ -46,7 +46,7 @@ class KivyCameraMain(Image):
         self.duration_total_n = 1
         self.duration_fps = 25
         self.release()
-        self.stop_update_capture()
+        # self.stop_update_capture()
         fps = 25
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
@@ -67,13 +67,13 @@ class KivyCameraMain(Image):
                         print("Exception:", e)
                 output = '../resource/media/output.flv'
                 timeout = 1
-                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-vb","3072k","-r","25",output]
+                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 if self.resource_type == "M3U8":
                     output = '../resource/media/output_hls.flv'
                     timeout=0
-                    command = ["ffmpeg-win/ffmpeg.exe","-y","-f", "hls","-i",self.url,"-ab", "320k","-vb","3072k","-r","25",output]
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-f", "hls","-i",self.url,"-ab", "320k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif fps < 25:
-                    command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb","3072k","-r","25",output]
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 
                 self.url = output
                 si = sp.STARTUPINFO()
@@ -93,6 +93,7 @@ class KivyCameraMain(Image):
             Clock.schedule_once(self.process_set_data , 0)
         
     def process_set_data(self, second):
+        self.stop_update_capture()
         th = Thread(target=self.init_capture())
         th.start()
 

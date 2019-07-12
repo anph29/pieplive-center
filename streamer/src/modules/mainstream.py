@@ -197,6 +197,9 @@ class MainStream(RelativeLayout):
             if self.dataCam['type'] == "M3U8":
                 url = '../resource/media/output_hls.flv'
             numau += 1
+            print("========================")
+            print("========"+self.camera.duration+"========")
+            print("========================")
             if self.camera.duration == "00:00:00":
                 inp.extend(["-i", url])
             else:

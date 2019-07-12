@@ -74,7 +74,7 @@ class KivyCameraMain(Image):
                         print("Exception:", e)
                 # output = '../resource/media/output.flv'
                 output = self.fileStream
-                timeout = 1
+                timeout = 2
                 command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 if self.resource_type == "M3U8":
                     # output = '../resource/media/output_hls.flv'

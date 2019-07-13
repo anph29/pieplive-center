@@ -1,7 +1,9 @@
 import tkinter as tk
 from src.modules.custom import DDList
 from . import MediaTab
-from src.modules.mediabox import MediaItemLs
+from src.modules.mediabox import MediaItemDnD
+from PIL import ImageTk, Image
+from src.utils import helper
 
 class MediaListView(DDList, MediaTab):
     def __init__(self, parent, *args, **kwargs):
@@ -11,12 +13,20 @@ class MediaListView(DDList, MediaTab):
         self.parent = parent
         self.initUI()
 
+    def initUI(self):
+        super(MediaListView, self).initUI()
+        # save update
+        self.saveSortedMediaLst()
+
     def addMediaToList(self, media):
         item = self.create_item()
-        medi = MediaItemLs(item, parentTab=self, media=media)
-        medi.pack(anchor=tk.W, padx= (4,0), pady= (4,0))
+        medi = MediaItemDnD(item, parentTab=self, media=media)
+        medi.pack(padx= (4,0), pady= (4,0), expand=True)
         self.add_item(item)
 
-    def deleteMediaItem(self, lsId):
-        super(MediaItemLs, self).deleteMediaItem(lsId)
-        # self.delete_item()
+    def saveSortedMediaLst(self):
+        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}check-green.png"))
+        self.cmdDelAll = tk.Label(self.toolbar, image=imageBin, cursor='hand2', bg='#fff')
+        self.cmdDelAll.image = imageBin
+        self.cmdDelAll.bind("<Button-1>", lambda x:x)
+        self.cmdDelAll.pack(side=tk.RIGHT, padx=(0, 15), pady=5)

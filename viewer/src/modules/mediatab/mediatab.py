@@ -1,5 +1,4 @@
 from src.modules.custom import DynamicGrid
-from src.modules.addresource import AddResource
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
@@ -11,21 +10,33 @@ from src.enums import MediaType
 class MediaTab(object):
 
     def initUI(self):
+        self.showToolBar()
         self.showLsMedia()
+
+    def showToolBar(self):
+        self.checkall = tk.BooleanVar()
+        self.toolbar = tk.Frame(self, height=50, relief=tk.FLAT, bg="#fff")
+        self.toolbar.pack(fil=tk.X, side=tk.BOTTOM)
+        # select all
+        self.checkbox = tk.Checkbutton(self.toolbar , variable=self.checkall, onvalue=True, offvalue=False, height=3, width=3,bg='#fff', bd=0, cursor='hand2')
+        self.checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=5, pady=0)
+        # delete all
+        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}trash-b24-bgw.png"))
+        self.cmdDelAll = tk.Label(self.toolbar, image=imageBin, cursor='hand2', bg='#fff')
+        self.cmdDelAll.image = imageBin
+        self.cmdDelAll.bind("<Button-1>", lambda x:x)
+        self.cmdDelAll.pack(side=tk.RIGHT, padx=(0, 15), pady=5)
+        # refresh
+        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}f5-b24.png"))
+        self.cmdDelAll = tk.Label(self.toolbar, image=imageBin, cursor='hand2', bg='#fff')
+        self.cmdDelAll.image = imageBin
+        self.cmdDelAll.bind("<Button-1>", lambda x:x)
+        self.cmdDelAll.pack(side=tk.RIGHT, padx=(0, 15), pady=5)
+        
 
     def showLsMedia(self):
         for media in self.loadLsMedia():
             self.addMediaToList(media)
-
-    def showAddCamBtn(self):
-        addresource = AddResource(self)
-        btnAddResource = tk.Frame(self, relief=tk.FLAT)
-        imageAdd = ImageTk.PhotoImage(Image.open(helper._ICONS_PATH + "add-b.png"))
-        lblAdd = tk.Label(btnAddResource, image=imageAdd, cursor='hand2', bg="#f2f2f2")
-        lblAdd.image = imageAdd
-        lblAdd.bind("<Button-1>", addresource.initGUI)
-        lblAdd.pack(fill=tk.BOTH, expand=True)
-        btnAddResource.place(rely=1.0, relx=1.0, x=-20, y=-20, anchor=tk.SE)
 
     def clearData(self, clearView=False):
         self.writeLsMedia([])

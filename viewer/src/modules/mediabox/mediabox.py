@@ -3,10 +3,11 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from src.modules.custom import PLabel
 from PIL import Image, ImageTk
-from src.utils import helper, scryto
+from src.utils import helper
 from src.constants import UI
+from .mediaitem import MediaItem
 
-class MediaBox(tk.Frame):
+class MediaBox(MediaItem):
     finished = False
     cell_width = 240
     top_height = 135
@@ -19,20 +20,6 @@ class MediaBox(tk.Frame):
         self.parentTab = parentTab
         self.set_data(media)
         self.after(100, self.initGUI)
-
-    def get_data(self):
-        return {
-            'id':self.id,
-            'name': self.name, 
-            'url': self.url, 
-            'type': self.mtype
-        }
-
-    def set_data(self, media):
-        self.id = media['id']
-        self.name = media['name']
-        self.url = media['url']
-        self.mtype = media['type']
 
     def initGUI(self):
         ww = self.cell_width + 5
@@ -49,7 +36,10 @@ class MediaBox(tk.Frame):
         self.top = tk.Frame(self.wrapper, bd=0, relief=tk.FLAT, bg="#ccc", width=self.cell_width, height=self.top_height)
         self.top.bind("<Button-1>", self.playOrPauseClick)
         if self.mtype == 'IMG':
-            im = Image.open(self.url)
+            try:
+                im = Image.open(self.url)
+            except FileNotFoundError:
+                im = Image.open(helper._IMAGES_PATH + 'splash.jpg')
             w, h = im.size
             r = w / h   
             nH = self.top_height
@@ -78,7 +68,6 @@ class MediaBox(tk.Frame):
 
     def initBOTTOM(self):
         bottom = tk.Frame(self.wrapper, bd=5, relief=tk.FLAT, width=self.cell_width, height=self.bot_height)
-        self.checked = tk.BooleanVar()
         self.checkbox = tk.Checkbutton(bottom, variable=self.checked, onvalue=True, offvalue=False, height=1, width=1, bd=0, relief=tk.FLAT)
         self.checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)
         # play
@@ -145,9 +134,5 @@ class MediaBox(tk.Frame):
         self.lblPlay.configure(image=imagetk)
         self.lblPlay.image = imagetk
 
-    def deletemedia(self, evt):
-        if messagebox.askyesno("PiepMe", "Are you sure to delete this resource?"):
-            self.parentTab.deleteMediaItem([self.id])
-            self.destroy()
 
     

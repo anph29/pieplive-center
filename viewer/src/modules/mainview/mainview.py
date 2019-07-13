@@ -99,7 +99,7 @@ class MainView(tk.Frame):
         self.updateMenu()
     #
     def showToolbar(self):
-        self.toolbar = tk.Frame(self, relief=tk.FLAT, bg='#ccc')
+        self.toolbar = tk.Frame(self, relief=tk.FLAT, bg='#fff')
         self.toolbar.pack(side=tk.TOP, fill=tk.X)
         #
         # self.packLeftToolbar()
@@ -125,17 +125,17 @@ class MainView(tk.Frame):
     #     btnMedia.pack(side=tk.LEFT, padx=(0, 5), pady=5)
     #
     def packRightToolbar(self):
-        rightToolbar = tk.Frame(self.toolbar, relief=tk.FLAT, bg='#ccc')
+        rightToolbar = tk.Frame(self.toolbar, relief=tk.FLAT, bg='#fff')
         rightToolbar.pack(side=tk.RIGHT, fill=tk.Y)
         #
         imgCheck = ImageTk.PhotoImage(Image.open(helper._ICONS_PATH+'close-pink.png'))
-        lblCommandClear = tk.Label(rightToolbar, bd=1, image=imgCheck, bg="#ccc")
+        lblCommandClear = tk.Label(rightToolbar, bd=1, image=imgCheck, bg="#fff")
         lblCommandClear.photo = imgCheck
         lblCommandClear.pack(side=tk.RIGHT, fill=tk.Y, padx=(0, 15), pady=5)
         lblCommandClear.bind('<Button-1>', self.onClearResource)
         #
         imgCheck = ImageTk.PhotoImage(Image.open(helper._ICONS_PATH+'check-green.png'))
-        lblCommandCheck = tk.Label(rightToolbar, bd=1, image=imgCheck, bg="#ccc")
+        lblCommandCheck = tk.Label(rightToolbar, bd=1, image=imgCheck, bg="#fff")
         lblCommandCheck.photo = imgCheck
         lblCommandCheck.pack(side=tk.RIGHT, fill=tk.Y, padx=(5, 0), pady=5)
         lblCommandCheck.bind('<Button-1>', self.onNewResource)

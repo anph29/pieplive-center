@@ -33,8 +33,10 @@ class RightSchedule(tk.Frame):
         self.scheduleTab.enable_traversal()
 
     def makeMediaTab(self, tType):
-        scrFrame = VerticalScrolledFrame(self)
-        mlv = MediaListView(scrFrame.interior, 
+        frame = tk.Frame(self)
+        scrFrame = VerticalScrolledFrame(frame)
+        scrFrame.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        mlv = MediaListView(scrFrame, 
             400,
             50,
             offset_x=5,

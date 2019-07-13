@@ -11,11 +11,12 @@ class Schedule(tk.Frame):
     def initUI(self):
         #
         self.left = LeftSchedule(self)
-        self.left.grid(row=0, column=0, sticky=tk.NSEW)
+        self.left.grid(row=0, column=0, columnspan=2, sticky=tk.NSEW)
         #
         self.right = RightSchedule(self)
-        self.right.grid(row=0, column=1, sticky=tk.NSEW)
+        self.right.grid(row=0, column=2, sticky=tk.NSEW)
         #
         self.grid_columnconfigure(0, weight=1, uniform="group1")
         self.grid_columnconfigure(1, weight=1, uniform="group1")
+        self.grid_columnconfigure(2, weight=1, uniform="group1")
         self.grid_rowconfigure(0, weight=1)

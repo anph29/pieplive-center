@@ -19,6 +19,7 @@ _PATH_PRESENTER         = _BASE_PATH + 'cfg/presenter.json'
 _PATH_SCHEDULE          = _BASE_PATH + 'cfg/schedule.json'
 _PATH_STATICSOURCE      = _BASE_PATH + 'cfg/staticsource.json'
 _ICONS_PATH             = _BASE_PATH + 'icons/'
+_IMAGES_PATH            = _BASE_PATH + 'images/'
 _LOGO_STREAMER          = _ICONS_PATH + 'logo-streamer.ico'
 _LOGO_VIEWER            = _ICONS_PATH + 'logo-viewer.png'
 """

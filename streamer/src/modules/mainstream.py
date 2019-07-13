@@ -55,7 +55,7 @@ class MainStream(RelativeLayout):
 
     def _load(self):
         try:
-            command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 ../resource/media/output.flv'
+            command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 ../resource/media/output.flv ../resource/media/output_hls.flv'
             si = subprocess.STARTUPINFO()
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             self.pipe2 = subprocess.Popen(command, startupinfo=si)
@@ -192,9 +192,15 @@ class MainStream(RelativeLayout):
         txt += f"[{numau}:a]volume=0[a{numau}];"
         _map += f'[a{numau}]'
 
-        if self.dataCam['type'] == "VIDEO" or self.dataCam['type'] == "M3U8":
-            url = '../resource/media/output.flv'
+        if (self.dataCam['type'] == "VIDEO" or self.dataCam['type'] == "M3U8") and self.camera.fileStream != "":
+            # url = '../resource/media/output.flv'
+            url = self.camera.fileStream
+            # if self.dataCam['type'] == "M3U8":
+            #     url = '../resource/media/output_hls.flv'
             numau += 1
+            print("========================")
+            print("========"+self.camera.duration+"========")
+            print("========================")
             if self.camera.duration == "00:00:00":
                 inp.extend(["-i", url])
             else:

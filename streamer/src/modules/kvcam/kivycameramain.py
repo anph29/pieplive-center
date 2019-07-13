@@ -9,6 +9,9 @@ from src.modules.rightcontentview.itemcamera import ItemCamera
 from threading import Thread, Event
 import subprocess as sp
 import src.utils.helper as helper
+import os
+from pathlib import Path
+import datetime
 
 class KivyCameraMain(Image):
     capture = ObjectProperty(None)
@@ -26,8 +29,10 @@ class KivyCameraMain(Image):
     event_capture = None
     default_frame = 'src/images/splash.jpg'
     pipe = None
+    pipe2 = None
     f_parent = None
     typeOld = ''
+    fileStream = ''
 
     def __init__(self, **kwargs):
         super(KivyCameraMain, self).__init__(**kwargs)
@@ -45,10 +50,13 @@ class KivyCameraMain(Image):
         self.duration_total_n = 1
         self.duration_fps = 25
         self.release()
-        self.stop_update_capture()
+        # self.stop_update_capture()
         fps = 25
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
+                _fileStream = self.fileStream
+                self.fileStream = '../resource/media/{}.flv'.format(datetime.datetime.now().strftime("%d%m%y%H%M%S"))
+                Path(self.fileStream).touch()
                 if self.resource_type == 'VIDEO':
                     try:
                         _cap = cv2.VideoCapture(self.url)
@@ -64,24 +72,36 @@ class KivyCameraMain(Image):
                         del _cap
                     except Exception as e:
                         print("Exception:", e)
-                output = '../resource/media/output.flv'
-                timeout = 1
-                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-vb","3072k","-r","25",output]
+                # output = '../resource/media/output.flv'
+                output = self.fileStream
+                timeout = 2
+                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 if self.resource_type == "M3U8":
-                    self.url = 'hls+'+self.url
-                    timeout=1
-                    command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-i", "../resource/media/muted2.mp3","-ab", "320k","-vb","3072k","-r","25",output]
-                elif fps < 25:
-                    command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb","3072k","-r","25",output]
+                    # output = '../resource/media/output_hls.flv'
+                    os.remove(output)
+                    Path(output).touch()
+                    timeout=2
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-f", "hls","-i",self.url,"-ab", "320k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                    # self.duration = '00:00:00'
+                else: 
+                    if fps < 25:
+                        command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                    if self.typeOld == 'M3U8':
+                        command2 =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 ../resource/media/output_hls.flv'
+                        si = sp.STARTUPINFO()
+                        si.dwFlags |= sp.STARTF_USESHOWWINDOW
+                        self.pipe2 = sp.Popen(command2, startupinfo=si)
+                        Clock.schedule_once(lambda x: self.pipe2.kill() , 5)
                 
                 self.url = output
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
                 self.pipe = sp.Popen(command, startupinfo=si)
                 Clock.schedule_once(self.process_set_data ,timeout)
+                os.remove(_fileStream)
             else:
                 if self.typeOld == 'M3U8' or self.typeOld == 'VIDEO':
-                    command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 ../resource/media/output_m3u8.flv'
+                    command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 ../resource/media/output.flv ../resource/media/output_hls.flv'
                     si = sp.STARTUPINFO()
                     si.dwFlags |= sp.STARTF_USESHOWWINDOW
                     self.pipe = sp.Popen(command, startupinfo=si)
@@ -92,6 +112,7 @@ class KivyCameraMain(Image):
             Clock.schedule_once(self.process_set_data , 0)
         
     def process_set_data(self, second):
+        self.stop_update_capture()
         th = Thread(target=self.init_capture())
         th.start()
 
@@ -156,8 +177,9 @@ class KivyCameraMain(Image):
             elif self.capture.isOpened():
                 ret, frame = self.capture.retrieve()
                 if ret:
-                    if self.resource_type == 'VIDEO':
-                        self.buffer_rate = self.capture.get(cv2.CAP_PROP_POS_FRAMES) / self.duration_total_n
+                    if self.resource_type == 'VIDEO' or self.resource_type == 'M3U8':
+                        if self.resource_type == 'VIDEO':
+                            self.buffer_rate = self.capture.get(cv2.CAP_PROP_POS_FRAMES) / self.duration_total_n
                         self.duration = helper.convertSecNoToHMS(self.capture.get(cv2.CAP_PROP_POS_FRAMES)/self.capture.get(cv2.CAP_PROP_FPS))
                     self.update_texture_from_frame(frame)
         except IOError:
@@ -180,8 +202,12 @@ class KivyCameraMain(Image):
     def release(self):
         if self.pipe is not None:
             self.pipe.kill()
+        if self.pipe2 is not None:
+            self.pipe2.kill()
         if self.capture is not None:
             self.capture.release()
+        if self.fileStream != "":
+            os.remove(self.fileStream)
 
     def resizeFrame(self, frame):
         if frame is None:

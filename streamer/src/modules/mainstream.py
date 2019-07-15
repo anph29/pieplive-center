@@ -11,11 +11,8 @@ from src.modules.custom.piepimage import PiepImage
 from kivy.properties import ObjectProperty
 from kivy.lang import Builder
 from src.models.normal_model import Normal_model
-import subprocess
-import cv2
-import time
+import subprocess, cv2, time, array, os, datetime
 import numpy as np
-import array
 
 Builder.load_file('src/ui/mainstream.kv')
 class MainStream(RelativeLayout):
@@ -52,16 +49,21 @@ class MainStream(RelativeLayout):
             "url": "src/images/splash.jpg",
             "type": "IMG"
         }
+        self.deleteAllFile()
+        timenow = datetime.datetime.now().strftime("%d%m%y%H%M%S")
+        self.url_flv = '../resource/temp/{}.flv'.format(timenow)
+        self.url_flv_hls = '../resource/temp/{}_hls.flv'.format(timenow)
+        del timenow
 
     def _load(self):
         try:
-            command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 ../resource/media/output.flv ../resource/media/output_hls.flv'
+            command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 {} {}'.format(self.url_flv, self.url_flv_hls)
             si = subprocess.STARTUPINFO()
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             self.pipe2 = subprocess.Popen(command, startupinfo=si)
-            Clock.schedule_once(lambda x: self.pipe2.kill() , 5)
+            Clock.schedule_once(lambda x: self.pipe2.kill() , 3)
         except IOError:
-            pass
+            self.fileStream = '../resource/temp/{}.flv'.format(datetime.datetime.now().strftime("%d%m%y%H%M%S"))
 
     def show_camera_mini(self):
         self.cameraMini.opacity = 1
@@ -70,11 +72,6 @@ class MainStream(RelativeLayout):
             "url": "0",
             "type": "CAMERA"
         })
-        # self.cameraMini.set_data_source({
-        #     "name": "camera mini",
-        #     "url": "rtsp://viewer:FB1D2631C12FE8F7EE8951663A8A108@14.241.131.216:554",
-        #     "type": "RTSP"
-        # })
 
     def hide_camera_mini(self):
         self.cameraMini.opacity = 0
@@ -153,7 +150,8 @@ class MainStream(RelativeLayout):
             normal = Normal_model()
             key = self.f_parent.bottom_left.stream_key.text.split("?")[0]
             normal.reset_link_stream(key)
-            Clock.schedule_once(self.reconnecting,self.reconnect)
+            if self.isStream:
+                Clock.schedule_once(self.reconnecting,self.reconnect)
             
     def reconnecting(self, dt):
         if self.reconnect > 10:
@@ -192,20 +190,15 @@ class MainStream(RelativeLayout):
         txt += f"[{numau}:a]volume=0[a{numau}];"
         _map += f'[a{numau}]'
 
-        if (self.dataCam['type'] == "VIDEO" or self.dataCam['type'] == "M3U8") and self.camera.fileStream != "":
-            # url = '../resource/media/output.flv'
-            url = self.camera.fileStream
-            # if self.dataCam['type'] == "M3U8":
-            #     url = '../resource/media/output_hls.flv'
+        if self.dataCam['type'] == "VIDEO" or self.dataCam['type'] == "M3U8":
+            url = self.url_flv
+            if self.dataCam['type'] == "M3U8":
+                url = self.url_flv_hls
             numau += 1
-            print("========================")
-            print("========"+self.camera.duration+"========")
-            print("========================")
             if self.camera.duration == "00:00:00":
                 inp.extend(["-i", url])
             else:
                 inp.extend(["-ss", self.camera.duration,"-i", url])
-            
             txt += f"[{numau}:a]volume=1[a{numau}];"
             _map += f'[a{numau}]'
 
@@ -237,10 +230,10 @@ class MainStream(RelativeLayout):
             
             self.command.extend(self.draw_element())
             # encode
-            self.command.extend(['-vb', str(self.v_bitrate), '-preset', 'veryfast', '-r', '25'])
+            self.command.extend(['-vb', str(self.v_bitrate), '-preset', 'veryfast', '-g','30', '-r', '30'])
             # tream
             self.command.extend(['-f', 'flv', self.urlStream])
-
+            print(self.command)
             si = subprocess.STARTUPINFO()
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             self.pipe = subprocess.Popen(self.command, stdin=subprocess.PIPE, startupinfo=si)
@@ -402,3 +395,12 @@ class MainStream(RelativeLayout):
     def loop_schedule(self,_val):
         self.is_loop = _val
         
+    def deleteAllFile(self):
+        folder = '../resource/temp'
+        for the_file in os.listdir(folder):
+            file_path = os.path.join(folder, the_file)
+            try:
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
+            except Exception:
+                pass

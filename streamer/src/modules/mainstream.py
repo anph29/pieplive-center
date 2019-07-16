@@ -147,8 +147,7 @@ class MainStream(RelativeLayout):
             normal = Normal_model()
             key = self.f_parent.bottom_left.stream_key.text.split("?")[0]
             normal.reset_link_stream(key)
-            if self.isStream:
-                Clock.schedule_once(self.reconnecting,self.reconnect)
+            Clock.schedule_once(self.reconnecting,self.reconnect)
             
     def reconnecting(self, dt):
         if self.reconnect > 10:

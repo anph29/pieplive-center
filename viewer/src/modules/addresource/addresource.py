@@ -177,6 +177,7 @@ class AddResource(object):
             "type": self.mtype,
             "id" : scryto.hash_md5_with_time(url)
         }
+        # add duration
         if self.useLocal and self.parent.tabType == MediaType.VIDEO and ftype.isVideo(url):
             dt["duration"] = helper.getVideoDuration(url)
 

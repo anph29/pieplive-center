@@ -31,5 +31,5 @@ class MediaItemDnD(MediaItem):
         self.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
     def deletemedia(self, evt):
-         super(MediaItemDnD, self).deletemedia(evt)
-        #  self.delete_item()
+        super(MediaItemDnD, self).deletemedia(evt)
+        self.parentTab.tabRefresh(None)

@@ -131,13 +131,13 @@ class MainView(tk.Frame):
         imgCheck = ImageTk.PhotoImage(Image.open(helper._ICONS_PATH+'close-pink.png'))
         lblCommandClear = tk.Label(rightToolbar, bd=1, image=imgCheck, bg="#fff")
         lblCommandClear.photo = imgCheck
-        lblCommandClear.pack(side=tk.RIGHT, fill=tk.Y, padx=(0, 15), pady=5)
+        lblCommandClear.pack(side=tk.RIGHT, fill=tk.Y, padx=(0, 20), pady=5)
         lblCommandClear.bind('<Button-1>', self.onClearResource)
         #
         imgCheck = ImageTk.PhotoImage(Image.open(helper._ICONS_PATH+'check-green.png'))
         lblCommandCheck = tk.Label(rightToolbar, bd=1, image=imgCheck, bg="#fff")
         lblCommandCheck.photo = imgCheck
-        lblCommandCheck.pack(side=tk.RIGHT, fill=tk.Y, padx=(5, 0), pady=5)
+        lblCommandCheck.pack(side=tk.RIGHT, fill=tk.Y, padx=(10, 0), pady=5)
         lblCommandCheck.bind('<Button-1>', self.onNewResource)
         #
         cbxData = {q170['NV106']: q170['FO100'] for q170 in self.loadCbxQ170()}

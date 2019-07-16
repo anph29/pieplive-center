@@ -21,7 +21,6 @@ class MediaTab(tk.Frame):
         self.showLsMedia()
 
     def showToolBar(self):
-        print(self.tbBgColor)
         self.checkall = tk.BooleanVar()
         self.toolbar = tk.Frame(self, height=50, relief=tk.FLAT, bg=self.tbBgColor)
         self.toolbar.pack(fil=tk.X, side=tk.BOTTOM)

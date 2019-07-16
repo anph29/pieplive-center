@@ -5,6 +5,7 @@ from kivy.uix.popup import Popup
 from src.modules.custom.filechoose import FileChooser
 from src.utils import ftype, helper, scryto
 import src.utils.kivyhelper as kv_helper
+from src.utils import helper
 
 Builder.load_file('src/ui/addmedia.kv')
 
@@ -23,7 +24,8 @@ class AddMedia(Popup):
             "id":scryto.hash_md5_with_time(self.url.text.replace('\\', '/')),
             "name": self.name.text,
             "url": self.url.text,
-            "type": self.resource_type
+            "type": self.resource_type,
+            "duration": helper.getVideoDuration(self.url.text)
         })
         kv_helper.getApRoot().init_right_content_media()
         self.dismiss()

@@ -28,6 +28,13 @@
             pos_hint:{'top':1, 'right':1}
             source: helper._ICONS_PATH+'play-w.png'
             on_release:root.play()
+        Label:
+            size_hint:None,1
+            width: (0,54)[root.listType == "VIDEO"]
+            opacity: (0,1)[root.listType == "VIDEO"]
+            text:helper.convertSecNoToHMS(root.duration)
+            font_size: 12
+            color:1,1,1,1
         LabelCamera:
             id:kvcam
             size_hint: 1, 1
@@ -39,7 +46,8 @@
             shorten: True
         ImageButton:
             size_hint:None,1
-            width:16
+            width:(16,0)[root.listType == "PRESENTER"]
+            opacity: (1,0)[root.listType == "PRESENTER"]
             source: helper._ICONS_PATH+'ic_clock.png'
             on_release:root.add_to_schedule()
         CheckBox:

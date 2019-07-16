@@ -13,7 +13,10 @@ class ListMedia(RecycleView):
     def set_data(self):
         self.data = list(
             map(
-                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'active': (False,True) [cam['id'] == self.item_playing]},
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 
+                'duration': cam['duration'] if 'duration' in cam else 0,
+                'list':'VIDEO',
+                'active': (False,True) [cam['id'] == self.item_playing]},
                 helper._load_video()
             )
         )
@@ -26,7 +29,7 @@ class ListMedia(RecycleView):
     def clean_data_to_save_json(self):
         return list(
             map(
-                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type']},
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'duration': cam['duration']},
                 list(self.data)
             )
         )
@@ -70,7 +73,9 @@ class ListImage(RecycleView):
     def set_data(self):
         self.data = list(
             map(
-                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'active': (False,True) [cam['id'] == self.item_playing]},
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 
+                'list':'IMAGE',
+                'active': (False,True) [cam['id'] == self.item_playing]},
                 helper._load_image()
             )
         )
@@ -125,7 +130,9 @@ class ListCamera(RecycleView):
     def set_data(self):
         self.data = list(
             map(
-                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'active': (False,True) [cam['id'] == self.item_playing]},
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 
+                'list':'CAMERA',
+                'active': (False,True) [cam['id'] == self.item_playing]},
                 helper._load_lscam()
             )
         )
@@ -182,7 +189,9 @@ class ListPresenter(RecycleView):
     def set_data(self):
         self.data = list(
             map(
-                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'active': (False,True) [cam['id'] == self.item_playing]},
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 
+                'list':'PRESENTER',
+                'active': (False,True) [cam['id'] == self.item_playing]},
                 helper._load_ls_presenter()
             )
         )
@@ -239,7 +248,9 @@ class ListSchedule(RecycleView):
     def set_data(self):
         self.data = list(
             map(
-                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'duration': cam['duration'], 'active': (False,True) [cam['id'] == self.item_playing]},
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'duration': cam['duration'], 
+                'list':'SCHEDULE',
+                'active': (False,True) [cam['id'] == self.item_playing]},
                 helper._load_schedule()
             )
         )

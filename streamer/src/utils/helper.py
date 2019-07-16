@@ -221,10 +221,14 @@ def getMTypeFromUrl(url):
 
 def getVideoDuration(fpath):
     try:
+        dura = 0
         _cap = cv2.VideoCapture(fpath)
         fps = _cap.get(cv2.CAP_PROP_FPS)
+        fps = fps if fps >25 else 25
         total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
+        if _cap.isOpened():
+            dura =  int(total/fps)
         _cap.release()
-        return int(total/fps) if _cap.isOpened() and fps >= 25 else int(total/25)
+        return dura
     except expression:
-        print(expression)
+        return 0

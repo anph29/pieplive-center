@@ -4,8 +4,8 @@ import json
 import math
 import base64
 import zipfile
-import pyqrcode
-from . import zip_helper
+import subprocess
+from src.utils import zip_helper
 """
 """
 _BASE_PATH              = os.path.abspath('../resource').replace('\\', '/') + '/'
@@ -217,3 +217,8 @@ def getMTypeFromUrl(url):
             return 'IMG'
     else:
             return False
+
+def getVideoDuration(fpath):
+    from moviepy.editor import VideoFileClip
+    clip = VideoFileClip(fpath)
+    return int(clip.duration)

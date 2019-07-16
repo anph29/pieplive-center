@@ -150,6 +150,7 @@ class AddResource(object):
                         self.parent.addMedia(dt)
                     elif self.parent.tabType == MediaType.VIDEO and isVideo:
                         dt["type"] = 'VIDEO'
+                        dt["duration"] = helper.getVideoDuration(fpath)
                         self.parent.addMediaToList(dt)
                         self.parent.addMedia(dt)
         #   
@@ -176,6 +177,9 @@ class AddResource(object):
             "type": self.mtype,
             "id" : scryto.hash_md5_with_time(url)
         }
+        if self.useLocal and self.parent.tabType == MediaType.VIDEO and ftype.isVideo(url):
+            dt["duration"] = helper.getVideoDuration(url)
+
         self.parent.addMediaToList(dt)
         self.parent.addMedia(dt)
         self.addCamPopup.destroy()

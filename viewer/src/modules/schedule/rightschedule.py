@@ -5,7 +5,10 @@ from src.modules.mediatab import MediaListView
 from src.utils import helper
 class RightSchedule(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
+        self.schedule = kwargs['schedule']
+        del kwargs['schedule']
         super(RightSchedule, self).__init__(parent, *args, **kwargs)
+        self.parent = parent
         self.initUI()
 
     def initUI(self):
@@ -32,4 +35,4 @@ class RightSchedule(tk.Frame):
         self.scheduleTab.enable_traversal()
 
     def makeMediaTab(self, tType):
-        return  MediaListView(self, tabType=tType, bg="#ccc")
+        return  MediaListView(self, tabType=tType, schedule=self.schedule, bg="#ccc")

@@ -4,8 +4,8 @@ import json
 import math
 import base64
 import zipfile
-import pyqrcode
-from . import zip_helper
+import subprocess
+from src.utils import zip_helper
 """
 """
 _BASE_PATH              = os.path.abspath('../resource').replace('\\', '/') + '/'
@@ -19,6 +19,7 @@ _PATH_PRESENTER         = _BASE_PATH + 'cfg/presenter.json'
 _PATH_SCHEDULE          = _BASE_PATH + 'cfg/schedule.json'
 _PATH_STATICSOURCE      = _BASE_PATH + 'cfg/staticsource.json'
 _ICONS_PATH             = _BASE_PATH + 'icons/'
+_IMAGES_PATH            = _BASE_PATH + 'images/'
 _LOGO_STREAMER          = _ICONS_PATH + 'logo-streamer.ico'
 _LOGO_VIEWER            = _ICONS_PATH + 'logo-viewer.png'
 """
@@ -148,6 +149,7 @@ def removeUnicode(str):
     str = re.sub(r"Đ", 'D', str)
     return str
 
+
 def removeUnicodeLowerRmvSpace(str):
     str = str.replace(r"[àáạảãâầấậẩẫăằắặẳẵÄä]", 'a', str)
     str = str.replace(r"[èéẹẻẽêềếệểễ]", 'e', str)
@@ -159,8 +161,10 @@ def removeUnicodeLowerRmvSpace(str):
     str = str.replace(r"[\s:\/.]", "", str)
     return str
 
+
 def stringToBase64(s):
     return base64.b64encode(s.encode('utf-8'))
+
 
 def base64ToString(b):
     return base64.b64decode(b).decode('utf-8')
@@ -213,3 +217,8 @@ def getMTypeFromUrl(url):
             return 'IMG'
     else:
             return False
+
+def getVideoDuration(fpath):
+    from moviepy.editor import VideoFileClip
+    clip = VideoFileClip(fpath)
+    return int(clip.duration)

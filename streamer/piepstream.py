@@ -59,6 +59,9 @@ class PiepStream(App):
     def on_stop(self):
         kivy_helper.getApRoot().on_stop()
 
+    def destroy(self):
+        kivy_helper.getApRoot().on_stop()
+
 if __name__ == '__main__':
     helper.makeSureResourceFolderExisted()
     PiepStream().run()

@@ -71,7 +71,7 @@ class MainStream(RelativeLayout):
             "name": "camera mini",
             "url": "0",
             "type": "CAMERA"
-        },'MINIDISPLAY')
+        })
 
     def hide_camera_mini(self):
         self.cameraMini.opacity = 0
@@ -195,7 +195,7 @@ class MainStream(RelativeLayout):
             if self.camera.duration == "00:00:00":
                 inp.extend(["-i", url])
             else:
-                inp.extend(["-ss", self.camera.duration,"-i", url,"-flags","+global_header"])#-flags +global_header
+                inp.extend(["-ss", self.camera.duration,"-i", url,"-flags","+global_header"])
             txt += f"[{numau}:a]volume=1[a{numau}];"
             _map += f'[a{numau}]'
 

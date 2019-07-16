@@ -71,11 +71,15 @@ class KivyCameraMain(Image):
         dura = 0
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
-                if self.resource_type == 'VIDEO':
-                    try:
-                        _cap = cv2.VideoCapture(self.url)
-                        if _cap.isOpened():
-                            fps = _cap.get(cv2.CAP_PROP_FPS)
+                
+                try:
+                    _cap = cv2.VideoCapture(self.url)
+                    if _cap.isOpened():
+                        fps = _cap.get(cv2.CAP_PROP_FPS)
+                        print('*******************')
+                        print('******',fps,'*******')
+                        print('*******************')
+                        if self.resource_type == 'VIDEO':
                             if fps >= 25:
                                 self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
                                 self.duration_total = helper.convertSecNoToHMS(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS))
@@ -84,23 +88,23 @@ class KivyCameraMain(Image):
                                 self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
                                 self.duration_total = helper.convertSecNoToHMS(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/25)
                                 dura = int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/25)
-                        del _cap
-                    except Exception as e:
-                        print("Exception:", e)
+                    del _cap
+                except Exception as e:
+                    print("Exception:", e)
                         
                 if self.category == "SCHEDULE" and dura == self.data_src['duration']:
                     self.schedule_type = 'end'
                 output = self.f_parent.url_flv
                 timeout = 1
-                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "320k","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]
                 
                 if self.resource_type == "M3U8":
                     output = self.f_parent.url_flv_hls
                     timeout=0
-                    command = ["ffmpeg-win/ffmpeg.exe","-y","-f", "hls","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-crf", "21", "-preset", "veryfast","-ar","44100", "-ab", "320k","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25',output]
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-f", "hls","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-crf", "21", "-preset", "veryfast","-ar","44100", "-ab", "320k","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]
                 else: 
                     if fps < 25:
-                        command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                        command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",'-threads', '2',output]
                     if self.typeOld == 'M3U8':
                         command2 =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 {}'.format(self.f_parent.url_flv_hls)
                         si = sp.STARTUPINFO()
@@ -127,9 +131,9 @@ class KivyCameraMain(Image):
         
     def process_set_data(self, second):
         try:
-            th = Thread(target=self.init_capture())
-            th.start()
-            # self.init_capture()
+            # th = Thread(target=self.init_capture())
+            # th.start()
+            self.init_capture()
         except Exception:
             pass
 

@@ -146,11 +146,11 @@ class AddResource(object):
                     }
                     if self.parent.tabType == MediaType.IMAGE and isImg:
                         dt["type"] = 'IMG'
-                        self.parent.addMediaBoxToList(dt)
+                        self.parent.addMediaToList(dt)
                         self.parent.addMedia(dt)
                     elif self.parent.tabType == MediaType.VIDEO and isVideo:
                         dt["type"] = 'VIDEO'
-                        self.parent.addMediaBoxToList(dt)
+                        self.parent.addMediaToList(dt)
                         self.parent.addMedia(dt)
         #   
         self.addCamPopup.destroy()
@@ -176,6 +176,6 @@ class AddResource(object):
             "type": self.mtype,
             "id" : scryto.hash_md5_with_time(url)
         }
-        self.parent.addMediaBoxToList(dt)
+        self.parent.addMediaToList(dt)
         self.parent.addMedia(dt)
         self.addCamPopup.destroy()

@@ -19,5 +19,12 @@ class MediaGridView(DynamicGrid, MediaTab):
             self.showAddCamBtn()
 
     def addMediaToList(self, media):
-        self.after_effect(MediaItemBox(self.context, parentTab=self, media=media, bg="#f2f2f2", relief=tk.FLAT, bd=3))
+        ui = MediaItemBox(self.context, parentTab=self, media=media, bg="#f2f2f2", relief=tk.FLAT, bd=3)
+        self._LS_MEDIA_UI.append(ui)
+        self.after_effect(ui)
 
+    def clearView(self):
+        super(MediaGridView, self).clearView()
+        self.context.config(state=tk.NORMAL)
+        self.context.delete(1.0, tk.END)
+        self.context.config(state=tk.DISABLED)

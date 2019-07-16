@@ -13,28 +13,11 @@ class MainApplication(tk.Frame):
         self.mainview = MainView(self, borderwidth=0, bg='#000')
         self.mainview.pack(fill=tk.BOTH, expand=True)
 
-def get_curr_screen_geometry():
-    """
-    Workaround to get the size of the current screen in a multi-screen setup.
-
-    Returns:
-        geometry (str): The standard Tk geometry string.
-            [width]x[height]+[left]+[top]
-    """
-    root = tk.Tk()
-    root.update_idletasks()
-    root.attributes('-fullscreen', True)
-    root.state('iconic')
-    geometry = root.winfo_geometry()
-    root.destroy()
-    return geometry
-
 def run():
     root = tk.Tk()
-    # w = 1280
-    # x = tk_helper.getCenterX(w)
-    # root.geometry(f"{w}x900+{x}+20")
-    root.geometry(get_curr_screen_geometry())
+    w = 1280
+    x = tk_helper.getCenterX(w)
+    root.geometry(f"{w}x900+{x}+20")
     root.title("PiepLive Center Setting")
     imgicon = tk.PhotoImage(file=helper._LOGO_VIEWER)
     root.tk.call('wm', 'iconphoto', root._w, imgicon)

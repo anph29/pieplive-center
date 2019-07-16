@@ -5,4 +5,5 @@ class MediaType(Enum):
     IMAGE       = 2
     VIDEO       = 3
     PRESENTER   = 4
+    SCHEDULE    = 5
     

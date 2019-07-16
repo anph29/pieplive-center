@@ -307,6 +307,11 @@ class DDList(Frame):
     def _get_item_index(self, item):
         return self._position[item]
 
+    def _clear_all(self):
+       while 0 < len(self._list_of_items):
+            self.delete_item(0)
+
+
 if __name__ == "__main__":
     try:
         from Tkinter import Tk, IntVar, Label, Entry, Button

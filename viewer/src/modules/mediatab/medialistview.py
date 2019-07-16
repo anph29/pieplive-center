@@ -12,6 +12,7 @@ class MediaListView(MediaTab):
         self.tabType = kwargs['tabType']
         del kwargs['tabType']
         super(MediaListView, self).__init__(parent, *args, **kwargs)
+        self.tbBgColor = '#F9EBEA' if self.tabType == MediaType.SCHEDULE else '#D5DBDB'
         self.parent = parent
         self.scrollZ = VerticalScrolledFrame(self)
         self.ddlist = self.makeDDList(self.scrollZ.interior)
@@ -40,14 +41,22 @@ class MediaListView(MediaTab):
 
     def addMediaToList(self, media):
         item = self.ddlist.create_item()
-        medi = MediaItemDnD(item, parentTab=self, media=media)
-        medi.pack(padx= (4,0), pady= (4,0), expand=True)
+        ui = MediaItemDnD(item, parentTab=self, media=media)
+        self._LS_MEDIA_UI.append(ui)
+        ui.pack(padx= (4,0), pady= (4,0), expand=True)
         self.ddlist.add_item(item)
 
     def showCmdSaveSortedMediaLst(self):
         imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}check-green.png"))
-        self.cmdSaveSorted = tk.Label(self.toolbar, image=imageBin, cursor='hand2', bg='#fff')
+        self.cmdSaveSorted = tk.Label(self.toolbar, image=imageBin, cursor='hand2', bg=self.tbBgColor)
         self.cmdSaveSorted.image = imageBin
-        self.cmdSaveSorted.bind("<Button-1>", lambda x:x)
+        self.cmdSaveSorted.bind("<Button-1>", self.saveSortedList)
         self.cmdSaveSorted.pack(side=tk.RIGHT, padx=(0, 15), pady=5)
         ToolTip(self.cmdSaveSorted, "Save sorted medias")
+
+    def clearView(self):
+        super(MediaListView, self).clearView()
+        self.ddlist._clear_all()
+
+    def saveSortedList(self, evt):
+        print('saveSortedList=========')

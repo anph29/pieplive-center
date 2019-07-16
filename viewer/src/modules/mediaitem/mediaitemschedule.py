@@ -25,12 +25,13 @@ class MediaItemSchedule(MediaItem):
     def initGUI(self):
         hms = helper.convertSecNoToHMS(self.duration)
         #
-        top = tk.Frame(self, relief=tk.FLAT, bg='#fff')
+        top = tk.Frame(self, relief=tk.FLAT)
         top.pack(side=tk.TOP, fill=tk.X)
-        dura = tk.Label(top, text=hms, fg='#ff2d55', font=UI.TXT_FONT)
-        dura.pack(side=tk.LEFT)
+        dura = tk.Label(top, text=f'Duration: {hms}', fg='#ff2d55', font=UI.TXT_FONT)
+        dura.pack(side=tk.RIGHT, padx=10)
         #
-        bottom = tk.Frame(self, bd=5, relief=tk.FLAT, height=30)
+        bottom = tk.Frame(self, bd=10, relief=tk.FLAT, height=30)
+        bottom.pack(side=tk.BOTTOM, fill=tk.X)
         self.checkbox = tk.Checkbutton(bottom, variable=self.checked, onvalue=True, offvalue=False, height=1, width=1, bd=0, relief=tk.FLAT)
         self.checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)
         # label

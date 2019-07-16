@@ -7,3 +7,9 @@ class MediaType(Enum):
     PRESENTER   = 4
     SCHEDULE    = 5
     
+class MediaProp(Enum):
+    ID          = 'id'
+    NAME        = 'name'
+    URL         = 'url'
+    TYPE        = 'type'
+    DURATION    = 'duration'

@@ -51,7 +51,7 @@ class MainView(tk.Frame):
 
     def showBigTabWrapper(self):
         self.superWrapper = ttk.Notebook(self)
-        self.superWrapper.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        self.superWrapper.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
         #
         icSchedule = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_clock_tab.png')
         self.schedule = Schedule(self)

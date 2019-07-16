@@ -84,15 +84,10 @@ class Login(object):
         lblTOkenError.config(font=UI.TXT_FONT)
         lblTOkenError.pack(side=tk.LEFT, fill=tk.Y)
 
-        # close
 
     def autoUpperNV117(self, *arg):
         self.NV117.set(self.NV117.get().upper())
-        self.character_limit(self.NV117, )
-
-    def character_limit(self, entry, limit=6):
-        if len(entry.get()) > limit:
-            entry.set(entry.get()[0:limit])
+        tk_helper.character_limit(self.NV117)
 
     def onSendNV117(self):
         self.fInvalid.pack_forget()

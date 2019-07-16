@@ -4,6 +4,8 @@ from src.utils import helper
 from src.enums import MediaType
 from src.modules.addresource import AddResource
 from src.modules.custom import ToolTip
+
+
 class MediaTab(tk.Frame):
 
     _LS_MEDIA_DATA = []
@@ -129,3 +131,4 @@ class MediaTab(tk.Frame):
         self.clearData()
         # new
         self.writeLsMedia(filtered)
+

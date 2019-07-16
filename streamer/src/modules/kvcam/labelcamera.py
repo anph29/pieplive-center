@@ -12,11 +12,13 @@ class LabelCamera(Label):
     name = StringProperty('')
     url = StringProperty('')
     resource_type = StringProperty('')
+    data_src = None
 
     def __init__(self, **kwargs):
         super(LabelCamera, self).__init__(**kwargs)
 
     def set_data_source(self, input):
+        self.data_src = input
         self.name = input['name']
         self.text = input['name']
         self.url = input['url']
@@ -27,12 +29,7 @@ class LabelCamera(Label):
         self.init_capture(capture)
 
     def get_data_source(self):
-        return {
-            'name': self.name,
-            'url': self.url,
-            'type': self.resource_type,
-            'capture': self.capture
-        }
+        return self.data_src
 
     def init_capture(self, capture=None):
         if capture is not None:

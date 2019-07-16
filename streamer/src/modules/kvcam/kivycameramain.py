@@ -20,9 +20,10 @@ class KivyCameraMain(Image):
     url = StringProperty('')
     resource_type = StringProperty('')
     buffer_rate = NumericProperty(0)
-    duration_total = StringProperty('00:00:00')
+    duration_total = StringProperty('00:00:00')#show view
     duration_total_n = NumericProperty(1)
-    duration = StringProperty('00:00:00')
+    duration = StringProperty('00:00:00')#show view
+    duration_num = NumericProperty(0)
     duration_fps = NumericProperty(25)
     reconnect = NumericProperty(0)
 
@@ -31,7 +32,10 @@ class KivyCameraMain(Image):
     pipe = None
     pipe2 = None
     f_parent = None
-    typeOld = ''
+    typeOld = StringProperty('')
+    category = StringProperty('')
+    data_src = None
+    schedule_type = StringProperty('')
 
     def __init__(self, **kwargs):
         super(KivyCameraMain, self).__init__(**kwargs)
@@ -39,15 +43,22 @@ class KivyCameraMain(Image):
         self.show_captured_img(self.default_frame)
         self.stop = Event()
 
-    def set_data_source(self, input):
+    def set_data_source(self, input, category):
+        self.data_src = input
         self.name = input['name']
         self.url = input['url']
         self.resource_type = input['type']
+        self.category = category
         self.buffer_rate = 0
         self.duration_total = '00:00:00'
         self.duration = '00:00:00'
+        self.duration_num = 0
         self.duration_total_n = 1
         self.duration_fps = 25
+        self.schedule_type = ''# '' / duration / end
+
+        if self.category == "SCHEDULE":
+            self.schedule_type = 'duration'
         
         if self.pipe is not None:
             self.pipe.kill()
@@ -57,6 +68,7 @@ class KivyCameraMain(Image):
             self.capture.release()
         self.stop_update_capture()
         fps = 25
+        dura = 0
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
                 if self.resource_type == 'VIDEO':
@@ -67,12 +79,17 @@ class KivyCameraMain(Image):
                             if fps >= 25:
                                 self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
                                 self.duration_total = helper.convertSecNoToHMS(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS))
+                                dura = int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS))
                             else:
                                 self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
                                 self.duration_total = helper.convertSecNoToHMS(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/25)
+                                dura = int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/25)
                         del _cap
                     except Exception as e:
                         print("Exception:", e)
+                        
+                if self.category == "SCHEDULE" and dura == self.data_src['duration']:
+                    self.schedule_type = 'end'
                 output = self.f_parent.url_flv
                 timeout = 1
                 command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-vb",self.f_parent.v_bitrate,"-r","25",output]
@@ -141,6 +158,8 @@ class KivyCameraMain(Image):
                             self.f_parent.refresh_stream()
                         elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
                             self.f_parent.refresh_stream()
+                        if self.schedule_type == 'duration':
+                            self.f_parent.start_schedule(True)
                     self.typeOld = self.resource_type
                 else:
                     print("cv2.error:")
@@ -172,14 +191,19 @@ class KivyCameraMain(Image):
         try:
             # check is get next
             if not self.capture.grab():
-                pass
+                if self.category == 'SCHEDULE':
+                    if 'duration' in self.data_src and  self.data_src['duration'] is not None:
+                        if int(self.duration_num) >= self.data_src['duration'] and self.schedule_type == 'end':
+                            self.f_parent.process_schedule(1)
+
             elif self.capture.isOpened():
                 ret, frame = self.capture.retrieve()
                 if ret:
                     if self.resource_type == 'VIDEO' or self.resource_type == 'M3U8':
                         if self.resource_type == 'VIDEO':
                             self.buffer_rate = self.capture.get(cv2.CAP_PROP_POS_FRAMES) / self.duration_total_n
-                        self.duration = helper.convertSecNoToHMS(self.capture.get(cv2.CAP_PROP_POS_FRAMES)/self.capture.get(cv2.CAP_PROP_FPS))
+                        self.duration_num = self.capture.get(cv2.CAP_PROP_POS_FRAMES)/self.capture.get(cv2.CAP_PROP_FPS)
+                        self.duration = helper.convertSecNoToHMS(self.duration_num)
                     self.update_texture_from_frame(frame)
         except IOError:
             print("Exception update:")

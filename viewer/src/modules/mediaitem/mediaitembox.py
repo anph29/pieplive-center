@@ -1,6 +1,5 @@
 import vlc
 import tkinter as tk
-from tkinter import ttk, messagebox
 from src.modules.custom import PLabel
 from PIL import Image, ImageTk
 from src.utils import helper

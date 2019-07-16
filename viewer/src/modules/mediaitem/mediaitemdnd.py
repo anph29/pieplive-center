@@ -1,11 +1,11 @@
 import vlc
 import tkinter as tk
-from tkinter import ttk, messagebox
 from src.modules.custom import PLabel
 from PIL import Image, ImageTk
-from src.utils import helper, scryto
+from src.utils import helper
 from src.constants import UI
 from .mediaitem import MediaItem
+from src.modules.schedule import AddToSchedule
 
 class MediaItemDnD(MediaItem):
 
@@ -17,18 +17,28 @@ class MediaItemDnD(MediaItem):
         self.initGUI()
 
     def initGUI(self):
-        self.checkbox = tk.Checkbutton(self, variable=self.checked, onvalue=True, offvalue=False, height=1, width=1, bd=0, relief=tk.FLAT)
-        self.checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)
+        #
+        wrapper = tk.Frame(self)
+        # wrapper.bind("<Button-1>", self.showAddToSchedulePopup)
+        wrapper.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        #
+        checkbox = tk.Checkbutton(wrapper, variable=self.checked, onvalue=True, offvalue=False, height=1, width=1, bd=0, relief=tk.FLAT)
+        checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)
         # label
-        lbl_name = PLabel(self, text=self.name, justify=tk.LEFT, elipsis=40, font=UI.TXT_FONT, fg="#000")
+        lbl_name = PLabel(wrapper, text=self.name, justify=tk.LEFT, elipsis=40, font=UI.TXT_FONT, fg="#000", cursor='hand2')
+        # lbl_name.bind("<Button-1>", self.showAddToSchedulePopup)
         lbl_name.pack(side=tk.LEFT)
         # bin
         imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}/trash-b.png"))
-        lbl_trash = tk.Label(self, image=imageBin, cursor='hand2')
+        lbl_trash = tk.Label(wrapper, image=imageBin, cursor='hand2')
         lbl_trash.image = imageBin
         lbl_trash.bind("<Button-1>", self.deletemedia)
         lbl_trash.pack(side=tk.RIGHT)
         self.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+    def showAddToSchedulePopup(self, evt):
+        addresource = AddToSchedule(self.parentTab)
+        addresource.initGUI()
 
     def deletemedia(self, evt):
         super(MediaItemDnD, self).deletemedia(evt)

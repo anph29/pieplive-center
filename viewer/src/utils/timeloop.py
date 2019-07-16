@@ -1,5 +1,4 @@
 import threading
-import datetime
 
 
 def timeout(fn, sec):

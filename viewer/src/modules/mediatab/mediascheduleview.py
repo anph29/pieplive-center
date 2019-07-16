@@ -1,12 +1,7 @@
 import tkinter as tk
 from src.modules.custom import DDList
-from . import MediaTab
 from src.modules.mediaitem import MediaItemSchedule
-from PIL import ImageTk, Image
-from src.utils import helper
-from src.modules.custom import VerticalScrolledFrame, ToolTip
-from src.enums import MediaType
-from src.modules.mediatab import MediaListView
+from .medialistview import MediaListView
 
 class MediaScheduleView(MediaListView):
     def __init__(self, parent, *args, **kwargs):
@@ -15,7 +10,7 @@ class MediaScheduleView(MediaListView):
     def makeDDList(self, ref):
         return DDList(ref, 
             600,
-            60,
+            50,
             offset_x=5,
             offset_y=5,
             gap=5,
@@ -27,7 +22,7 @@ class MediaScheduleView(MediaListView):
 
     def addMediaToList(self, media):
         item = self.ddlist.create_item()
-        medi = MediaItemSchedule(item, media=media)
+        medi = MediaItemSchedule(item, parentTab=self, media=media)
         medi.pack(padx= (4,0), pady= (4,0), expand=True)
         self.ddlist.add_item(item)
 

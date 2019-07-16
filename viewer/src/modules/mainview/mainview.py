@@ -4,11 +4,9 @@ from src.utils import helper, store
 from src.modules.mediatab import MediaGridView
 from src.models import Q170_model, L500_model
 from src.enums import Q180
-from src.constants import WS, UI
+from src.constants import WS
 from src.modules.custom import LabeledCombobox
-from PIL import Image, ImageTk
 from src.modules.menu import MainMenu
-from uuid import getnode as get_mac
 from src.modules.login import Login
 from src.enums import MediaType
 from src.modules.schedule import Schedule

@@ -63,7 +63,7 @@ class MainStream(RelativeLayout):
             self.pipe2 = subprocess.Popen(command, startupinfo=si)
             Clock.schedule_once(lambda x: self.pipe2.kill() , 3)
         except IOError:
-            self.fileStream = '../resource/temp/{}.flv'.format(datetime.datetime.now().strftime("%d%m%y%H%M%S"))
+            pass
 
     def show_camera_mini(self):
         self.cameraMini.opacity = 1
@@ -198,7 +198,7 @@ class MainStream(RelativeLayout):
             if self.camera.duration == "00:00:00":
                 inp.extend(["-i", url])
             else:
-                inp.extend(["-ss", self.camera.duration,"-i", url,"-flags +global_header"])
+                inp.extend(["-ss", self.camera.duration,"-i", url,"-flags","+global_header"])#-flags +global_header
             txt += f"[{numau}:a]volume=1[a{numau}];"
             _map += f'[a{numau}]'
 
@@ -233,7 +233,7 @@ class MainStream(RelativeLayout):
             self.command.extend(['-vb', str(self.v_bitrate), '-preset', 'veryfast', '-g','30', '-r', '30'])
             # tream
             self.command.extend(['-f', 'flv', self.urlStream])
-            print(self.command)
+            
             si = subprocess.STARTUPINFO()
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             self.pipe = subprocess.Popen(self.command, stdin=subprocess.PIPE, startupinfo=si)

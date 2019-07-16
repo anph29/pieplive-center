@@ -6,6 +6,7 @@ from PIL import ImageTk, Image
 from src.utils import helper
 from src.modules.custom import VerticalScrolledFrame, ToolTip
 from src.enums import MediaType
+from src.modules.addresource import PopupAddSchedule
 
 class MediaListView(MediaTab):
     def __init__(self, parent, *args, **kwargs):
@@ -63,3 +64,10 @@ class MediaListView(MediaTab):
 
     def saveSortedList(self, evt):
         print('saveSortedList=========')
+
+    def showAddToSchedulePopup(self, data):
+        addresource = PopupAddSchedule(self, data)
+        addresource.initGUI()
+
+    def addToSchedule(self, data):
+       self.schedule.addMediaToList(data)

@@ -12,7 +12,8 @@ class MediaItem(tk.Frame):
             'id':self.id,
             'name': self.name, 
             'url': self.url, 
-            'type': self.mtype
+            'type': self.mtype,
+            'duration': self.duration
         }
 
     def set_data(self, media):
@@ -20,6 +21,7 @@ class MediaItem(tk.Frame):
         self.name = media['name']
         self.url = media['url']
         self.mtype = media['type']
+        self.duration = int(media['duration']) if 'duration' in media else 0
 
     def deletemedia(self, evt):
         if messagebox.askyesno("PiepMe", "Are you sure to delete this resource?"):

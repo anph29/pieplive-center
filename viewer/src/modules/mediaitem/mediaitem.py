@@ -31,4 +31,4 @@ class MediaItem(tk.Frame):
             self.parentTab.deleteMediaItem([self.id])
             self.destroy()
 
-    
+            

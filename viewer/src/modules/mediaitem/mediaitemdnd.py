@@ -16,7 +16,6 @@ class MediaItemDnD(MediaItem):
         self.set_data(media)
         self.initGUI()
 
-
     def initGUI(self):
         self.checkbox = tk.Checkbutton(self, variable=self.checked, onvalue=True, offvalue=False, height=1, width=1, bd=0, relief=tk.FLAT)
         self.checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)

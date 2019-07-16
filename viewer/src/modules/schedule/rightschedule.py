@@ -3,7 +3,6 @@ from tkinter import ttk
 from src.enums import MediaType
 from src.modules.mediatab import MediaListView
 from src.utils import helper
-from src.modules.custom import VerticalScrolledFrame
 class RightSchedule(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         super(RightSchedule, self).__init__(parent, *args, **kwargs)
@@ -33,17 +32,4 @@ class RightSchedule(tk.Frame):
         self.scheduleTab.enable_traversal()
 
     def makeMediaTab(self, tType):
-        scrFrame = VerticalScrolledFrame(self)
-        mlv = MediaListView(scrFrame.interior, 
-            400,
-            50,
-            offset_x=5,
-            offset_y=5,
-            gap=5,
-            item_borderwidth=1,
-            item_relief=tk.FLAT,
-            tabType=tType,
-            borderwidth=0,
-            bg="#ccc")
-        mlv.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        return scrFrame
+        return  MediaListView(self, tabType=tType, bg="#ccc")

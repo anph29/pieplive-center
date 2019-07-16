@@ -304,6 +304,9 @@ class DDList(Frame):
         self._index_of_empty_container = None
         self._index_of_selected_item = None
 
+    def _get_item_index(self, item):
+        return self._position[item]
+
 if __name__ == "__main__":
     try:
         from Tkinter import Tk, IntVar, Label, Entry, Button

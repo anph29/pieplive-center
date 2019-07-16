@@ -7,7 +7,7 @@ from src.utils import helper
 from src.constants import UI
 from .mediaitem import MediaItem
 
-class MediaBox(MediaItem):
+class MediaItemBox(MediaItem):
     finished = False
     cell_width = 240
     top_height = 135
@@ -15,7 +15,7 @@ class MediaBox(MediaItem):
     buffer = None
 
     def __init__(self, parent, parentTab=None, media=None, *args, **kwargs):
-        super(MediaBox, self).__init__(parent, *args, **kwargs)
+        super(MediaItemBox, self).__init__(parent, *args, **kwargs)
         self.parent = parent
         self.parentTab = parentTab
         self.set_data(media)

@@ -3,8 +3,6 @@ from src.modules.custom import DynamicGrid
 from src.modules.mediaitem import MediaItemBox
 from . import MediaTab
 from src.enums import MediaType
-from PIL import Image, ImageTk
-from src.utils import helper
 
 class MediaGridView(DynamicGrid, MediaTab):
     def __init__(self, parent, tabType=None, *args, **kwargs):

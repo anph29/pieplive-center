@@ -1,6 +1,5 @@
 import tkinter as tk
 from src.modules.mediatab import MediaScheduleView
-from src.utils import helper
 from src.enums import MediaType
 
 class LeftSchedule(tk.Frame):

@@ -1,9 +1,6 @@
-from src.modules.custom import DynamicGrid
 import tkinter as tk
-from tkinter import ttk
 from PIL import Image, ImageTk
-from src.utils import helper, store
-from src.models import L500_model
+from src.utils import helper
 from src.enums import MediaType
 from src.modules.addresource import AddResource
 from src.modules.custom import ToolTip

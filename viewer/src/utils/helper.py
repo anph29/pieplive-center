@@ -3,8 +3,6 @@ import re
 import json
 import math
 import base64
-import zipfile
-import subprocess
 from src.utils import zip_helper
 import cv2
 """

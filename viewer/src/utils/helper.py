@@ -6,6 +6,7 @@ import base64
 import zipfile
 import subprocess
 from src.utils import zip_helper
+import cv2
 """
 """
 _BASE_PATH              = os.path.abspath('../resource').replace('\\', '/') + '/'
@@ -219,6 +220,11 @@ def getMTypeFromUrl(url):
             return False
 
 def getVideoDuration(fpath):
-    from moviepy.editor import VideoFileClip
-    clip = VideoFileClip(fpath)
-    return int(clip.duration)
+    try:
+        _cap = cv2.VideoCapture(fpath)
+        fps = _cap.get(cv2.CAP_PROP_FPS)
+        total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
+        _cap.release()
+        return int(total/fps) if _cap.isOpened() and fps >= 25 else int(total/25)
+    except expression:
+        print(expression)

@@ -71,7 +71,7 @@ class MainStream(RelativeLayout):
             "name": "camera mini",
             "url": "0",
             "type": "CAMERA"
-        })
+        },'MINIDISPLAY')
 
     def hide_camera_mini(self):
         self.cameraMini.opacity = 0
@@ -84,15 +84,12 @@ class MainStream(RelativeLayout):
         del temp
     
     def _set_capture(self, data_src, data_type, is_from_schedule):
+        if self.mgrSchedule is not None:
+            self.mgrSchedule.cancel()
         self.streamType = data_type
         self.dataCam = data_src
         self.camera.f_parent = self
-        self.camera.set_data_source(data_src)
-        if self.streamType == "SCHEDULE":
-            if is_from_schedule == False:
-                self.start_schedule(True)
-        elif self.mgrSchedule is not None:
-            self.mgrSchedule.cancel()
+        self.camera.set_data_source(data_src, data_type)
 
     def refresh_stream(self):
         if self.isStream is True:
@@ -230,7 +227,7 @@ class MainStream(RelativeLayout):
             
             self.command.extend(self.draw_element())
             # encode
-            self.command.extend(['-vb', str(self.v_bitrate), '-preset', 'veryfast', '-g','30', '-r', '30'])
+            self.command.extend(['-vb', str(self.v_bitrate), '-preset', 'veryfast', '-g','30', '-r', '25'])
             # tream
             self.command.extend(['-f', 'flv', self.urlStream])
             
@@ -383,6 +380,7 @@ class MainStream(RelativeLayout):
             self.mgrSchedule = Clock.schedule_once(self.process_schedule , self.ls_schedule[index]['duration']+3)
     
     def process_schedule(self, fps):
+        self.ls_schedule = self.f_parent.right_content.tab_schedule.ls_schedule.get_data()
         if self.mgrSchedule is not None:
             self.mgrSchedule.cancel()
         self.current_schedule = self.f_parent.right_content.tab_schedule.ls_schedule.getCurrentIndex() + 1
@@ -395,10 +393,7 @@ class MainStream(RelativeLayout):
         data_src = self.ls_schedule[self.current_schedule]
         self.f_parent.right_content.tab_schedule.ls_schedule.setPlayed(self.current_schedule)
         self._set_capture(data_src, 'SCHEDULE', True)
-        self.mgrSchedule = Clock.schedule_once(self.process_schedule , self.ls_schedule[self.current_schedule]['duration']+3)
-
-    def run_schedule(self):
-        self.mgrSchedule = Clock.schedule_once(self.process_schedule , self.ls_schedule[self.current_schedule]['duration'])
+        # self.mgrSchedule = Clock.schedule_once(self.process_schedule , self.ls_schedule[self.current_schedule]['duration']+3)
 
     def loop_schedule(self,_val):
         self.is_loop = _val

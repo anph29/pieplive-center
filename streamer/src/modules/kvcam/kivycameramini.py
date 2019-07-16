@@ -35,6 +35,7 @@ class KivyCameraMini(DragBehavior, Image):
     pipe = None
     f_parent = None
     typeOld = ''
+    data_src = None
 
     def __init__(self, **kwargs):
         super(KivyCameraMini, self).__init__(**kwargs)
@@ -61,6 +62,7 @@ class KivyCameraMini(DragBehavior, Image):
         if self.capture is not None:
             self.capture.release()
         self.stop_update_capture()
+        self.data_src = input
         self.name = input['name']
         self.url = input['url']
         self.resource_type = input['type']

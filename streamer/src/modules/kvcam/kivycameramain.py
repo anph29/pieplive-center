@@ -205,8 +205,6 @@ class KivyCameraMain(Image):
             self.pipe2.kill()
         if self.capture is not None:
             self.capture.release()
-        if self.fileStream != "":
-            os.remove(self.fileStream)
 
     def resizeFrame(self, frame):
         if frame is None:

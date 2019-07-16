@@ -247,16 +247,24 @@ class MainStream(RelativeLayout):
         pass
 
     def release(self):
-        if self.event is not None:
-            self.event.cancel()
-        if self.pipe is not None:
-            self.pipe.kill()
-        if self.camera is not None:
-            self.camera.release()
-        if self.pipe2 is not None:
-            self.pipe2.kill()
-        if self.mgrSchedule is not None:
-            self.mgrSchedule.cancel()
+        try:
+            if self.event is not None:
+                self.event.cancel()
+            if self.pipe is not None:
+                self.pipe.kill()
+            if self.camera is not None:
+                self.camera.release()
+            if self.pipe2 is not None:
+                self.pipe2.kill()
+            if self.mgrSchedule is not None:
+                self.mgrSchedule.cancel()
+            if self.url_flv != "":
+                os.remove(self.url_flv)
+            if self.url_flv_hls != "":
+                os.remove(self.url_flv_hls)
+        except IOError:
+            print("Exception prepare:")
+            return False
 
     def on_change_Volume(self, idx, value):
         if idx is not None and value is not None:

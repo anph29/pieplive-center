@@ -1,35 +1,42 @@
 [
   {
+    "id": "b13b918c40fcfb5d4a434265663c26aa",
     "name": "S\u01a1n Tr\u00e0",
     "url": "rtsp://viewer:FB1D2631C12FE8F7EE8951663A8A108@117.3.2.18:554",
     "type": "RTSP"
   },
   {
+    "id": "d190dc6a443b28a6f87811273b31a5cf",
     "name": "\u0110\u00e0 N\u1eb5ng B\u00e2y gi\u1edd - Kh\u00e1ch S\u1ea1n H\u1ea3i An",
     "url": "rtsp://viewer:FB1D2631C12FE8F7@113.160.235.253:554",
     "type": "RTSP"
   },
   {
+    "id": "266d99f4bc0bc6d5c7831f92051125d6",
     "name": "Qu\u1eadn 2",
     "url": "rtsp://viewer:FB1D2631C12FE8F7EE8951663A8A108@115.79.7.65:554",
     "type": "RTSP"
   },
   {
+    "id": "f45e43ba4a0fd78beece1d65530abff4",
     "name": "\u0110i\u1ec7n Bi\u00ean Ph\u1ee7",
     "url": "rtsp://viewer:FB1D2631C12FE8F7EE8951663A8A108@14.241.245.161:554",
     "type": "RTSP"
   },
   {
+    "id": "338eef409c55f30b65717ab4eebf8a51",
     "name": "H\u1ed9i An",
     "url": "rtsp://viewer:FB1D2631C12FE8F7EE8951663A8A108@113.176.112.174:554",
     "type": "RTSP"
   },
   {
+    "id": "e25c406863522e79df33fb06980aff6e",
     "name": "\u0110\u00e0 N\u1eb5ng B\u00e2y gi\u1edd - Kh\u00e1ch S\u1ea1n Merry - CAM 1 - HK",
     "url": "rtsp://viewer:FB1D2631C12FE8F7@14.241.131.216:553",
     "type": "RTSP"
   },
   {
+    "id": "11b8134bffaf2de32c2ce808c7b08ada",
     "name": "\u0110\u00e0 N\u1eb5ng B\u00e2y gi\u1edd - Kh\u00e1ch S\u1ea1n Merry - CAMERA 2 - Dahua",
     "url": "rtsp://viewer:FB1D2631C12FE8F7EE8951663A8A108@14.241.131.216:554",
     "type": "RTSP"

@@ -1,6 +1,7 @@
 from kivy.uix.recycleview import RecycleView
-import src.utils.helper as helper
+from src.utils import helper
 from kivy.properties import StringProperty
+from src.modules.custom.popup import PiepMeConfirmPopup
 
 class ListMedia(RecycleView):
 
@@ -34,6 +35,11 @@ class ListMedia(RecycleView):
         self.set_data()
     
     def remove_selected(self):
+        PiepMeConfirmPopup(message='Are you sure to delete the selected source?',
+                            callback_ok=self.process_del_selected,
+                            callback_cancel=lambda: True)
+                            
+    def process_del_selected(self):
         temp = 0
         for child in self.children[0].children:
             if child.isCheckItem.active and child.selected == False:
@@ -86,6 +92,11 @@ class ListImage(RecycleView):
         self.set_data()
     
     def remove_selected(self):
+        PiepMeConfirmPopup(message='Are you sure to delete the selected source?',
+                            callback_ok=self.process_del_selected,
+                            callback_cancel=lambda: True)
+                            
+    def process_del_selected(self):
         temp = 0
         for child in self.children[0].children:
             if child.isCheckItem.active and child.selected == False:
@@ -136,6 +147,11 @@ class ListCamera(RecycleView):
         self.set_data()
     
     def remove_selected(self):
+        PiepMeConfirmPopup(message='Are you sure to delete the selected source?',
+                            callback_ok=self.process_del_selected,
+                            callback_cancel=lambda: True)
+                            
+    def process_del_selected(self):
         temp = 0
         for child in self.children[0].children:
             if child.isCheckItem.active and child.selected == False:
@@ -188,6 +204,11 @@ class ListPresenter(RecycleView):
         self.set_data()
 
     def remove_selected(self):
+        PiepMeConfirmPopup(message='Are you sure to delete the selected source?',
+                            callback_ok=self.process_del_selected,
+                            callback_cancel=lambda: True)
+                            
+    def process_del_selected(self):
         temp = 0
         for child in self.children[0].children:
             if child.isCheckItem.active and child.selected == False:
@@ -209,8 +230,8 @@ class ListPresenter(RecycleView):
                 child.active = False
 
 class ListSchedule(RecycleView):
-
     item_playing = ""
+    total_time = StringProperty("00:00:00")
 
     def __init__(self, **kwargs):
         super(ListSchedule, self).__init__(**kwargs)
@@ -222,6 +243,7 @@ class ListSchedule(RecycleView):
                 helper._load_schedule()
             )
         )
+        self.getTotalTime()
 
     def get_data(self):
         return self.data
@@ -230,6 +252,7 @@ class ListSchedule(RecycleView):
         if self.data:
             self.data.pop(index)
             helper._write_schedule(self.clean_data_to_save_json()) 
+            self.getTotalTime()
 
     def clean_data_to_save_json(self):
         return list(
@@ -279,6 +302,11 @@ class ListSchedule(RecycleView):
         helper._write_schedule(self.clean_data_to_save_json())
 
     def remove_selected(self):
+        PiepMeConfirmPopup(message='Are you sure to delete the selected source?',
+                            callback_ok=self.process_del_selected,
+                            callback_cancel=lambda: True)
+
+    def process_del_selected(self):
         temp = 0
         for child in self.children[0].children:
             if child.isCheckItem.active and child.active == False:
@@ -287,3 +315,10 @@ class ListSchedule(RecycleView):
                     self.data.pop(child.index)
         if temp == 1:
             helper._write_schedule(self.clean_data_to_save_json())
+            self.getTotalTime()
+    
+    def getTotalTime(self):
+        tt = 0
+        for item in self.data:
+            tt += item['duration']
+        self.total_time = helper.convertSecNoToHMS(tt)

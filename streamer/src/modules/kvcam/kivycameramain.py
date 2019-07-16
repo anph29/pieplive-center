@@ -78,7 +78,7 @@ class KivyCameraMain(Image):
                 command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 
                 if self.resource_type == "M3U8":
-                    output = self.url_flv_hls
+                    output = self.f_parent.url_flv_hls
                     timeout=0
                     command = ["ffmpeg-win/ffmpeg.exe","-y","-f", "hls","-i",self.url,"-ab", "320k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 else: 
@@ -110,13 +110,9 @@ class KivyCameraMain(Image):
         
     def process_set_data(self, second):
         try:
-            # if self.capture is not None:
-            #     self.capture.release()
-            # self.stop_update_capture()
-            # th = Thread(target=self.init_capture())
-            # th.start()
-            
-            self.init_capture()
+            th = Thread(target=self.init_capture())
+            th.start()
+            # self.init_capture()
         except Exception:
             pass
 
@@ -148,14 +144,13 @@ class KivyCameraMain(Image):
                     self.typeOld = self.resource_type
                 else:
                     print("cv2.error:")
-                    self.show_captured_img(self.default_frame)
-                    # if self.reconnect >= 3:
-                    #     if self.capture is not None:
-                    #         self.capture.release()
-                    #     self.show_captured_img(self.default_frame)
-                    # else:
-                    #     self.reconnect += 1
-                    #     self.init_capture()
+                    if self.reconnect >= 3:
+                        if self.capture is not None:
+                            self.capture.release()
+                        self.show_captured_img(self.default_frame)
+                    else:
+                        self.reconnect += 1
+                        self.init_capture()
                 
         except Exception as e:
             print("Exception init_capture:", e)
@@ -210,8 +205,6 @@ class KivyCameraMain(Image):
             self.pipe2.kill()
         if self.capture is not None:
             self.capture.release()
-        if self.fileStream != "":
-            os.remove(self.fileStream)
 
     def resizeFrame(self, frame):
         if frame is None:

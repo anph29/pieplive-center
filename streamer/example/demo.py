@@ -10,7 +10,10 @@ from kivy.lang import Builder
 from kivy.animation import Animation
 from kivy.graphics import Fbo, ClearColor, ClearBuffers, Scale, Translate
 from kivy.clock import Clock
-import subprocess
+import subprocess, audioread
+import sounddevice as sd
+import numpy as np
+
 
 from kivy.properties import ObjectProperty
 
@@ -53,26 +56,7 @@ class MyWidget(FloatLayout):
     lbl = ObjectProperty(None)
     kvcam = ObjectProperty(None)
     chcam = 0
-    data={
-        1:{
-            'name':'anvideo',
-            'url':'rtsp://viewer:FB1D2631C12FE8F7EE8951663A8A108@14.241.245.161:554',
-            'capture': cv2.VideoCapture('rtsp://viewer:FB1D2631C12FE8F7EE8951663A8A108@14.241.245.161:554'),
-            'type':'RTPS'
-        },
-        2:{
-            'name':'anvideo',
-            'url':'rtsp://viewer:FB1D2631C12FE8F7EE8951663A8A108@113.176.112.174:554',
-            'capture': cv2.VideoCapture('rtsp://viewer:FB1D2631C12FE8F7EE8951663A8A108@113.176.112.174:554'),
-            'type':'RTPS'
-        },
-        3:{
-            'name':'anvideo',
-            'url':'1.mp4',
-            'capture': cv2.VideoCapture('1.mp4'),
-            'type':'VIDEO'
-        }
-    }
+    duration = 10  # seconds
 
     def __init__(self, *args, **kwargs):
         super(MyWidget, self).__init__(*args, **kwargs)
@@ -86,29 +70,34 @@ class MyWidget(FloatLayout):
         self.lbl.text = now.strftime('%H:%M:%S')
         
     def click_me(self, button, *args):    
-        # self.change_cam()
+        
         if self.pipe is None:
             self.i = 0
             self.run_ffmpeg()
             self.run_anim(button)
+    
+    def print_sound(self,indata, outdata, frames, time, status):
+        self.pipe.stdin.write(outdata)
+        print(frames,outdata)
 
     def run_ffmpeg(self, *args, **kwargs):
         command = ['../ffmpeg-win/ffmpeg.exe',
-                '-thread_queue_size', '512',
-                '-r', '30',
                 '-f', 'rawvideo', 
                 '-pix_fmt', 'rgba',
                 '-s', '1280x720',
-                '-i','-',
-                '-stream_loop','-1', '-i','../../resource/media/muted.mp3',
+                '-f', 'pcm_s16le',
+                # '-i','-',
+                '-stream_loop','-1', '-i','../../resource/media/muted2.mp3',
                 '-b:a', '128k',
-                '-b:v', '1920k',
-                '-g', '30', '-r', '30',
+                '-b:v', '3072k',
+                '-g', '25', '-r', '25',
                 '-threads', '2',
                 '-f','flv',
                 'rtmp://livevn.piepme.com/cam/7421.36d74d5063fda77f18871dbb6c0ce613?token=36d74d5063fda77f18871dbb6c0ce613&SRC=WEB&FO100=7421&PL300=8212&LN301=180&LV302=115.73.208.139&LV303=0982231325&LL348=1558771095036&UUID=247cbf2ee3f0bda1&NV124=vn&PN303=15&POS=3'
         ]
         self.pipe = subprocess.Popen(command, stdin=subprocess.PIPE)
+        with sd.Stream(callback=self.print_sound):
+            sd.sleep(self.duration * 1000)
 
     def release(self):
         if self.pipe is not None:

@@ -1,4 +1,4 @@
-
+#:import helper src.utils.helper
 <MainView>:
     mainStream: mainStream
     right_content: right_content
@@ -55,7 +55,7 @@
                 Label:
                     id: videoDuration
                     size_hint: None,1
-                    text: root.mainStream.camera.duration +"/"+root.mainStream.camera.duration_total
+                    text: helper.convertSecNoToHMS(root.mainStream.camera.duration_current) +"/"+ helper.convertSecNoToHMS(root.mainStream.camera.duration_total)
                     font_size: 13
 
             BoxLayout:

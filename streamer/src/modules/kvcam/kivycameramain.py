@@ -94,7 +94,7 @@ class KivyCameraMain(Image):
                 if self.resource_type == "M3U8":
                     output = self.f_parent.url_flv_hls
                     timeout=1
-                    command = ["ffmpeg-win/ffmpeg.exe","-y","-f", "hls","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-crf", "21", "-preset", "veryfast","-ar","44100", "-ab", "320k","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-f", "hls","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-crf", "21", "-preset", "veryfast","-ar","44100", "-ab", "320k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]
                 else: 
                     if fps < 25:
                         command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",'-threads', '2',output]

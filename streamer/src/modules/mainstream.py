@@ -195,7 +195,7 @@ class MainStream(RelativeLayout):
             if self.camera.duration_current == 0:
                 inp.extend(["-i", url])
             else:
-                inp.extend(["-ss", helper.convertSecNoToHMS(self.camera.duration_curent),"-i", url,"-flags","+global_header"])
+                inp.extend(["-ss", helper.convertSecNoToHMS(self.camera.duration_current),"-i", url,"-flags","+global_header"])
             txt += f"[{numau}:a]volume=1[a{numau}];"
             _map += f'[a{numau}]'
 

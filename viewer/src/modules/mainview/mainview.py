@@ -29,6 +29,7 @@ class MainView(tk.Frame):
     def setStyle(self):
         style = ttk.Style()
         style.theme_create("TabStyle", parent="alt", settings={
+            "scroll.TFrame":{"background":"#fff"},
             "TNotebook": {
                 "configure": {"tabmargins": [5, 0, 0, 5]}  # L T R B
             },

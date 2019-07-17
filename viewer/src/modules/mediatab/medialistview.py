@@ -6,7 +6,6 @@ from PIL import ImageTk, Image
 from src.utils import helper
 from src.modules.custom import VerticalScrolledFrame, ToolTip
 from src.enums import MediaType
-from src.modules.addresource import PopupAddSchedule
 
 class MediaListView(MediaTab):
     def __init__(self, parent, *args, **kwargs):
@@ -18,7 +17,7 @@ class MediaListView(MediaTab):
         super(MediaListView, self).__init__(parent, *args, **kwargs)
         self.tbBgColor = '#F9EBEA' if self.tabType == MediaType.SCHEDULE else '#D5DBDB'
         self.parent = parent
-        self.scrollZ = VerticalScrolledFrame(self)
+        self.scrollZ = VerticalScrolledFrame(self, style='scroll.TFrame')
         self.ddlist = self.makeDDList(self.scrollZ.interior)
         self.initUI()
 
@@ -32,7 +31,7 @@ class MediaListView(MediaTab):
             item_borderwidth=1,
             item_relief=tk.FLAT,
             borderwidth=0,
-            bg="#ccc")
+            bg="#fff")
 
     def initUI(self):
         super(MediaListView, self).initUI()
@@ -43,6 +42,13 @@ class MediaListView(MediaTab):
         self.scrollZ.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
         self.ddlist.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
+    def packLeftToolbar(self):
+        super(MediaListView, self).packLeftToolbar()
+        self.checkbox.destroy()
+        if self.tabType != MediaType.SCHEDULE:
+            self.showBtnPushAllToSchedule()
+        self.showSelectAll()
+
     def addMediaToList(self, media):
         item = self.ddlist.create_item()
         ui = MediaItemDnD(item, parentTab=self, media=media)
@@ -50,9 +56,17 @@ class MediaListView(MediaTab):
         ui.pack(padx= (4,0), pady= (4,0), expand=True)
         self.ddlist.add_item(item)
 
+    def showBtnPushAllToSchedule(self):
+        # push to schedule
+        imgPush = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}push-left.png"))
+        lblPush = tk.Label(self.tbleft, image=imgPush, cursor='hand2', bg=self.tbBgColor)
+        lblPush.image = imgPush
+        lblPush.bind("<Button-1>", self.pushAllToSchedule)
+        lblPush.pack(side=tk.LEFT, padx=(5,0))
+
     def showCmdSaveSortedMediaLst(self):
         imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}check-green.png"))
-        self.cmdSaveSorted = tk.Label(self.toolbar, image=imageBin, cursor='hand2', bg=self.tbBgColor)
+        self.cmdSaveSorted = tk.Label(self.tbright, image=imageBin, cursor='hand2', bg=self.tbBgColor)
         self.cmdSaveSorted.image = imageBin
         self.cmdSaveSorted.bind("<Button-1>", self.saveSortedList)
         self.cmdSaveSorted.pack(side=tk.RIGHT, padx=(0, 15), pady=5)
@@ -65,9 +79,5 @@ class MediaListView(MediaTab):
     def saveSortedList(self, evt):
         print('saveSortedList=========')
 
-    def showAddToSchedulePopup(self, data):
-        addresource = PopupAddSchedule(self, data)
-        addresource.initGUI()
-
-    def addToSchedule(self, data):
-       self.schedule.addMediaToList(data)
+    def callShowPopup(self, data):
+       self.schedule.showAddToSchedulePopup(data)

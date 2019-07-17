@@ -9,14 +9,7 @@ class Schedule(tk.Frame):
         self.initUI()
 
     def initUI(self):
-        #
-        self.left = LeftSchedule(self)
-        self.left.grid(row=0, column=0, columnspan=2, sticky=tk.NSEW)
-        #
-        self.right = RightSchedule(self, schedule=self.left.schedule)
-        self.right.grid(row=0, column=2, sticky=tk.NSEW)
-        #
-        self.grid_columnconfigure(0, weight=1, uniform="group1")
-        self.grid_columnconfigure(1, weight=1, uniform="group1")
-        self.grid_columnconfigure(2, weight=1, uniform="group1")
-        self.grid_rowconfigure(0, weight=1)
+        self.left = LeftSchedule(self, bg='#fff')
+        self.left.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        self.right = RightSchedule(self, schedule=self.left.schedule, width=410,bg='#fff')
+        self.right.pack(side=tk.RIGHT, fill=tk.Y)

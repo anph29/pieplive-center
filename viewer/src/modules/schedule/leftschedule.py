@@ -9,6 +9,6 @@ class LeftSchedule(tk.Frame):
         self.initUI()
 
     def initUI(self):
-      self.schedule = MediaScheduleView(self, tabType=MediaType.SCHEDULE, bg="#ccc")
+      self.schedule = MediaScheduleView(self, tabType=MediaType.SCHEDULE, bg="#fff")
       self.schedule.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 

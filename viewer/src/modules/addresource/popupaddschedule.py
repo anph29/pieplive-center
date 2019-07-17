@@ -10,11 +10,11 @@ class PopupAddSchedule(object):
         self.parent = parent
         self.media = data
     
-    def setupData(self):
+    def setupData(self, edit):
         self.url = self.media['url']
         self.mtype = self.media['type']
         self.duration = int(self.media['duration']) if 'duration' in self.media else 0
-        self.id = scryto.hash_md5_with_time(self.url)
+        self.id = self.media['id'] if edit else scryto.hash_md5_with_time(self.url)
         #
         name = self.media['name']
         self.name.set(name)
@@ -24,7 +24,7 @@ class PopupAddSchedule(object):
         self.ss.set(s)
         
 
-    def initGUI(self):
+    def initGUI(self, edit=False):
         # first destroy
         if None is not self.popup:
             self.popup.destroy()
@@ -37,7 +37,7 @@ class PopupAddSchedule(object):
         self.mm.trace("w", self.limitMM)
         self.ss = tk.StringVar()
         self.ss.trace("w", self.limitSS)
-        self.setupData()
+        self.setupData(edit)
         #
         wrapper = tk.Frame(self.popup)
         wrapper.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
@@ -47,7 +47,7 @@ class PopupAddSchedule(object):
         lName.pack(side=tk.LEFT, fill=tk.Y)
         name = tk.Entry(fName, textvariable=self.name, width=100, borderwidth=5, relief=tk.FLAT)
         name.bind("<FocusIn>", lambda args: name.select_range('0', tk.END))
-        name.pack(side=tk.LEFT, fill=tk.X)
+        name.pack(side=tk.LEFT, fill=tk.X, padx=(10, 0))
         fName.pack(side=tk.TOP, fill=tk.X)
         #2. Duration
         fDura = tk.Frame(wrapper, pady=10, padx=20)
@@ -58,7 +58,7 @@ class PopupAddSchedule(object):
         ##
         self.eHH = tk.Entry(fDura, textvariable=self.hh, width=4, borderwidth=5, relief=tk.FLAT, justify=tk.CENTER)
         self.eHH.bind("<FocusIn>", lambda args: self.eHH.select_range('0', tk.END))
-        self.eHH.pack(side=tk.LEFT, fill=tk.X)
+        self.eHH.pack(side=tk.LEFT, fill=tk.X, padx=(10, 0))
         ##
         separator = tk.Label(fDura, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
         separator.pack(side=tk.LEFT, padx=5)
@@ -96,13 +96,13 @@ class PopupAddSchedule(object):
     def verifyHMS(self, strvar):
         tk_helper.character_limit(strvar, limit=2)
         strvar.set(re.sub(r"^[^0-9]{2}$", '', strvar.get()))
-        
 
     def onSave(self):
-        self.parent.addToSchedule({
+        self.parent.saveToSchedule({
             'id':self.id,
             'name': self.name.get(), 
             'url': self.url, 
             'type': self.mtype,
             'duration': helper.convertHMSNoToSec({'h': self.hh.get(), 'm': self.mm.get(), 's': self.ss.get()})
         })
+        self.popup.destroy()

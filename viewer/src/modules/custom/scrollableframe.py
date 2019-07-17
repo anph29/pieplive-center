@@ -28,8 +28,7 @@ class VerticalScrolledFrame(Frame):
 
         # create a frame inside the canvas which will be scrolled with it
         self.interior = interior = Frame(canvas)
-        interior_id = canvas.create_window(0, 0, window=interior,
-                                           anchor=NW)
+        interior_id = canvas.create_window(0, 0, window=interior, anchor=NW)
 
         # track changes to the canvas and frame width and sync them,
         # also updating the scrollbar

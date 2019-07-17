@@ -23,14 +23,12 @@ Config.set('graphics', 'left', '20')
 Config.set('kivy', 'log_level', 'debug')
 Config.set('kivy', 'window_icon', 'src/images/logo.png')
 
-from src.modules.stream.pmstream import PMStream
-
 Builder.load_string('''
 <MyWidget>:
     btn:btn
     lbl:lbl
     kvcam:kvcam
-    PMStream:
+    FloatLayout:
         id:kvcam
         size_hint: 1, 1
         pos_hint:{'x':0, 'y':0}
@@ -83,20 +81,20 @@ class MyWidget(FloatLayout):
         self.lbl.text = "inited!!!!"
         Clock.schedule_interval(self.timer, 1)#0.03
         
-    def change_cam(self, *args):
-        if self.chcam == 0:
-            self.chcam = 1
-            self.kvcam.set_data_source(self.data[3])
-        else:
-            self.chcam = 0
-            self.kvcam.set_data_source(self.data[2])
+    # def change_cam(self, *args):
+    #     if self.chcam == 0:
+    #         self.chcam = 1
+    #         self.kvcam.set_data_source(self.data[3])
+    #     else:
+    #         self.chcam = 0
+    #         self.kvcam.set_data_source(self.data[2])
 
     def timer(self, dt):
         now = datetime.datetime.now()
         self.lbl.text = now.strftime('%H:%M:%S')
         
     def click_me(self, button, *args):    
-        self.change_cam()
+        # self.change_cam()
         if self.pipe is None:
             print("pipe is None!!!!")
             self.i = 0

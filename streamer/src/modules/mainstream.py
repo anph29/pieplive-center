@@ -90,6 +90,7 @@ class MainStream(RelativeLayout):
         self.dataCam = data_src
         self.camera.f_parent = self
         self.camera.set_data_source(data_src, data_type)
+        self.f_parent.refresh_select_source(data_type)
 
     def refresh_stream(self):
         if self.isStream is True:
@@ -147,8 +148,7 @@ class MainStream(RelativeLayout):
             normal = Normal_model()
             key = self.f_parent.bottom_left.stream_key.text.split("?")[0]
             normal.reset_link_stream(key)
-            if self.isStream:
-                Clock.schedule_once(self.reconnecting,self.reconnect)
+            Clock.schedule_once(self.reconnecting,self.reconnect)
             
     def reconnecting(self, dt):
         if self.reconnect > 10:
@@ -227,7 +227,7 @@ class MainStream(RelativeLayout):
             
             self.command.extend(self.draw_element())
             # encode
-            self.command.extend(['-vb', str(self.v_bitrate), '-preset', 'veryfast', '-g','30', '-r', '25'])
+            self.command.extend(['-vb', str(self.v_bitrate), '-preset', 'veryfast', '-g','25', '-r', '25','-threads','8'])
             # tream
             self.command.extend(['-f', 'flv', self.urlStream])
             

@@ -31,7 +31,7 @@ class MediaScheduleView(MediaListView):
         self.ddlist.pack(fill=tk.Y, expand=True)
 
     def addMediaToList(self, media):
-        item = self.ddlist.create_item()
+        item = self.ddlist.create_item(value=media)
         medi = MediaItemSchedule(item, parentTab=self, media=media)
         medi.pack(padx= (4,0), pady= (4,0), expand=True)
         self.ddlist.add_item(item)

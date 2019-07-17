@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 from src.modules.custom import DDList
 from . import MediaTab
 from src.modules.mediaitem import MediaItemDnD
@@ -50,7 +51,7 @@ class MediaListView(MediaTab):
         self.showSelectAll()
 
     def addMediaToList(self, media):
-        item = self.ddlist.create_item()
+        item = self.ddlist.create_item(value=media)
         ui = MediaItemDnD(item, parentTab=self, media=media)
         self._LS_MEDIA_UI.append(ui)
         ui.pack(padx= (4,0), pady= (4,0), expand=True)
@@ -77,7 +78,11 @@ class MediaListView(MediaTab):
         self.ddlist._clear_all()
 
     def saveSortedList(self, evt):
-        print('saveSortedList=========')
+        if messagebox.askyesno("PiepMe", "Are you sure save sorted media list?"):
+            sorted = list(map(lambda x:x.value, self.ddlist._list_of_items))
+            self.clearData()
+            self.writeLsMedia(sorted)
+            self.tabRefresh(None)
 
     def callShowPopup(self, data):
        self.schedule.showAddToSchedulePopup(data)

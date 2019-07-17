@@ -115,14 +115,14 @@ class MyWidget(FloatLayout):
         #         'rtmp://livevn.piepme.com/cam/7421.36d74d5063fda77f18871dbb6c0ce613?token=36d74d5063fda77f18871dbb6c0ce613&SRC=WEB&FO100=7421&PL300=8212&LN301=180&LV302=115.73.208.139&LV303=0982231325&LL348=1558771095036&UUID=247cbf2ee3f0bda1&NV124=vn&PN303=15&POS=3'
         # ]
 
-        command = ['ffmpeg-mac/ffmpeg',
+        command = ['../ffmpeg-win/ffmpeg.exe',
                 '-thread_queue_size', '512',
                 '-r', '30',
                 '-f', 'rawvideo', 
                 '-pix_fmt', 'rgba',
                 '-s', '1280x720',
                 '-i','-',
-                '-re', '-i','src/musics/anh-nang-trong-anh.mp3',
+                '-re', '-i','../../resource/media/muted.mp3',
                 '-b:a', '128k',
                 '-b:v', '1920k',
                 '-g', '30', '-r', '30',

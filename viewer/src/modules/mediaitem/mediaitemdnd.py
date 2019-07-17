@@ -31,7 +31,7 @@ class MediaItemDnD(MediaItem):
         checkbox = tk.Checkbutton(wrapper, variable=self.checked, onvalue=True, offvalue=False, height=1, width=1, bd=0, relief=tk.FLAT)
         checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)
         # label
-        lbl_name = PLabel(wrapper, text=self.name, justify=tk.LEFT, elipsis=40, font=UI.TXT_FONT, fg="#000", cursor='hand2')
+        lbl_name = PLabel(wrapper, text=self.name, justify=tk.LEFT, elipsis=35, font=UI.TXT_FONT, fg="#000", cursor='hand2')
         lbl_name.pack(side=tk.LEFT)
         # bin
         imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}trash-b.png"))

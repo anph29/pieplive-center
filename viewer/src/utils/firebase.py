@@ -14,7 +14,6 @@ auth = firebase.auth()
 def stream_handler(message):
     print(message)
     my_stream.close()
-    print(auth.sign_in_with_phone_number('0984398831'))
 
 
 my_stream = db.child("messenger_Client").stream(stream_handler)

@@ -34,6 +34,10 @@ def _write_schedule(data):
 
 def _add_to_schedule(data):
     appendJSON(_PATH_SCHEDULE, data)
+
+def _calc_time_point(timestamp):
+    schedule = _load_schedule()
+    
 """
 ls camera
 """     
@@ -117,7 +121,6 @@ def _load_setting():
 """
 JSON helper
 """
-
 def loadJSON(path):
     with open(path, 'r', encoding='utf-8') as jdata:
         return json.load(jdata)

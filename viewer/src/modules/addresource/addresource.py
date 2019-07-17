@@ -117,7 +117,7 @@ class AddResource(object):
             self.fError.pack(side=tk.TOP, fill=tk.X)
         # fill data
         self.eName.delete(0, tk.END)
-        self.eName.insert(0, (fname.split('/')[-1]).split('.')[0])
+        self.eName.insert(0, self.getNameFromPath(fname))
         self.eUrl.delete(0, tk.END)
         self.eUrl.insert(0, fname)
 
@@ -130,6 +130,9 @@ class AddResource(object):
         self.eUrlFolder.delete(0, tk.END)
         self.eUrlFolder.insert(0, self.directory)
 
+    def getNameFromPath(self, fpath):
+        return fpath.split('/')[-1]
+        # return ''.join((fpath.split('/')[-1]).split('.')[0,-1])
 
     def onOkFolder(self):
         for file in os.listdir(self.directory):
@@ -141,7 +144,7 @@ class AddResource(object):
                 if isImg or isVideo:
                     dt = {
                         "id" : scryto.hash_md5_with_time(fpath),
-                        "name": (fpath.split('/')[-1]).split('.')[0],
+                        "name": self.getNameFromPath(fpath),
                         "url": fpath
                     }
                     if self.parent.tabType == MediaType.IMAGE and isImg:

@@ -6,6 +6,7 @@ from src.utils import helper
 from src.constants import UI
 from .mediaitem import MediaItem
 from src.modules.custom import ToolTip
+import io
 
 class MediaItemBox(MediaItem):
     finished = False
@@ -14,7 +15,7 @@ class MediaItemBox(MediaItem):
     bot_height = 25
     buffer = None
     zoomIn = False
-
+    vlcInited = False
     def __init__(self, parent, parentTab=None, media=None, *args, **kwargs):
         super(MediaItemBox, self).__init__(parent, *args, **kwargs)
         self.parent = parent
@@ -41,9 +42,9 @@ class MediaItemBox(MediaItem):
             try:
                 im = Image.open(self.url)
             except FileNotFoundError:
-                im = Image.open(helper._IMAGES_PATH + 'splash.jpg')
+                im = Image.open(helper._IMAGES_PATH + 'splash.png')
         else:
-            im = Image.open(helper._IMAGES_PATH + 'splash-video.jpg')
+            im = Image.open(helper._IMAGES_PATH + 'splash-video.png')
 
         w, h = im.size
         r = w / h   
@@ -70,6 +71,7 @@ class MediaItemBox(MediaItem):
             self.after(100, self.playOrPause)
         if self.mtype == 'RTSP':
             self.after(5000, self.playOrPause)
+        self.vlcInited = True
 
     def initBOTTOM(self):
         bottom = tk.Frame(self.wrapper, bd=5, relief=tk.FLAT, width=self.cell_width, height=self.bot_height)
@@ -151,6 +153,8 @@ class MediaItemBox(MediaItem):
         self.playOrPause()
 
     def playOrPause(self):
+        if not self.vlcInited:
+            self.initVLC(None)
         if self.player.is_playing():
             self.player.pause()
             self.updatePlayIcon('play')

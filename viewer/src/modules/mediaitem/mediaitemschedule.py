@@ -51,8 +51,12 @@ class MediaItemSchedule(MediaItem):
         self.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         #duration
         hms = helper.convertSecNoToHMS(self.duration)
-        dura = PLabel(wrapper, text=hms, fg='#ff2d55', font=UI.TXT_FONT)
-        dura.pack(side=tk.RIGHT, padx=10)
+        dura = PLabel(wrapper, text=f"{hms}", fg='#ff2d55', font=UI.TXT_FONT)
+        dura.pack(side=tk.RIGHT, padx=5)
+        #timepoint
+        h,m,s = helper.convertSecNoToHMS(self.timepoint, toObj=True).values()
+        dura = PLabel(wrapper, text=f"{h}h{m}", fg='#00F', font=UI.TXT_FONT)
+        dura.pack(side=tk.RIGHT, padx=5)
     
     def editMedia(self, evt):
         self.parentTab.showAddToSchedulePopup(self.get_data(), edit=True)

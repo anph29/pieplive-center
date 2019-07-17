@@ -4,7 +4,7 @@ from src.modules.custom import DDList
 from . import MediaTab
 from src.modules.mediaitem import MediaItemDnD
 from PIL import ImageTk, Image
-from src.utils import helper
+from src.utils import helper, scryto
 from src.modules.custom import VerticalScrolledFrame, ToolTip
 from src.enums import MediaType
 
@@ -86,3 +86,13 @@ class MediaListView(MediaTab):
 
     def callShowPopup(self, data):
        self.schedule.showAddToSchedulePopup(data)
+
+    def pushAllToSchedule(self, evt):
+        filtered = list(filter(lambda x: x.checked.get(), self._LS_MEDIA_UI))
+        mapped = list(map( lambda x: x.get_data(), filtered))
+        if len(mapped) > 0: 
+            if messagebox.askyesno("PiepMe", "Are you sure push all selected media to schedule?"):
+                for medi in mapped:
+                    # need new id any time
+                    medi['id'] = scryto.hash_md5_with_time(medi['url'])
+                    self.schedule.saveToSchedule(medi)

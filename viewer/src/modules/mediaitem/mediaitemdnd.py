@@ -6,6 +6,7 @@ from src.utils import helper
 from src.constants import UI
 from .mediaitem import MediaItem
 from src.enums import MediaType
+from src.modules.custom import ToolTip
 
 class MediaItemDnD(MediaItem):
 
@@ -37,6 +38,7 @@ class MediaItemDnD(MediaItem):
         lbl_trash = tk.Label(wrapper, image=imageBin, cursor='hand2')
         lbl_trash.image = imageBin
         lbl_trash.bind("<Button-1>", self.deletemedia)
+        ToolTip(lbl_trash, "Delete")
         lbl_trash.pack(side=tk.RIGHT)
         self.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         #duration

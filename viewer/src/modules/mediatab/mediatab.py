@@ -9,12 +9,11 @@ from src.modules.custom import ToolTip
 
 class MediaTab(tk.Frame):
 
-    _LS_MEDIA_DATA = []
-    _LS_MEDIA_UI = []
-
     def __init__(self,  parent, *args, **kwargs):
         super(MediaTab, self).__init__( parent, *args, **kwargs)
         self.tbBgColor = '#fff'
+        self._LS_MEDIA_DATA = []
+        self._LS_MEDIA_UI = []
 
     def initUI(self):
         self.showToolBar()
@@ -60,13 +59,14 @@ class MediaTab(tk.Frame):
         self.clearView()
         self.showLsMedia()
         self.checkall.set(False)
-
-    def pushAllToSchedule(self, evt):
-        if messagebox.askyesno("PiepMe", "Are you sure add all selected media to schedule?"):
-            print('pushAllToSchedule--------------------')
         
     def tabDeleteAll(self, evt):
-        print('tabDeleteAll==============')
+        filtered = list(filter(lambda x: x.checked.get(), self._LS_MEDIA_UI))
+        lsId = list(map( lambda x: x.id, filtered))
+        if len(lsId) > 0:        
+            if messagebox.askyesno("PiepMe", "Are you sure delete all selected media?"):  
+                self.deleteMediaItem(lsId)
+                self.tabRefresh(evt)
 
     def tabSelectAll(self):
         for medi in self._LS_MEDIA_UI:

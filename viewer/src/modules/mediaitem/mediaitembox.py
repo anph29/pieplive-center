@@ -5,6 +5,7 @@ from PIL import Image, ImageTk
 from src.utils import helper
 from src.constants import UI
 from .mediaitem import MediaItem
+from src.modules.custom import ToolTip
 
 class MediaItemBox(MediaItem):
     finished = False
@@ -12,6 +13,7 @@ class MediaItemBox(MediaItem):
     top_height = 135
     bot_height = 25
     buffer = None
+    zoomIn = False
 
     def __init__(self, parent, parentTab=None, media=None, *args, **kwargs):
         super(MediaItemBox, self).__init__(parent, *args, **kwargs)
@@ -19,6 +21,7 @@ class MediaItemBox(MediaItem):
         self.parentTab = parentTab
         self.set_data(media)
         self.after(100, self.initGUI)
+
 
     def initGUI(self):
         ww = self.cell_width + 5
@@ -39,31 +42,34 @@ class MediaItemBox(MediaItem):
                 im = Image.open(self.url)
             except FileNotFoundError:
                 im = Image.open(helper._IMAGES_PATH + 'splash.jpg')
-            w, h = im.size
-            r = w / h   
-            nH = self.top_height
-            nW = int(nH * r)
-            #   
-            resized = im.resize((nW, nH), Image.ANTIALIAS)
-            imgMedia = ImageTk.PhotoImage(resized)
-            lblMedia = tk.Label(self.top, image=imgMedia, bg="#f2f2f2")
-            lblMedia.photo = imgMedia
-            lblMedia.pack()
         else:
-            # vlc
-            self.Instance = vlc.Instance()
-            self.player = self.Instance.media_player_new()
-            self.player.audio_set_volume(0)
-            self.initPlayerMedia()
-            self.player.set_hwnd(self.top.winfo_id())
-            self.play()
-        #
+            im = Image.open(helper._IMAGES_PATH + 'splash-video.jpg')
+
+        w, h = im.size
+        r = w / h   
+        nH = self.top_height
+        nW = int(nH * r)
+        #   
+        resized = im.resize((nW, nH), Image.ANTIALIAS)
+        imgMedia = ImageTk.PhotoImage(resized)
+        lblMedia = tk.Label(self.top, image=imgMedia, bg="#f2f2f2", cursor='hand2')
+        lblMedia.photo = imgMedia
+        if self.mtype != 'IMG':
+            lblMedia.bind('<Button-1>', self.initVLC)
+        lblMedia.pack()
+        self.top.pack(side=tk.TOP)
+
+    def initVLC(self, evt):
+        self.Instance = vlc.Instance()
+        self.player = self.Instance.media_player_new()
+        self.player.audio_set_volume(0)
+        self.initPlayerMedia()
+        self.player.set_hwnd(self.top.winfo_id())
+        self.play()
         if self.mtype == 'VIDEO':
             self.after(100, self.playOrPause)
-        #
         if self.mtype == 'RTSP':
             self.after(5000, self.playOrPause)
-        self.top.pack(side=tk.TOP)
 
     def initBOTTOM(self):
         bottom = tk.Frame(self.wrapper, bd=5, relief=tk.FLAT, width=self.cell_width, height=self.bot_height)
@@ -71,21 +77,46 @@ class MediaItemBox(MediaItem):
         self.checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)
         # play
         if self.mtype != 'IMG':
-            imagePlay = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}/pause-b.png"))
+            imagePlay = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}play-b.png"))
             self.lblPlay = tk.Label(bottom, image=imagePlay, cursor='hand2')
             self.lblPlay.image = imagePlay
             self.lblPlay.bind("<Button-1>", self.playOrPauseClick)
             self.lblPlay.pack(side=tk.LEFT)
         # label
-        lbl_name = PLabel(bottom, text=self.name, justify=tk.LEFT, elipsis=25, font=UI.TXT_FONT, fg="#000")
+        lbl_name = PLabel(bottom, text=self.name, justify=tk.LEFT, elipsis=22, font=UI.TXT_FONT, fg="#000")
         lbl_name.pack(side=tk.LEFT)
         # bin
-        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}/trash-b.png"))
+        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}trash-b.png"))
         lbl_trash = tk.Label(bottom, image=imageBin, cursor='hand2')
         lbl_trash.image = imageBin
         lbl_trash.bind("<Button-1>", self.deletemedia)
+        ToolTip(lbl_trash, "Delete") 
         lbl_trash.pack(side=tk.RIGHT)
         bottom.pack(side=tk.BOTTOM, fill=tk.X)
+        # zoom
+        imgZom = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}zoom-in.png"))
+        self.lblZoom = tk.Label(bottom, image=imgZom, cursor='hand2')
+        self.lblZoom.image = imgZom
+        self.lblZoom.bind("<Button-1>", self.toggleZoom) 
+        self.lblZoom.pack(side=tk.RIGHT)
+        ToolTip(self.lblZoom, "Zoom in")
+        bottom.pack(side=tk.BOTTOM, fill=tk.X, pady=3)
+
+    def toggleZoom(self, evt):
+        w = self.winfo_width()
+        h = self.winfo_height()
+        x = self.winfo_x()
+        y =  self.winfo_y()
+        if self.zoomIn:
+            # self.configure("geometry",f"{w*2}x{h*2}+{x}+{y}")
+            self.updateZoomIcon('in')
+            ToolTip(self.lblZoom, "Zoom in")
+            self.zoomIn = False
+        else:
+            # self.configure("geometry",f"{w/2}x{h/2}+{x}+{y}")
+            self.updateZoomIcon('out')
+            ToolTip(self.lblZoom, "Zoom out")
+            self.zoomIn = True
 
     def initPlayerMedia(self):
         self.media = self.Instance.media_new(self.url)
@@ -128,10 +159,16 @@ class MediaItemBox(MediaItem):
             self.updatePlayIcon('pause')
 
     def updatePlayIcon(self, ico):
-        image = Image.open(f"{helper._ICONS_PATH}/{ico}-b.png")
+        image = Image.open(f"{helper._ICONS_PATH}{ico}-b.png")
         imagetk = ImageTk.PhotoImage(image)
         self.lblPlay.configure(image=imagetk)
         self.lblPlay.image = imagetk
+
+    def updateZoomIcon(self, ico):
+        image = Image.open(f"{helper._ICONS_PATH}zoom-{ico}.png")
+        imagetk = ImageTk.PhotoImage(image)
+        self.lblZoom.configure(image=imagetk)
+        self.lblZoom.image = imagetk
 
 
     

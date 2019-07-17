@@ -1,9 +1,9 @@
-# pieplive-center-v2
+# PiepLive-Center viewer
 
 checkout:
 
 ```
-git clone https://github.com/anph29/pieplive-center-v2.git
+git clone https://github.com/anph29/PiepLive-Center.git
 ```
 update
 ```
@@ -21,16 +21,16 @@ python >= 3
 install project MAC:
 ``` bash
 pip3 install virtualenv
-virtualenv pieplive-center-v2
-cd pieplive-center-v2
+virtualenv PiepLive-Center/viewer
+cd PiepLive-Center/viewer
 source bin/activate
 pip install -r requirements.txt
 ```
 install project Windows:
 ``` bash
 pip3 install virtualenv
-virtualenv pieplive-center-v2
-cd pieplive-center-v2
+virtualenv PiepLive-Center/viewer
+cd PiepLive-Center/viewer
 Scripts/activate
 pip install -r requirements.txt
 ```

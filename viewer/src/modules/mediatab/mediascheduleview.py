@@ -11,7 +11,7 @@ class MediaScheduleView(MediaListView):
 
     def makeDDList(self, ref):
         return DDList(ref, 
-            600,
+            820,
             50,
             offset_x=5,
             offset_y=5,
@@ -32,8 +32,9 @@ class MediaScheduleView(MediaListView):
 
     def addMediaToList(self, media):
         item = self.ddlist.create_item(value=media)
-        medi = MediaItemSchedule(item, parentTab=self, media=media)
-        medi.pack(padx= (4,0), pady= (4,0), expand=True)
+        ui = MediaItemSchedule(item, parentTab=self, media=media)
+        self._LS_MEDIA_UI.append(ui)
+        ui.pack(padx= (4,0), pady= (4,0), expand=True)
         self.ddlist.add_item(item)
 
     def showAddToSchedulePopup(self, data, edit=False):
@@ -49,9 +50,10 @@ class MediaScheduleView(MediaListView):
         else:
             self.addMediaToList(data)
             self.addMedia(data)
+            
+        self.tabRefresh(None)
 
     def saveEdit(self, ls, media):
         newLs = list(map(lambda x: media if x['id'] == media['id'] else x, ls))
         self.clearData()
         self.writeLsMedia(newLs)
-        self.tabRefresh(None)

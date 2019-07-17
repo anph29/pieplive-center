@@ -90,6 +90,7 @@ class MainStream(RelativeLayout):
         self.dataCam = data_src
         self.camera.f_parent = self
         self.camera.set_data_source(data_src, data_type)
+        self.f_parent.refresh_select_source(data_type)
 
     def refresh_stream(self):
         if self.isStream is True:

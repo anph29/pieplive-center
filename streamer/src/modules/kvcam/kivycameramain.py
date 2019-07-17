@@ -96,7 +96,7 @@ class KivyCameraMain(Image):
                     self.schedule_type = 'end'
                 output = self.f_parent.url_flv
                 timeout = 1
-                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "320k","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]
+                command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "320k","-vb",self.f_parent.v_bitrate,"-crf", "21", "-preset", "veryfast","-r","25",'-g','25','-threads', '2',output]
                 
                 if self.resource_type == "M3U8":
                     output = self.f_parent.url_flv_hls
@@ -131,9 +131,10 @@ class KivyCameraMain(Image):
         
     def process_set_data(self, second):
         try:
-            # th = Thread(target=self.init_capture())
-            # th.start()
-            self.init_capture()
+            self.stop.set()
+            th = Thread(target=self.init_capture())
+            th.start()
+            # self.init_capture()
         except Exception:
             pass
 

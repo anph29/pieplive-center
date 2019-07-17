@@ -30,6 +30,7 @@ class MainView(Widget):
         self.f_width = 1280
         self.f_height = 720
         self.setting = None
+        self.src_selecting = ''# dang chay source cua list nao
 
     def on_start(self):
         self.mainStream._load()
@@ -318,3 +319,22 @@ class MainView(Widget):
     def open_add_schedule(self, data):
         self.add_schedule_pop = AddSchedule(self,data)
         self.add_schedule_pop.open()
+
+    def refresh_select_source(self, type):
+        if self.src_selecting != '' and self.src_selecting != type:
+            if self.src_selecting == 'VIDEO':
+                self.right_content.tab_media.ls_media.item_playing = ''
+                self.right_content.tab_media.ls_media.set_data()
+            elif self.src_selecting == 'IMAGE':
+                self.right_content.tab_image.ls_image.item_playing = ''
+                self.right_content.tab_image.ls_image.set_data()
+            elif self.src_selecting == 'CAMERA':
+                self.right_content.tab_camera.ls_camera.item_playing = ''
+                self.right_content.tab_camera.ls_camera.set_data()
+            elif self.src_selecting == 'PRESENTER':
+                self.right_content.tab_presenter.ls_presenter.item_playing = ''
+                self.right_content.tab_presenter.ls_presenter.set_data()
+            elif self.src_selecting == 'SCHEDULE':
+                self.right_content.tab_schedule.ls_schedule.item_playing = ''
+                self.right_content.tab_schedule.ls_schedule.set_data()
+        self.src_selecting = type

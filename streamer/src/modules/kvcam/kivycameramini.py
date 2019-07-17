@@ -11,6 +11,7 @@ from threading import Thread, Event
 import subprocess as sp
 from kivy.lang import Builder
 from functools import partial
+from src.utils import helper
 
 _CAM_NUMS_FRAME = '-2562047788015215'
 
@@ -31,7 +32,7 @@ class KivyCameraMini(DragBehavior, Image):
     url = StringProperty('')
     resource_type = StringProperty('')
     event_capture = None
-    default_frame = 'src/images/splash.jpg'
+    default_frame = helper._IMAGES_PATH + 'splash.jpg'
     pipe = None
     f_parent = None
     typeOld = ''

@@ -2,7 +2,7 @@ import os
 import kivy
 from kivy.config import Config
 import src.utils.kivyhelper as kivy_helper
-from src.utils import helper, zip_helper
+from src.utils import helper, zip_helper, admin
 #app_width, app_height = helper._read_setting('application_resolution')
 #1532 x 940
 Config.set('graphics', 'width', 1652)
@@ -39,6 +39,7 @@ from src.modules.rightcontentview.listview import ListSchedule
 from src.modules.rightcontentview.gridview import GridCamera
 from src.modules.rightcontentview.itemlabel import ItemLabel
 
+
 KIVY_FONTS = helper._load_font()
 for font in KIVY_FONTS:
     LabelBase.register(**font)
@@ -63,5 +64,7 @@ class PiepStream(App):
         kivy_helper.getApRoot().on_stop()
 
 if __name__ == '__main__':
+    # if not admin.isUserAdmin():
+    #     admin.runAsAdmin()
     helper.makeSureResourceFolderExisted()
     PiepStream().run()

@@ -1,6 +1,4 @@
-import sys
-import cv2
-import time
+import sys, cv2, time, os, datetime
 from kivy.uix.image import Image
 from kivy.clock import Clock, mainthread
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
@@ -8,10 +6,8 @@ from kivy.graphics.texture import Texture
 from src.modules.rightcontentview.itemcamera import ItemCamera
 from threading import Thread, Event
 import subprocess as sp
-import src.utils.helper as helper
-import os
+from src.utils import helper
 from pathlib import Path
-import datetime
 
 class KivyCameraMain(Image):
     capture = ObjectProperty(None)
@@ -28,7 +24,7 @@ class KivyCameraMain(Image):
     reconnect = NumericProperty(0)
 
     event_capture = None
-    default_frame = 'src/images/splash.jpg'
+    default_frame = helper._IMAGES_PATH + 'splash.jpg'
     pipe = None
     pipe2 = None
     f_parent = None
@@ -106,7 +102,7 @@ class KivyCameraMain(Image):
                     if fps < 25:
                         command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "320k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",'-threads', '2',output]
                     if self.typeOld == 'M3U8':
-                        command2 =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 {}'.format(self.f_parent.url_flv_hls)
+                        command2 =  f'ffmpeg-win/ffmpeg.exe -y -loop 1 -i {self.default_frame} -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 {self.f_parent.url_flv_hls}'
                         si = sp.STARTUPINFO()
                         si.dwFlags |= sp.STARTF_USESHOWWINDOW
                         self.pipe2 = sp.Popen(command2, startupinfo=si)
@@ -119,7 +115,7 @@ class KivyCameraMain(Image):
                 Clock.schedule_once(self.process_set_data ,timeout)
             else:
                 if self.typeOld == 'M3U8' or self.typeOld == 'VIDEO':
-                    command =  'ffmpeg-win/ffmpeg.exe -y -loop 1 -i src/images/splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 {} {}'.format(self.f_parent.url_flv, self.f_parent.url_flv_hls)
+                    command =  f'ffmpeg-win/ffmpeg.exe -y -loop 1 -i {self.default_frame} -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 {self.f_parent.url_flv} {self.f_parent.url_flv_hls}'
                     si = sp.STARTUPINFO()
                     si.dwFlags |= sp.STARTF_USESHOWWINDOW
                     self.pipe = sp.Popen(command, startupinfo=si)

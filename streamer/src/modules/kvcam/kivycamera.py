@@ -5,6 +5,7 @@ from kivy.clock import Clock
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
 from kivy.graphics.texture import Texture
 from src.modules.rightcontentview.itemcamera import ItemCamera
+from src.utils import helper
 
 _CAM_NUMS_FRAME = '-2562047788015215'
 
@@ -20,7 +21,7 @@ class KivyCamera(Image):
     fps = 1
     headless = False
     event_capture = None
-    default_frame = 'src/images/splash.jpg'
+    default_frame = helper._IMAGES_PATH + 'splash.jpg'
 
     def __init__(self, **kwargs):
         super(KivyCamera, self).__init__(**kwargs)

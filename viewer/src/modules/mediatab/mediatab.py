@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 from PIL import Image, ImageTk
 from src.utils import helper
 from src.enums import MediaType
@@ -23,20 +24,33 @@ class MediaTab(tk.Frame):
         self.checkall = tk.BooleanVar()
         self.toolbar = tk.Frame(self, height=50, relief=tk.FLAT, bg=self.tbBgColor)
         self.toolbar.pack(fil=tk.X, side=tk.BOTTOM)
+        self.packLeftToolbar()
+        self.packRightToolbar()
+
+    def packLeftToolbar(self):
+        self.tbleft = tk.Frame(self.toolbar, relief=tk.FLAT, bg=self.tbBgColor)
+        self.tbleft.pack(fil=tk.Y, side=tk.LEFT)
+        self.showSelectAll()
+        
+    def showSelectAll(self):
         # select all
-        self.checkbox = tk.Checkbutton(self.toolbar , variable=self.checkall, onvalue=True, offvalue=False, height=3, width=3, bg=self.tbBgColor, bd=0, cursor='hand2', command=self.tabSelectAll)
-        self.checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=5, pady=0)
+        self.checkbox = tk.Checkbutton(self.tbleft , variable=self.checkall, onvalue=True, offvalue=False, height=3, width=3, bg=self.tbBgColor, bd=0, cursor='hand2', command=self.tabSelectAll)
+        self.checkbox.pack(side=tk.LEFT, fill=tk.Y)
         ToolTip(self.checkbox, 'Select all media')
+    
+    def packRightToolbar(self):
+        self.tbright = tk.Frame(self.toolbar, relief=tk.FLAT, bg=self.tbBgColor)
+        self.tbright.pack(fil=tk.Y, side=tk.RIGHT)
         # delete all
         imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}trash-b24.png"))
-        self.cmdDelAll = tk.Label(self.toolbar, image=imageBin, cursor='hand2', bg=self.tbBgColor)
+        self.cmdDelAll = tk.Label(self.tbright, image=imageBin, cursor='hand2', bg=self.tbBgColor)
         self.cmdDelAll.image = imageBin
         self.cmdDelAll.bind("<Button-1>", self.tabDeleteAll)
         self.cmdDelAll.pack(side=tk.RIGHT, padx=(0, 15), pady=5)
         ToolTip(self.cmdDelAll, "Delete all selected")
         # refresh
         imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}f5-b24.png"))
-        self.cmdF5 = tk.Label(self.toolbar, image=imageBin, cursor='hand2', bg=self.tbBgColor)
+        self.cmdF5 = tk.Label(self.tbright, image=imageBin, cursor='hand2', bg=self.tbBgColor)
         self.cmdF5.image = imageBin
         self.cmdF5.bind("<Button-1>", self.tabRefresh)
         self.cmdF5.pack(side=tk.RIGHT, padx=(0, 15), pady=5)
@@ -46,6 +60,10 @@ class MediaTab(tk.Frame):
         self.clearView()
         self.showLsMedia()
         self.checkall.set(False)
+
+    def pushAllToSchedule(self, evt):
+        if messagebox.askyesno("PiepMe", "Are you sure add all selected media to schedule?"):
+            print('pushAllToSchedule--------------------')
         
     def tabDeleteAll(self, evt):
         print('tabDeleteAll==============')
@@ -57,7 +75,7 @@ class MediaTab(tk.Frame):
     def showAddCamBtn(self):
         addresource = AddResource(self)
         imAdd = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}add-rgb24.png"))
-        self.cmdAdd = tk.Label(self.toolbar, image=imAdd, cursor='hand2', bg=self.tbBgColor)
+        self.cmdAdd = tk.Label(self.tbright, image=imAdd, cursor='hand2', bg=self.tbBgColor)
         self.cmdAdd.image = imAdd
         self.cmdAdd.bind("<Button-1>", addresource.initGUI)
         self.cmdAdd.pack(side=tk.RIGHT, padx=15, pady=5)
@@ -127,8 +145,6 @@ class MediaTab(tk.Frame):
     def deleteMediaItem(self, lsId):
         ls = self.loadLsMedia()
         filtered = list(filter(lambda x:x['id'] not in lsId, ls))
-        # clear
         self.clearData()
-        # new
         self.writeLsMedia(filtered)
 

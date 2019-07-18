@@ -3,9 +3,8 @@ import re
 import json
 import math
 import base64
-import zipfile
-import subprocess
 from src.utils import zip_helper
+import datetime
 import cv2
 """
 """
@@ -36,6 +35,36 @@ def _write_schedule(data):
 
 def _add_to_schedule(data):
     appendJSON(_PATH_SCHEDULE, data)
+
+def calcCurentSeccondInDay():
+    dt = datetime.datetime.now()
+    return dt.hour * 3600 + dt.minute * 60 + dt.second
+
+def _calc_time_point(index, schedule=[], startTime=0):
+    callWrite = not bool(schedule)
+    schedule = schedule or _load_schedule()
+    startTime = startTime or calcCurentSeccondInDay()
+    newSchedule = []
+    flagStart = False
+    currentPoint = startTime
+    for i, sch in enumerate(schedule):
+        if i == index:
+            flagStart = True
+        #
+        if flagStart:
+            sch['timepoint'] = currentPoint
+            currentPoint += sch['duration']
+        else:
+            sch['timepoint'] = 0
+        #
+        newSchedule.append(sch)
+    #
+    if callWrite:
+        _write_schedule(newSchedule)
+    else:
+        return newSchedule
+
+    
 """
 ls camera
 """     
@@ -119,7 +148,6 @@ def _load_setting():
 """
 JSON helper
 """
-
 def loadJSON(path):
     with open(path, 'r', encoding='utf-8') as jdata:
         return json.load(jdata)
@@ -223,11 +251,12 @@ def getVideoDuration(fpath):
     try:
         dura = 0
         _cap = cv2.VideoCapture(fpath)
-        fps = _cap.get(cv2.CAP_PROP_FPS)
-        fps = fps if fps >25 else 25
-        total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
         if _cap.isOpened():
-            dura =  int(total/fps)
+            fps = _cap.get(cv2.CAP_PROP_FPS)
+            fps = fps if fps > 25 else 25
+            total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
+            dura =  int(total / fps)
+            
         _cap.release()
         return dura
     except expression:

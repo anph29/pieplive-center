@@ -5,6 +5,7 @@ from src.modules.custom.popup import PiepMeConfirmPopup
 from src.modules.kvcam.labelcamera import LabelCamera
 from kivy.lang import Builder
 from src.utils import kivyhelper as kvhelper
+import datetime
 
 Builder.load_file('src/ui/itemschedule.kv')
 class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
@@ -12,6 +13,7 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
     dt_capture = ObjectProperty()
     name = StringProperty()
     duration = NumericProperty()
+    timepoint = NumericProperty()
     selected = BooleanProperty(False)
     selectable = BooleanProperty(True)
     kvcam = ObjectProperty()
@@ -23,6 +25,7 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
         self.index = index
         self.name = data['name']
         self.duration = data['duration']
+        self.timepoint = data['timepoint']
         self.kvcam.set_data_source(data)
         self.active = data['active']
         self.isCheckItem.active = False
@@ -51,6 +54,7 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
         self.isCheckItem.active = False
         self.parent.parent.setPlayed(self.index)
         kvhelper.getApRoot().changeSrc(self.kvcam.get_data_source(),'SCHEDULE')
+        self.parent.parent.makeTimePoint(self.index)
 
     def up(self):
         self.parent.parent.up_list(self.index)

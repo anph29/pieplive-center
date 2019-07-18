@@ -5,7 +5,7 @@ import src.utils.kivyhelper as kivy_helper
 from src.utils import helper, zip_helper, admin
 #app_width, app_height = helper._read_setting('application_resolution')
 #1532 x 940
-Config.set('graphics', 'width', 1652)
+Config.set('graphics', 'width', 1752)
 Config.set('graphics', 'height', 955)
 Config.set('graphics', 'position', 'custom')
 Config.set('graphics', 'top', '30')

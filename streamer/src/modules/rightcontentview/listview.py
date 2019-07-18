@@ -2,6 +2,7 @@ from kivy.uix.recycleview import RecycleView
 from src.utils import helper
 from kivy.properties import StringProperty
 from src.modules.custom.popup import PiepMeConfirmPopup
+import datetime
 
 class ListMedia(RecycleView):
 
@@ -249,6 +250,7 @@ class ListSchedule(RecycleView):
         self.data = list(
             map(
                 lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'duration': cam['duration'], 
+                'timepoint': cam['timepoint'] if 'timepoint' in cam else 0,
                 'list':'SCHEDULE',
                 'active': (False,True) [cam['id'] == self.item_playing]},
                 helper._load_schedule()
@@ -268,7 +270,7 @@ class ListSchedule(RecycleView):
     def clean_data_to_save_json(self):
         return list(
             map(
-                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'duration': cam['duration']},
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'duration': cam['duration'], 'timepoint': cam['timepoint']},
                 list(self.data)
             )
         )
@@ -333,3 +335,18 @@ class ListSchedule(RecycleView):
         for item in self.data:
             tt += item['duration']
         self.total_time = helper.convertSecNoToHMS(tt)
+
+    def makeTimePoint(self,index):
+        now = datetime.datetime.now()
+        s = now.hour*3600 + now.minute*60 + now.second
+        self.data[index]['timepoint'] = s
+        for idx, obj in enumerate(self.data):
+            if idx < index:
+                self.data[idx]['timepoint'] = 0
+            if idx > index:
+                s += self.data[idx]['duration']
+                self.data[idx]['timepoint'] = s
+        helper._write_schedule(self.clean_data_to_save_json())
+        self.set_data()
+        for child in self.children[0].children:
+            child.refresh_view_attrs(self,child.index, self.data[child.index])

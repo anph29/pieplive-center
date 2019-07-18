@@ -1,8 +1,6 @@
 from functools import partial
 
-import cv2
-
-import datetime
+import cv2, datetime, os
 
 from kivy.app import App
 from kivy.uix.floatlayout import FloatLayout
@@ -13,7 +11,8 @@ from kivy.clock import Clock
 import subprocess, audioread
 import sounddevice as sd
 import numpy as np
-
+import pyaudio
+import speech_recognition as s_r
 
 from kivy.properties import ObjectProperty
 
@@ -64,6 +63,7 @@ class MyWidget(FloatLayout):
         self.pipe = None
         self.lbl.text = "inited!!!!"
         Clock.schedule_interval(self.timer, 1)#0.03
+    
 
     def timer(self, dt):
         now = datetime.datetime.now()
@@ -77,16 +77,17 @@ class MyWidget(FloatLayout):
             self.run_anim(button)
     
     def print_sound(self,indata, outdata, frames, time, status):
-        self.pipe.stdin.write(outdata)
-        print(frames,outdata)
+        pass
+        # self.pipe.stdin.write(outdata)
+        # print(frames,outdata)
 
     def run_ffmpeg(self, *args, **kwargs):
         command = ['../ffmpeg-win/ffmpeg.exe',
                 '-f', 'rawvideo', 
                 '-pix_fmt', 'rgba',
                 '-s', '1280x720',
-                '-f', 'pcm_s16le',
-                # '-i','-',
+                '-i','-',
+                # '-f', 'pcm_s16le',
                 '-stream_loop','-1', '-i','../../resource/media/muted2.mp3',
                 '-b:a', '128k',
                 '-b:v', '3072k',
@@ -96,9 +97,13 @@ class MyWidget(FloatLayout):
                 'rtmp://livevn.piepme.com/cam/7421.36d74d5063fda77f18871dbb6c0ce613?token=36d74d5063fda77f18871dbb6c0ce613&SRC=WEB&FO100=7421&PL300=8212&LN301=180&LV302=115.73.208.139&LV303=0982231325&LL348=1558771095036&UUID=247cbf2ee3f0bda1&NV124=vn&PN303=15&POS=3'
         ]
         self.pipe = subprocess.Popen(command, stdin=subprocess.PIPE)
-        with sd.Stream(callback=self.print_sound):
-            sd.sleep(self.duration * 1000)
 
+        # try:
+        with sd.Stream(callback=self.print_sound):
+            sd.sleep(1 * 1000)
+        # except:
+        #     pass
+        
     def release(self):
         if self.pipe is not None:
             self.pipe.kill()

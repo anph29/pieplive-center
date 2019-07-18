@@ -90,7 +90,6 @@ class ListImage(RecycleView):
         if self.data:
             self.data.pop(index)
             helper._write_image(self.clean_data_to_save_json())
-            self.refresh_view()
 
     def clean_data_to_save_json(self):
         return list(
@@ -153,7 +152,6 @@ class ListCamera(RecycleView):
         if self.data:
             self.data.pop(index)
             helper._write_lscam(self.clean_data_to_save_json())
-            self.refresh_view()
 
     def clean_data_to_save_json(self):
         return list(
@@ -218,7 +216,6 @@ class ListPresenter(RecycleView):
         if self.data:
             self.data.pop(index)
             helper._write_lspresenter(self.clean_data_to_save_json())
-            self.refresh_view()
 
     def clean_data_to_save_json(self):
         return list(
@@ -287,8 +284,7 @@ class ListSchedule(RecycleView):
     def remove(self, index):
         if self.data:
             self.data.pop(index)
-            helper._write_schedule(self.clean_data_to_save_json()) 
-            self.refresh_list()
+            helper._write_schedule(self.clean_data_to_save_json())
 
     def clean_data_to_save_json(self):
         return list(

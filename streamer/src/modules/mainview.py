@@ -74,6 +74,9 @@ class MainView(Widget):
     def init_right_content_schedule(self):
         self.right_content.tab_schedule.ls_schedule.set_data()
 
+    def right_content_schedule_refresh(self):
+        self.right_content.tab_schedule.ls_schedule.refresh_list()
+
     def initAudio(self):
         try:
             self.audios = sd.query_devices(kind='input')

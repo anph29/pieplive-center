@@ -37,6 +37,7 @@ class ListMedia(RecycleView):
 
     def refresh_list(self):
         self.set_data()
+        self.refresh_view()
     
     def remove_selected(self):
         PiepMeConfirmPopup(message='Are you sure to delete the selected source?',
@@ -63,6 +64,10 @@ class ListMedia(RecycleView):
                 child.active = True
             else:
                 child.active = False
+    
+    def refresh_view(self):
+        for child in self.children[0].children:
+            child.refresh_view_attrs(self,child.index, self.data[child.index])
 
 class ListImage(RecycleView):
  
@@ -85,6 +90,7 @@ class ListImage(RecycleView):
         if self.data:
             self.data.pop(index)
             helper._write_image(self.clean_data_to_save_json())
+            self.refresh_view()
 
     def clean_data_to_save_json(self):
         return list(
@@ -96,6 +102,7 @@ class ListImage(RecycleView):
 
     def refresh_list(self):
         self.set_data()
+        self.refresh_view()
     
     def remove_selected(self):
         PiepMeConfirmPopup(message='Are you sure to delete the selected source?',
@@ -123,6 +130,10 @@ class ListImage(RecycleView):
             else:
                 child.active = False
 
+    def refresh_view(self):
+        for child in self.children[0].children:
+            child.refresh_view_attrs(self,child.index, self.data[child.index])
+
 class ListCamera(RecycleView):
     item_playing = ""
     def __init__(self, **kwargs):
@@ -142,6 +153,7 @@ class ListCamera(RecycleView):
         if self.data:
             self.data.pop(index)
             helper._write_lscam(self.clean_data_to_save_json())
+            self.refresh_view()
 
     def clean_data_to_save_json(self):
         return list(
@@ -153,6 +165,7 @@ class ListCamera(RecycleView):
 
     def refresh_list(self):
         self.set_data()
+        self.refresh_view()
     
     def remove_selected(self):
         PiepMeConfirmPopup(message='Are you sure to delete the selected source?',
@@ -179,6 +192,10 @@ class ListCamera(RecycleView):
                 child.active = True
             else:
                 child.active = False
+
+    def refresh_view(self):
+        for child in self.children[0].children:
+            child.refresh_view_attrs(self,child.index, self.data[child.index])
 
 class ListPresenter(RecycleView):
 
@@ -201,6 +218,7 @@ class ListPresenter(RecycleView):
         if self.data:
             self.data.pop(index)
             helper._write_lspresenter(self.clean_data_to_save_json())
+            self.refresh_view()
 
     def clean_data_to_save_json(self):
         return list(
@@ -212,6 +230,7 @@ class ListPresenter(RecycleView):
 
     def refresh_list(self):
         self.set_data()
+        self.refresh_view()
 
     def remove_selected(self):
         PiepMeConfirmPopup(message='Are you sure to delete the selected source?',
@@ -238,6 +257,9 @@ class ListPresenter(RecycleView):
                 child.active = True
             else:
                 child.active = False
+    def refresh_view(self):
+        for child in self.children[0].children:
+            child.refresh_view_attrs(self,child.index, self.data[child.index])
 
 class ListSchedule(RecycleView):
     item_playing = ""
@@ -259,13 +281,14 @@ class ListSchedule(RecycleView):
         self.getTotalTime()
 
     def get_data(self):
+        self.set_data()
         return self.data
 
     def remove(self, index):
         if self.data:
             self.data.pop(index)
             helper._write_schedule(self.clean_data_to_save_json()) 
-            self.getTotalTime()
+            self.refresh_list()
 
     def clean_data_to_save_json(self):
         return list(
@@ -277,6 +300,9 @@ class ListSchedule(RecycleView):
     
     def refresh_list(self):
         self.set_data()
+        self.refresh_view()
+        self.makeTimePointChange()
+        self.refresh_view()
 
     def getCurrentIndex(self):
         for child in self.children[0].children:
@@ -306,13 +332,15 @@ class ListSchedule(RecycleView):
         if index == 0:
             return True
         self.data[index-1], self.data[index] = self.data[index], self.data[index-1]
-        helper._write_schedule(self.clean_data_to_save_json()) 
+        self.refresh_view()
+        self.makeTimePointChange()
 
     def down_list(self,index):
         if index == len(self.data)-1:
             return True
         self.data[index+1], self.data[index] = self.data[index], self.data[index+1]
-        helper._write_schedule(self.clean_data_to_save_json())
+        self.refresh_view()
+        self.makeTimePointChange()
 
     def remove_selected(self):
         PiepMeConfirmPopup(message='Are you sure to delete the selected source?',
@@ -337,16 +365,25 @@ class ListSchedule(RecycleView):
         self.total_time = helper.convertSecNoToHMS(tt)
 
     def makeTimePoint(self,index):
-        now = datetime.datetime.now()
-        s = now.hour*3600 + now.minute*60 + now.second
-        self.data[index]['timepoint'] = s
-        for idx, obj in enumerate(self.data):
-            if idx < index:
-                self.data[idx]['timepoint'] = 0
-            if idx > index:
-                s += self.data[idx]['duration']
-                self.data[idx]['timepoint'] = s
-        helper._write_schedule(self.clean_data_to_save_json())
+        helper._calc_time_point(index)
         self.set_data()
+        self.refresh_view()
+
+    def makeTimePointChange(self):
+        idx = self.getCurrentIndex()
+        if idx != -1:
+            s = self.data[idx]['timepoint']
+            for i, obj in enumerate(self.data):
+                if i < idx:
+                    self.data[i]['timepoint'] = 0
+                if i > idx:
+                    s += self.data[i]['duration']
+                    self.data[i]['timepoint'] = s
+        else:
+            self.data = helper._calc_time_point(0,self.data)
+        helper._write_schedule(self.clean_data_to_save_json())
+        self.refresh_view()
+
+    def refresh_view(self):
         for child in self.children[0].children:
             child.refresh_view_attrs(self,child.index, self.data[child.index])

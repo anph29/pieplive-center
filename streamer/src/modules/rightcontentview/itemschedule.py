@@ -5,6 +5,7 @@ from src.modules.custom.popup import PiepMeConfirmPopup
 from src.modules.kvcam.labelcamera import LabelCamera
 from kivy.lang import Builder
 from src.utils import kivyhelper as kvhelper
+from src.utils import helper
 import datetime
 
 Builder.load_file('src/ui/itemschedule.kv')
@@ -61,3 +62,7 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
 
     def down(self):
         self.parent.parent.down_list(self.index)
+
+    def viewTimePoint(self,_second):
+        h,m,s = helper.convertSecNoToHMS(_second, toObj=True).values()
+        return f'{h}h {m}:{s}'

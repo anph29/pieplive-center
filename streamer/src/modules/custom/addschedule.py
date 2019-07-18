@@ -39,7 +39,7 @@ class AddSchedule(Popup):
             "type": self.data['type'],
             "duration": int(self.duration.text)
         })
-        kv_helper.getApRoot().init_right_content_schedule()
+        kv_helper.getApRoot().right_content_schedule_refresh()
         self.dismiss()
 
     def on_ok(self):

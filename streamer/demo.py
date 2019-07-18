@@ -1,8 +1,6 @@
 from functools import partial
 
-import cv2
-
-import datetime
+import cv2, datetime, os
 
 from kivy.app import App
 from kivy.uix.floatlayout import FloatLayout
@@ -10,11 +8,11 @@ from kivy.lang import Builder
 from kivy.animation import Animation
 from kivy.graphics import Fbo, ClearColor, ClearBuffers, Scale, Translate
 from kivy.clock import Clock
-import subprocess
-import array
+import subprocess, audioread
+import sounddevice as sd
+import numpy as np
 import pyaudio
-from pydub import AudioSegment
-from pydub.utils import make_chunks
+import speech_recognition as s_r
 
 from kivy.properties import ObjectProperty
 
@@ -25,6 +23,7 @@ Config.set('graphics', 'position', 'custom')
 Config.set('graphics', 'top', '30')
 Config.set('graphics', 'left', '20')
 Config.set('kivy', 'log_level', 'debug')
+Config.set('kivy', 'window_icon', 'src/images/logo.png')
 
 Builder.load_string('''
 <MyWidget>:
@@ -54,14 +53,17 @@ class MyWidget(FloatLayout):
 
     btn = ObjectProperty(None)
     lbl = ObjectProperty(None)
-    
+    kvcam = ObjectProperty(None)
+    chcam = 0
+    duration = 10  # seconds
+
     def __init__(self, *args, **kwargs):
         super(MyWidget, self).__init__(*args, **kwargs)
         print("inited!!!!")
         self.pipe = None
         self.lbl.text = "inited!!!!"
-        Clock.schedule_interval(self.timer, 1)
-        self.setupAudio()
+        Clock.schedule_interval(self.timer, 1)#0.03
+    
 
     def timer(self, dt):
         now = datetime.datetime.now()
@@ -70,38 +72,42 @@ class MyWidget(FloatLayout):
     def click_me(self, button, *args):    
         
         if self.pipe is None:
-            print("pipe is None!!!!")
             self.i = 0
             self.run_ffmpeg()
             self.run_anim(button)
-            # Clock.schedule_interval(self.save_frame, 0.03)
+    
+    def print_sound(self,indata, outdata, frames, time, status):
+        pass
+        # self.pipe.stdin.write(outdata)
+        # print(frames,outdata)
 
     def run_ffmpeg(self, *args, **kwargs):
-
-        command = ['ffmpeg-win/ffmpeg.exe',
-                '-thread_queue_size', '512',
-                '-r', '30',
+        command = ['../ffmpeg-win/ffmpeg.exe',
                 '-f', 'rawvideo', 
                 '-pix_fmt', 'rgba',
                 '-s', '1280x720',
                 '-i','-',
-                '-re', '-i','C:/Users/Thong/Desktop/piep-source/musics/nhac-doc-sach.mp3',
+                # '-f', 'pcm_s16le',
+                '-stream_loop','-1', '-i','../../resource/media/muted2.mp3',
                 '-b:a', '128k',
-                '-b:v', '1920k',
-                '-g', '30', '-r', '30',
+                '-b:v', '3072k',
+                '-g', '25', '-r', '25',
                 '-threads', '2',
                 '-f','flv',
-                # '-y', 'output.flv'
                 'rtmp://livevn.piepme.com/cam/7421.36d74d5063fda77f18871dbb6c0ce613?token=36d74d5063fda77f18871dbb6c0ce613&SRC=WEB&FO100=7421&PL300=8212&LN301=180&LV302=115.73.208.139&LV303=0982231325&LL348=1558771095036&UUID=247cbf2ee3f0bda1&NV124=vn&PN303=15&POS=3'
         ]
-
         self.pipe = subprocess.Popen(command, stdin=subprocess.PIPE)
 
+        # try:
+        with sd.Stream(callback=self.print_sound):
+            sd.sleep(1 * 1000)
+        # except:
+        #     pass
+        
     def release(self):
         if self.pipe is not None:
             self.pipe.kill()
         
-
     def run_anim(self, button, *args):
         anim = Animation(size_hint = (0.8, 0.4), duration=1.) + Animation(size_hint = (0.4, 0.2), duration=1.)
         anim.repeat = True
@@ -113,61 +119,19 @@ class MyWidget(FloatLayout):
             canvas_parent_index = self.parent.canvas.indexof(self.canvas)
             if canvas_parent_index > -1:
                 self.parent.canvas.remove(self.canvas)
-
         fbo = Fbo(size=self.size, with_stencilbuffer=True)
-
         with fbo:
             ClearColor(0, 0, 0, 1)
             ClearBuffers()
             Scale(1, -1, 1)
             Translate(-self.x, -self.y - self.height, 0)
-
         fbo.add(self.canvas)
         fbo.draw()
         self.pipe.stdin.write(fbo.pixels)
         fbo.remove(self.canvas)
-
         if self.parent is not None and canvas_parent_index > -1:
             self.parent.canvas.insert(canvas_parent_index, self.canvas)
-
-        return True       
-
-    def setupAudio(self):
-        filename = 'C:/Users/Thong/Desktop/piep-source/musics/hay-buong-tay-em.mp3'
-        sound = AudioSegment.from_mp3(filename)
-        player = pyaudio.PyAudio()
-
-        stream = player.open(format = player.get_format_from_width(sound.sample_width),
-            channels = sound.channels,
-            rate = sound.frame_rate,
-            output = True)
-        
-        # while True:
-        #     for chunks in make_chunks(playchunk, millisecondchunk*1000):
-        #         self.time += millisecondchunk
-        #         stream.write(chunks._data)
-        #         if not self.loop:
-        #             break
-        #         if self.time >= start+length:
-        #             break
-        # chunk = 1024
-        
-        # pao = pyaudio.PyAudio()
-        # CHUNK = 1024
-        # FORMAT = pyaudio.paInt16
-        # CHANNELS = 2
-        # RATE = 44100
-        # RECORD_SECONDS = 150
-
-        # self.streamAudio= pao.open(
-        #                     format = pao.get_format_from_width(self.wf.getsampwidth()),
-        #                     channels = self.wf.getnchannels(),
-        #                     rate = self.wf.getframerate(),
-        #                     output = True)
-        # data = self.wf.readframes(1024)
-        # while data != '':
-        #     stream.write(data)
-        #     data = wf.readframes(1024) 
+        return True
                 
 
 class MyApp(App):

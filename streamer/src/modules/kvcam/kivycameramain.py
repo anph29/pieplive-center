@@ -52,6 +52,8 @@ class KivyCameraMain(Image):
         self.schedule_type = ''# '' / duration / end
         if self.category == "SCHEDULE":
             self.schedule_type = 'duration'
+            if self.data_src['duration'] == 0:
+                self.schedule_type = 'end'
         
         if self.pipe is not None:
             self.pipe.kill()
@@ -191,7 +193,7 @@ class KivyCameraMain(Image):
             if not self.capture.grab():
                 if self.category == 'SCHEDULE':
                     if 'duration' in self.data_src and  self.data_src['duration'] is not None:
-                        if int(self.duration_current) >= self.data_src['duration'] and self.schedule_type == 'end':
+                        if (self.data_src['duration'] == 0 or int(self.duration_current) >= self.data_src['duration']) and self.schedule_type == 'end':
                             self.f_parent.process_schedule(1)
 
             elif self.capture.isOpened():

@@ -87,7 +87,9 @@ class MyWidget(FloatLayout):
                 '-pix_fmt', 'rgba',
                 '-s', '1280x720',
                 '-i','-',
-                # '-f', 'pcm_s16le',
+                '-f', 'pcm_s16le',
+                '-pix_fmt', 'yuv420p',
+                '-i','-',
                 '-stream_loop','-1', '-i','../../resource/media/muted2.mp3',
                 '-b:a', '128k',
                 '-b:v', '3072k',
@@ -96,7 +98,7 @@ class MyWidget(FloatLayout):
                 '-f','flv',
                 'rtmp://livevn.piepme.com/cam/7421.36d74d5063fda77f18871dbb6c0ce613?token=36d74d5063fda77f18871dbb6c0ce613&SRC=WEB&FO100=7421&PL300=8212&LN301=180&LV302=115.73.208.139&LV303=0982231325&LL348=1558771095036&UUID=247cbf2ee3f0bda1&NV124=vn&PN303=15&POS=3'
         ]
-        self.pipe = subprocess.Popen(command, stdin=subprocess.PIPE)
+        self.pipe = subprocess.Popen(command, stdin=subprocess.PIPE, shell=True)
 
         # try:
         with sd.Stream(callback=self.print_sound):

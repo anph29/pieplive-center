@@ -11,17 +11,23 @@ class PopupAddSchedule(object):
         self.media = data
     
     def setupData(self, edit):
-        self.url = self.media['url']
-        self.mtype = self.media['type']
+        self.url = self.media['url'] if 'url' in self.media else ''
+        self.mtype = self.media['type'] if 'type' in self.media else ''
         self.duration = int(self.media['duration']) if 'duration' in self.media else 0
+        self.timepoint = int(self.media['timepoint']) if 'timepoint' in self.media else 0
         self.id = self.media['id'] if edit else scryto.hash_md5_with_time(self.url)
         #
         name = self.media['name']
         self.name.set(name)
+        #
         h,m,s = helper.convertSecNoToHMS(self.duration, toObj=True).values()
         self.hh.set(h)
         self.mm.set(m)
         self.ss.set(s)
+        #
+        H,M,S = helper.convertSecNoToHMS(self.timepoint, toObj=True).values()
+        self.HH.set(H)
+        self.MM.set(M)
         
 
     def initGUI(self, edit=False):
@@ -32,11 +38,15 @@ class PopupAddSchedule(object):
         # var
         self.name = tk.StringVar()
         self.hh = tk.StringVar()
-        self.hh.trace("w", self.limitHH)
+        self.hh.trace("w", self.limithh)
         self.mm = tk.StringVar()
-        self.mm.trace("w", self.limitMM)
+        self.mm.trace("w", self.limitmm)
         self.ss = tk.StringVar()
-        self.ss.trace("w", self.limitSS)
+        self.ss.trace("w", self.limitss)
+        self.HH = tk.StringVar()
+        self.HH.trace("w", self.limitHH)
+        self.MM = tk.StringVar()
+        self.MM.trace("w", self.limitMM)
         self.setupData(edit)
         #
         wrapper = tk.Frame(self.popup)
@@ -53,28 +63,45 @@ class PopupAddSchedule(object):
         fDura = tk.Frame(wrapper, pady=10, padx=20)
         fDura.pack(side=tk.TOP, fill=tk.X)
         #
-        lDura = tk.Label(fDura, text="Duration:", width=6, anchor=tk.W, font=UI.TXT_FONT)
+        lDura = tk.Label(fDura, text="Duration:", width=7, anchor=tk.W, font=UI.TXT_FONT)
         lDura.pack(side=tk.LEFT, fill=tk.Y)
         ##
-        self.eHH = tk.Entry(fDura, textvariable=self.hh, width=4, borderwidth=5, relief=tk.FLAT, justify=tk.CENTER)
-        self.eHH.bind("<FocusIn>", lambda args: self.eHH.select_range('0', tk.END))
-        self.eHH.pack(side=tk.LEFT, fill=tk.X, padx=(10, 0))
+        self.ehh = tk.Entry(fDura, textvariable=self.hh, width=4, borderwidth=5, relief=tk.FLAT, justify=tk.CENTER)
+        self.ehh.bind("<FocusIn>", lambda args: self.ehh.select_range('0', tk.END))
+        self.ehh.pack(side=tk.LEFT, fill=tk.X, padx=(10, 0))
         ##
         separator = tk.Label(fDura, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
         separator.pack(side=tk.LEFT, padx=5)
         ##
-        self.eMM = tk.Entry(fDura, textvariable=self.mm, width=4, borderwidth=5, relief=tk.FLAT, justify=tk.CENTER)
-        self.eMM.bind("<FocusIn>", lambda args: self.eMM.select_range('0', tk.END))
-        self.eMM.pack(side=tk.LEFT, fill=tk.X)
+        self.emm = tk.Entry(fDura, textvariable=self.mm, width=4, borderwidth=5, relief=tk.FLAT, justify=tk.CENTER)
+        self.emm.bind("<FocusIn>", lambda args: self.emm.select_range('0', tk.END))
+        self.emm.pack(side=tk.LEFT, fill=tk.X)
         ##
         separator = tk.Label(fDura, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
         separator.pack(side=tk.LEFT, padx=5)
         ##
         lName.pack(side=tk.LEFT, fill=tk.Y)
-        self.eSS = tk.Entry(fDura, textvariable=self.ss, width=4, borderwidth=5, relief=tk.FLAT, justify=tk.CENTER)
-        self.eSS.bind("<FocusIn>", lambda args: self.eSS.select_range('0', tk.END))
-        self.eSS.pack(side=tk.LEFT, fill=tk.X)
-        #3. Button
+        self.ess = tk.Entry(fDura, textvariable=self.ss, width=4, borderwidth=5, relief=tk.FLAT, justify=tk.CENTER)
+        self.ess.bind("<FocusIn>", lambda args: self.ess.select_range('0', tk.END))
+        self.ess.pack(side=tk.LEFT, fill=tk.X)
+        #3. timepoint
+        fTime = tk.Frame(wrapper, pady=10, padx=20)
+        fTime.pack(side=tk.TOP, fill=tk.X)
+        #
+        lTime = tk.Label(fTime, text="Timepoint:", width=7, anchor=tk.W, font=UI.TXT_FONT)
+        lTime.pack(side=tk.LEFT, fill=tk.Y)
+        ##
+        self.eHH = tk.Entry(fTime, textvariable=self.HH, width=4, borderwidth=5, relief=tk.FLAT, justify=tk.CENTER)
+        self.eHH.bind("<FocusIn>", lambda args: self.eHH.select_range('0', tk.END))
+        self.eHH.pack(side=tk.LEFT, fill=tk.X, padx=(10, 0))
+        ##
+        separator = tk.Label(fTime, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
+        separator.pack(side=tk.LEFT, padx=5)
+        ##
+        self.eMM = tk.Entry(fTime, textvariable=self.MM, width=4, borderwidth=5, relief=tk.FLAT, justify=tk.CENTER)
+        self.eMM.bind("<FocusIn>", lambda args: self.eMM.select_range('0', tk.END))
+        self.eMM.pack(side=tk.LEFT, fill=tk.X)
+        #4. Button
         fBtn = tk.Frame(wrapper, pady=10, padx=20)
         btnCancel = tk.Button(fBtn, text="Cancel", bd=2, relief=tk.RAISED, command=self.popup.destroy)
         btnCancel.configure(width=7)
@@ -84,14 +111,20 @@ class PopupAddSchedule(object):
         btnOk.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
         fBtn.pack(side=tk.BOTTOM, fill=tk.X)
 
-    def limitHH(self, *arg):
+    def limithh(self, *arg):
        self.verifyHMS(self.hh)
 
-    def limitMM(self, *arg):
+    def limitmm(self, *arg):
        self.verifyHMS(self.mm)
 
-    def limitSS(self, *arg):
+    def limitss(self, *arg):
        self.verifyHMS(self.ss)
+
+    def limitHH(self, *arg):
+       self.verifyHMS(self.HH)
+
+    def limitMM(self, *arg):
+       self.verifyHMS(self.MM)
 
     def verifyHMS(self, strvar):
         tk_helper.character_limit(strvar, limit=2)
@@ -103,6 +136,7 @@ class PopupAddSchedule(object):
             'name': self.name.get(), 
             'url': self.url, 
             'type': self.mtype,
-            'duration': helper.convertHMSNoToSec({'h': self.hh.get(), 'm': self.mm.get(), 's': self.ss.get()})
+            'duration': helper.convertHMSNoToSec({'h': self.hh.get(), 'm': self.mm.get(), 's': self.ss.get()}),
+            'timepoint': helper.convertHMSNoToSec({'h': self.HH.get(), 'm': self.MM.get(), 's': 0})
         })
         self.popup.destroy()

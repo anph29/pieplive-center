@@ -3,10 +3,12 @@ from tkinter import messagebox
 from src.modules.custom import DDList
 from . import MediaTab
 from src.modules.mediaitem import MediaItemDnD
+import  PIL
 from PIL import ImageTk, Image
 from src.utils import helper, scryto
 from src.modules.custom import VerticalScrolledFrame, ToolTip
 from src.enums import MediaType
+from src.modules.popup import PopupEditResource
 
 class MediaListView(MediaTab):
     def __init__(self, parent, *args, **kwargs):
@@ -25,7 +27,7 @@ class MediaListView(MediaTab):
     def makeDDList(self, ref):
         return DDList(ref, 
             400,
-            50,
+            42,
             offset_x=5,
             offset_y=5,
             gap=5,
@@ -96,3 +98,16 @@ class MediaListView(MediaTab):
                     # need new id any time
                     medi['id'] = scryto.hash_md5_with_time(medi['url'])
                     self.schedule.saveToSchedule(medi)
+
+    def showEditMedia(self, data):
+        editMedia = PopupEditResource(self, data)
+        editMedia.initGUI(data)
+
+    def saveToMediaList(self, media):
+        ls = self.loadLsMedia()
+        filtered = list(filter(lambda x:x['id'] == media['id'], ls))
+        if len(filtered) > 0:
+            newLs = list(map(lambda x: media if x['id'] == media['id'] else x, ls))
+            self.clearData()
+            self.writeLsMedia(newLs)
+        self.tabRefresh(None)

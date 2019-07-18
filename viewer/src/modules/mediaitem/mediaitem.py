@@ -24,7 +24,7 @@ class MediaItem(tk.Frame):
         self.duration = int(media['duration']) if 'duration' in media else 0
         self.timepoint = int(media['timepoint']) if 'timepoint' in media else 0
 
-    def deletemedia(self, evt):
+    def deleteMedia(self, evt):
         if messagebox.askyesno("PiepMe", "Are you sure to delete this resource?"):
             self.parentTab.deleteMediaItem([self.id])
             self.destroy()

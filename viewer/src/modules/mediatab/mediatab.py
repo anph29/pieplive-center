@@ -1,9 +1,10 @@
 import tkinter as tk
 from tkinter import messagebox
+import PIL
 from PIL import Image, ImageTk
 from src.utils import helper
 from src.enums import MediaType
-from src.modules.addresource import AddResource
+from src.modules.popup import PopupAddResource
 from src.modules.custom import ToolTip
 
 
@@ -73,11 +74,11 @@ class MediaTab(tk.Frame):
             medi.checked.set(self.checkall.get())
 
     def showAddCamBtn(self):
-        addresource = AddResource(self)
+        popupaddresource = PopupAddResource(self)
         imAdd = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}add-rgb24.png"))
         self.cmdAdd = tk.Label(self.tbright, image=imAdd, cursor='hand2', bg=self.tbBgColor)
         self.cmdAdd.image = imAdd
-        self.cmdAdd.bind("<Button-1>", addresource.initGUI)
+        self.cmdAdd.bind("<Button-1>", popupaddresource.initGUI)
         self.cmdAdd.pack(side=tk.RIGHT, padx=15, pady=5)
         ToolTip(self.cmdAdd, "Add new media")
 

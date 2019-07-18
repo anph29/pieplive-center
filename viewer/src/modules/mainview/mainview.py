@@ -10,6 +10,7 @@ from src.modules.menu import MainMenu
 from src.modules.login import Login
 from src.enums import MediaType
 from src.modules.schedule import Schedule
+import PIL
 from PIL import Image, ImageTk
 
 

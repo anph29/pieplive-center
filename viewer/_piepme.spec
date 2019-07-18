@@ -3,7 +3,6 @@
 block_cipher = None
 
 added_files = [
-  ( 'src', 'src' ),
   ( 'resource.zip', '.' )
 ]
 

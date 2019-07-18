@@ -1,4 +1,5 @@
 import tkinter as tk
+import PIL
 from PIL import Image, ImageTk
 from src.utils import helper, tk_helper, store
 import re

@@ -3,7 +3,8 @@ from src.modules.custom import DDList
 from src.modules.mediaitem import MediaItemSchedule
 from .medialistview import MediaListView
 from src.enums import MediaType
-from src.modules.addresource import PopupAddSchedule
+from src.modules.popup import PopupAddSchedule
+from src.utils import helper
 
 class MediaScheduleView(MediaListView):
     def __init__(self, parent, *args, **kwargs):
@@ -12,7 +13,7 @@ class MediaScheduleView(MediaListView):
     def makeDDList(self, ref):
         return DDList(ref, 
             820,
-            50,
+            42,
             offset_x=5,
             offset_y=5,
             gap=5,
@@ -42,18 +43,19 @@ class MediaScheduleView(MediaListView):
         addresource.initGUI(edit=edit)
 
     def saveToSchedule(self, data):
-        # check edit
         ls = self.loadLsMedia()
+        # check edit
         filtered = list(filter(lambda x:x['id'] == data['id'], ls))
         if len(filtered) > 0:
             self.saveEdit(ls, data)
         else:
             self.addMediaToList(data)
             self.addMedia(data)
-            
         self.tabRefresh(None)
 
     def saveEdit(self, ls, media):
         newLs = list(map(lambda x: media if x['id'] == media['id'] else x, ls))
+        index = newLs.index(media)
+        schedule = helper._calc_time_point(index, schedule=newLs, startTime=media['timepoint'])
         self.clearData()
-        self.writeLsMedia(newLs)
+        self.writeLsMedia(schedule)

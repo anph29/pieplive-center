@@ -6,9 +6,9 @@ from src.utils import tk_helper, scryto
 from src.constants import UI
 from src.enums import MediaType
 
-class AddResource(object):
+class PopupAddResource(object):
     useLocal = False
-    addCamPopup = None
+    popup = None
     error = False
 
     def __init__(self, parent):
@@ -16,14 +16,14 @@ class AddResource(object):
 
     def initGUI(self, evt):
         # first destroy
-        if None is not self.addCamPopup:
-            self.addCamPopup.destroy()
-        self.addCamPopup = tk_helper.makePiepMePopup('Add Media', w=400, h=250, padx=0, pady=0)
+        if None is not self.popup:
+            self.popup.destroy()
+        self.popup = tk_helper.makePiepMePopup('Add Media', w=450, h=250, padx=0, pady=0)
         self.makeMasterTab()
     
     def makeMasterTab(self):
         #
-        self.masterTab = ttk.Notebook(self.addCamPopup)
+        self.masterTab = ttk.Notebook(self.popup)
         self.masterTab.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=(2,0))
         # 1
         self.tabFile = self.initTabFileUI()
@@ -36,12 +36,12 @@ class AddResource(object):
         self.masterTab.enable_traversal()
 
     def initTabFolderUI(self):
-        fFolder = tk.Frame(self.addCamPopup)
+        fFolder = tk.Frame(self.popup)
         # URL
         fUrl = tk.Frame(fFolder, pady=10, padx=20)
         lUrl = tk.Label(fUrl, text="URL:", width=6, anchor=tk.W, font=UI.TXT_FONT)
         lUrl.pack(side=tk.LEFT, fill=tk.Y)
-        self.eUrlFolder = tk.Entry(fUrl, textvariable=self.url, width=36, borderwidth=5, relief=tk.FLAT)
+        self.eUrlFolder = tk.Entry(fUrl, textvariable=self.url, width=45, borderwidth=5, relief=tk.FLAT)
         self.eUrlFolder.pack(side=tk.LEFT, fill=tk.X)
         btnChoose = tk.Button(fUrl, text="Choose..", relief=tk.RAISED, padx=5, pady=5, command=self.askFolderName, font=UI.TXT_FONT)
         btnChoose.configure(width=7)
@@ -49,7 +49,7 @@ class AddResource(object):
         fUrl.pack(side=tk.TOP, fill=tk.X)
         # bot button
         fBtn = tk.Frame(fFolder,  pady=10, padx=20)
-        btnCancel = tk.Button(fBtn, text="Cancel", bd=2, relief=tk.RAISED, command=self.addCamPopup.destroy)
+        btnCancel = tk.Button(fBtn, text="Cancel", bd=2, relief=tk.RAISED, command=self.popup.destroy)
         btnCancel.configure(width=7)
         btnCancel.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
         btnOk = tk.Button(fBtn, text="OK", bd=2, bg="#ff2d55", fg="#fff", relief=tk.RAISED, command=self.onOkFolder)
@@ -59,7 +59,7 @@ class AddResource(object):
         return fFolder
 
     def initTabFileUI(self):
-        fFile = tk.Frame(self.addCamPopup)
+        fFile = tk.Frame(self.popup)
         # var
         self.name = tk.StringVar()
         self.url = tk.StringVar()
@@ -74,7 +74,7 @@ class AddResource(object):
         fUrl = tk.Frame(fFile, pady=10, padx=20)
         lUrl = tk.Label(fUrl, text="URL:", width=6, anchor=tk.W, font=UI.TXT_FONT)
         lUrl.pack(side=tk.LEFT, fill=tk.Y)
-        self.eUrl = tk.Entry(fUrl, textvariable=self.url, width=36, borderwidth=5, relief=tk.FLAT)
+        self.eUrl = tk.Entry(fUrl, textvariable=self.url, width=45, borderwidth=5, relief=tk.FLAT)
         self.eUrl.pack(side=tk.LEFT, fill=tk.X)
         btnChoose = tk.Button(fUrl, text="Choose..", relief=tk.RAISED, padx=5, pady=5, command=self.askFileName, font=UI.TXT_FONT)
         btnChoose.configure(width=7)
@@ -86,7 +86,7 @@ class AddResource(object):
         lError.pack(side=tk.LEFT, fill=tk.Y)
         # bot button
         fBtn = tk.Frame(fFile, pady=10, padx=20)
-        btnCancel = tk.Button(fBtn, text="Cancel", bd=2, relief=tk.RAISED, command=self.addCamPopup.destroy)
+        btnCancel = tk.Button(fBtn, text="Cancel", bd=2, relief=tk.RAISED, command=self.popup.destroy)
         btnCancel.configure(width=7)
         btnCancel.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
         btnOk = tk.Button(fBtn, text="OK", bd=2, bg="#ff2d55", fg="#fff", relief=tk.RAISED, command=self.onOkFile)
@@ -157,7 +157,7 @@ class AddResource(object):
                         self.parent.addMediaToList(dt)
                         self.parent.addMedia(dt)
         #   
-        self.addCamPopup.destroy()
+        self.popup.destroy()
 
 
     def onOkFile(self):
@@ -186,4 +186,4 @@ class AddResource(object):
 
         self.parent.addMediaToList(dt)
         self.parent.addMedia(dt)
-        self.addCamPopup.destroy()
+        self.popup.destroy()

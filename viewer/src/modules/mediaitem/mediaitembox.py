@@ -1,6 +1,7 @@
 import vlc
 import tkinter as tk
 from src.modules.custom import PLabel
+import PIL
 from PIL import Image, ImageTk
 from src.utils import helper
 from src.constants import UI
@@ -55,6 +56,7 @@ class MediaItemBox(MediaItem):
         imgMedia = ImageTk.PhotoImage(resized)
         lblMedia = tk.Label(self.top, image=imgMedia, bg="#f2f2f2", cursor='hand2')
         lblMedia.photo = imgMedia
+        #
         if self.mtype != 'IMG':
             lblMedia.bind('<Button-1>', self.initVLC)
         lblMedia.pack()
@@ -91,7 +93,7 @@ class MediaItemBox(MediaItem):
         imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}trash-b.png"))
         lbl_trash = tk.Label(bottom, image=imageBin, cursor='hand2')
         lbl_trash.image = imageBin
-        lbl_trash.bind("<Button-1>", self.deletemedia)
+        lbl_trash.bind("<Button-1>", self.deleteMedia)
         ToolTip(lbl_trash, "Delete") 
         lbl_trash.pack(side=tk.RIGHT)
         bottom.pack(side=tk.BOTTOM, fill=tk.X)

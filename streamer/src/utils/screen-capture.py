@@ -1,4 +1,5 @@
 import numpy as np
+import PIL
 from PIL import ImageGrab
 import cv2
 

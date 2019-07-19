@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 from src.modules.custom import DDList
 from src.modules.mediaitem import MediaItemSchedule
 from .medialistview import MediaListView
@@ -32,7 +33,7 @@ class MediaScheduleView(MediaListView):
         self.ddlist.pack(fill=tk.Y, expand=True)
 
     def addMediaToList(self, media):
-        item = self.ddlist.create_item(value=media)
+        item = self.ddlist.create_item(value=media, bg='#ddd')
         ui = MediaItemSchedule(item, parentTab=self, media=media)
         self._LS_MEDIA_UI.append(ui)
         ui.pack(padx= (4,0), pady= (4,0), expand=True)
@@ -59,3 +60,17 @@ class MediaScheduleView(MediaListView):
         schedule = helper._calc_time_point(index, schedule=newLs, startTime=media['timepoint'])
         self.clearData()
         self.writeLsMedia(schedule)
+
+    def saveSortedList(self, evt):
+        if messagebox.askyesno("PiepMe", "Are you sure save sorted media list?"):
+            sorted = list(map(lambda x:x.value, self.ddlist._list_of_items))
+            index, timepoint = self.get1stEvalueTimepoint(sorted)
+            schedule = helper._calc_time_point(index, schedule=sorted, startTime=timepoint)
+            self.clearData()
+            self.writeLsMedia(sorted)
+            self.tabRefresh(None)
+    
+    def get1stEvalueTimepoint(self, ls):
+        for i, m in enumerate(ls):
+            if 'timepoint' in m and int(m['timepoint']) > 0:
+                return i, m['timepoint']

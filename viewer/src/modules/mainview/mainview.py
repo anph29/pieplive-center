@@ -61,7 +61,10 @@ class MainView(tk.Frame):
         #
         icMedia = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_media_tab.png')
         self.mediaList =  self.makeMediaListTab()
-        self.superWrapper.add(self.mediaList, text="Media Manager", image=icMedia, compound=tk.LEFT)
+        self.superWrapper.add(self.mediaList, text="Live View", image=icMedia, compound=tk.LEFT)
+         #
+        self.superWrapper.select(self.mediaList)
+        self.superWrapper.enable_traversal()
 
     #
     def makeMediaListTab(self):
@@ -84,6 +87,9 @@ class MainView(tk.Frame):
         icPres = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_presenter.png')
         self.tab_presenter =  self.makeMediaTab(MediaType.PRESENTER)
         mediaListTab.add(self.tab_presenter, text="Presenters", image=icPres, compound=tk.LEFT)
+        #
+        mediaListTab.select(self.tab_presenter)
+        mediaListTab.enable_traversal()
         #
         return mediaListTab
     #
@@ -148,6 +154,7 @@ class MainView(tk.Frame):
     #
     def onSelectBussiness(self, fo100):
         self.FO100BU = fo100
+        store.setCurrentActiveBusiness(fo100)
     #
     def onClearResource(self, evt):
         if messagebox.askyesno("PiepMe", "Are you sure to clear your bussiness resource?"):
@@ -161,15 +168,17 @@ class MainView(tk.Frame):
                 #presenter
                 presenter = list(filter(lambda l500: l500['LN508'] == 1, lsL500))
                 self.tab_presenter.renewData(presenter)
+                self.schedule.right.tab_presenter.tabRefresh(None)
                 #camera
                 camera = list(filter(lambda l500: l500['LN508'] == 0, lsL500))
                 self.tab_camera.renewData(camera)
+                self.schedule.right.tab_camera.tabRefresh(None)
     #
     def loadCbxQ170(self):
         q170 = Q170_model()
         rs = q170.getListProviderWithRole({
             'FO100': store._get('FO100') or 0,
-            'FQ180': Q180.CAM_LIV_OOF
+            'FQ180': Q180.CHA_LIV_CEN
         })
         return rs[WS.ELEMENTS] if rs[WS.STATUS] == WS.SUCCESS else []
         

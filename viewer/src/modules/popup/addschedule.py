@@ -28,6 +28,7 @@ class PopupAddSchedule(object):
         H,M,S = helper.convertSecNoToHMS(self.timepoint, toObj=True).values()
         self.HH.set(H)
         self.MM.set(M)
+        self.SS.set(S)
         
 
     def initGUI(self, edit=False):
@@ -47,6 +48,8 @@ class PopupAddSchedule(object):
         self.HH.trace("w", self.limitHH)
         self.MM = tk.StringVar()
         self.MM.trace("w", self.limitMM)
+        self.SS = tk.StringVar()
+        self.SS.trace("w", self.limitSS)
         self.setupData(edit)
         #
         wrapper = tk.Frame(self.popup)
@@ -101,6 +104,13 @@ class PopupAddSchedule(object):
         self.eMM = tk.Entry(fTime, textvariable=self.MM, width=4, borderwidth=5, relief=tk.FLAT, justify=tk.CENTER)
         self.eMM.bind("<FocusIn>", lambda args: self.eMM.select_range('0', tk.END))
         self.eMM.pack(side=tk.LEFT, fill=tk.X)
+        ##
+        separator = tk.Label(fTime, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
+        separator.pack(side=tk.LEFT, padx=5)
+        ##
+        self.eSS = tk.Entry(fTime, textvariable=self.SS, width=4, borderwidth=5, relief=tk.FLAT, justify=tk.CENTER)
+        self.eSS.bind("<FocusIn>", lambda args: self.eSS.select_range('0', tk.END))
+        self.eSS.pack(side=tk.LEFT, fill=tk.X)
         #4. Button
         fBtn = tk.Frame(wrapper, pady=10, padx=20)
         btnCancel = tk.Button(fBtn, text="Cancel", bd=2, relief=tk.RAISED, command=self.popup.destroy)
@@ -125,6 +135,9 @@ class PopupAddSchedule(object):
 
     def limitMM(self, *arg):
        self.verifyHMS(self.MM)
+
+    def limitSS(self, *arg):
+       self.verifyHMS(self.SS)
 
     def verifyHMS(self, strvar):
         tk_helper.character_limit(strvar, limit=2)

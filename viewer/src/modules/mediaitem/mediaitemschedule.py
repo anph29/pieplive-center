@@ -34,7 +34,7 @@ class MediaItemSchedule(MediaItem):
         self.checkbox = tk.Checkbutton(wrapper, variable=self.checked, onvalue=True, offvalue=False, height=1, width=1, bd=0, relief=tk.FLAT)
         self.checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)
         # label
-        lbl_name = PLabel(wrapper, text=self.name, justify=tk.LEFT, elipsis=50, font=UI.TXT_FONT, fg="#000")
+        lbl_name = PLabel(wrapper, text=self.name, justify=tk.LEFT, elipsis=60, font=UI.TXT_FONT, fg="#000")
         lbl_name.pack(side=tk.LEFT)
         # bin
         imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}trash-b.png"))
@@ -54,11 +54,11 @@ class MediaItemSchedule(MediaItem):
         self.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         #duration
         hms = helper.convertSecNoToHMS(self.duration)
-        dura = PLabel(wrapper, text=f"{hms}", fg='#ff2d55', font=UI.TXT_FONT)
+        dura = PLabel(wrapper, text=f"duration: {hms}", fg='#ff2d55', font=UI.TXT_FONT)
         dura.pack(side=tk.RIGHT, padx=5)
         #timepoint
-        h, m, s = helper.convertSecNoToHMS(self.timepoint, toObj=True).values()
-        dura = PLabel(wrapper, text=f"{h}h{m}", fg='#00F', font=UI.TXT_FONT)
+        h,m,s = helper.convertSecNoToHMS(self.timepoint, toObj=True).values()
+        dura = PLabel(wrapper, text=f"runtime: {h}h{m}m{s}s", fg='#00F', font=UI.TXT_FONT)
         dura.pack(side=tk.RIGHT, padx=5)
     
     def editMedia(self, evt):

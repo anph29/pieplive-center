@@ -5,3 +5,4 @@ from .dragdroplistbox import DragDropListbox
 from .ddlist import DDList
 from .scrollableframe import VerticalScrolledFrame
 from .tooltip import ToolTip, ToolTipBase
+from .canvascancircle import CanvasC

@@ -6,8 +6,9 @@ from PIL import Image, ImageTk
 from src.utils import helper
 from src.constants import UI
 from .mediaitem import MediaItem
-from src.modules.custom import ToolTip
+from src.modules.custom import ToolTip, CanvasC
 import io
+from src.enums import MediaType
 
 class MediaItemBox(MediaItem):
     finished = False
@@ -23,7 +24,6 @@ class MediaItemBox(MediaItem):
         self.parentTab = parentTab
         self.set_data(media)
         self.after(100, self.initGUI)
-
 
     def initGUI(self):
         ww = self.cell_width + 5
@@ -77,10 +77,16 @@ class MediaItemBox(MediaItem):
 
     def initBOTTOM(self):
         bottom = tk.Frame(self.wrapper, bd=5, relief=tk.FLAT, width=self.cell_width, height=self.bot_height)
+        bottom.pack(side=tk.BOTTOM, fill=tk.X, pady=(3, 0))
+        # traffic lignt
+        if self.parentTab.tabType == MediaType.PRESENTER:
+            self.light = CanvasC(bottom, width=15, height=15, borderwidth=0, highlightthickness=0)
+            self.light.pack(side=tk.LEFT)
+            self.light.create_circle(6, 6, 6, fill="#F00", width=0)
         self.checkbox = tk.Checkbutton(bottom, variable=self.checked, onvalue=True, offvalue=False, height=1, width=1, bd=0, relief=tk.FLAT)
         self.checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)
         # play
-        if self.mtype != 'IMG':
+        if self.parentTab.tabType != MediaType.IMAGE:
             imagePlay = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}play-b.png"))
             self.lblPlay = tk.Label(bottom, image=imagePlay, cursor='hand2')
             self.lblPlay.image = imagePlay
@@ -104,7 +110,6 @@ class MediaItemBox(MediaItem):
         self.lblZoom.bind("<Button-1>", self.toggleZoom) 
         self.lblZoom.pack(side=tk.RIGHT)
         ToolTip(self.lblZoom, "Zoom in")
-        bottom.pack(side=tk.BOTTOM, fill=tk.X, pady=3)
 
     def toggleZoom(self, evt):
         w = self.winfo_width()

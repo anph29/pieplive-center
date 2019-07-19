@@ -6,7 +6,7 @@ from src.utils import helper
 from src.enums import MediaType
 from src.modules.popup import PopupAddResource
 from src.modules.custom import ToolTip
-
+from src.utils import firebase, store
 
 class MediaTab(tk.Frame):
 
@@ -15,10 +15,48 @@ class MediaTab(tk.Frame):
         self.tbBgColor = '#fff'
         self._LS_MEDIA_DATA = []
         self._LS_MEDIA_UI = []
+        self.listenerStream = None
 
     def initUI(self):
         self.showToolBar()
         self.showLsMedia()
+        self.after(2000, self.turnOnObserver)
+
+    def turnOnObserver(self):
+        if bool(store._get('FO100')):
+            if self.tabType == MediaType.PRESENTER:
+                activedBu = store.getCurrentActiveBusiness()
+                if bool(activedBu):
+                    fb = firebase.config()
+                    db = fb.database()
+                    self.listenerStream = db.child(f'l500/{activedBu}/LIST').stream(self.firebaseCallback)
+
+    def firebaseCallback(self, message):
+        if message['path'] == '/':
+            self.doWithRootPath(message['data'])
+        else:
+            self.doWithChildPath(message['data'])
+
+    def doWithRootPath(self, data):
+        lsId = []
+        if bool(data):
+            lsId = list(map(lambda x: int(x), data.keys()))
+        self.changeStatePresenter(lsId)
+
+    def doWithChildPath(self, data):
+        lsId = []
+        if bool(data):
+            lsId = [int(data['_id'])]
+        self.changeStatePresenter(lsId)
+
+    def changeStatePresenter(self, filtered):
+        for m in self._LS_MEDIA_UI:
+            m.light.delete("all")
+            m.light.create_circle(6, 6, 6, fill="#0F0" if int(m.id) in filtered else "#F00", width=0)
+
+    def stopListenerStream(self):
+        if self.tabType == MediaType.PRESENTER and bool(self.listenerStream):
+            self.listenerStream.close()
 
     def showToolBar(self):
         self.checkall = tk.BooleanVar()

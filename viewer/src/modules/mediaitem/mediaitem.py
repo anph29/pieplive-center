@@ -13,7 +13,8 @@ class MediaItem(tk.Frame):
             'name': self.name, 
             'url': self.url, 
             'type': self.mtype,
-            'duration': self.duration
+            'duration': self.duration,
+            'timepoint': self.timepoint
         }
 
     def set_data(self, media):

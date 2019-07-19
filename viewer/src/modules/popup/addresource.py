@@ -83,7 +83,7 @@ class PopupAddResource(object):
         # error msg
         self.fError = tk.Frame(fFile)
         lError = tk.Label(self.fError, text="File not allowed!", fg="#f00")
-        lError.pack(side=tk.LEFT, fill=tk.Y)
+        lError.pack(side=tk.LEFT, fill=tk.Y, padx=5, pady=5)
         # bot button
         fBtn = tk.Frame(fFile, pady=10, padx=20)
         btnCancel = tk.Button(fBtn, text="Cancel", bd=2, relief=tk.RAISED, command=self.popup.destroy)
@@ -101,7 +101,7 @@ class PopupAddResource(object):
         if self.parent.tabType == MediaType.IMAGE:
             return (("image files", "*.png *.jpg"),("all files", "*.*"))
         elif self.parent.tabType == MediaType.VIDEO:
-            return (("video files", "*.mov *.mp4"),("all files", "*.*"))
+            return (("video files", "*.mov *.mp4 *.mkv *.flv"),("all files", "*.*"))
 
     def askFileName(self):
         self.fError.pack_forget()

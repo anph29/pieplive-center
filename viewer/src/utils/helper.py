@@ -64,7 +64,6 @@ def _calc_time_point(index, schedule=[], startTime=0):
     else:
         return newSchedule
 
-    
 """
 ls camera
 """     

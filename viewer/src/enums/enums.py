@@ -13,3 +13,4 @@ class MediaProp(Enum):
     URL         = 'url'
     TYPE        = 'type'
     DURATION    = 'duration'
+    TIMEPOINT   = 'timepoint'

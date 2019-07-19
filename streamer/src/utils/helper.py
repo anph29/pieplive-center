@@ -6,6 +6,7 @@ import base64
 from src.utils import zip_helper
 import datetime
 import cv2
+import shutil
 """
 """
 _BASE_PATH              = os.path.abspath('../resource').replace('\\', '/') + '/'
@@ -17,6 +18,7 @@ _PATH_VIDEO             = _BASE_PATH + 'cfg/video.json'
 _PATH_CAMERA            = _BASE_PATH + 'cfg/camera.json'
 _PATH_PRESENTER         = _BASE_PATH + 'cfg/presenter.json'
 _PATH_SCHEDULE          = _BASE_PATH + 'cfg/schedule.json'
+_PATH_SCHEDULE_DIR      = _BASE_PATH + 'cfg/schedules/'
 _PATH_STATICSOURCE      = _BASE_PATH + 'cfg/staticsource.json'
 _ICONS_PATH             = _BASE_PATH + 'icons/'
 _IMAGES_PATH            = _BASE_PATH + 'images/'
@@ -25,7 +27,7 @@ _LOGO_VIEWER            = _ICONS_PATH + 'logo-viewer.png'
 """
 """
 """
-ls schedule
+schedule
 """     
 def _load_schedule():
     return loadJSON(_PATH_SCHEDULE)
@@ -63,6 +65,58 @@ def _calc_time_point(index, schedule=[], startTime=0):
         _write_schedule(newSchedule)
     else:
         return newSchedule
+"""
+list schedule
+"""
+def list_all_schedule():
+    dirs = os.listdir(_PATH_SCHEDULE_DIR)
+    return list(map(lambda f : f.endswith(".json"), dirs))
+
+def new_schedule_container(name, data=[]):
+    fname = get_verified_fname(name)
+    path = makeSureScheduleFile(fname)
+    if not os.path.isfile(path):
+        writeJSON(path, data)
+
+def delete_schedule_container(fname):
+    path = makeSureScheduleFile(fname)
+    if os.path.isfile(path):
+        os.remove(path)
+
+def rename_schedule_container(oldname, newname):
+    src = makeSureScheduleFile(oldname)
+    dst = makeSureScheduleFile(newname)
+    os.rename(src, dst)
+
+def duplicate_schedule_container(name):
+    src = makeSureScheduleFile(name)
+    dst = makeSureScheduleFile(name + '-COPY')
+    shutil.copyfile(src, dst)
+
+# -- @@ -- @@ -- 
+def _load_schedule_width_name(fname):
+    path = makeSureScheduleFile(fname)
+    if os.path.isfile(path):
+        return loadJSON(path)
+
+def _write_schedule_width_name(fname, data):
+    path = makeSureScheduleFile(fname)
+    if os.path.isfile(path):
+        writeJSON(path, data)
+
+def _add_to_schedule_width_name(fname, data):
+    path = makeSureScheduleFile(fname)
+    if os.path.isfile(path):
+        appendJSON(path, data)
+
+def get_verified_fname(fname):
+    fname = removeUnicode(fname)
+    return re.sub(r"[^a-zA-Z0-9\.-_]", '', fname)
+
+def makeSureScheduleFile(name):
+    fname = name if name.endswith('.json') else name + '.json'
+    return f'{_PATH_SCHEDULE_DIR}{fname}'
+
 
 """
 ls camera
@@ -217,13 +271,16 @@ def convertHMSNoToSec(hms):
 
 def makeSureResourceFolderExisted():
     resrcPth = '../resource'
-    #
+    # resource
     if not os.path.exists(resrcPth):
         zip_helper.extractZip('./resource.zip', '../')
-    #
+    # resource/cfg
     if not os.path.exists(resrcPth + '/cfg'):
         os.mkdir(resrcPth + '/cfg')
-    #
+    # resource/cfg/schedules
+    if not os.path.exists(resrcPth + '/cfg/schedules'):
+        os.mkdir(resrcPth + '/cfg/schedules')
+    # all cfg file
     checkResourceExistAndWriteIfNot('store', data={})
     for target in ['video', 'image', 'camera', 'schedule', 'presenter', 'staticsource', 'setting', 'font']:
         checkResourceExistAndWriteIfNot(target)

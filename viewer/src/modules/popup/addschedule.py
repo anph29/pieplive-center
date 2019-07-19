@@ -54,6 +54,30 @@ class PopupAddSchedule(object):
         #
         wrapper = tk.Frame(self.popup)
         wrapper.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        #0. timepoint
+        fTime = tk.Frame(wrapper, pady=10, padx=20)
+        fTime.pack(side=tk.TOP, fill=tk.X)
+        #
+        lTime = tk.Label(fTime, text="Runtime:", width=7, anchor=tk.W, font=UI.TXT_FONT)
+        lTime.pack(side=tk.LEFT, fill=tk.Y)
+        ##
+        self.eHH = tk.Entry(fTime, textvariable=self.HH, width=4, borderwidth=5, relief=tk.FLAT, justify=tk.CENTER)
+        self.eHH.bind("<FocusIn>", lambda args: self.eHH.select_range('0', tk.END))
+        self.eHH.pack(side=tk.LEFT, fill=tk.X, padx=(10, 0))
+        ##
+        separator = tk.Label(fTime, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
+        separator.pack(side=tk.LEFT, padx=5)
+        ##
+        self.eMM = tk.Entry(fTime, textvariable=self.MM, width=4, borderwidth=5, relief=tk.FLAT, justify=tk.CENTER)
+        self.eMM.bind("<FocusIn>", lambda args: self.eMM.select_range('0', tk.END))
+        self.eMM.pack(side=tk.LEFT, fill=tk.X)
+        ##
+        separator = tk.Label(fTime, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
+        separator.pack(side=tk.LEFT, padx=5)
+        ##
+        self.eSS = tk.Entry(fTime, textvariable=self.SS, width=4, borderwidth=5, relief=tk.FLAT, justify=tk.CENTER)
+        self.eSS.bind("<FocusIn>", lambda args: self.eSS.select_range('0', tk.END))
+        self.eSS.pack(side=tk.LEFT, fill=tk.X)
         #1. Name
         fName = tk.Frame(wrapper, pady=10, padx=20)
         lName = tk.Label(fName, text="Name:", width=6, anchor=tk.W, font=UI.TXT_FONT)
@@ -87,30 +111,6 @@ class PopupAddSchedule(object):
         self.ess = tk.Entry(fDura, textvariable=self.ss, width=4, borderwidth=5, relief=tk.FLAT, justify=tk.CENTER)
         self.ess.bind("<FocusIn>", lambda args: self.ess.select_range('0', tk.END))
         self.ess.pack(side=tk.LEFT, fill=tk.X)
-        #3. timepoint
-        fTime = tk.Frame(wrapper, pady=10, padx=20)
-        fTime.pack(side=tk.TOP, fill=tk.X)
-        #
-        lTime = tk.Label(fTime, text="Timepoint:", width=7, anchor=tk.W, font=UI.TXT_FONT)
-        lTime.pack(side=tk.LEFT, fill=tk.Y)
-        ##
-        self.eHH = tk.Entry(fTime, textvariable=self.HH, width=4, borderwidth=5, relief=tk.FLAT, justify=tk.CENTER)
-        self.eHH.bind("<FocusIn>", lambda args: self.eHH.select_range('0', tk.END))
-        self.eHH.pack(side=tk.LEFT, fill=tk.X, padx=(10, 0))
-        ##
-        separator = tk.Label(fTime, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
-        separator.pack(side=tk.LEFT, padx=5)
-        ##
-        self.eMM = tk.Entry(fTime, textvariable=self.MM, width=4, borderwidth=5, relief=tk.FLAT, justify=tk.CENTER)
-        self.eMM.bind("<FocusIn>", lambda args: self.eMM.select_range('0', tk.END))
-        self.eMM.pack(side=tk.LEFT, fill=tk.X)
-        ##
-        separator = tk.Label(fTime, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
-        separator.pack(side=tk.LEFT, padx=5)
-        ##
-        self.eSS = tk.Entry(fTime, textvariable=self.SS, width=4, borderwidth=5, relief=tk.FLAT, justify=tk.CENTER)
-        self.eSS.bind("<FocusIn>", lambda args: self.eSS.select_range('0', tk.END))
-        self.eSS.pack(side=tk.LEFT, fill=tk.X)
         #4. Button
         fBtn = tk.Frame(wrapper, pady=10, padx=20)
         btnCancel = tk.Button(fBtn, text="Cancel", bd=2, relief=tk.RAISED, command=self.popup.destroy)

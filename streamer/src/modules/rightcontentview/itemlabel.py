@@ -61,6 +61,7 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
         kv_helper.getApRoot().open_add_schedule(self.data)
     
     def play(self):
-        self.isCheckItem.active = False
-        self.parent.parent.setPlayed(self.index)
-        kv_helper.getApRoot().changeSrc(self.kvcam.get_data_source(),self.listType)
+        if self.playable:
+            self.isCheckItem.active = False
+            self.parent.parent.setPlayed(self.index)
+            kv_helper.getApRoot().changeSrc(self.kvcam.get_data_source(),self.listType)

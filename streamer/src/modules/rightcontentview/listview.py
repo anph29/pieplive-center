@@ -209,6 +209,7 @@ class ListPresenter(RecycleView):
 
     item_playing = ''
     listenerStream = None
+    listLiving = None
 
     def __init__(self, **kwargs):
         super(ListPresenter, self).__init__(**kwargs)
@@ -242,6 +243,7 @@ class ListPresenter(RecycleView):
         self.changeStatePresenter(lsId)
 
     def changeStatePresenter(self, filtered):
+        self.listLiving = filtered
         for m in self.data:
             if int(m['id']) in filtered:
                 m['playable'] = True
@@ -279,6 +281,11 @@ class ListPresenter(RecycleView):
 
     def refresh_list(self):
         self.set_data()
+        for m in self.data:
+            if int(m['id']) in self.listLiving:
+                m['playable'] = True
+            else:
+                m['playable'] = False
         self.refresh_view()
 
     def remove_selected(self):

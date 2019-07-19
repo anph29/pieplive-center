@@ -111,6 +111,8 @@ class MainStream(RelativeLayout):
 
     def startStream(self):
         try:
+            if self.event is not None:
+                self.event.cancel()
             self.fbo = Fbo(size=(self.f_width, self.f_height))
             with self.fbo:
                 ClearColor(0, 0, 0, 1)
@@ -120,7 +122,8 @@ class MainStream(RelativeLayout):
             self.fbo.add(self.canvas)
 
             self.isStream = True
-            Thread(target=self._process).start()
+            # Thread(target=self._process).start()
+            self._process()
         except IOError:
             kv_helper.getApRoot().triggerStop()
         
@@ -223,11 +226,13 @@ class MainStream(RelativeLayout):
 
     def prepare(self):
         try:
-            self.command = ['ffmpeg-win/ffmpeg.exe','-y', '-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', '{}x{}'.format(self.f_width, self.f_height), '-i', '-']
+            self.command = ['ffmpeg-win/ffmpeg.exe','-y','-framerate', '25','-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', '{}x{}'.format(self.f_width, self.f_height), '-i', '-']
             
             self.command.extend(self.draw_element())
             # encode
-            self.command.extend(['-vb', str(self.v_bitrate), '-preset', 'veryfast', '-g','25', '-r', '25','-threads','8'])
+            self.command.extend(['-vb', str(self.v_bitrate),'-r', '25', '-pix_fmt', 'yuv420p','-g','60','-threads','12'])
+
+            self.command.extend(["-vf", "fps=25",'-metadata', 'title="PiepLiveCenter"'])
             # tream
             self.command.extend(['-f', 'flv', self.urlStream])
             

@@ -66,8 +66,11 @@ class ListMedia(RecycleView):
                 child.active = False
     
     def refresh_view(self):
-        for child in self.children[0].children:
-            child.refresh_view_attrs(self,child.index, self.data[child.index])
+        try:
+            for child in self.children[0].children:
+                child.refresh_view_attrs(self,child.index, self.data[child.index])
+        except:
+            pass
 
 class ListImage(RecycleView):
  
@@ -130,8 +133,11 @@ class ListImage(RecycleView):
                 child.active = False
 
     def refresh_view(self):
-        for child in self.children[0].children:
-            child.refresh_view_attrs(self,child.index, self.data[child.index])
+        try:
+            for child in self.children[0].children:
+                child.refresh_view_attrs(self,child.index, self.data[child.index])
+        except:
+            pass
 
 class ListCamera(RecycleView):
     item_playing = ""
@@ -192,8 +198,11 @@ class ListCamera(RecycleView):
                 child.active = False
 
     def refresh_view(self):
-        for child in self.children[0].children:
-            child.refresh_view_attrs(self,child.index, self.data[child.index])
+        try:
+            for child in self.children[0].children:
+                child.refresh_view_attrs(self,child.index, self.data[child.index])
+        except:
+            pass
 
 class ListPresenter(RecycleView):
 
@@ -255,8 +264,11 @@ class ListPresenter(RecycleView):
             else:
                 child.active = False
     def refresh_view(self):
-        for child in self.children[0].children:
-            child.refresh_view_attrs(self,child.index, self.data[child.index])
+        try:
+            for child in self.children[0].children:
+                child.refresh_view_attrs(self,child.index, self.data[child.index])
+        except:
+            pass
 
 class ListSchedule(RecycleView):
     item_playing = ""
@@ -373,7 +385,7 @@ class ListSchedule(RecycleView):
                 if i < idx:
                     self.data[i]['timepoint'] = 0
                 if i > idx:
-                    s += self.data[i]['duration']
+                    s += self.data[i-1]['duration']
                     self.data[i]['timepoint'] = s
         else:
             self.data = helper._calc_time_point(0,self.data)
@@ -381,5 +393,8 @@ class ListSchedule(RecycleView):
         self.refresh_view()
 
     def refresh_view(self):
-        for child in self.children[0].children:
-            child.refresh_view_attrs(self,child.index, self.data[child.index])
+        try:
+            for child in self.children[0].children:
+                child.refresh_view_attrs(self,child.index, self.data[child.index])
+        except:
+            pass

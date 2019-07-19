@@ -20,12 +20,13 @@ class MediaTab(tk.Frame):
     def initUI(self):
         self.showToolBar()
         self.showLsMedia()
-        self.after(2000, self.turnOnObserver)
+        self.after(1000, self.turnOnObserver)
 
     def turnOnObserver(self):
         if bool(store._get('FO100')):
             if self.tabType == MediaType.PRESENTER:
                 activedBu = store.getCurrentActiveBusiness()
+                print(activedBu)
                 if bool(activedBu):
                     fb = firebase.config()
                     db = fb.database()

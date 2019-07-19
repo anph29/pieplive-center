@@ -6,6 +6,7 @@ import base64
 from src.utils import zip_helper
 import datetime
 import cv2
+import shutil
 """
 """
 _BASE_PATH              = os.path.abspath('../resource').replace('\\', '/') + '/'
@@ -67,44 +68,54 @@ def _calc_time_point(index, schedule=[], startTime=0):
 """
 list schedule
 """
-def get_verified_fname(fname):
-    fname = removeUnicode(fname)
-    return re.sub(r"[^a-zA-Z0-9\.-_]", '', fname)
+def list_all_schedule():
+    dirs = os.listdir(_PATH_SCHEDULE_DIR)
+    return list(map(lambda f : f.endswith(".json"), dirs))
 
 def new_schedule_container(name, data=[]):
     fname = get_verified_fname(name)
-    path = f'{_PATH_SCHEDULE_DIR}{fname}.json'
+    path = makeSureScheduleFile(fname)
     if not os.path.isfile(path):
         writeJSON(path, data)
 
-def delete_schedule_container(name):
-    pass
+def delete_schedule_container(fname):
+    path = makeSureScheduleFile(fname)
+    if os.path.isfile(path):
+        os.remove(path)
 
 def rename_schedule_container(oldname, newname):
+    src = makeSureScheduleFile(oldname)
+    dst = makeSureScheduleFile(newname)
     os.rename(src, dst)
 
 def duplicate_schedule_container(name):
-    pass
+    src = makeSureScheduleFile(name)
+    dst = makeSureScheduleFile(name + '-COPY')
+    shutil.copyfile(src, dst)
 
 # -- @@ -- @@ -- 
 def _load_schedule_width_name(fname):
-    path = f'{_PATH_SCHEDULE_DIR}{fname}.json'
+    path = makeSureScheduleFile(fname)
     if os.path.isfile(path):
         return loadJSON(path)
 
 def _write_schedule_width_name(fname, data):
-    path = f'{_PATH_SCHEDULE_DIR}{fname}.json'
+    path = makeSureScheduleFile(fname)
     if os.path.isfile(path):
         writeJSON(path, data)
 
 def _add_to_schedule_width_name(fname, data):
-    path = f'{_PATH_SCHEDULE_DIR}{fname}.json'
+    path = makeSureScheduleFile(fname)
     if os.path.isfile(path):
         appendJSON(path, data)
 
-def makeSureFName(name):
-    fname = 
-    return fname
+def get_verified_fname(fname):
+    fname = removeUnicode(fname)
+    return re.sub(r"[^a-zA-Z0-9\.-_]", '', fname)
+
+def makeSureScheduleFile(name):
+    fname = name if name.endswith('.json') else name + '.json'
+    return f'{_PATH_SCHEDULE_DIR}{fname}'
 
 
 """

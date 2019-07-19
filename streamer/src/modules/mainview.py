@@ -7,7 +7,7 @@ from src.modules.custom.addschedule import AddSchedule
 # from src.modules.login import Login
 from src.modules.mainstream import MainStream
 from src.utils import kivyhelper as kv_helper
-from src.utils import helper as helper
+from src.utils import helper
 from kivy.lang import Builder
 import sounddevice as sd
 
@@ -292,12 +292,15 @@ class MainView(Widget):
         helper._write_lsStaticSource(self.lsSource)
 
     def openLogin(self):
-        self.login_popup = Login(self)
-        self.login_popup.open()
+        pass
+        # self.login_popup = Login(self)
+        # self.login_popup.open()
 
     def on_stop(self):
         if self.mainStream is not None:
             self.mainStream.release()
+        if self.right_content is not None:
+            self.right_content.tab_presenter.ls_presenter.stopListenerStream()
 
     def on_change_position(self, idx, pos_x, pos_y):
         for _s in self.lsSource:

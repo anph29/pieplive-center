@@ -17,19 +17,24 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
     kvcam = ObjectProperty()
     isCheckItem = ObjectProperty()
     active = BooleanProperty(False)
+    playable = BooleanProperty(False)
     duration = NumericProperty(0)
     listType = StringProperty('')
+    _id = StringProperty('')
+
 
     def refresh_view_attrs(self, rv, index, data):
         """ Catch and handle the view changes """
         self.is_changing = False
         self.index = index
         self.name = data['name']
+        self._id = data['id']
         self.kvcam.set_data_source(data)
         self.duration = data['duration'] if 'duration' in data else 0
         self.listType = data['list']
         self.data = data
         self.active = data['active']
+        self.playable = data['playable'] if 'playable' in data else True
         self.isCheckItem.active = False
         return super(ItemLabel, self).refresh_view_attrs(rv, index, data)
 

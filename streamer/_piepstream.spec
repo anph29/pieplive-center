@@ -2,6 +2,9 @@
 from kivy_deps import sdl2, glew
 block_cipher = None
 
+#from PyInstaller.utils.hooks import copy_metadata
+#datas = copy_metadata('google-cloud-core')
+
 added_files = [
   ( 'src\\ui', 'src\\ui' ),
   ( 'src\\images', 'src\\images' ),

@@ -1,6 +1,7 @@
 from kivy.uix.recycleview import RecycleView
-from src.utils import helper
+from src.utils import helper, firebase, store
 from kivy.properties import StringProperty
+from kivy.clock import Clock
 from src.modules.custom.popup import PiepMeConfirmPopup
 import datetime
 
@@ -207,16 +208,58 @@ class ListCamera(RecycleView):
 class ListPresenter(RecycleView):
 
     item_playing = ''
+    listenerStream = None
 
     def __init__(self, **kwargs):
         super(ListPresenter, self).__init__(**kwargs)
+        Clock.schedule_once(self.turnOnObserver,1)
+
+    def turnOnObserver(self,dt):
+        if bool(store._get('FO100')):
+            activedBu = store.getCurrentActiveBusiness()
+            print(activedBu)
+            if bool(activedBu):
+                fb = firebase.config()
+                db = fb.database()
+                self.listenerStream = db.child(f'l500/{activedBu}/LIST').stream(self.firebaseCallback)
+
+    def firebaseCallback(self, message):
+        if message['path'] == '/':
+            self.doWithRootPath(message['data'])
+        else:
+            self.doWithChildPath(message['data'])
+
+    def doWithRootPath(self, data):
+        lsId = []
+        if bool(data):
+            lsId = list(map(lambda x: int(x), data.keys()))
+        self.changeStatePresenter(lsId)
+
+    def doWithChildPath(self, data):
+        lsId = []
+        if bool(data):
+            lsId = [int(data['_id'])]
+        self.changeStatePresenter(lsId)
+
+    def changeStatePresenter(self, filtered):
+        for m in self.data:
+            if int(m['id']) in filtered:
+                m['playable'] = True
+            else:
+                m['playable'] = False
+        self.refresh_view()
+
+    def stopListenerStream(self):
+        if bool(self.listenerStream):
+            self.listenerStream.close()
 
     def set_data(self):
         self.data = list(
             map(
                 lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 
                 'list':'PRESENTER',
-                'active': (False,True) [cam['id'] == self.item_playing]},
+                'active': (False,True) [cam['id'] == self.item_playing],
+                'playable': False},
                 helper._load_ls_presenter()
             )
         )

@@ -68,7 +68,7 @@ class MainView(tk.Frame):
 
     #
     def makeMediaListTab(self):
-        #
+        # 0
         mediaListTab = ttk.Notebook(self)
         mediaListTab.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
         # 1
@@ -88,7 +88,7 @@ class MainView(tk.Frame):
         self.tab_presenter =  self.makeMediaTab(MediaType.PRESENTER)
         mediaListTab.add(self.tab_presenter, text="Presenters", image=icPres, compound=tk.LEFT)
         #
-        mediaListTab.select(self.tab_presenter)
+        mediaListTab.select(self.tab_image)
         mediaListTab.enable_traversal()
         #
         return mediaListTab

@@ -224,6 +224,9 @@ def makeSureResourceFolderExisted():
     if not os.path.exists(resrcPth + '/cfg'):
         os.mkdir(resrcPth + '/cfg')
     #
+    if not os.path.exists(resrcPth + '/cfg/schedules'):
+        os.mkdir(resrcPth + '/cfg/schedules')
+    #
     checkResourceExistAndWriteIfNot('store', data={})
     for target in ['video', 'image', 'camera', 'schedule', 'presenter', 'staticsource', 'setting', 'font']:
         checkResourceExistAndWriteIfNot(target)

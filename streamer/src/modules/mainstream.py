@@ -57,7 +57,7 @@ class MainStream(RelativeLayout):
 
     def _load(self):
         try:
-            command =  f'ffmpeg-win/ffmpeg.exe -y -loop 1 -i {helper._IMAGES_PATH}splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 {self.url_flv} {self.url_flv_hls}'
+            command =  f'ffmpeg-win/ffmpeg.exe -y -nostats -loop 1 -i {helper._IMAGES_PATH}splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 {self.url_flv} {self.url_flv_hls}'
             si = subprocess.STARTUPINFO()
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             self.pipe2 = subprocess.Popen(command, startupinfo=si)
@@ -135,17 +135,18 @@ class MainStream(RelativeLayout):
     def stream(self, fps):
         try:
             if self.isStream:
-                if self.parent is not None:
-                    self.canvas_parent_index = self.parent.canvas.indexof(self.canvas)
-                    if self.canvas_parent_index > -1:
-                        self.parent.canvas.remove(self.canvas)
+                # if self.parent is not None:
+                #     self.canvas_parent_index = self.parent.canvas.indexof(self.canvas)
+                #     if self.canvas_parent_index > -1:
+                #         self.parent.canvas.remove(self.canvas)
+                # self.fbo.add(self.canvas)
                 self.fbo.draw()
                 self.pipe.stdin.write(self.fbo.pixels)
-                self.fbo.remove(self.canvas)
-                if self.parent is not None and self.canvas_parent_index > -1:
-                    self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
+                # self.fbo.remove(self.canvas)
+                # if self.parent is not None and self.canvas_parent_index > -1:
+                #     self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
                 self.reconnect = 0
-        except IOError as e:
+        except:
             self.stopStream()
             self.reconnect += 2
             normal = Normal_model()
@@ -170,8 +171,8 @@ class MainStream(RelativeLayout):
         if self.stop is not None:
             self.stop.set()
         self.fbo.remove(self.canvas)
-        if self.parent is not None and self.canvas_parent_index > -1:
-            self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
+        # if self.parent is not None and self.canvas_parent_index > -1:
+        #     self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
         print("--- STOP ---")
         
     def set_url_stream(self, urlStream):

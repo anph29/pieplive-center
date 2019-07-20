@@ -119,8 +119,8 @@ class KivyCameraMain(Image):
                     self.pipe = sp.Popen(command, startupinfo=si)
                     Clock.schedule_once(lambda x: self.pipe.kill() , 5)
                 Clock.schedule_once(self.process_set_data , 0)
-        except Exception as e:
-            print("Exception:", e)
+        except :
+            print("Exception:")
             Clock.schedule_once(self.process_set_data , 0)
         
     def process_set_data(self, second):
@@ -185,7 +185,6 @@ class KivyCameraMain(Image):
         if self.event_capture is not None:
             self.event_capture.cancel()
 
-    @mainthread
     def update(self, dt):
         try:
             if self.capture.isOpened():
@@ -207,17 +206,14 @@ class KivyCameraMain(Image):
         except IOError:
             print("Exception update:")
 
-    @mainthread
     def update_texture_from_frame(self, frame):
         try:
             frame = self.resizeFrame(frame)
-            fshape = frame.shape
-            texture = Texture.create(size=(fshape[1], fshape[0]), colorfmt='bgr')
-            buf1 = cv2.flip(frame, 0)
-            buf = buf1.tostring()
+            texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
+            buf = cv2.flip(frame, 0).tostring()
             texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
             self.texture = texture
-            del frame
+            # del frame
         except IOError:
             print("Exception update_texture_from_frame:")
 

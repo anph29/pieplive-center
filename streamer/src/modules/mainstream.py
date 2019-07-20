@@ -61,7 +61,7 @@ class MainStream(RelativeLayout):
             si = subprocess.STARTUPINFO()
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             self.pipe2 = subprocess.Popen(command, startupinfo=si)
-            Clock.schedule_once(lambda x: self.pipe2.kill() , 3)
+            Clock.schedule_once(lambda x: self.pipe2.kill() , 5)
         except IOError:
             pass
 
@@ -232,7 +232,7 @@ class MainStream(RelativeLayout):
             # encode
             self.command.extend(['-vb', str(self.v_bitrate),'-r', '25', '-pix_fmt', 'yuv420p','-g','60'])
 
-            # self.command.extend(["-vf", "fps=25",'-metadata', 'title="PiepLiveCenter"'])
+            self.command.extend(["-vf", "fps=25",'-metadata', 'title="PiepLiveCenter"'])
             # tream
             self.command.extend(['-f', 'flv', self.urlStream])
             

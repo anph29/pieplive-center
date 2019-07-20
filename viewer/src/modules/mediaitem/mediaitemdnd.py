@@ -59,7 +59,7 @@ class MediaItemDnD(MediaItem):
         #duration
         if self.parentTab.tabType == MediaType.VIDEO:
             hms = helper.convertSecNoToHMS(self.duration)
-            dura = PLabel(wrapper, text=hms, fg='#ff2d55', font=UI.TXT_FONT)
+            dura = PLabel(wrapper, text=hms, fg='#008000', font=UI.TXT_FONT)
             dura.pack(side=tk.RIGHT, padx=10)
     
     def editMedia(self, evt):

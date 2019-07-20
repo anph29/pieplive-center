@@ -3,12 +3,15 @@ import tkinter as tk
 from src.modules.custom import PLabel
 import PIL
 from PIL import Image, ImageTk
+from PIL import BmpImagePlugin,GifImagePlugin,Jpeg2KImagePlugin,JpegImagePlugin,PngImagePlugin,TiffImagePlugin,WmfImagePlugin # to fuck -> OSerror: cannot identify image file
 from src.utils import helper
 from src.constants import UI
 from .mediaitem import MediaItem
 from src.modules.custom import ToolTip, CanvasC
 import io
 from src.enums import MediaType
+
+Image._initialized = 2
 
 class MediaItemBox(MediaItem):
     finished = False
@@ -78,7 +81,7 @@ class MediaItemBox(MediaItem):
     def initBOTTOM(self):
         bottom = tk.Frame(self.wrapper, bd=5, relief=tk.FLAT, width=self.cell_width, height=self.bot_height)
         bottom.pack(side=tk.BOTTOM, fill=tk.X, pady=(3, 0))
-        # traffic lignt
+        # traffic light
         if self.parentTab.tabType == MediaType.PRESENTER:
             self.light = CanvasC(bottom, width=15, height=15, borderwidth=0, highlightthickness=0)
             self.light.pack(side=tk.LEFT)

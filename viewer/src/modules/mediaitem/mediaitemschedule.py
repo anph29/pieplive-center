@@ -54,7 +54,7 @@ class MediaItemSchedule(MediaItem):
         self.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         #duration
         hms = helper.convertSecNoToHMS(self.duration)
-        dura = PLabel(wrapper, text=f"duration: {hms}", fg='#ff2d55', font=UI.TXT_FONT)
+        dura = PLabel(wrapper, text=f"duration: {hms}", fg='#008000', font=UI.TXT_FONT)
         dura.pack(side=tk.RIGHT, padx=5)
         #timepoint
         h,m,s = helper.convertSecNoToHMS(self.timepoint, toObj=True).values()

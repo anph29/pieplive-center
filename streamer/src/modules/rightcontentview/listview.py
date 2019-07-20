@@ -209,7 +209,7 @@ class ListPresenter(RecycleView):
 
     item_playing = ''
     listenerStream = None
-    listLiving = None
+    listLiving = []
 
     def __init__(self, **kwargs):
         super(ListPresenter, self).__init__(**kwargs)
@@ -223,32 +223,32 @@ class ListPresenter(RecycleView):
                 fb = firebase.config()
                 db = fb.database()
                 self.listenerStream = db.child(f'l500/{activedBu}/LIST').stream(self.firebaseCallback)
-
+    
     def firebaseCallback(self, message):
-        if message['path'] == '/':
-            self.doWithRootPath(message['data'])
-        else:
-            self.doWithChildPath(message['data'])
-
-    def doWithRootPath(self, data):
-        lsId = []
+        data = message['data']
+        id = ln510 = 0
         if bool(data):
-            lsId = list(map(lambda x: int(x), data.keys()))
-        self.changeStatePresenter(lsId)
+            if message['path'] == '/':
+                keys = list(data.keys())
+                media = data[keys[0]]
+                id = int(media['_id'])
+                ln510 = int(media['LN510'])
+            else:# /[PL500]
+                id = int(data['_id'])
+                ln510 = int(data['LN510'])
+        self.changeStatePresenter(id, ln510)
 
-    def doWithChildPath(self, data):
-        lsId = []
-        if bool(data):
-            lsId = [int(data['_id'])]
-        self.changeStatePresenter(lsId)
-
-    def changeStatePresenter(self, filtered):
-        self.listLiving = filtered
+    def changeStatePresenter(self, _id, ln510):
+        if ln510 == 2:
+            self.listLiving.append(_id)
+        elif _id in self.listLiving:
+            self.listLiving.remove(_id)
         for m in self.data:
-            if int(m['id']) in filtered:
-                m['playable'] = True
-            else:
-                m['playable'] = False
+            if int(m['id']) == _id:
+                if ln510 == 2:
+                    m['playable'] = True
+                else:
+                    m['playable'] = False
         self.refresh_view()
 
     def stopListenerStream(self):

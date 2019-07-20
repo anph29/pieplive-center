@@ -55,7 +55,7 @@
             id: isCheckItem
             size_hint:None,1
             width: 20
-            opacity:(1,0)[root.active]
+            opacity:(1,0)[root.active or root.listType == 'PRESENTER']
             # on_active: root.f_root.change_schedule_loop(self.active)
             canvas.before:
                 Color:
@@ -71,6 +71,6 @@
         ImageButton:
             size_hint:None,1
             width:16
-            opacity:(1,0)[root.active]
+            opacity:(1,0)[root.active or root.listType == 'PRESENTER']
             source: helper._ICONS_PATH+'trash.png'
             on_release:root.open_confirm_rmv()

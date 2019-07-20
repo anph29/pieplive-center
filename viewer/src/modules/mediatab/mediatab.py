@@ -20,40 +20,39 @@ class MediaTab(tk.Frame):
     def initUI(self):
         self.showToolBar()
         self.showLsMedia()
-        # self.after(1000, self.turnOnObserver)
+        self.after(1000, self.turnOnObserver)
 
     def turnOnObserver(self):
         if bool(store._get('FO100')):
             if self.tabType == MediaType.PRESENTER:
                 activedBu = store.getCurrentActiveBusiness()
-                print(activedBu)
                 if bool(activedBu):
                     fb = firebase.config()
                     db = fb.database()
                     self.listenerStream = db.child(f'l500/{activedBu}/LIST').stream(self.firebaseCallback)
 
     def firebaseCallback(self, message):
-        if message['path'] == '/':
-            self.doWithRootPath(message['data'])
-        else:
-            self.doWithChildPath(message['data'])
-
-    def doWithRootPath(self, data):
-        lsId = []
+        data = message['data']
+        id = ln510 = 0
         if bool(data):
-            lsId = list(map(lambda x: int(x), data.keys()))
-        self.changeStatePresenter(lsId)
+            if message['path'] == '/':
+                keys = list(data.keys())
+                media = data[keys[0]]
+                id = int(media['_id'])
+                ln510 = int(media['LN510'])
+            else:# /[PL500]
+                id = int(data['_id'])
+                ln510 = int(data['LN510'])
 
-    def doWithChildPath(self, data):
-        lsId = []
-        if bool(data):
-            lsId = [int(data['_id'])]
-        self.changeStatePresenter(lsId)
+        self.changeStatePresenter(id, ln510)
 
-    def changeStatePresenter(self, filtered):
+    def changeStatePresenter(self, id, ln510):
         for m in self._LS_MEDIA_UI:
-            m.light.delete("all")
-            m.light.create_circle(6, 6, 6, fill="#0F0" if int(m.id) in filtered else "#F00", width=0)
+            if int(m.id) == id:
+                m.updateLightColor(ln510)
+            else:
+                m.updateLightColor(0)
+
 
     def stopListenerStream(self):
         if self.tabType == MediaType.PRESENTER and bool(self.listenerStream):

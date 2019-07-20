@@ -30,4 +30,13 @@ class MediaItem(tk.Frame):
             self.parentTab.deleteMediaItem([self.id])
             self.destroy()
 
-            
+        
+    def updateLightColor(self, ln510):
+        self.light.delete("all")
+        color = "#F00" # 0: OFF
+        if ln510 == 1: # Press ON
+            color = "#FF0"
+        elif ln510 == 2: # READY
+            color = "#0F0" 
+        self.light.create_circle(6, 6, 6, fill=color, width=0)
+

@@ -151,9 +151,7 @@ class KivyCameraMain(Image):
                     if self.resource_type != 'VIDEO' and self.resource_type != "M3U8":
                         self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
                     print(">>CAPTURE FINED:")
-
                     self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
-
                     if self.f_parent is not None:
                         if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
                             self.f_parent.refresh_stream()
@@ -197,6 +195,7 @@ class KivyCameraMain(Image):
                         if 'duration' in self.data_src and  self.data_src['duration'] is not None:
                             if (self.data_src['duration'] == 0 or int(self.duration_current) >= self.data_src['duration']) and self.schedule_type == 'end':
                                 self.f_parent.process_schedule(1)
+
                 else:
                     ret, frame = self.capture.retrieve()
                     if ret:

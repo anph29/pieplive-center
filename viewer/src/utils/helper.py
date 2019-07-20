@@ -19,13 +19,13 @@ _PATH_CAMERA            = _BASE_PATH + 'cfg/camera.json'
 _PATH_PRESENTER         = _BASE_PATH + 'cfg/presenter.json'
 _PATH_SCHEDULE          = _BASE_PATH + 'cfg/schedule.json'
 _PATH_SCHEDULE_DIR      = _BASE_PATH + 'cfg/schedules/'
+_PATH_SCHEDULE_SORTED   = _BASE_PATH + 'cfg/schedules/sorted.json'
 _PATH_STATICSOURCE      = _BASE_PATH + 'cfg/staticsource.json'
 _ICONS_PATH             = _BASE_PATH + 'icons/'
 _IMAGES_PATH            = _BASE_PATH + 'images/'
 _LOGO_STREAMER          = _ICONS_PATH + 'logo-streamer.ico'
 _LOGO_VIEWER            = _ICONS_PATH + 'logo-viewer.png'
-"""
-"""
+
 """
 schedule
 """     
@@ -68,6 +68,16 @@ def _calc_time_point(index, schedule=[], startTime=0):
 """
 list schedule
 """
+
+def _load_schedule_sorted():
+    return loadJSON(_PATH_SCHEDULE_SORTED)
+
+def _write_schedule_sorted(data):
+    writeJSON(_PATH_SCHEDULE_SORTED, data)
+
+def _add_to_schedule_sorted(data):
+    appendJSON(_PATH_SCHEDULE_SORTED, data)
+
 def list_all_schedule():
     dirs = os.listdir(_PATH_SCHEDULE_DIR)
     return list(map(lambda f : f.endswith(".json"), dirs))
@@ -116,7 +126,6 @@ def get_verified_fname(fname):
 def makeSureScheduleFile(name):
     fname = name if name.endswith('.json') else name + '.json'
     return f'{_PATH_SCHEDULE_DIR}{fname}'
-
 
 """
 ls camera
@@ -231,7 +240,6 @@ def removeUnicode(str):
     str = re.sub(r"Đ", 'D', str)
     return str
 
-
 def removeUnicodeLowerRmvSpace(str):
     str = str.replace(r"[àáạảãâầấậẩẫăằắặẳẵÄä]", 'a', str)
     str = str.replace(r"[èéẹẻẽêềếệểễ]", 'e', str)
@@ -243,10 +251,8 @@ def removeUnicodeLowerRmvSpace(str):
     str = str.replace(r"[\s:\/.]", "", str)
     return str
 
-
 def stringToBase64(s):
     return base64.b64encode(s.encode('utf-8'))
-
 
 def base64ToString(b):
     return base64.b64decode(b).decode('utf-8')
@@ -280,6 +286,9 @@ def makeSureResourceFolderExisted():
     # resource/cfg/schedules
     if not os.path.exists(resrcPth + '/cfg/schedules'):
         os.mkdir(resrcPth + '/cfg/schedules')
+    # sorted.json file
+    if not os.path.isfile(resrcPth + '/cfg/schedules/sorted.json'):
+       writeJSON(resrcPth + '/cfg/schedules/sorted.json', [])
     # all cfg file
     checkResourceExistAndWriteIfNot('store', data={})
     for target in ['video', 'image', 'camera', 'schedule', 'presenter', 'staticsource', 'setting', 'font']:
@@ -293,15 +302,15 @@ def checkResourceExistAndWriteIfNot(target, data=[]):
 def getMTypeFromUrl(url):
     URL = url.upper()
     if 'RTSP' in URL:
-            return 'RTSP'
+        return 'RTSP'
     elif 'MP4' in URL:
-            return 'MP4'
+        return 'MP4'
     elif 'M3U8' in URL:
-            return 'M3U8'
+        return 'M3U8'
     elif 'JPG' in URL or 'PNG' in URL:
-            return 'IMG'
+        return 'IMG'
     else:
-            return False
+        return False
 
 def getVideoDuration(fpath):
     try:
@@ -312,7 +321,6 @@ def getVideoDuration(fpath):
             fps = fps if fps > 25 else 25
             total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
             dura =  int(total / fps)
-            
         _cap.release()
         return dura
     except expression:

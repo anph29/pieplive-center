@@ -20,7 +20,7 @@ class MediaTab(tk.Frame):
     def initUI(self):
         self.showToolBar()
         self.showLsMedia()
-        self.after(1000, self.turnOnObserver)
+        # self.after(1000, self.turnOnObserver)
 
     def turnOnObserver(self):
         if bool(store._get('FO100')):

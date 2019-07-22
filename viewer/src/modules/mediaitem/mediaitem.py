@@ -14,7 +14,8 @@ class MediaItem(tk.Frame):
             'url': self.url, 
             'type': self.mtype,
             'duration': self.duration,
-            'timepoint': self.timepoint
+            'timepoint': self.timepoint,
+            'audio':self.audio
         }
 
     def set_data(self, media):
@@ -24,13 +25,13 @@ class MediaItem(tk.Frame):
         self.mtype = media['type']
         self.duration = int(media['duration']) if 'duration' in media else 0
         self.timepoint = int(media['timepoint']) if 'timepoint' in media else 0
+        self.audio = media['audio'] if 'audio' in media else ''
 
     def deleteMedia(self, evt):
         if messagebox.askyesno("PiepMe", "Are you sure to delete this resource?"):
             self.parentTab.deleteMediaItem([self.id])
             self.destroy()
 
-        
     def updateLightColor(self, ln510):
         self.light.delete("all")
         self.LN510 = ln510

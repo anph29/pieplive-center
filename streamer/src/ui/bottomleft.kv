@@ -4,8 +4,6 @@
     stream_key : stream_key
     list_source : list_source
     list_mixer : list_mixer
-    v_display_mini : v_display_mini
-    v_display_switch : v_display_switch
 
     BoxLayout:
         canvas.before:
@@ -163,36 +161,6 @@
                 multiline:False
                 hint_text:'Key'
             Widget:
-            BoxLayout:
-                orientation:'horizontal'
-                size_hint: 1,None
-                height:30
-                padding: 5,0,5,0
-                canvas.before:
-                    Color: 
-                        rgb:(.15,.15,.15)
-                    Rectangle:
-                        size:self.size
-                        pos:self.pos
-                ImageButton:
-                    id: v_display_mini
-                    size_hint: None, 1
-                    width: 16
-                    source:helper._ICONS_PATH + 'checked.png'
-                    opacity: (0.2,1) [root.display_mini == True]
-                    on_release: root.changeDisplayMini()
-                Label:
-                    size_hint: None, 1
-                    font_size:13
-                    text:'Display Mini'
-                Widget:
-                ImageButton:
-                    id: v_display_switch
-                    size_hint: None, 1
-                    width: 0
-                    source:helper._ICONS_PATH + 'switch.png'
-                    on_release: root.switchDisplay()
-
 
 <TextDialog>:
     inp_name:inp_name

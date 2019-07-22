@@ -5,6 +5,8 @@
     bottom_left:bottom_left
     listMixer: bottom_left.list_mixer
     btn_start:btn_start
+    btn_display_mini:btn_display_mini
+    btn_switch:btn_switch
     # btn_record:btn_record
     # btn_setting:btn_setting
     videoBuffer:videoBuffer
@@ -79,7 +81,16 @@
                     Button:
                         id:btn_start
                         text:'Start Streaming'
-                        on_press: app.root.mClick('start')
+                        on_press: root.start_stream()
+                    Button:
+                        id:btn_display_mini
+                        text:'Show Display Mini'
+                        on_press: root.show_mini_display()
+                    Button:
+                        id:btn_switch
+                        text:'Switch Display'
+                        on_press: root.switch_display()
+                        opacity: (0,1)[root.showMiniD]
                     # Button:
                     #     id:btn_record
                     #     text:'Start Recording'

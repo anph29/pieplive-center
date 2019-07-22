@@ -21,6 +21,7 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
     duration = NumericProperty(0)
     listType = StringProperty('')
     _id = StringProperty('')
+    showMiniD = BooleanProperty(False)
 
 
     def refresh_view_attrs(self, rv, index, data):
@@ -65,3 +66,7 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
             self.isCheckItem.active = False
             self.parent.parent.setPlayed(self.index)
             kv_helper.getApRoot().changeSrc(self.kvcam.get_data_source(),self.listType)
+    
+    def playMini(self, isPlay):
+        if self.playable and isPlay:
+            kv_helper.getApRoot().changeSrcMini(self.kvcam.get_data_source(),self.listType)

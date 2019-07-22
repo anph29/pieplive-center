@@ -77,7 +77,7 @@ class MainStream(RelativeLayout):
         self.cameraMini.opacity = 0
         self.cameraMini.release()
 
-    def switch_display(self, _val):
+    def switch_display(self):
         temp = self.camera.capture
         self.camera.capture = self.cameraMini.capture
         self.cameraMini.capture = temp
@@ -206,7 +206,7 @@ class MainStream(RelativeLayout):
         if len(self.lsSource) > 0:
             for value in self.lsSource:
                 if value['active'] == 1:
-                    if(value['type'] == 'audio'):
+                    if value['type'] == 'audio' and os.path.exists(value['src']) is True:
                         inp.extend(['-stream_loop','-1',"-i", value['src']])
                         numau += 1
                         txt += f'[{numau}:a]volume={str(value["volume"]/100)}[a{numau}];'

@@ -1,5 +1,5 @@
 from kivy.uix.widget import Widget
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty, BooleanProperty
 from src.modules.bottomleft.bottomleft import TextDialog
 from src.modules.bottomleft.bottomleft import ImageDialog
 from src.modules.bottomleft.bottomleft import AudioDialog
@@ -17,11 +17,14 @@ class MainView(Widget):
     mainStream = ObjectProperty()
     bottom_left = ObjectProperty()
     btn_start = ObjectProperty()
+    btn_display_mini = ObjectProperty()
+    btn_switch = ObjectProperty()
     # btn_record = ObjectProperty()
     # btn_setting = ObjectProperty()
     login_popup = ObjectProperty()
     right_content = ObjectProperty()
     videoBuffer = ObjectProperty()
+    showMiniD = BooleanProperty(False)
 
     def __init__(self, **kwargs):
         super(MainView, self).__init__(**kwargs)
@@ -124,9 +127,8 @@ class MainView(Widget):
         if self.mainStream is not None:
             self.mainStream.on_change_Volume(idx, volume)
 
-    def mClick(self, obj):
-        if obj == 'start':
-            if self.mainStream.isStream is False:
+    def start_stream(self):
+        if self.mainStream.isStream is False:
                 if len(self.bottom_left.stream_server.text) == 0 or len(self.bottom_left.stream_key.text) == 0:
                     return False
                 self.mainStream.set_url_stream(
@@ -141,18 +143,25 @@ class MainView(Widget):
                         self.setting['stream_key'] = self.bottom_left.stream_key.text
                     helper._write_setting(self.setting)
 
-            elif self.mainStream.isStream is True:
-                self.mainStream.stopStream()
-                self.btn_start.text = "Start Streaming"
-                self.btn_start.background_color = .29, .41, .55, 1
-        # elif obj == 'record':
-        #     if self.mainStream.isRecord is False:
-        #         self.btn_record.text = "Stop Record"
-        #         self.btn_record.background_color = .29, .41, .15, 0.9
-        #     elif self.mainStream.isStream is True:
-        #         self.btn_record.text = "Start Record"
-        #         self.btn_record.background_color = .29, .41, .55, 1
-        #     self.mainStream.record()
+        elif self.mainStream.isStream is True:
+            self.mainStream.stopStream()
+            self.btn_start.text = "Start Streaming"
+            self.btn_start.background_color = .29, .41, .55, 1
+
+    def show_mini_display(self):
+        if self.showMiniD is False:
+            self.showMiniD = True
+            self.btn_display_mini.text = "Hide Display Mini"
+            self.btn_display_mini.background_color = .29, .41, .15, 0.9
+            self.mainStream.show_camera_mini()
+        else:
+            self.showMiniD = False
+            self.btn_display_mini.text = "Show Display mini"
+            self.btn_display_mini.background_color = .29, .41, .55, 1
+            self.mainStream.hide_camera_mini()
+
+    def switch_display(self):
+        self.mainStream.switch_display()
 
     def triggerStop(self):
         self.mainStream.stopStream()

@@ -16,9 +16,7 @@ class L500_model(HTTP_MODEL):
         return self.v2_get('/v2/service/l500/l2019_listoftabL500_prov', param)
 
 #POST
-
 #Lưu thông tin CAMERA
-
 #  FO100: , // ID Owner
 #  LV501: , // Name CAMERA (Note)
 #  LV502: , // IP
@@ -30,18 +28,3 @@ class L500_model(HTTP_MODEL):
 #  LN508: , // Type CAM (0: Cam cố định, 1: Cam của Biên Tập Viên)
 #  FO100M: ,// ID của member (BTV)
 #  LOGIN
-
-
-if __name__ == '__main__':
-    l500 = L500_model()
-    xxx = l500.l2019_listoftabL500_prov({
-        'FO100': 1932,  # ID của DN
-        'FO100M': 0,  # ID của member (BTV)
-        'PL500': 0,  # ID Link
-        'SORT': 1,  # 1: Cũ nhất, -1: Mới nhất
-        'OFFSET': 0,
-        'LIMIT': 20,
-        'LOGIN': 'Ân'
-    })
-
-    print(xxx)

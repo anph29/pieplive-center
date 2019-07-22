@@ -42,7 +42,7 @@ def calcCurentSeccondInDay():
     dt = datetime.datetime.now()
     return dt.hour * 3600 + dt.minute * 60 + dt.second
 
-def _calc_time_point(index, schedule=[], startTime=0):
+def calc_schedule_runtime(index, schedule=[], startTime=0):
     callWrite = not bool(schedule)
     schedule = schedule or _load_schedule()
     startTime = startTime or calcCurentSeccondInDay()
@@ -280,6 +280,9 @@ def makeSureResourceFolderExisted():
     # resource
     if not os.path.exists(resrcPth):
         zip_helper.extractZip('./resource.zip', '../')
+    # resource/temp
+    if not os.path.exists(resrcPth + '/temp'):
+        os.mkdir(resrcPth + '/temp')
     # resource/cfg
     if not os.path.exists(resrcPth + '/cfg'):
         os.mkdir(resrcPth + '/cfg')

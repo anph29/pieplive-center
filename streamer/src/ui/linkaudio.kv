@@ -1,0 +1,85 @@
+#:import helper src.utils.helper
+
+<LinkAudio>:
+    rcv_audio:rcv_audio
+    title: 'Link Music To Scedule'
+    color:1,0,0,1
+    size_hint:None, None
+    width:sp(500)
+    height:sp(400)
+    auto_dismiss: False
+    padding:20
+    BoxLayout:
+        padding:20, 20, 20, 0
+        spacing:10
+        ListAudio:
+            id:rcv_audio
+            viewclass: 'RCVAudio'
+            size_hint:1,None
+            height: self.parent.height - dp(20+62+10)
+            scroll_type: ['bars', 'content']
+            bar_width: 10
+            canvas.before:
+                Color: 
+                    rgb:(.1,.1,.1)
+                Rectangle:
+                    size:self.size
+                    pos:self.pos
+            BoxAudio:
+                spacing: 1
+                default_size: None, 22
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                multiselect: False
+                touch_multiselect: False
+
+        Widget:
+        FloatLayout:
+            size_hint: 1, None
+            height: 50
+
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint: None, 1
+                pos_hint:{'y':0, 'right':1}
+                spacing:10
+                width:320
+                padding:0
+                Button:
+                    text: 'OK'
+                    on_release: root.on_ok()
+                    width:100
+                Button:
+                    text: 'Remove'
+                    on_release: root.on_remove()
+                    width:100
+                Button:
+                    text: 'Cancel'  
+                    on_release: root.on_cancel()
+                    width:100
+
+
+<RCVAudio>:
+    canvas.before:
+        Color: 
+            rgb:((.1,.1,.1),(.25,.25,.25))[root.selected]
+        Rectangle:
+            size:self.size
+            pos:self.pos
+    padding: 0,1,0,1
+    BoxLayout:
+        orientation:'horizontal'
+        size_hint: 1, None
+        height: 22
+        spacing:5
+    
+        Label:
+            font_size: 13
+            text: root.name
+            text_size: self.width, self.height
+            valign: 'center'
+            halign: 'justify'
+            color: 1,1,1,1
+            markup: True

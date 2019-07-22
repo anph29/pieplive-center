@@ -70,4 +70,4 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
         return f'{h}h {m}:{s}'
 
     def link_audio(self, obj):
-        self.parent.parent.link_audio(obj, self.index)
+        self.parent.parent.link_audio(obj, self.index,self.audio)

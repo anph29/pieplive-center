@@ -451,8 +451,8 @@ class ListSchedule(RecycleView):
         except:
             pass
     
-    def link_audio(self, _parent, idx):
-        _audio = LinkAudio(_parent,idx, self.link_audio_result)
+    def link_audio(self, _parent, idx, src):
+        _audio = LinkAudio(_parent,idx, src, self.link_audio_result)
         _audio.open()
 
     def link_audio_result(self,src, idx):

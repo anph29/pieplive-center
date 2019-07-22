@@ -7,12 +7,12 @@ from src.constants import UI
 from src.enums import MediaType
 
 class PopupAddResource(object):
-    useLocal = False
-    popup = None
-    error = False
-
     def __init__(self, parent):
         self.parent = parent
+        self.useLocal = False
+        self.popup = None
+        self.error = False
+        self.directory = None
 
     def initGUI(self, evt):
         # first destroy
@@ -135,28 +135,29 @@ class PopupAddResource(object):
         # return ''.join((fpath.split('/')[-1]).split('.')[0,-1])
 
     def onOkFolder(self):
-        for file in os.listdir(self.directory):
-            fname = os.fsdecode(file)
-            fpath = os.path.join(self.directory, fname).replace('\\', '/')
-            if os.path.isfile(fpath):
-                isImg = ftype.isImage(fpath)
-                isVideo = ftype.isVideo(fpath)
-                if isImg or isVideo:
-                    dt = {
-                        "id" : scryto.hash_md5_with_time(fpath),
-                        "name": self.getNameFromPath(fpath),
-                        "url": fpath
-                    }
-                    if self.parent.tabType == MediaType.IMAGE and isImg:
-                        dt["type"] = 'IMG'
-                        self.parent.addMediaToList(dt)
-                        self.parent.addMedia(dt)
-                    elif self.parent.tabType == MediaType.VIDEO and isVideo:
-                        dt["type"] = 'VIDEO'
-                        dt["duration"] = helper.getVideoDuration(fpath)
-                        self.parent.addMediaToList(dt)
-                        self.parent.addMedia(dt)
-        #   
+        if bool(self.directory):
+            for file in os.listdir(self.directory):
+                fname = os.fsdecode(file)
+                fpath = os.path.join(self.directory, fname).replace('\\', '/')
+                if os.path.isfile(fpath):
+                    isImg = ftype.isImage(fpath)
+                    isVideo = ftype.isVideo(fpath)
+                    if isImg or isVideo:
+                        dt = {
+                            "id" : scryto.hash_md5_with_time(fpath),
+                            "name": self.getNameFromPath(fpath),
+                            "url": fpath
+                        }
+                        if self.parent.tabType == MediaType.IMAGE and isImg:
+                            dt["type"] = 'IMG'
+                            self.parent.addMediaToList(dt)
+                            self.parent.addMedia(dt)
+                        elif self.parent.tabType == MediaType.VIDEO and isVideo:
+                            dt["type"] = 'VIDEO'
+                            dt["duration"] = helper.getVideoDuration(fpath)
+                            self.parent.addMediaToList(dt)
+                            self.parent.addMedia(dt)
+            #   
         self.popup.destroy()
 
 

@@ -43,7 +43,7 @@ def calcCurentSeccondInDay():
     return dt.hour * 3600 + dt.minute * 60 + dt.second
 
 def calc_schedule_runtime(index, schedule=[], startTime=0):
-    callWrite = not bool(schedule)
+    isWriteToFile = not bool(schedule)
     schedule = schedule or _load_schedule()
     startTime = startTime or calcCurentSeccondInDay()
     newSchedule = []
@@ -61,7 +61,7 @@ def calc_schedule_runtime(index, schedule=[], startTime=0):
         #
         newSchedule.append(sch)
     #
-    if callWrite:
+    if isWriteToFile:
         _write_schedule(newSchedule)
     else:
         return newSchedule

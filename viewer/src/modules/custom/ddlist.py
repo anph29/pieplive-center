@@ -119,12 +119,12 @@ class Item(Frame):
         self.place_configure(x =self._x, y =self._y)
 
 class DDList(Frame):
-    def __init__(self, master, item_width=0, item_height=0, item_relief=None, item_background=None, item_borderwidth=None, offset_x=0, offset_y=0, gap=0, **kwargs):
+    def __init__(self, master, item_width=0, item_height=0, item_relief=None, item_background=None, item_borderwidth=None, offset_x=0, offset_y=0, gap=0, droppedCallback=None, **kwargs):
         kwargs["width"] = item_width + offset_x * 2
         kwargs["height"] = offset_y * 2
 
         Frame.__init__(self, master, **kwargs)
-
+        self.droppedCallback = droppedCallback
         self._item_borderwidth = item_borderwidth
         self._item_relief = item_relief
         self._item_background = item_background
@@ -303,6 +303,8 @@ class DDList(Frame):
             
         self._index_of_empty_container = None
         self._index_of_selected_item = None
+        if bool(self.droppedCallback):
+            self.droppedCallback()
 
     def _get_item_index(self, item):
         return self._position[item]

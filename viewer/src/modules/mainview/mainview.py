@@ -63,7 +63,7 @@ class MainView(tk.Frame):
         self.mediaList =  self.makeMediaListTab()
         self.superWrapper.add(self.mediaList, text="Live View", image=icMedia, compound=tk.LEFT)
          #
-        self.superWrapper.select(self.mediaList)
+        self.superWrapper.select(self.schedule)
         self.superWrapper.enable_traversal()
 
     #
@@ -108,28 +108,9 @@ class MainView(tk.Frame):
         self.toolbar = tk.Frame(self, relief=tk.FLAT, bg='#fff')
         self.toolbar.pack(side=tk.TOP, fill=tk.X)
         #
-        # self.packLeftToolbar()
         if bool(store._get('FO100')):
             self.packRightToolbar()
-    #
-    # def packLeftToolbar(self):
-    #     lefToolbar = tk.Frame(self.toolbar, relief=tk.FLAT, bg='#ccc')
-    #     lefToolbar.pack(side=tk.LEFT, fill=tk.Y)
-    #     #
-    #     photo = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_clock.png') 
-    #     ptSchedule = photo.subsample(4,4) 
-    #     btnSchedule = tk.Button(lefToolbar, text=' Schedule', width=100, command=self.showScheduleSetting,
-    #             relief=tk.FLAT, image=ptSchedule, font=UI.TXT_FONT, compound=tk.LEFT, height=25, fg='#fff', bg='#ff2d55')
-    #     btnSchedule.photo = ptSchedule
-    #     btnSchedule.pack(side=tk.LEFT, padx=5, pady=5) 
-    #     #
-    #     photo1 = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_media.png') 
-    #     ptMedia = photo1.subsample(3,3) 
-    #     btnMedia = tk.Button(lefToolbar, text=' Media', width=100, command=self.showNormalTab, 
-    #             relief=tk.FLAT, image=ptMedia, font=UI.TXT_FONT, compound=tk.LEFT, height=25, fg='#ff2d55', bg='#fff')
-    #     btnMedia.photo = ptMedia
-    #     btnMedia.pack(side=tk.LEFT, padx=(0, 5), pady=5)
-    #
+
     def packRightToolbar(self):
         rightToolbar = tk.Frame(self.toolbar, relief=tk.FLAT, bg='#fff')
         rightToolbar.pack(side=tk.RIGHT, fill=tk.Y)

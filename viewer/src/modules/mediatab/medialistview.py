@@ -34,11 +34,12 @@ class MediaListView(MediaTab):
             item_borderwidth=1,
             item_relief=tk.FLAT,
             borderwidth=0,
-            bg="#fff")
+            bg="#fff",
+            droppedCallback=self.saveSortedList)
 
     def initUI(self):
         super(MediaListView, self).initUI()
-        self.showCmdSaveSortedMediaLst()
+        # self.showCmdSaveSortedMediaLst()
         if self.tabType == MediaType.IMAGE or self.tabType == MediaType.VIDEO:
             self.showAddCamBtn()
         #
@@ -67,24 +68,29 @@ class MediaListView(MediaTab):
         lblPush.bind("<Button-1>", self.pushAllToSchedule)
         lblPush.pack(side=tk.LEFT, padx=(5,0))
 
-    def showCmdSaveSortedMediaLst(self):
-        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}check-green.png"))
-        self.cmdSaveSorted = tk.Label(self.tbright, image=imageBin, cursor='hand2', bg=self.tbBgColor)
-        self.cmdSaveSorted.image = imageBin
-        self.cmdSaveSorted.bind("<Button-1>", self.saveSortedList)
-        self.cmdSaveSorted.pack(side=tk.RIGHT, padx=(0, 15), pady=5)
-        ToolTip(self.cmdSaveSorted, "Save sorted medias")
+    # def showCmdSaveSortedMediaLst(self):
+    #     # btn save
+    #     imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}check-green.png"))
+    #     self.cmdSaveSorted = tk.Label(self.tbright, image=imageBin, cursor='hand2', bg=self.tbBgColor)
+    #     self.cmdSaveSorted.image = imageBin
+    #     self.cmdSaveSorted.bind("<Button-1>", self.askSaveSortedList)
+    #     self.cmdSaveSorted.pack(side=tk.RIGHT, padx=(0, 15), pady=5)
+    #     ToolTip(self.cmdSaveSorted, "Save sorted media list")
+    #     # checkbox auto save
+
 
     def clearView(self):
         super(MediaListView, self).clearView()
         self.ddlist._clear_all()
 
-    def saveSortedList(self, evt):
+    def askSaveSortedList(self, evt):
         if messagebox.askyesno("PiepMe", "Are you sure save sorted media list?"):
-            sorted = list(map(lambda x:x.value, self.ddlist._list_of_items))
-            self.clearData()
-            self.writeLsMedia(sorted)
-            self.tabRefresh(None)
+            self.saveSortedList()
+            
+    def saveSortedList(self):
+        sorted = list(map(lambda x:x.value, self.ddlist._list_of_items))
+        self.clearData()
+        self.writeLsMedia(sorted)
 
     def callShowPopup(self, data):
        self.schedule.showAddToSchedulePopup(data)

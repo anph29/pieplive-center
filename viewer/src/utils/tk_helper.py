@@ -1,6 +1,7 @@
 import tkinter as tk
 from . import  helper
 import ctypes
+import re
 
 
 def makePiepMePopup(title, w=300, h=200, padx=20, pady=10):
@@ -24,3 +25,7 @@ def getCenterX(w):
 def character_limit(strVar, limit=6):
     if len(strVar.get()) > limit:
         strVar.set(strVar.get()[0:limit])
+
+def verifyHMS_val(strvar):
+    character_limit(strvar, limit=2)
+    strvar.set(re.sub(r"^[^0-9]{2}$", '', strvar.get()))

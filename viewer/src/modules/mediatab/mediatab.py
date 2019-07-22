@@ -53,7 +53,6 @@ class MediaTab(tk.Frame):
             else:
                 m.updateLightColor(0)
 
-
     def stopListenerStream(self):
         if self.tabType == MediaType.PRESENTER and bool(self.listenerStream):
             self.listenerStream.close()
@@ -72,7 +71,7 @@ class MediaTab(tk.Frame):
         
     def showSelectAll(self):
         # select all
-        self.checkbox = tk.Checkbutton(self.tbleft , variable=self.checkall, onvalue=True, offvalue=False, height=3, width=3, bg=self.tbBgColor, bd=0, cursor='hand2', command=self.tabSelectAll)
+        self.checkbox = tk.Checkbutton(self.tbleft , variable=self.checkall, onvalue=True, offvalue=False, height=2, width=2, bg=self.tbBgColor, bd=0, cursor='hand2', command=self.tabSelectAll)
         self.checkbox.pack(side=tk.LEFT, fill=tk.Y)
         ToolTip(self.checkbox, 'Select all media')
     
@@ -91,7 +90,7 @@ class MediaTab(tk.Frame):
         self.cmdF5 = tk.Label(self.tbright, image=imageBin, cursor='hand2', bg=self.tbBgColor)
         self.cmdF5.image = imageBin
         self.cmdF5.bind("<Button-1>", self.tabRefresh)
-        self.cmdF5.pack(side=tk.RIGHT, padx=(0, 15), pady=5)
+        self.cmdF5.pack(side=tk.RIGHT, padx=(0, 5), pady=5)
         ToolTip(self.cmdF5, "Refresh")
 
     def tabRefresh(self, evt):
@@ -117,7 +116,7 @@ class MediaTab(tk.Frame):
         self.cmdAdd = tk.Label(self.tbright, image=imAdd, cursor='hand2', bg=self.tbBgColor)
         self.cmdAdd.image = imAdd
         self.cmdAdd.bind("<Button-1>", popupaddresource.initGUI)
-        self.cmdAdd.pack(side=tk.RIGHT, padx=15, pady=5)
+        self.cmdAdd.pack(side=tk.LEFT, padx=5, pady=5)
         ToolTip(self.cmdAdd, "Add new media")
 
     def showLsMedia(self):

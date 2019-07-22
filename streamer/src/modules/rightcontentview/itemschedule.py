@@ -15,6 +15,7 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
     name = StringProperty()
     duration = NumericProperty()
     timepoint = NumericProperty()
+    audio = StringProperty()
     selected = BooleanProperty(False)
     selectable = BooleanProperty(True)
     kvcam = ObjectProperty()
@@ -27,6 +28,7 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
         self.name = data['name']
         self.duration = data['duration']
         self.timepoint = data['timepoint']
+        self.audio = data['audio']
         self.kvcam.set_data_source(data)
         self.active = data['active']
         self.isCheckItem.active = False
@@ -66,3 +68,6 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
     def viewTimePoint(self,_second):
         h,m,s = helper.convertSecNoToHMS(_second, toObj=True).values()
         return f'{h}h {m}:{s}'
+
+    def link_audio(self, obj):
+        self.parent.parent.link_audio(obj, self.index)

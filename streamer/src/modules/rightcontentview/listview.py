@@ -4,6 +4,7 @@ from kivy.properties import StringProperty
 from kivy.clock import Clock
 from src.modules.custom.popup import PiepMeConfirmPopup
 import datetime
+from src.modules.custom.linkaudio import LinkAudio
 
 class ListMedia(RecycleView):
 
@@ -332,6 +333,7 @@ class ListSchedule(RecycleView):
             map(
                 lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'duration': cam['duration'], 
                 'timepoint': cam['timepoint'] if 'timepoint' in cam else 0,
+                'audio': cam['audio'] if 'audio' in cam else '',
                 'list':'SCHEDULE',
                 'active': (False,True) [cam['id'] == self.item_playing]},
                 helper._load_schedule()
@@ -351,7 +353,7 @@ class ListSchedule(RecycleView):
     def clean_data_to_save_json(self):
         return list(
             map(
-                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'duration': cam['duration'], 'timepoint': cam['timepoint']},
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'duration': cam['duration'], 'timepoint': cam['timepoint'],'audio': cam['audio']},
                 list(self.data)
             )
         )
@@ -423,7 +425,7 @@ class ListSchedule(RecycleView):
         self.total_time = helper.convertSecNoToHMS(tt)
 
     def makeTimePoint(self,index):
-        helper._calc_time_point(index)
+        helper.calc_schedule_runtime(index)
         self.set_data()
         self.refresh_view()
 
@@ -438,7 +440,7 @@ class ListSchedule(RecycleView):
                     s += self.data[i-1]['duration']
                     self.data[i]['timepoint'] = s
         else:
-            self.data = helper._calc_time_point(0,self.data)
+            self.data = helper.calc_schedule_runtime(0,self.data)
         helper._write_schedule(self.clean_data_to_save_json())
         self.refresh_view()
 
@@ -448,3 +450,12 @@ class ListSchedule(RecycleView):
                 child.refresh_view_attrs(self,child.index, self.data[child.index])
         except:
             pass
+    
+    def link_audio(self, _parent, idx):
+        _audio = LinkAudio(_parent,idx, self.link_audio_result)
+        _audio.open()
+
+    def link_audio_result(self,src, idx):
+        self.data[idx]['audio'] = src
+        helper._write_schedule(self.clean_data_to_save_json())
+        self.refresh_view()

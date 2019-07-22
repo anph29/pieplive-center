@@ -213,6 +213,17 @@ class MainStream(RelativeLayout):
             txt += f"[{numau}:a]volume=1[a{numau}];"
             _map += f'[a{numau}]'
 
+        if 'audio' in self.camera.data_src:
+            print('11111111111111111111')
+            if self.camera.data_src['audio'] != '':
+                print('2222222222222222222')
+                print(os.path.exists(self.camera.data_src['audio']))
+                print('33333333333333333')
+                inp.extend(['-stream_loop','-1',"-i", self.camera.data_src['audio']])
+                numau += 1
+                txt += f'[{numau}:a]volume=1[a{numau}];'
+                _map += f'[a{numau}]'
+
         if len(self.lsSource) > 0:
             for value in self.lsSource:
                 if value['active'] == 1:

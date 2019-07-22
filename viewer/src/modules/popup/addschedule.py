@@ -12,12 +12,13 @@ class PopupAddSchedule(object):
         self.media = data
     
     def setupData(self, edit=False):
+        self.id = self.media['id'] if edit else scryto.hash_md5_with_time(self.url)
+        self.eName = self.media['name'] if 'name' in self.media else ''
         self.url = self.media['url'] if 'url' in self.media else ''
         self.mtype = self.media['type'] if 'type' in self.media else ''
         self.duration = int(self.media['duration']) if 'duration' in self.media else 0
         self.timepoint = int(self.media['timepoint']) if 'timepoint' in self.media else 0
-        self.id = self.media['id'] if edit else scryto.hash_md5_with_time(self.url)
-        self.eName = self.media['name']
+        self.audio = self.media['audio'] if 'audio' in self.media else ''
         #
     def setting_hms(self):
         self.name.set(self.eName)
@@ -170,7 +171,8 @@ class PopupAddSchedule(object):
             'url': self.url, 
             'type': self.mtype,
             'duration': helper.convertHMSNoToSec({'h': self.hh.get(), 'm': self.mm.get(), 's': self.ss.get()}),
-            'timepoint':self.timepoint
+            'timepoint':self.timepoint,
+            'audio':self.audio
         })
         self.popup.destroy()
 
@@ -181,6 +183,7 @@ class PopupAddSchedule(object):
             'url': self.url, 
             'type': self.mtype,
             'duration': self.duration,
-            'timepoint': helper.convertHMSNoToSec({'h': self.HH.get(), 'm': self.MM.get(), 's': self.SS.get()})
+            'timepoint': helper.convertHMSNoToSec({'h': self.HH.get(), 'm': self.MM.get(), 's': self.SS.get()}),
+            'audio':self.audio
         })
         self.popupRuntime.destroy()

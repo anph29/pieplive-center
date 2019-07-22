@@ -34,14 +34,10 @@ class MediaItem(tk.Frame):
     def updateLightColor(self, ln510):
         self.light.delete("all")
         self.LN510 = ln510
-        self.lblPlay.config(cursor='pirate')
         color = "#F00" # 0: OFF
         if ln510 == 1: # Press ON
             color = "#FF0"
-            self.lblPlay.config(cursor="wait")
         elif ln510 == 2: # READY
             color = "#0F0"
-            self.lblPlay.config(cursor='hand2')
-
         self.light.create_circle(6, 6, 6, fill=color, width=0)
 

@@ -119,6 +119,10 @@ class MainView(Widget):
         if bool(data_src) and self.mainStream is not None:
             self.mainStream._set_capture(data_src, data_type, False)
 
+    def changeSrcMini(self, data_src, data_type):
+        if bool(data_src) and self.mainStream is not None:
+            self.mainStream._set_captureMini(data_src, data_type, False)
+
     def changeAudio(self, value):
         if value is not None and self.mainStream is not None:
             self.mainStream.set_device_audio(value)
@@ -161,7 +165,8 @@ class MainView(Widget):
             self.mainStream.hide_camera_mini()
 
     def switch_display(self):
-        self.mainStream.switch_display()
+        if self.showMiniD is True:
+            self.mainStream.switch_display()
 
     def triggerStop(self):
         self.mainStream.stopStream()

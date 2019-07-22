@@ -14,7 +14,7 @@
         orientation:'horizontal'
         size_hint: 1, 1
         pos_hint:{'x':0, 'y':0}
-        spacing:5
+        spacing:8
         padding: 5,0,0,0
         ImageButton:
             size_hint:None,1
@@ -31,11 +31,11 @@
             opacity: (0,1)[root.playable]
         ImageButton:
             size_hint:None,1
-            width: 12
+            width: (0,12)[app.root.showMiniD]
             pos_hint:{'top':1, 'right':1}
             source: helper._ICONS_PATH+'ic_video-w.png'
-            on_release:root.playMini()
-            opacity: (0,1)[root.showMiniD]
+            on_release:root.playMini(app.root.showMiniD)
+            opacity: (0,1)[app.root.showMiniD and root.playable]
         Label:
             size_hint:None,1
             width: (0,54)[root.listType == "VIDEO"]

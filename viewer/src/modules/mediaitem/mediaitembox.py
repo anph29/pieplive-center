@@ -187,7 +187,7 @@ class MediaItemBox(MediaItem):
         self.lblZoom.image = imagetk
 
      def updateLightColor(self, ln510):
-         super(MediaItemBox, self).updateLightColord(ln510)
+        super(MediaItemBox, self).updateLightColord(ln510)
         self.lblPlay.config(cursor='none')
         if ln510 == 1: # Press ON
             self.lblPlay.config(cursor="wait")

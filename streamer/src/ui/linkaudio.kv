@@ -64,7 +64,7 @@
 <RCVAudio>:
     canvas.before:
         Color: 
-            rgb:((.1,.1,.1),(.25,.25,.25))[root.selected]
+            rgb:((.1,.1,.1),(.25,.25,.25))[root.active]
         Rectangle:
             size:self.size
             pos:self.pos
@@ -75,7 +75,9 @@
         height: 22
         spacing:5
     
-        Label:
+        MyLabel:
+            size_hint: 1, 1
+            padding: 0,10
             font_size: 13
             text: root.name
             text_size: self.width, self.height
@@ -83,3 +85,4 @@
             halign: 'justify'
             color: 1,1,1,1
             markup: True
+            on_release: root.set_active()

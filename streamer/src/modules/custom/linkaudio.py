@@ -22,14 +22,15 @@ class LinkAudio(Popup):
     callback = ObjectProperty()
     lsAudio = []
 
-    def __init__(self, parent, idx, callback):
+    def __init__(self, parent, idx, src, callback):
         super(LinkAudio, self).__init__()
         self.idx = idx
         self.callback = callback
         self.lsAudio = []
-        for idx, _s in enumerate(parent.lsSource):
+
+        for _idx, _s in enumerate(parent.lsSource):
             if _s['type'] == 'audio':
-                _audio = {'name': _s['name'],'src': _s['src'],'volume': _s['volume'],'idx': idx}
+                _audio = {'name': _s['name'],'src': _s['src'],'volume': _s['volume'],'active':True if _s['src'] == src else False}
                 self.lsAudio.append(_audio)
 
         self.rcv_audio.set_source(self.lsAudio)
@@ -64,10 +65,19 @@ class ListAudio(RecycleView):
 
     def getIndexOfSeleced(self):
         for child in self.children[0].children:
-            if child.selected:
+            if child.active:
                 return child.index
         return -1
     
+    def set_active(self,index):
+        for obj in self.data:
+            obj['active'] = False
+        self.data[index]['active'] = True
+        for child in self.children[0].children:
+            if child.index == index:
+                child.active = True
+            else:
+                child.active = False
 
 class BoxAudio(SelectableBox):
     """ Adds selection and focus behaviour to the view. """
@@ -79,10 +89,12 @@ class RCVAudio(RecycleDataViewBehavior, BoxLayout):
     name = StringProperty()
     selected = BooleanProperty(False)
     selectable = BooleanProperty(True)
+    active = BooleanProperty(True)
 
     def refresh_view_attrs(self, rv, index, data):
         self.index = index
         self.name = data['name']
+        self.active = data['active']
         return super(RCVAudio, self).refresh_view_attrs(rv, index, data)
 
     def on_touch_down(self, touch):
@@ -93,3 +105,6 @@ class RCVAudio(RecycleDataViewBehavior, BoxLayout):
 
     def apply_selection(self, rv, index, is_selected):
         self.selected = is_selected
+
+    def set_active(self):
+        self.parent.parent.set_active(self.index)

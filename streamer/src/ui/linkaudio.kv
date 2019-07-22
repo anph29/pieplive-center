@@ -10,13 +10,14 @@
     auto_dismiss: False
     padding:20
     BoxLayout:
-        padding:20, 20, 20, 0
-        spacing:10
+        orientation: 'vertical'
+        size_hint:1, 1
+        padding: 0,10,0,0
         ListAudio:
             id:rcv_audio
             viewclass: 'RCVAudio'
             size_hint:1,None
-            height: self.parent.height - dp(20+62+10)
+            height: self.parent.height - dp(60)
             scroll_type: ['bars', 'content']
             bar_width: 10
             canvas.before:
@@ -36,29 +37,26 @@
                 touch_multiselect: False
 
         Widget:
-        FloatLayout:
+        BoxLayout:
+            orientation: 'horizontal'
             size_hint: 1, None
+            pos_hint:{'y':0, 'right':1}
+            spacing:10
             height: 50
-
-            BoxLayout:
-                orientation: 'horizontal'
-                size_hint: None, 1
-                pos_hint:{'y':0, 'right':1}
-                spacing:10
-                width:320
-                padding:0
-                Button:
-                    text: 'OK'
-                    on_release: root.on_ok()
-                    width:100
-                Button:
-                    text: 'Remove'
-                    on_release: root.on_remove()
-                    width:100
-                Button:
-                    text: 'Cancel'  
-                    on_release: root.on_cancel()
-                    width:100
+            padding:0
+            Widget:
+            Button:
+                text: 'OK'
+                on_release: root.on_ok()
+                width:100
+            Button:
+                text: 'Remove'
+                on_release: root.on_remove()
+                width:100
+            Button:
+                text: 'Cancel'  
+                on_release: root.on_cancel()
+                width:100
 
 
 <RCVAudio>:
@@ -77,7 +75,7 @@
     
         MyLabel:
             size_hint: 1, 1
-            padding: 0,10
+            padding: 10,0
             font_size: 13
             text: root.name
             text_size: self.width, self.height

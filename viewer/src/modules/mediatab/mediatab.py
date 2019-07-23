@@ -35,23 +35,23 @@ class MediaTab(tk.Frame):
         data = message['data']
         id = ln510 = 0
         if bool(data):
-            if message['path'] == '/':
+            if message['path'] == '/': # case init: get multi data
                 keys = list(data.keys())
-                media = data[keys[0]]
-                id = int(media['_id'])
-                ln510 = int(media['LN510'])
-            else:# /[PL500]
+                for k in keys:
+                    media = data[k]
+                    id = int(media['_id'])
+                    ln510 = int(media['LN510'])
+                    self.changeStatePresenter(id, ln510)
+            else:# </PL500> case change: get single data
                 id = int(data['_id'])
                 ln510 = int(data['LN510'])
+                self.changeStatePresenter(id, ln510)
 
-        self.changeStatePresenter(id, ln510)
 
     def changeStatePresenter(self, id, ln510):
         for m in self._LS_MEDIA_UI:
             if int(m.id) == id:
                 m.updateLightColor(ln510)
-            else:
-                m.updateLightColor(0)
 
     def stopListenerStream(self):
         if self.tabType == MediaType.PRESENTER and bool(self.listenerStream):

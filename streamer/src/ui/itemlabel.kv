@@ -22,6 +22,7 @@
             pos_hint:{'top':1, 'right':1}
             source: helper._ICONS_PATH+'equi.gif'
             opacity: (0,1)[root.active]
+            tooltip_text: 'Playing'
         ImageButton:
             size_hint:None,1
             width: 12
@@ -29,6 +30,7 @@
             source: helper._ICONS_PATH+'play-w.png'
             on_release:root.play()
             opacity: (0,1)[root.playable]
+            tooltip_text: 'Play'
         ImageButton:
             size_hint:None,1
             width: (0,12)[app.root.showMiniD]
@@ -36,6 +38,7 @@
             source: helper._ICONS_PATH+'ic_video-w.png'
             on_release:root.playMini(app.root.showMiniD)
             opacity: (0,1)[app.root.showMiniD and root.playable]
+            tooltip_text: 'Play with mini display'
         Label:
             size_hint:None,1
             width: (0,54)[root.listType == "VIDEO"]
@@ -58,6 +61,7 @@
             opacity: (1,0)[root.listType == "PRESENTER"]
             source: helper._ICONS_PATH+'ic_clock.png'
             on_release:root.add_to_schedule()
+            tooltip_text: 'Add to schedule'
         CheckBox:
             id: isCheckItem
             size_hint:None,1
@@ -81,3 +85,4 @@
             opacity:(1,0)[root.active or root.listType == 'PRESENTER']
             source: helper._ICONS_PATH+'trash.png'
             on_release:root.open_confirm_rmv()
+            tooltip_text: 'Remove'

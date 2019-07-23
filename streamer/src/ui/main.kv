@@ -63,49 +63,32 @@
             BoxLayout:
                 id: control
                 size_hint:1, None
+                orientation:'horizontal'
                 height:40
                 padding:5
+                spacing: 10
                 pos_hint:{'x': 0, 'y': 0}
                 canvas.before:
                     Color:
-                        rgb: .75,.75,.75
+                        rgb: .25,.25,.25
                     Rectangle:
                         pos: self.pos
                         size: self.size
-                BoxLayout:
-                    spacing:5
-                    size_hint:1,1
-                    orientation:'horizontal'
-                    pos_hint:{'x': 0}
-                    Widget:
-                    Button:
-                        id:btn_start
-                        text:'Start Streaming'
-                        on_press: root.start_stream()
-                    Button:
-                        id:btn_display_mini
-                        text:'Show Display Mini'
-                        on_press: root.show_mini_display()
-                    Button:
-                        id:btn_switch
-                        text:'Switch Display'
-                        on_press: root.switch_display()
-                        opacity: (0,1)[root.showMiniD]
-                    # Button:
-                    #     id:btn_record
-                    #     text:'Start Recording'
-                    #     on_press: app.root.mClick('record')
-                    # Button:
-                    #     id:btn_setting
-                    #     text:'Settings'
-                    #     on_press: app.root.openSetting()
-                    # Button:
-                    #     text:'Exit'
-                    #     on_press: app.root.openSetting()
-                    # Button:
-                    #     text:'Login'
-                    #     on_press: app.root.openLogin()
-                    Widget:
+                Widget:
+                Button:
+                    id:btn_start
+                    text:'Start Streaming'
+                    on_press: root.start_stream()
+                Button:
+                    id:btn_display_mini
+                    text:'Show Display Mini'
+                    on_press: root.show_mini_display()
+                Button:
+                    id:btn_switch
+                    text:'Switch Display'
+                    on_press: root.switch_display()
+                    opacity: (0,1)[root.showMiniD]
+                Widget:
                 
             BottomLeft:
                 id:bottom_left

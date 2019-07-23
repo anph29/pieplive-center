@@ -1,13 +1,11 @@
 from kivy.uix.widget import Widget
-from kivy.properties import ObjectProperty, BooleanProperty
+from kivy.properties import ObjectProperty, BooleanProperty, StringProperty
 from src.modules.bottomleft.bottomleft import TextDialog
 from src.modules.bottomleft.bottomleft import ImageDialog
 from src.modules.bottomleft.bottomleft import AudioDialog
 from src.modules.custom.addschedule import AddSchedule
-# from src.modules.login import Login
 from src.modules.mainstream import MainStream
-from src.utils import kivyhelper as kv_helper
-from src.utils import helper
+from src.utils import helper, scryto
 from kivy.lang import Builder
 import sounddevice as sd
 
@@ -19,12 +17,11 @@ class MainView(Widget):
     btn_start = ObjectProperty()
     btn_display_mini = ObjectProperty()
     btn_switch = ObjectProperty()
-    # btn_record = ObjectProperty()
-    # btn_setting = ObjectProperty()
     login_popup = ObjectProperty()
     right_content = ObjectProperty()
     videoBuffer = ObjectProperty()
     showMiniD = BooleanProperty(False)
+    idSoundDevice = StringProperty('')
 
     def __init__(self, **kwargs):
         super(MainView, self).__init__(**kwargs)
@@ -86,11 +83,12 @@ class MainView(Widget):
             if self.audios is not None:
                 if 'Realtek High Defini' in self.audios['name']:
                     self.audios['name'] += 'tion Audio)'
+                self.idSoundDevice = scryto.hash_md5_with_time(self.audios['name'].replace('\\', '/'))
                 _audio = {
+                    'id': self.idSoundDevice,
                     'name': self.audios['name'],
-                    'value': self.audios['name'],
-                    'volume': 100,
-                    'idx': -1
+                    'src': self.audios['name'],
+                    'volume': 100
                 }
                 self.lsAudio.append(_audio)
                 self.changeAudio(self.audios['name'])
@@ -99,21 +97,21 @@ class MainView(Widget):
 
     def initSource(self):
         self.lsSource = helper._load_lsStaticSource()
+        for idx, _s in enumerate(self.lsSource):
+            if 'id' not in _s:
+                _s['id'] = scryto.hash_md5_with_time('')
+                self.lsSource[idx]['id'] = _s['id']
+            if _s['type'] == 'text':
+                self.mainStream.show_text( _s['id'], _s['label'], _s['font'], _s['size'],
+                                        _s['color'], _s['pos_x'], _s['pos_y'], _s['active'], True)
+            elif _s['type'] == 'image':
+                self.mainStream.show_image( _s['id'], _s['src'], _s['pos_x'], _s['pos_y'],
+                                        _s['width'], _s['height'], _s['active'], True)
+            elif _s['type'] == 'audio' and _s['active'] == 1:
+                _audio = {'id': _s['id'],'name': _s['name'],'src': _s['src'],'volume': _s['volume']}
+                self.lsAudio.append(_audio)
         self.mainStream.lsSource = self.lsSource
         self.bottom_left.list_source.set_source(self.lsSource)
-        for idx, _s in enumerate(self.lsSource):
-            _s['idx'] = idx
-            _s['total'] = len(self.lsSource)
-            if _s['type'] == 'text':
-                self.mainStream.show_text(_s['label'], _s['font'], _s['size'],
-                                        _s['color'], _s['pos_x'], _s['pos_y'], _s['active'], idx, True)
-            elif _s['type'] == 'image':
-                self.mainStream.show_image(_s['src'], _s['pos_x'], _s['pos_y'],
-                                        _s['width'], _s['height'], _s['active'], idx, True)
-            elif _s['type'] == 'audio' and _s['active'] == 1:
-                _audio = {'name': _s['name'],'value': _s['src'],'volume': _s['volume'],'idx': idx}
-                self.lsAudio.append(_audio)
-
 
     def changeSrc(self, data_src, data_type):
         if bool(data_src) and self.mainStream is not None:
@@ -127,9 +125,9 @@ class MainView(Widget):
         if value is not None and self.mainStream is not None:
             self.mainStream.set_device_audio(value)
 
-    def changeAudioVolume(self, idx, volume):
+    def changeAudioVolume(self, id, volume):
         if self.mainStream is not None:
-            self.mainStream.on_change_Volume(idx, volume)
+            self.mainStream.on_change_Volume(id, volume)
 
     def start_stream(self):
         if self.mainStream.isStream is False:
@@ -177,13 +175,13 @@ class MainView(Widget):
         ite = self.lsSource[index]
         if ite['type'] == 'audio':
             if value:
-                _audio = {'name':  ite['name'], 'value': ite['name'],
-                          'volume': ite['volume'], 'idx': ite['idx']}
+                _audio = {'id': ite['id'],'name':  ite['name'], 'src': ite['name'],
+                          'volume': ite['volume']}
                 self.bottom_left.list_mixer.add_source(_audio)
             else:
-                self.bottom_left.list_mixer.del_source(ite['idx'])
+                self.bottom_left.list_mixer.del_source(ite['id'])
         else:
-            self.mainStream.on_off_source(ite['idx'], value)
+            self.mainStream.on_off_source(ite['id'], value)
 
         self.lsSource[index]["active"] = value
         helper._write_lsStaticSource(self.lsSource)
@@ -207,10 +205,8 @@ class MainView(Widget):
 
     def add_text(self, index, name, label, font, size, color, pos_x, pos_y):
         if index == -1:
-            idx = 0
-            if len(self.lsSource) > 0:
-                idx = self.lsSource[len(self.lsSource)-1]['total']
             text = {
+                "id": scryto.hash_md5_with_time(label.replace('\\', '/')),
                 "type": "text",
                 "active": 1,
                 "name": name,
@@ -224,14 +220,12 @@ class MainView(Widget):
                 "shadow_x": 0,
                 "shadow_y": 0,
                 "box": None,
-                "box_color": None,
-                "idx": idx,
-                'total': idx+1
+                "box_color": None
             }
             self.lsSource.append(text)
             helper._write_lsStaticSource(self.lsSource)
             self.bottom_left.list_source.add_source(text)
-            self.mainStream.show_text(label, font, size, color, pos_x, pos_y, 1, idx, True)
+            self.mainStream.show_text(text['id'], label, font, size, color, pos_x, pos_y, 1, True)
         else:
             self.lsSource[index]['name'] = name
             self.lsSource[index]['label'] = label
@@ -240,14 +234,12 @@ class MainView(Widget):
             self.lsSource[index]['color'] = color
             helper._write_lsStaticSource(self.lsSource)
             self.bottom_left.list_source.update_source(index,{"name":name, "active": self.lsSource[index]["active"]})
-            self.mainStream.show_text(label, font, int(size), color, pos_x, pos_y, self.lsSource[index]["active"], self.lsSource[index]['idx'], False)
+            self.mainStream.show_text(self.lsSource[index]['id'],label, font, int(size), color, pos_x, pos_y, self.lsSource[index]["active"], False)
 
     def add_image(self, index, name, src, pos_x, pos_y, width, height):
         if index == -1:
-            idx = 0
-            if len(self.lsSource) > 0:
-                idx = self.lsSource[len(self.lsSource)-1]['total']
             image = {
+                "id": scryto.hash_md5_with_time(src.replace('\\', '/')),
                 "type": "image",
                 "active": 1,
                 "name": name,
@@ -257,14 +249,12 @@ class MainView(Widget):
                 "width": int(width),
                 "height": int(height),
                 "timeStart": None,
-                "timeEnd": None,
-                "idx": idx,
-                'total': idx+1
+                "timeEnd": None
             }
             self.lsSource.append(image)
             helper._write_lsStaticSource(self.lsSource)
             self.bottom_left.list_source.add_source(image)
-            self.mainStream.show_image(src, pos_x, pos_y, width, height, 1, idx,True)
+            self.mainStream.show_image(image['id'], src, pos_x, pos_y, width, height, 1,True)
         else:
             self.lsSource[index]['name'] = name
             self.lsSource[index]['src'] = src
@@ -272,43 +262,34 @@ class MainView(Widget):
             self.lsSource[index]['height'] = int(height)
             helper._write_lsStaticSource(self.lsSource)
             self.bottom_left.list_source.update_source(index,{"name":name, "active": self.lsSource[index]["active"]})
-            self.mainStream.show_image(src, pos_x, pos_y, int(width), int(height), self.lsSource[index]["active"], self.lsSource[index]['idx'], False)
+            self.mainStream.show_image(self.lsSource[index]['id'], src, pos_x, pos_y, int(width), int(height), self.lsSource[index]["active"], False)
 
     def add_audio(self, index, name, src, volume):
         if index == -1:
-            idx = 0
-            if self.lsSource is not None and len(self.lsSource) > 0:
-                idx = self.lsSource[len(self.lsSource)-1]['total']
             audio = {
+                "id": scryto.hash_md5_with_time(src.replace('\\', '/')),
                 "type": "audio",
                 "active": 1,
                 "name": name,
                 "src": src,
-                "volume": volume,
-                "idx": idx,
-                'total': idx+1
+                "volume": volume
             }
             self.lsSource.append(audio)
             helper._write_lsStaticSource(self.lsSource)
             self.bottom_left.list_source.add_source(audio)
-            self.bottom_left.list_mixer.add_source({'name': name,'value': src,'volume': volume,'idx': idx})
+            self.bottom_left.list_mixer.add_source({'id': audio['id'],'name': name,'src': src,'volume': volume})
         else:
             self.lsSource[index]['name'] = name
             self.lsSource[index]['src'] = src
             self.lsSource[index]['volume'] = volume
             self.bottom_left.list_source.update_source(index,{"name":name, "active": self.lsSource[index]["active"]})
-            self.bottom_left.list_mixer.update_source({'name': name,'value': src,'volume': volume,'idx': self.lsSource[index]['idx']})
+            self.bottom_left.list_mixer.update_source({'id': self.lsSource[index]['id'],'name': name,'src': src,'volume': volume})
 
     def delete_source(self, index):
         if self.lsSource[index]['type'] == 'audio':
-            self.bottom_left.list_mixer.del_source(self.lsSource[index]['idx'])
+            self.bottom_left.list_mixer.del_source(self.lsSource[index]['id'])
         del(self.lsSource[index])
         helper._write_lsStaticSource(self.lsSource)
-
-    def openLogin(self):
-        pass
-        # self.login_popup = Login(self)
-        # self.login_popup.open()
 
     def on_stop(self):
         if self.mainStream is not None:
@@ -316,9 +297,9 @@ class MainView(Widget):
         if self.right_content is not None:
             self.right_content.tab_presenter.ls_presenter.stopListenerStream()
 
-    def on_change_position(self, idx, pos_x, pos_y):
+    def on_change_position(self, id, pos_x, pos_y):
         for _s in self.lsSource:
-            if _s['idx'] == idx:
+            if _s['id'] == id:
                 _s['pos_x'] = pos_x
                 _s['pos_y'] = pos_y
                 helper._write_lsStaticSource(self.lsSource)

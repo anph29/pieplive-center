@@ -28,6 +28,12 @@ class PopupAddSchedule(object):
             self.popup.destroy()
         self.popup = tk_helper.makePiepMePopup('Add to Schedule', w=400, h=200, padx=0, pady=0)
         # var
+        self.hh = tk.StringVar()
+        self.hh.trace("w", self.limithh)
+        self.mm = tk.StringVar()
+        self.mm.trace("w", self.limitmm)
+        self.ss = tk.StringVar()
+        self.ss.trace("w", self.limitss)
         self.setupData(edit=edit)
         self.name = tk.StringVar()
         self.name.set(self.eName)
@@ -50,23 +56,26 @@ class PopupAddSchedule(object):
         lDura = tk.Label(fDura, text="Duration:", width=7, anchor=tk.W, font=UI.TXT_FONT)
         lDura.pack(side=tk.LEFT, fill=tk.Y)
         ##
-        self.hh = ttk.Combobox(fDura, values=[ x for x in range(0,100) ], width=4)
-        self.hh.pack(side=tk.LEFT, fill=tk.X, padx=5)
-        self.hh.current(h)
+        hh = ttk.Combobox(fDura, values=self.getListFromRange(end=100), width=4, textvariable=self.hh, justify='right')
+        hh.bind("<FocusIn>", lambda args: hh.select_range('0', tk.END))
+        hh.current(h)
+        hh.pack(side=tk.LEFT, fill=tk.X, padx=5)
         ##
         separator = tk.Label(fDura, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
         separator.pack(side=tk.LEFT, padx=5)
         ##
-        self.mm = ttk.Combobox(fDura, values=[ x for x in range(0,60) ], width=4)
-        self.mm.pack(side=tk.LEFT, fill=tk.X, padx=5)
-        self.mm.current(m)
+        mm = ttk.Combobox(fDura, values=self.getListFromRange(), width=4, textvariable=self.mm, justify='right')
+        mm.bind("<FocusIn>", lambda args: hh.select_range('0', tk.END))
+        mm.current(m)
+        mm.pack(side=tk.LEFT, fill=tk.X, padx=5)
         ##
         separator = tk.Label(fDura, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
         separator.pack(side=tk.LEFT, padx=5)
         ##
-        self.ss = ttk.Combobox(fDura, values=[ x for x in range(0,60) ], width=4)
-        self.ss.pack(side=tk.LEFT, fill=tk.X, padx=5)
-        self.ss.current(s)
+        ss = ttk.Combobox(fDura, values=self.getListFromRange(), width=4, textvariable=self.ss, justify='right')
+        ss.bind("<FocusIn>", lambda args: ss.select_range('0', tk.END))
+        ss.current(s)
+        ss.pack(side=tk.LEFT, fill=tk.X, padx=5)
         #4. Button
         fBtn = tk.Frame(wrapper, pady=10, padx=20)
         btnCancel = tk.Button(fBtn, text="Cancel", bd=2, relief=tk.RAISED, command=self.popup.destroy)
@@ -83,7 +92,14 @@ class PopupAddSchedule(object):
             self.popupRuntime.destroy()
         self.popupRuntime = tk_helper.makePiepMePopup('Change runtime', w=300, h=120, padx=0, pady=0)
         # var
+        self.HH = tk.StringVar()
+        self.HH.trace("w", self.limitHH)
+        self.MM = tk.StringVar()
+        self.MM.trace("w", self.limitMM)
+        self.SS = tk.StringVar()
+        self.SS.trace("w", self.limitSS)
         self.setupData(edit=True)
+
         H,M,S = helper.convertSecNoToHMS(self.timepoint, toObj=True).values()
         wrapper = tk.Frame(self.popupRuntime)
         wrapper.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
@@ -94,23 +110,26 @@ class PopupAddSchedule(object):
         lTime = tk.Label(fTime, text="Runtime:", width=7, anchor=tk.W, font=UI.TXT_FONT)
         lTime.pack(side=tk.LEFT, fill=tk.Y)
         ##
-        self.HH = ttk.Combobox(fTime, values=[ x for x in range(0,100) ], width=4)
-        self.HH.pack(side=tk.LEFT, fill=tk.X, padx=5)
-        self.HH.current(H)
+        HH = ttk.Combobox(fTime, values=self.getListFromRange(end=100), textvariable=self.HH, width=4, justify='right')
+        HH.bind("<FocusIn>", lambda args: HH.select_range('0', tk.END))
+        HH.current(H)
+        HH.pack(side=tk.LEFT, fill=tk.X, padx=5)
         ##
         separator = tk.Label(fTime, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
         separator.pack(side=tk.LEFT, padx=5)
         ##
-        self.MM = ttk.Combobox(fTime, values=[ x for x in range(0,60) ], width=4)
-        self.MM.pack(side=tk.LEFT, fill=tk.X, padx=5)
-        self.MM.current(M)
+        MM = ttk.Combobox(fTime, values=self.getListFromRange(), width=4, textvariable=self.MM, justify='right')
+        MM.bind("<FocusIn>", lambda args: MM.select_range('0', tk.END))
+        MM.current(M)
+        MM.pack(side=tk.LEFT, fill=tk.X, padx=5)
         ##
         separator = tk.Label(fTime, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
         separator.pack(side=tk.LEFT, padx=5)
         ##
-        self.SS = ttk.Combobox(fTime, values=[ x for x in range(0,60) ], width=4)
-        self.SS.pack(side=tk.LEFT, fill=tk.X, padx=5)
-        self.SS.current(S)
+        SS = ttk.Combobox(fTime, values=self.getListFromRange(), width=4, textvariable=self.SS, justify='right')
+        SS.bind("<FocusIn>", lambda args: SS.select_range('0', tk.END))
+        SS.current(S)
+        SS.pack(side=tk.LEFT, fill=tk.X, padx=5)
          #1. Button
         fBtn = tk.Frame(wrapper, pady=10, padx=20)
         btnCancel = tk.Button(fBtn, text="Cancel", bd=2, relief=tk.RAISED, command=self.popupRuntime.destroy)
@@ -120,6 +139,9 @@ class PopupAddSchedule(object):
         btnOk.configure(width=7)
         btnOk.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
         fBtn.pack(side=tk.BOTTOM, fill=tk.X)
+
+    def getListFromRange(self, end=60):
+        return [ (f'{x}', f'0{x}')[x<10] for x in range(0,end) ]
 
     def limithh(self, *arg):
        tk_helper.verifyHMS_val(self.hh)
@@ -145,7 +167,7 @@ class PopupAddSchedule(object):
             'name': self.name.get(), 
             'url': self.url, 
             'type': self.mtype,
-            'duration': helper.convertHMSNoToSec({'h': self.hh.get(), 'm': self.mm.get(), 's': self.ss.get()}),
+            'duration': helper.convertHMSNoToSec({'h': int(self.hh.get()), 'm': int(self.mm.get()), 's': int(self.ss.get())}),
             'timepoint':self.timepoint,
             'audio':self.audio
         })
@@ -158,7 +180,7 @@ class PopupAddSchedule(object):
             'url': self.url, 
             'type': self.mtype,
             'duration': self.duration,
-            'timepoint': helper.convertHMSNoToSec({'h': self.HH.get(), 'm': self.MM.get(), 's': self.SS.get()}),
+            'timepoint': helper.convertHMSNoToSec({'h': int(self.HH.get()), 'm': int(self.MM.get()), 's': int(self.SS.get())}),
             'audio':self.audio
         })
         self.popupRuntime.destroy()

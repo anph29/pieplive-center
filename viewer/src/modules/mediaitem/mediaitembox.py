@@ -28,6 +28,7 @@ class MediaItemBox(MediaItem):
         self.set_data(media)
         self.botBg = '#BDC3C7'
         self.after(100, self.initGUI)
+        self.top = None
 
     def initGUI(self):
         ww = self.cell_width + 5
@@ -43,6 +44,7 @@ class MediaItemBox(MediaItem):
     def initTOP(self):
         self.top = tk.Frame(self.wrapper, bd=0, relief=tk.FLAT, bg="#ccc", width=self.cell_width, height=self.top_height)
         self.top.pack(side=tk.TOP)
+
         self.top.bind("<Button-1>", self.playOrPauseClick)
         if self.mtype == 'IMG':
             try:
@@ -58,12 +60,12 @@ class MediaItemBox(MediaItem):
         #   
         resized = im.resize((nW, nH), Image.ANTIALIAS)
         imgMedia = ImageTk.PhotoImage(resized)
-        lblMedia = tk.Label(self.top, image=imgMedia, bg="#f2f2f2", cursor='hand2')
-        lblMedia.photo = imgMedia
+        self.topImage = tk.Label(self.top, image=imgMedia, bg="#f2f2f2", cursor='hand2')
+        self.topImage.photo = imgMedia
         #
         if self.mtype != 'IMG':
-            lblMedia.bind('<Button-1>', self.initVLC)
-        lblMedia.pack()
+            self.topImage.bind('<Button-1>', self.initVLC)
+        self.topImage.pack()
 
     def initBOTTOM(self):
         bottom = tk.Frame(self.wrapper, bd=5, relief=tk.FLAT, bg=self.botBg, width=self.cell_width, height=self.bot_height)
@@ -102,13 +104,20 @@ class MediaItemBox(MediaItem):
         ToolTip(self.lblZoom, "Zoom in")
 
     def initVLC(self, evt):
+        # video, camera || presenter onlinne
         if self.parentTab.tabType != MediaType.PRESENTER or (self.parentTab.tabType == MediaType.PRESENTER and self.LN510 == 2):
+            self.topImage.config(cursor="wait")
+            #
             self.Instance = vlc.Instance()
+            self.media = self.Instance.media_new(self.rtmp if self.parentTab.tabType == MediaType.PRESENTER else self.url)
+            #
             self.player = self.Instance.media_player_new()
             self.player.audio_set_volume(0)
-            self.initPlayerMedia()
+            self.player.set_media(self.media)
             self.player.set_hwnd(self.top.winfo_id())
-            self.play()
+            #
+            self.media.release()
+            # self.playOrPause()
             if self.mtype == 'VIDEO':
                 self.after(100, self.playOrPause)
             if self.mtype == 'RTSP':
@@ -130,11 +139,6 @@ class MediaItemBox(MediaItem):
             self.updateZoomIcon('out')
             ToolTip(self.lblZoom, "Zoom out")
             self.zoomIn = True
-
-    def initPlayerMedia(self):
-        self.media = self.Instance.media_new(self.url)
-        self.player.set_media(self.media)
-        self.media.release()
 
     def updateProgress(self):
         events = self.player.event_manager()
@@ -173,6 +177,8 @@ class MediaItemBox(MediaItem):
             else:
                 self.play()
                 self.updatePlayIcon('pause')
+                self.topImage.config(cursor="none")
+
 
     def updatePlayIcon(self, ico):
         image = Image.open(f"{helper._ICONS_PATH}{ico}-b.png")

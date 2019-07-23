@@ -6,7 +6,8 @@ class MediaItem(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         super(MediaItem, self).__init__(parent, *args, **kwargs)
         self.checked = tk.BooleanVar()
-
+        self.light = None
+        
     def get_data(self):
         return {
             'id':self.id,
@@ -15,7 +16,8 @@ class MediaItem(tk.Frame):
             'type': self.mtype,
             'duration': self.duration,
             'timepoint': self.timepoint,
-            'audio':self.audio
+            'audio':self.audio,
+            'rtpm':self.rtpm
         }
 
     def set_data(self, media):
@@ -26,6 +28,7 @@ class MediaItem(tk.Frame):
         self.duration = int(media['duration']) if 'duration' in media else 0
         self.timepoint = int(media['timepoint']) if 'timepoint' in media else 0
         self.audio = media['audio'] if 'audio' in media else ''
+        self.rtmp = media['rtmp'] if 'rtmp' in media else ''
 
     def deleteMedia(self, evt):
         if messagebox.askyesno("PiepMe", "Are you sure to delete this resource?"):

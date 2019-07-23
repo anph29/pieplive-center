@@ -26,3 +26,8 @@ class MediaGridView(DynamicGrid, MediaTab):
         self.context.config(state=tk.NORMAL)
         self.context.delete(1.0, tk.END)
         self.context.config(state=tk.DISABLED)
+
+    def tabRefresh(self, evt):
+        super(MediaGridView, self).tabRefresh(evt)
+        self.stopListenerStream()
+        self.after(500, self.turnOnObserver)

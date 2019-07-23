@@ -1,8 +1,10 @@
 import tkinter as tk
 
-class MultiScheduleRigh(tk.Frame):
+class MultiScheduleRight(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
-        super(MultiScheduleLeft, self).__init__()
+        super(MultiScheduleRight, self).__init__()
+        self.initUI()
 
     def initUI(self):
-        pass
+        self.schedule = MediaScheduleView(self, tabType=MediaType.SCHEDULE, bg="#fff")
+        self.schedule.pack(side=tk.TOP, fill=tk.BOTH, expand=True)

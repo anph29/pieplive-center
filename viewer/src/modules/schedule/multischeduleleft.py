@@ -1,9 +1,9 @@
 import tkinter as tk
-from src.modules.custom import DragDropListbox
+from src.modules.custom import DDList
 
-class MultiScheduleLeft(DragDropListbox):
+class MultiScheduleLeft(DDList):
     def __init__(self, parent, *args, **kwargs):
-        super(MultiScheduleLeft, self).__init__()
+        super(MultiScheduleLeft, self).__init__(parent, *args, **kwargs)
 
     def initUI(self):
         pass

@@ -83,9 +83,9 @@ class MediaListView(MediaTab):
         super(MediaListView, self).clearView()
         self.ddlist._clear_all()
 
-    def askSaveSortedList(self, evt):
-        if messagebox.askyesno("PiepMe", "Are you sure save sorted media list?"):
-            self.saveSortedList()
+    # def askSaveSortedList(self, evt):
+    #     if messagebox.askyesno("PiepMe", "Are you sure save sorted media list?"):
+    #         self.saveSortedList()
             
     def saveSortedList(self):
         sorted = list(map(lambda x:x.value, self.ddlist._list_of_items))

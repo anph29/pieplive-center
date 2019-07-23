@@ -20,7 +20,7 @@ class MediaTab(tk.Frame):
     def initUI(self):
         self.showToolBar()
         self.showLsMedia()
-        # self.after(1000, self.turnOnObserver)
+        self.after(500, self.turnOnObserver)
 
     def turnOnObserver(self):
         if bool(store._get('FO100')):
@@ -138,7 +138,8 @@ class MediaTab(tk.Frame):
         lsMedia = list(map(lambda l500: {
                     "id":  str(l500['_id']) or '',
                     "name": l500['LV501'] or '',
-                    "url": l500['LV507'if l500['LN508'] == 1 else 'LV506'],
+                    "url": l500['LV506'],
+                    "rtmp": l500['LV507'],
                     "type": helper.getMTypeFromUrl(l500['LV506'] or '')
                 }, lsMedia))
         self.writeLsMedia(lsMedia)

@@ -112,16 +112,19 @@
             size_hint:None,None
             size: 20,20
             on_release: root.open_add_media()
+            tooltip_text:'Add'
         ImageButton:
             source: helper._ICONS_PATH + 'f5W.png'
             size_hint:None,None
             size: 20,20
             on_release: ls_media.refresh_list()
+            tooltip_text:'Refresh'
         ImageButton:
             source: helper._ICONS_PATH + 'trash.png'
             size_hint:None,None
             size: 20,20
             on_release: ls_media.remove_selected()
+            tooltip_text:'Delete the selected'
             
 <TabImage>:
     ls_image:ls_image
@@ -160,16 +163,19 @@
             size_hint:None,None
             size: 20,20
             on_release: root.open_add_image()
+            tooltip_text:'Add'
         ImageButton:
             source: helper._ICONS_PATH + 'f5W.png'
             size_hint:None,None
             size: 20,20
             on_release: ls_image.refresh_list()
+            tooltip_text:'refresh'
         ImageButton:
             source: helper._ICONS_PATH + 'trash.png'
             size_hint:None,None
             size: 20,20
             on_release: ls_image.remove_selected()
+            tooltip_text:'Delete the selected'
 
 
 <TabCamera>:
@@ -209,16 +215,19 @@
             size_hint:None,None
             size: 20,20
             on_release: root.open_add_camera()
+            tooltip_text:'Add'
         ImageButton:
             source: helper._ICONS_PATH + 'f5W.png'
             size_hint:None,None
             size: 20,20
             on_release: ls_camera.refresh_list()
+            tooltip_text:'Refresh'
         ImageButton:
             source: helper._ICONS_PATH + 'trash.png'
             size_hint:None,None
             size: 20,20
             on_release: ls_camera.remove_selected()
+            tooltip_text:'Delete the selected'
 
 <TabPresenter>:
     ls_presenter:ls_presenter
@@ -257,6 +266,7 @@
             size_hint:None,None
             size: 20,20
             on_release: ls_presenter.refresh_list()
+            tooltip_text:'Refresh'
         # ImageButton:
         #     source: helper._ICONS_PATH + 'trash.png'
         #     size_hint:None,None
@@ -302,11 +312,13 @@
             size_hint:None,None
             size: 0,0
             on_release: root.f_root.play_schedule(self)
+            tooltip_text:'Add'
         ImageButton:
             source: helper._ICONS_PATH + 'f5W.png'
             size_hint:None,None
             size: 20,20
             on_release: ls_schedule.refresh_list()
+            tooltip_text:'Refresh'
         Widget:
             size_hint:None,1
             width: 2
@@ -315,6 +327,7 @@
             size_hint:None,None
             size: 20,20
             on_release: ls_schedule.remove_selected()
+            tooltip_text:'Delete the selected'
         Widget:
             size_hint:None,1
             width: 8

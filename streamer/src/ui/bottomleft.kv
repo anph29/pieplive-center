@@ -63,18 +63,21 @@
                 width: 16
                 source: helper._ICONS_PATH + 'add-w36.png'
                 on_release: root.open_add_source(self.parent)
+                tooltip_text:'Add'
             ImageButton:
                 size_hint:None,1
                 padding: 5
                 width: 16
                 source: helper._ICONS_PATH + 'pen.png'
                 on_release: list_source.edit_source()
+                tooltip_text:'Edit'
             ImageButton:
                 size_hint:None,1
                 padding: 5
                 width: 16
                 source: helper._ICONS_PATH + 'trash.png'
                 on_release: list_source.confirmDelete()
+                tooltip_text:'Delete'
     
     BoxLayout:
         canvas.before:

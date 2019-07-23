@@ -11,8 +11,6 @@ from pathlib import Path
 
 class KivyCameraMain(Image):
     capture = ObjectProperty(None)
-    crFrame = ObjectProperty(None)
-    name = StringProperty('')
     url = StringProperty('')
     resource_type = StringProperty('')
     buffer_rate = NumericProperty(0)
@@ -46,7 +44,6 @@ class KivyCameraMain(Image):
 
     def set_data_source(self, input, category):
         self.data_src = input
-        self.name = input['name']
         self.url = input['url']
         self.resource_type = input['type']
         self.category = category
@@ -137,10 +134,10 @@ class KivyCameraMain(Image):
         
     def process_set_data(self, second):
         try:
-            # self.stop.set()
-            # th = Thread(target=self.init_capture())
-            # th.start()
-            self.init_capture()
+            self.stop.set()
+            th = Thread(target=self.init_capture())
+            th.start()
+            # self.init_capture()
         except Exception:
             pass
 

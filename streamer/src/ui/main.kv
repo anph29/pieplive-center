@@ -67,7 +67,6 @@
                 height:40
                 padding:5
                 spacing: 10
-                pos_hint:{'x': 0, 'y': 0}
                 canvas.before:
                     Color:
                         rgb: .25,.25,.25
@@ -77,15 +76,24 @@
                 Widget:
                 Button:
                     id:btn_start
+                    size_hint:None,None
+                    width:120
                     text:'Start Streaming'
+                    font_size: sp(12)
                     on_press: root.start_stream()
                 Button:
                     id:btn_display_mini
+                    size_hint:None,None
+                    width:120
                     text:'Show Display Mini'
+                    font_size: sp(12)
                     on_press: root.show_mini_display()
                 Button:
                     id:btn_switch
+                    size_hint:None,None
+                    width:120
                     text:'Switch Display'
+                    font_size: sp(12)
                     on_press: root.switch_display()
                     opacity: (0,1)[root.showMiniD]
                 Widget:

@@ -8,7 +8,7 @@ from src.modules.kvcam.kivycameramain import KivyCameraMain
 from src.modules.kvcam.kivycameramini import KivyCameraMini
 from src.modules.custom.pieplabel import PiepLabel
 from src.modules.custom.piepimage import PiepImage
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty,NumericProperty
 from kivy.lang import Builder
 from src.models.normal_model import Normal_model
 import subprocess, cv2, time, array, os, datetime
@@ -19,6 +19,7 @@ class MainStream(RelativeLayout):
     camera= ObjectProperty()
     cameraMini= ObjectProperty()
     f_parent= ObjectProperty(None)
+    typeSwitch = NumericProperty(0)
 
     def __init__(self, **kwargs):
         super(MainStream, self).__init__(**kwargs)
@@ -66,15 +67,35 @@ class MainStream(RelativeLayout):
         self.cameraMini.opacity = 1
 
     def hide_camera_mini(self):
+        if self.cameraMini.capture is not None:
+            self.refresh_stream()
         self.cameraMini.opacity = 0
         self.cameraMini.release()
 
     def switch_display(self):
         try:
-            temp = self.camera.capture
-            self.camera.capture = self.cameraMini.capture
-            self.cameraMini.capture = temp
-            del temp
+            self.remove_widget(self.camera)
+            self.remove_widget(self.cameraMini)
+            if self.typeSwitch == 0:
+                self.typeSwitch =1
+                self.camera.width = 320
+                self.camera.height = 180
+                self.cameraMini.width = 1280
+                self.cameraMini.height = 720
+                self.camera.pos = self.cameraMini.pos
+                self.cameraMini.pos = (0,0)
+                self.add_widget(self.cameraMini,1)
+                self.add_widget(self.camera,1)
+            elif self.typeSwitch == 1:
+                self.typeSwitch = 0
+                self.camera.width = 1280
+                self.camera.height = 720
+                self.cameraMini.width = 320
+                self.cameraMini.height = 180
+                self.cameraMini.pos = self.camera.pos
+                self.camera.pos = (0,0)
+                self.add_widget(self.camera,1)
+                self.add_widget(self.cameraMini,1)
         except:
             pass
     

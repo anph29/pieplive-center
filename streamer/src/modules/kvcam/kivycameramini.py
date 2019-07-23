@@ -1,5 +1,4 @@
-import sys
-import cv2
+import cv2, subprocess
 from kivy.uix.image import Image
 from kivy.clock import Clock
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
@@ -8,7 +7,6 @@ from kivy.uix.behaviors import DragBehavior
 from kivy.graphics import Rectangle, Color
 from src.modules.rightcontentview.itemcamera import ItemCamera
 from threading import Thread, Event
-import subprocess as sp
 from kivy.lang import Builder
 from functools import partial
 from src.utils import helper
@@ -27,8 +25,6 @@ Builder.load_string(kv)
 
 class KivyCameraMini(DragBehavior, Image):
     capture = ObjectProperty(None)
-    crFrame = ObjectProperty(None)
-    name = StringProperty('')
     url = StringProperty('')
     resource_type = StringProperty('')
     buffer_rate = NumericProperty(0)
@@ -53,7 +49,12 @@ class KivyCameraMini(DragBehavior, Image):
         self.f_height = 720
         self.show_captured_img(self.default_frame)
         self.stop = Event()
-
+        self.data_src = {
+            "id": "8c31e461881ac85d932bb461b132f32f",
+            "name": "image",
+            "url": self.default_frame,
+            "type": "IMG"
+        }
 
     def on_touch_up(self, touch):
         if self._get_uid('svavoid') in touch.ud:
@@ -73,7 +74,6 @@ class KivyCameraMini(DragBehavior, Image):
 
     def set_data_source(self, input, category):
         self.data_src = input
-        self.name = input['name']
         self.url = input['url']
         self.resource_type = input['type']
         self.category = category
@@ -98,14 +98,11 @@ class KivyCameraMini(DragBehavior, Image):
         fps = 25
         dura = 0
         try:
-            if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.resource_type == "RTSP":
+            if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
                 try:
                     _cap = cv2.VideoCapture(self.url)
                     if _cap.isOpened():
                         fps = _cap.get(cv2.CAP_PROP_FPS)
-                        print('*******************')
-                        print('******',fps,'*******')
-                        print('*******************')
                         if self.resource_type == 'VIDEO':
                             if fps >= 25:
                                 self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
@@ -138,22 +135,22 @@ class KivyCameraMini(DragBehavior, Image):
                         command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",'-threads', '2',output]
                     if self.typeOld == 'M3U8':
                         command2 =  f'ffmpeg-win/ffmpeg.exe -y "-nostats -loop 1 -i {self.default_frame} -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 -threads 2 {self.f_parent.mini_url_flv_hls}'
-                        si = sp.STARTUPINFO()
-                        si.dwFlags |= sp.STARTF_USESHOWWINDOW
-                        self.pipe2 = sp.Popen(command2, startupinfo=si)
+                        si = subprocess.STARTUPINFO()
+                        si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+                        self.pipe2 = subprocess.Popen(command2, startupinfo=si)
                         Clock.schedule_once(lambda x: self.pipe2.kill() , 5)
                 
-                si = sp.STARTUPINFO()
-                si.dwFlags |= sp.STARTF_USESHOWWINDOW
-                self.pipe = sp.Popen(command, startupinfo=si)
+                si = subprocess.STARTUPINFO()
+                si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+                self.pipe = subprocess.Popen(command, startupinfo=si)
                 self.url = output
                 Clock.schedule_once(self.process_set_data ,timeout)
             else:
                 if self.typeOld == 'M3U8' or self.typeOld == 'VIDEO':
                     command =  f'ffmpeg-win/ffmpeg.exe -y -loop 1 -i {self.default_frame} -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 -threads 2 {self.f_parent.mini_url_flv} {self.f_parent.mini_url_flv_hls}'
-                    si = sp.STARTUPINFO()
-                    si.dwFlags |= sp.STARTF_USESHOWWINDOW
-                    self.pipe = sp.Popen(command, startupinfo=si)
+                    si = subprocess.STARTUPINFO()
+                    si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+                    self.pipe = subprocess.Popen(command, startupinfo=si)
                     Clock.schedule_once(lambda x: self.pipe.kill() , 5)
                 Clock.schedule_once(self.process_set_data , 0)
         except :
@@ -162,10 +159,10 @@ class KivyCameraMini(DragBehavior, Image):
         
     def process_set_data(self, second):
         try:
-            # self.stop.set()
-            # th = Thread(target=self.init_capture())
-            # th.start()
-            self.init_capture()
+            self.stop.set()
+            th = Thread(target=self.init_capture())
+            th.start()
+            # self.init_capture()
         except Exception:
             pass
 
@@ -187,7 +184,6 @@ class KivyCameraMini(DragBehavior, Image):
                     self.reconnect = 0
                     if self.resource_type != 'VIDEO' and self.resource_type != "M3U8":
                         self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
-                    print(">>CAPTURE FINED:")
                     self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
                     if self.f_parent is not None:
                         if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
@@ -198,7 +194,6 @@ class KivyCameraMini(DragBehavior, Image):
                             self.f_parent.start_schedule(True)
                     self.typeOld = self.resource_type
                 else:
-                    print("cv2.error:")
                     if self.reconnect >= 3:
                         if self.capture is not None:
                             self.capture.release()
@@ -225,13 +220,11 @@ class KivyCameraMini(DragBehavior, Image):
     def update(self, dt):
         try:
             if self.capture.isOpened():
-                # check is get next
                 if not self.capture.grab():
                     if self.category == 'SCHEDULE':
                         if 'duration' in self.data_src and  self.data_src['duration'] is not None:
                             if (self.data_src['duration'] == 0 or int(self.duration_current) >= self.data_src['duration']) and self.schedule_type == 'end':
                                 self.f_parent.process_schedule(1)
-
                 else:
                     ret, frame = self.capture.retrieve()
                     if ret:
@@ -250,7 +243,7 @@ class KivyCameraMini(DragBehavior, Image):
             buf = cv2.flip(frame, 0).tostring()
             texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
             self.texture = texture
-            # del frame
+            del frame
         except IOError:
             print("Exception update_texture_from_frame:")
 

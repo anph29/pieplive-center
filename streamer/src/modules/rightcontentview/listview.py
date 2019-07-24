@@ -291,6 +291,8 @@ class ListPresenter(RecycleView):
             else:
                 m['playable'] = False
         self.refresh_view()
+        self.stopListenerStream()
+        self.turnOnObserver(1)
 
     def remove_selected(self):
         PiepMeConfirmPopup(message='Are you sure to delete the selected source?',

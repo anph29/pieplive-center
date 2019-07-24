@@ -128,7 +128,7 @@ class MainView(tk.Frame):
         lblCommandCheck.bind('<Button-1>', self.onNewResource)
         #
         cbxData = {q170['NV106']: q170['FO100'] for q170 in self.loadCbxQ170()}
-        cbxQ170 = LabeledCombobox(rightToolbar, cbxData, callback=self.onSelectBussiness, bd=1, relief=tk.FLAT)
+        cbxQ170 = LabeledCombobox(rightToolbar, cbxData, callback=self.onSelectBussiness, curentVal=store.getCurrentActiveBusiness(), bd=1, relief=tk.FLAT)
         cbxQ170.pack(side=tk.RIGHT, padx=10, pady=10)
         #
         self.updateMenu()

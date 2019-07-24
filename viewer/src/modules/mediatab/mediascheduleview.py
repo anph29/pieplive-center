@@ -6,9 +6,12 @@ from .medialistview import MediaListView
 from src.enums import MediaType
 from src.modules.popup import PopupAddSchedule
 from src.utils import helper
+from functools import reduce
+from src.constants import UI
 
 class MediaScheduleView(MediaListView):
     def __init__(self, parent, *args, **kwargs):
+        self.totalDuration = 0
         super(MediaScheduleView, self).__init__(parent, *args, **kwargs)
 
     def makeDDList(self, ref):
@@ -30,6 +33,12 @@ class MediaScheduleView(MediaListView):
         self.scrollZ.pack(fill=tk.BOTH, expand=True)
         self.ddlist.pack(fill=tk.Y, expand=True)
 
+    def packRightToolbar(self):
+        super(MediaScheduleView, self).packRightToolbar()
+        # label
+        self.lblDura = tk.Label(self.tbright, text=f'total duration: {helper.convertSecNoToHMS(self.totalDuration)}', justify=tk.LEFT, bg=self.tbBgColor, font=UI.TXT_FONT_HEAD, fg="#ff2d55")
+        self.lblDura.pack(side=tk.RIGHT, padx=10)
+
     def addMediaToList(self, media):
         item = self.ddlist.create_item(value=media, bg='#ddd')
         ui = MediaItemSchedule(item, parentTab=self, media=media)
@@ -44,7 +53,7 @@ class MediaScheduleView(MediaListView):
     def editRuntime(self, data):
         addresource = PopupAddSchedule(self, data)
         addresource.showChangeRuntimeUI()
-
+    
     def saveToSchedule(self, data):
         ls = self.loadLsMedia()
         # check edit
@@ -56,6 +65,12 @@ class MediaScheduleView(MediaListView):
             self.addMedia(data)
         self.tabRefresh(None)
 
+    def tabRefresh(self, evt):
+        super(MediaScheduleView, self).tabRefresh(evt)
+        ls = self.loadLsMedia()
+        self.totalDuration = reduce(lambda sum, x: sum + x['duration'], ls, 0)
+        self.lblDura.config(text=f'total duration: {helper.convertSecNoToHMS(self.totalDuration)}')
+
     def saveEdit(self, ls, media):
         newLs = list(map(lambda x: media if x['id'] == media['id'] else x, ls))
         self.clearData()
@@ -65,18 +80,17 @@ class MediaScheduleView(MediaListView):
         ls = self.loadLsMedia()
         newLs = list(map(lambda x: media if x['id'] == media['id'] else x, ls))
         index = newLs.index(media)
-        schedule = helper.calc_schedule_runtime(index, schedule=newLs, startTime=media['timepoint'])
         self.clearData()
+        schedule = helper.calc_schedule_runtime(index, schedule=newLs, startTime=media['timepoint'])
         self.writeLsMedia(schedule)
         self.tabRefresh(None)
 
     def saveSortedList(self):
         sorted = list(map(lambda x:x.value, self.ddlist._list_of_items))
         index, timepoint = self.get1stEvalueTimepoint(sorted)
-        schedule = helper.calc_schedule_runtime(index, schedule=sorted, startTime=timepoint)
         self.clearData()
         self.writeLsMedia(sorted)
-    
+
     def get1stEvalueTimepoint(self, ls):
         for i, m in enumerate(ls):
             if 'timepoint' in m and int(m['timepoint']) > 0:

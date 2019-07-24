@@ -7,6 +7,14 @@ class MediaItem(tk.Frame):
         super(MediaItem, self).__init__(parent, *args, **kwargs)
         self.checked = tk.BooleanVar()
         self.light = None
+        self.id = None
+        self.name = None
+        self.url = None
+        self.mtype = None
+        self.duration = None
+        self.timepoint = None
+        self.audio = None
+        self.rtpm = None
         
     def get_data(self):
         return {

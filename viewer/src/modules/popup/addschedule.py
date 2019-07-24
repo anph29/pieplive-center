@@ -62,7 +62,7 @@ class PopupAddSchedule(object):
         hh.pack(side=tk.LEFT, fill=tk.X, padx=5)
         ##
         separator = tk.Label(fDura, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
-        separator.pack(side=tk.LEFT, padx=5)
+        separator.pack(side=tk.LEFT, padx=3)
         ##
         mm = ttk.Combobox(fDura, values=self.getListFromRange(), width=4, textvariable=self.mm, justify='right')
         mm.bind("<FocusIn>", lambda args: hh.select_range('0', tk.END))
@@ -70,7 +70,7 @@ class PopupAddSchedule(object):
         mm.pack(side=tk.LEFT, fill=tk.X, padx=5)
         ##
         separator = tk.Label(fDura, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
-        separator.pack(side=tk.LEFT, padx=5)
+        separator.pack(side=tk.LEFT, padx=3)
         ##
         ss = ttk.Combobox(fDura, values=self.getListFromRange(), width=4, textvariable=self.ss, justify='right')
         ss.bind("<FocusIn>", lambda args: ss.select_range('0', tk.END))
@@ -116,7 +116,7 @@ class PopupAddSchedule(object):
         HH.pack(side=tk.LEFT, fill=tk.X, padx=5)
         ##
         separator = tk.Label(fTime, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
-        separator.pack(side=tk.LEFT, padx=5)
+        separator.pack(side=tk.LEFT, padx=3)
         ##
         MM = ttk.Combobox(fTime, values=self.getListFromRange(), width=4, textvariable=self.MM, justify='right')
         MM.bind("<FocusIn>", lambda args: MM.select_range('0', tk.END))
@@ -124,7 +124,7 @@ class PopupAddSchedule(object):
         MM.pack(side=tk.LEFT, fill=tk.X, padx=5)
         ##
         separator = tk.Label(fTime, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
-        separator.pack(side=tk.LEFT, padx=5)
+        separator.pack(side=tk.LEFT, padx=3)
         ##
         SS = ttk.Combobox(fTime, values=self.getListFromRange(), width=4, textvariable=self.SS, justify='right')
         SS.bind("<FocusIn>", lambda args: SS.select_range('0', tk.END))

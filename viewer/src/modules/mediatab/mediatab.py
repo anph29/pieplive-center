@@ -18,8 +18,8 @@ class MediaTab(tk.Frame):
         self.listenerStream = None
 
     def initUI(self):
-        self.showToolBar()
         self.showLsMedia()
+        self.showToolBar()
         self.after(500, self.turnOnObserver)
 
     def turnOnObserver(self):
@@ -123,6 +123,8 @@ class MediaTab(tk.Frame):
         self._LS_MEDIA_DATA = self.loadLsMedia()
         for media in self._LS_MEDIA_DATA:
             self.addMediaToList(media)
+            if self.tabType == MediaType.SCHEDULE:
+                self.totalDuration += int(media['duration'])
 
     def clearData(self, clearView=False):
         self._LS_MEDIA_DATA = []

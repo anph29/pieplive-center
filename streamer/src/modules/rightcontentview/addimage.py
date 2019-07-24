@@ -34,7 +34,7 @@ class AddImage(Popup):
         elif len(self.url.text) > 0:
             self.resource_type = self.get_type_from_link()
             if self.resource_type:
-                self.add_to_lsmedia()
+                self.add_to_lsimage()
             else:
                 self.error = True
         else:

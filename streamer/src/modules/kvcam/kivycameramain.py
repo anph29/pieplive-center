@@ -146,40 +146,55 @@ class KivyCameraMain(Image):
             if self.capture is not None:
                 self.capture.release()
             self.stop_update_capture()
-            if self.resource_type == 'IMG':
-                self.show_captured_img(self.url)
-            else:
-                if self.resource_type == 'CAMERA':
-                    self.capture = cv2.VideoCapture(int(self.url))
-                else:
-                    self.capture = cv2.VideoCapture(self.url)
-                print('url-----',self.url)
+            # if self.resource_type == 'IMG':
+            #     self.show_captured_img(self.url)
+            #     if self.f_parent is not None:
+            #         if self.category == "SCHEDULE":
+            #             self.f_parent.refresh_stream()
+            #         elif self.resource_type == "M3U8" or self.resource_type == "VIDEO":
+            #             self.f_parent.refresh_stream()
+            #         elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
+            #             self.f_parent.refresh_stream()
+                    
+            #         if self.schedule_type == 'duration':
+            #             self.f_parent.start_schedule(True)
+            #     self.typeOld = self.resource_type
+            # else:
+            if self.resource_type == 'IMG' and '.gif' in self.url:
+                self.resource_type = 'GIF'
 
-                if self.capture is not None and self.capture.isOpened():
-                    self.reconnect = 0
-                    if self.resource_type != 'VIDEO' and self.resource_type != "M3U8":
-                        self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
-                    print(">>CAPTURE FINED:")
-                    self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
-                    if self.f_parent is not None:
-                        if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
-                            self.f_parent.refresh_stream()
-                        elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
-                            self.f_parent.refresh_stream()
-                        elif self.category == "SCHEDULE":
-                            self.f_parent.refresh_stream()
-                        if self.schedule_type == 'duration':
-                            self.f_parent.start_schedule(True)
-                    self.typeOld = self.resource_type
+            if self.resource_type == 'CAMERA':
+                self.capture = cv2.VideoCapture(int(self.url))
+            else:
+                self.capture = cv2.VideoCapture(self.url)
+            print('url-----',self.url)
+
+            if self.capture is not None and self.capture.isOpened():
+                self.reconnect = 0
+                if self.resource_type != 'VIDEO' and self.resource_type != "M3U8":
+                    self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
+                print(">>CAPTURE FINED:")
+                self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
+                if self.f_parent is not None:
+                    if self.category == "SCHEDULE":
+                        self.f_parent.refresh_stream()
+                    elif self.resource_type == "M3U8" or self.resource_type == "VIDEO":
+                        self.f_parent.refresh_stream()
+                    elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
+                        self.f_parent.refresh_stream()
+                    
+                    if self.schedule_type == 'duration':
+                        self.f_parent.start_schedule(True)
+                self.typeOld = self.resource_type
+            else:
+                print("cv2.error:")
+                if self.reconnect >= 3:
+                    if self.capture is not None:
+                        self.capture.release()
+                    self.show_captured_img(self.default_frame)
                 else:
-                    print("cv2.error:")
-                    if self.reconnect >= 3:
-                        if self.capture is not None:
-                            self.capture.release()
-                        self.show_captured_img(self.default_frame)
-                    else:
-                        self.reconnect += 1
-                        self.init_capture()
+                    self.reconnect += 1
+                    self.init_capture()
                 
         except Exception as e:
             print("Exception init_capture:", e)
@@ -205,6 +220,9 @@ class KivyCameraMain(Image):
                         if 'duration' in self.data_src and  self.data_src['duration'] is not None:
                             if (self.data_src['duration'] == 0 or int(self.duration_current) >= self.data_src['duration']) and self.schedule_type == 'end':
                                 self.f_parent.process_schedule(1)
+                    if self.resource_type == 'GIF':
+                        self.capture.release()
+                        self.capture = cv2.VideoCapture(self.url)
 
                 else:
                     ret, frame = self.capture.retrieve()

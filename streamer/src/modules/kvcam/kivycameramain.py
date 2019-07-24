@@ -68,7 +68,7 @@ class KivyCameraMain(Image):
         fps = 25
         dura = 0
         try:
-            if self.resource_type == "M3U8" or self.resource_type == "VIDEO" :#or self.resource_type == "RTSP"
+            if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.resource_type == "RTSP":
                 try:
                     _cap = cv2.VideoCapture(self.url)
                     if _cap.isOpened():
@@ -94,21 +94,20 @@ class KivyCameraMain(Image):
                 output = self.f_parent.url_flv
                 timeout = 1
                 command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate, "-preset", "veryfast","-r","25",'-g','60','-threads', '2',output]
-                
-                if self.resource_type == "M3U8":
+                if self.category == "PRESENTER":
+                    self.url = self.data_src['rtmp']
+                    timeout=2
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-preset", "veryfast","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]
+                elif self.resource_type == "M3U8":
                     output = self.f_parent.url_flv_hls
                     timeout=1
-                    command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-preset", "veryfast","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]
-                # elif self.category == "PRESENTER":
-                #     self.url = self.data_src['rtmp']
-                #     timeout=2
-                #     command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-preset", "veryfast","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-preset", "veryfast","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]  
                 elif self.resource_type == "RTSP":
                     # -acodec copy -vcodec copy
                     timeout=2
                     # command = ["ffmpeg-win/ffmpeg.exe","-y","-rtsp_flags", "prefer_tcp","-i", self.url,"-flags","+global_header","-ar","44100","-vb",self.f_parent.v_bitrate,"-r","25",output]
                     # command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate, "-preset", "veryfast","-r","25",'-g','60','-threads', '2',output]
-                    command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-preset", "veryfast","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-rtsp_flags", "prefer_tcp","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-preset", "veryfast","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]
                 else:
                     if fps < 25:
                         command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",'-threads', '2',output]

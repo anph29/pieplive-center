@@ -229,15 +229,17 @@ class ListPresenter(RecycleView):
         data = message['data']
         id = ln510 = 0
         if bool(data):
-            if message['path'] == '/':
+            if message['path'] == '/': # case init: get multi data
                 keys = list(data.keys())
-                media = data[keys[0]]
-                id = int(media['_id'])
-                ln510 = int(media['LN510'])
-            else:# /[PL500]
+                for k in keys:
+                    media = data[k]
+                    id = int(media['_id'])
+                    ln510 = int(media['LN510'])
+                    self.changeStatePresenter(id, ln510)
+            else:# </PL500> case change: get single data
                 id = int(data['_id'])
                 ln510 = int(data['LN510'])
-        self.changeStatePresenter(id, ln510)
+                self.changeStatePresenter(id, ln510)
 
     def changeStatePresenter(self, _id, ln510):
         if ln510 == 2:
@@ -260,6 +262,7 @@ class ListPresenter(RecycleView):
         self.data = list(
             map(
                 lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 
+                'rtmp': cam['rtmp'] if 'rtmp' in cam else cam['url'],
                 'list':'PRESENTER',
                 'active': (False,True) [cam['id'] == self.item_playing],
                 'playable': False},

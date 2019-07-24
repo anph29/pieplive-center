@@ -20,10 +20,10 @@ Builder.load_string(kv)
 class PiepImage(DragBehavior, Image):
     #callback = ObjectProperty(None)
     
-    def __init__(self, idx, parentName, **kwargs):
+    def __init__(self, id, parentName, **kwargs):
         super(PiepImage, self).__init__(**kwargs)
         self.size_hint = None,None
-        self.idx = idx
+        self.id = id
         self.parentName = parentName
 
     def on_touch_up(self, touch):
@@ -41,7 +41,7 @@ class PiepImage(DragBehavior, Image):
             if self._drag_touch is not touch:
                 super(DragBehavior, self).on_touch_up(touch)
         if self.parentName != 'canvas':                
-            kivyhelper.getApRoot().mainStream.on_change_position(self.idx,self.x,self.y, self.parentName)
+            kivyhelper.getApRoot().mainStream.on_change_position(self.id,self.x,self.y, self.parentName)
         return self._get_uid() in touch.ud
 
     

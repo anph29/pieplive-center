@@ -25,7 +25,7 @@ class ListMixer(RecycleView):
     def add_source(self, item):
         flag = False
         for _s in self.data:
-            if _s['idx'] == item['idx']:
+            if _s['id'] == item['id']:
                 flag = True
                 break
         if flag == False:
@@ -33,12 +33,12 @@ class ListMixer(RecycleView):
     
     def update_source(self, item):
         for _s in self.data:
-            if _s['idx'] == item['idx']:
+            if _s['id'] == item['id']:
                 _s.update(item)
 
-    def del_source(self, idx):
+    def del_source(self, id):
         for i,v in enumerate(self.data):
-            if v['idx'] == idx:
+            if v['id'] == id:
                 del(self.data[i])
 
     def on_start(self):
@@ -52,7 +52,7 @@ class BoxMixer(SelectableBox):
 class RCVItemMixer(RecycleDataViewBehavior, BoxLayout):
     index = NumericProperty(0)
     volume = NumericProperty(0)
-    value = StringProperty()
+    src = StringProperty()
     name = StringProperty()
     audio_volume = ObjectProperty()
     audio_status = ObjectProperty()
@@ -64,11 +64,9 @@ class RCVItemMixer(RecycleDataViewBehavior, BoxLayout):
     def refresh_view_attrs(self, rv, index, data):
         self.index = index
         self.name = data['name']
-        self.value = data['value']
+        self.src = data['src']
         self.volume = data['volume']
-        self.idx = data['idx']
-        # if self.idx == -1:
-        #     self.event = Clock.schedule_interval(self.real_audio, 1)
+        self.id = data['id']
         return super(RCVItemMixer, self).refresh_view_attrs(rv, index, data)
 
     def on_touch_down(self, touch):
@@ -80,15 +78,7 @@ class RCVItemMixer(RecycleDataViewBehavior, BoxLayout):
     def apply_selection(self, rv, index, is_selected):
         self.selected = is_selected
 
-    def onChangeVolume(self, value):
+    def onChangeVolume(self):
         if self.clock is not None:
             self.clock.cancel()
-        self.clock = Clock.schedule_once(lambda x:kv_helper.getApRoot().changeAudioVolume(self.idx, self.audio_volume.value), 1)
-
-    def print_sound(self,indata, outdata, frames, time, status):
-        volume_norm = np.linalg.norm(indata)*100
-        self.audio_status.value=volume_norm
-
-    def real_audio(self, dt):
-        #aa = sd.Stream(callback=self.print_sound)
-        pass
+        self.clock = Clock.schedule_once(lambda x:kv_helper.getApRoot().changeAudioVolume(self.id, self.audio_volume.value), 1)

@@ -311,11 +311,11 @@ class MainStream(RelativeLayout):
             print("Exception prepare:")
             return False
 
-    def on_change_Volume(self, idx, value):
-        if idx is not None and value is not None:
-            if idx != -1:
+    def on_change_Volume(self, id, value):
+        if id is not None and value is not None:
+            if id != -1:
                 for _s in self.lsSource:
-                    if _s['idx'] == idx:
+                    if _s['id'] == id:
                         _s['volume'] = value
                         helper._write_lsStaticSource(self.lsSource)
                         break
@@ -326,15 +326,10 @@ class MainStream(RelativeLayout):
                 self.pipe.kill()
                 self.prepare()
 
-    def on_change_position(self, idx, pos_x, pos_y, parentName):
-        self.f_parent.on_change_position(idx, pos_x, pos_y)
-        # for child in self.mainview.children:
-        #     if child.idx == idx:
-        #         child.x = pos_x
-        #         child.top = pos_y
-        #         break
+    def on_change_position(self, id, pos_x, pos_y, parentName):
+        self.f_parent.on_change_position(id, pos_x, pos_y)
 
-    def show_text(self, text, font, size, color, pos_x, pos_y, active, idx, new):
+    def show_text(self, id, text, font, size, color, pos_x, pos_y, active, new):
         if new:
             pText = PiepLabel(text='[color=' + str(color) + ']' + text + '[/color]',
                             font_size=size,
@@ -343,22 +338,12 @@ class MainStream(RelativeLayout):
                             y=pos_y,
                             markup=True,
                             opacity=active,
-                            idx=idx,
+                            id=id,
                             parentName='main')
             self.add_widget(pText)
-            # pText2 = PiepLabel(text='[color=' + str(color) + ']' + text + '[/color]',
-            #                    font_size=size,
-            #                    font_name=font,
-            #                    x=pos_x,
-            #                    y=pos_y,
-            #                    markup=True,
-            #                    opacity=active,
-            #                    idx=idx,
-            #                    parentName='canvas')
-            # self.mainview.add_widget(pText2)
         else:
             for child in self.children:
-                if child.idx != None and child.idx == idx:
+                if child.id != None and child.id == id:
                     child.text = '[color=' + str(color) + ']' + text + '[/color]'
                     child.font_size = str(size)
                     child.font_name = font
@@ -370,7 +355,7 @@ class MainStream(RelativeLayout):
                     break
 
 
-    def show_image(self, src, pos_x, pos_y, w, h, active, idx, new):
+    def show_image(self, id, src, pos_x, pos_y, w, h, active, new):
         if new:
             pimage = PiepImage(source=src,
                             size_hint=(None,None),
@@ -379,39 +364,24 @@ class MainStream(RelativeLayout):
                             x=pos_x,
                             y=pos_y,
                             opacity=active,
-                            idx=idx,
+                            id=id,
                             parentName='main')
             self.add_widget(pimage)
-            # pimage2 = PiepImage(source=src,
-            #                    size=(w, h),
-            #                    x=pos_x,
-            #                    y=pos_y,
-            #                    opacity=active,
-            #                    idx=idx,
-            #                    parentName='canvas')
-            # self.mainview.add_widget(pimage2)
         else:
             for child in self.children:
-                if child.idx != None and child.idx == idx:
+                if child.id != None and child.id == id:
                     child.source = src
                     child.size = (w, h)
                     break
 
-    def on_off_source(self, idx, value):
+    def on_off_source(self, id, value):
         for child in self.children:
-            if child.idx != None and child.idx == idx:
+            if child.id != None and child.id == id:
                 if value:
                     child.opacity = 1
                 else:
                     child.opacity = 0
                 break
-        
-        # for child in self.mainview.children:
-        #     if child.idx != None and child.idx == idx:
-        #         if value:
-        #             child.opacity = 1
-        #         else:
-        #             child.opacity = 0
 
     def on_change_audio(self):
         if self.isStream is True:

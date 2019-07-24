@@ -23,7 +23,6 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
     _id = StringProperty('')
     showMiniD = BooleanProperty(False)
 
-
     def refresh_view_attrs(self, rv, index, data):
         """ Catch and handle the view changes """
         self.is_changing = False

@@ -26,6 +26,7 @@ class ListSource(RecycleView):
         if sources is not None:
             for i in sources:
                 self.data.append({"name":i["name"], "active": i["active"]})
+                # "id":scryto.hash_md5_with_time(self.url.text.replace('\\', '/')),
 
     def add_source(self, item):
         self.data.append({"name":item["name"], "active": item["active"]})
@@ -75,7 +76,6 @@ class RCVItemSource(RecycleDataViewBehavior, BoxLayout):
         self.index = index
         self.name = data['name']
         self.active = data['active']
-        
         return super(RCVItemSource, self).refresh_view_attrs(rv, index, data)
 
     def on_touch_down(self, touch):
@@ -86,9 +86,6 @@ class RCVItemSource(RecycleDataViewBehavior, BoxLayout):
 
     def apply_selection(self, rv, index, is_selected):
         self.selected = is_selected
-
-    def onDoubleClick(self, index):
-        print('onDoubleClick',index)
     
     def on_change_check(self):
         if self.active == 1:

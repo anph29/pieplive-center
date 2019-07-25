@@ -325,18 +325,24 @@ class ListPresenter(RecycleView):
             pass
 
     def choice_play(self, index):
-        firebase.makeChangePresenter(int(self.data[index]['id']))
-        self.item_choice = self.data[index]['id']
-        for obj in self.data:
-            obj['choice'] = False
-        self.data[index]['choice'] = True
-        for child in self.children[0].children:
-            if child.index == index:
-                child.choice = True
-            else:
+        if self.data[index]['id'] == self.item_choice:
+            firebase.makeChangePresenter(0)
+            self.item_choice = "0"
+            self.data[index]['choice'] = False
+            for child in self.children[0].children:
                 child.choice = False
+        else:
+            firebase.makeChangePresenter(int(self.data[index]['id']))
+            self.item_choice = self.data[index]['id']
+            for obj in self.data:
+                obj['choice'] = False
+            self.data[index]['choice'] = True
+            for child in self.children[0].children:
+                if child.index == index:
+                    child.choice = True
+                else:
+                    child.choice = False
         
-
 class ListSchedule(RecycleView):
     item_playing = ""
     total_time = StringProperty("00:00:00")

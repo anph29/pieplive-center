@@ -129,7 +129,6 @@ class KivyCameraMain(Image):
                     Clock.schedule_once(lambda x: self.pipe.kill() , 5)
                 Clock.schedule_once(self.process_set_data , 0)
         except :
-            print("Exception:")
             Clock.schedule_once(self.process_set_data , 0)
         
     def process_set_data(self, second):
@@ -146,23 +145,9 @@ class KivyCameraMain(Image):
             if self.capture is not None:
                 self.capture.release()
             self.stop_update_capture()
-            # if self.resource_type == 'IMG':
-            #     self.show_captured_img(self.url)
-            #     if self.f_parent is not None:
-            #         if self.category == "SCHEDULE":
-            #             self.f_parent.refresh_stream()
-            #         elif self.resource_type == "M3U8" or self.resource_type == "VIDEO":
-            #             self.f_parent.refresh_stream()
-            #         elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
-            #             self.f_parent.refresh_stream()
-                    
-            #         if self.schedule_type == 'duration':
-            #             self.f_parent.start_schedule(True)
-            #     self.typeOld = self.resource_type
-            # else:
+
             if self.resource_type == 'IMG' and '.gif' in self.url:
                 self.resource_type = 'GIF'
-
             if self.resource_type == 'CAMERA':
                 self.capture = cv2.VideoCapture(int(self.url))
             else:

@@ -55,7 +55,7 @@ class MainStream(RelativeLayout):
 
     def _load(self):
         try:
-            command =  f'ffmpeg-win/ffmpeg.exe -y -nostats -loop 1 -i {helper._IMAGES_PATH}splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 {self.url_flv} {self.url_flv_hls} {self.mini_url_flv} {self.mini_url_flv_hls}'
+            command =  f'ffmpeg/ffmpeg.exe -y -nostats -loop 1 -i {helper._IMAGES_PATH}splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 {self.url_flv} {self.url_flv_hls} {self.mini_url_flv} {self.mini_url_flv_hls}'
             si = subprocess.STARTUPINFO()
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             self.pipe2 = subprocess.Popen(command, startupinfo=si)
@@ -265,7 +265,7 @@ class MainStream(RelativeLayout):
 
     def prepare(self):
         try:
-            self.command = ['ffmpeg-win/ffmpeg.exe','-y','-framerate', '25','-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', '{}x{}'.format(self.f_width, self.f_height), '-i', '-']
+            self.command = ['ffmpeg/ffmpeg.exe','-y','-framerate', '25','-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', '{}x{}'.format(self.f_width, self.f_height), '-i', '-']
             
             self.command.extend(self.draw_element())
             # encode

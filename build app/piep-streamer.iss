@@ -21,12 +21,12 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\PiepLiveCenter/PiepLive-Stream
 DisableDirPage=yes
 DisableProgramGroupPage=yes
-LicenseFile=D:\QueenB\PiepLive-Center\streamer\LICENSE.txt
+LicenseFile=D:\QueenB\PiepLive-Center\build app\LICENSE.txt
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 OutputDir=D:\Build App
 OutputBaseFilename=pieplive-stream
-SetupIconFile=D:\Build App\dist\resource\icons\logo-streamer.ico
+SetupIconFile=D:\QueenB\PiepLive-Center\resource\icons\logo-streamer.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -39,8 +39,8 @@ Name: "german"; MessagesFile: "compiler:Languages\German.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "D:\Build App\dist\piepstream\pieplivecenter.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Build App\dist\piepstream\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:\QueenB\PiepLive-Center\streamer\dist\piepstream\pieplivecenter.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\QueenB\PiepLive-Center\streamer\dist\piepstream\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

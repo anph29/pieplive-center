@@ -8,7 +8,7 @@ block_cipher = None
 added_files = [
   ( 'src\\ui', 'src\\ui' ),
   ( 'src\\images', 'src\\images' ),
-  ( 'ffmpeg-win\\', 'ffmpeg-win\\' ),
+  ( 'ffmpeg\\', 'ffmpeg\\' ),
   ( 'piepstream.kv', '.' ),
   ( 'resource.zip', '.' ),
   ( 'Lib\\site-packages\\kivy\\garden', 'kivy\\garden' ),

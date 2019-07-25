@@ -3,7 +3,7 @@ import re
 import json
 import math
 import base64
-from src.utils import zip_helper
+from . import zip_helper
 import datetime
 import cv2
 import shutil
@@ -43,7 +43,7 @@ def calcCurentSeccondInDay():
     return dt.hour * 3600 + dt.minute * 60 + dt.second
 
 def calc_schedule_runtime(index, schedule=[], startTime=0):
-    callWrite = not bool(schedule)
+    isWriteToFile = not bool(schedule)
     schedule = schedule or _load_schedule()
     startTime = startTime or calcCurentSeccondInDay()
     newSchedule = []
@@ -61,7 +61,7 @@ def calc_schedule_runtime(index, schedule=[], startTime=0):
         #
         newSchedule.append(sch)
     #
-    if callWrite:
+    if isWriteToFile:
         _write_schedule(newSchedule)
     else:
         return newSchedule
@@ -69,13 +69,13 @@ def calc_schedule_runtime(index, schedule=[], startTime=0):
 list schedule
 """
 
-def _load_schedule_sorted():
+def _load_sorted_schedule():
     return loadJSON(_PATH_SCHEDULE_SORTED)
 
-def _write_schedule_sorted(data):
+def _write_sorted_schedule(data):
     writeJSON(_PATH_SCHEDULE_SORTED, data)
 
-def _add_to_schedule_sorted(data):
+def _add_to_sorted_schedule(data):
     appendJSON(_PATH_SCHEDULE_SORTED, data)
 
 def list_all_schedule():

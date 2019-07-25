@@ -3,23 +3,23 @@ from tkinter import ttk
 
 class LabeledCombobox(tk.Frame):
 
-    def __init__(self, master, dictionary, callback=None, curentVal=None, *args, **kw):
+    def __init__(self, master, dictionary, callback=None, selected=None, *args, **kw):
         tk.Frame.__init__(self, master, *args, **kw)
         self.dictionary = dictionary
         self.onSelectCallback = callback
-        self.combo = ttk.Combobox(self, values=sorted(list(dictionary.keys())), width=30, state='readonly')
+        self.combo = ttk.Combobox(self, values=list(dictionary.keys()), width=30, state='readonly')
         self.combo.config(font=("Arial", 10))
         self.combo.pack(fill=tk.BOTH)
-        self.curentVal = curentVal
+        self.selected = selected
         self.combo.bind('<<ComboboxSelected>>', self.onSelection)
 
         if bool(self.dictionary):
             allValue = list(self.dictionary.values())
-            idx = allValue.index(self.curentVal)
+            idx = 0 if selected is None else allValue.index(self.selected)
             self.combo.current(idx)
             self.onSelection(self.dictionary[list(dictionary.keys())[idx]])
 
-    def onSelection(self, event=None):
+    def onSelection(self, event):
         self.onSelectCallback(self.dictionary[self.combo.get()])
 
 

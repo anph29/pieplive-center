@@ -128,14 +128,13 @@ class MainView(tk.Frame):
         lblCommandCheck.bind('<Button-1>', self.onNewResource)
         #
         cbxData = {q170['NV106']: q170['FO100'] for q170 in self.loadCbxQ170()}
-        cbxQ170 = LabeledCombobox(rightToolbar, cbxData, callback=self.onSelectBussiness, curentVal=store.getCurrentActiveBusiness(), bd=1, relief=tk.FLAT)
+        cbxQ170 = LabeledCombobox(rightToolbar, cbxData, callback=self.onSelectBussiness, selected=store.getCurrentActiveBusiness(), bd=1, relief=tk.FLAT)
         cbxQ170.pack(side=tk.RIGHT, padx=10, pady=10)
         #
         self.updateMenu()
     #
     def onSelectBussiness(self, fo100):
         self.FO100BU = fo100
-        store.setCurrentActiveBusiness(fo100)
     #
     def onClearResource(self, evt):
         if messagebox.askyesno("PiepMe", "Are you sure to clear your bussiness resource?"):
@@ -144,6 +143,7 @@ class MainView(tk.Frame):
     #
     def onNewResource(self, evt):
         if messagebox.askyesno("PiepMe", "Are you sure to renew your bussiness resource?"):
+            store.setCurrentActiveBusiness(self.FO100BU)
             lsL500 = self.loadLsL500(self.FO100BU)
             if len(lsL500) > 0:
                 #presenter

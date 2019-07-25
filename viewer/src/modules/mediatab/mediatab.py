@@ -27,8 +27,7 @@ class MediaTab(tk.Frame):
             if self.tabType == MediaType.PRESENTER:
                 activedBu = store.getCurrentActiveBusiness()
                 if bool(activedBu):
-                    fb = firebase.config()
-                    db = fb.database()
+                    db = firebase.config()
                     self.listenerStream = db.child(f'l500/{activedBu}/LIST').stream(self.firebaseCallback)
 
     def firebaseCallback(self, message):

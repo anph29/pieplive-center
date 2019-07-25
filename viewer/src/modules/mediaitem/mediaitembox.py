@@ -14,21 +14,23 @@ from src.enums import MediaType
 Image._initialized = 2
 
 class MediaItemBox(MediaItem):
-    finished = False
-    cell_width = 240
-    top_height = 135
-    bot_height = 25
-    buffer = None
-    zoomIn = False
-    vlcInited = False
+
     def __init__(self, parent, parentTab=None, media=None, *args, **kwargs):
         super(MediaItemBox, self).__init__(parent, *args, **kwargs)
         self.parent = parent
+        self.finished = False
+        self.cell_width = 240
+        self.top_height = 135
+        self.bot_height = 25
+        self.buffer = None
+        self.zoomIn = False
+        self.vlcInited = False
         self.parentTab = parentTab
         self.set_data(media)
         self.botBg = '#BDC3C7'
         self.after(100, self.initGUI)
         self.top = None
+        self.volume = False
 
     def initGUI(self):
         ww = self.cell_width + 5
@@ -102,6 +104,14 @@ class MediaItemBox(MediaItem):
         self.lblZoom.bind("<Button-1>", self.toggleZoom) 
         self.lblZoom.pack(side=tk.RIGHT)
         ToolTip(self.lblZoom, "Zoom in")
+        if self.parentTab.tabType != MediaType.IMAGE:
+            # volume
+            imgVolume = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}volume-mute.png"))
+            self.lblVolume = tk.Label(bottom, image=imgVolume, bg=self.botBg, cursor='hand2')
+            self.lblVolume.image = imgVolume
+            self.lblVolume.bind("<Button-1>", self.toggleMute) 
+            self.lblVolume.pack(side=tk.RIGHT)
+            ToolTip(self.lblZoom, "Zoom in")
 
     def initVLC(self, evt):
         # video, camera || presenter onlinne
@@ -139,6 +149,19 @@ class MediaItemBox(MediaItem):
             self.updateZoomIcon('out')
             ToolTip(self.lblZoom, "Zoom out")
             self.zoomIn = True
+
+    def toggleMute(self, evt):
+        if self.vlcInited:
+            if self.volume:
+                self.updateVolumeIcon('mute')
+                ToolTip(self.lblZoom, "Turn on")
+                self.player.audio_set_volume(0)
+                self.volume = False
+            else:
+                self.updateVolumeIcon('on')
+                ToolTip(self.lblZoom,"Mute")
+                self.player.audio_set_volume(75)
+                self.volume = True
 
     def updateProgress(self):
         events = self.player.event_manager()
@@ -192,6 +215,12 @@ class MediaItemBox(MediaItem):
         self.lblZoom.configure(image=imagetk)
         self.lblZoom.image = imagetk
 
+    def updateVolumeIcon(self, ico):
+        image = Image.open(f"{helper._ICONS_PATH}volume-{ico}.png")
+        imagetk = ImageTk.PhotoImage(image)
+        self.lblVolume.configure(image=imagetk)
+        self.lblVolume.image = imagetk
+
     def updateLightColor(self, ln510):
         super(MediaItemBox, self).updateLightColor(ln510)
         self.lblPlay.config(cursor='none')
@@ -199,4 +228,5 @@ class MediaItemBox(MediaItem):
             self.lblPlay.config(cursor="wait")
         elif ln510 == 2: # READY
             self.lblPlay.config(cursor='hand2')
+
 

@@ -8,6 +8,7 @@ from uuid import getnode as get_mac
 from src.utils import store
 from tkinter import messagebox
 from src.constants import WS, UI
+import time
 
 class Login(object):
     loginPopup = None
@@ -110,12 +111,13 @@ class Login(object):
         pv161 = self.PV161.get()
         if regex.match(pv161):
             res = self.pieplivecenterLogin(self.NV117.get(), pv161)
-            if res[WS.STATUS] == WS.SUCCESS:
+            print(res, 'loginggggg')
+            if res[WS.STATUS] == WS.SUCCESS and res[WS.ELEMENTS] != -1:
                 # save login
-               store._new(res[WS.ELEMENTS])
-               #
-               self.parent.showToolbar()
-               self.loginPopup.destroy()
+                store._new(res[WS.ELEMENTS])
+                #
+                self.parent.showToolbar()
+                self.loginPopup.destroy()
 
             else:
                 self.fTokenInvalid.pack(side=tk.LEFT, fill=tk.Y)

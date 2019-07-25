@@ -17,6 +17,7 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
     kvcam = ObjectProperty()
     isCheckItem = ObjectProperty()
     active = BooleanProperty(False)
+    choice = BooleanProperty(False)
     playable = BooleanProperty(False)
     duration = NumericProperty(0)
     listType = StringProperty('')
@@ -34,6 +35,7 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
         self.listType = data['list']
         self.data = data
         self.active = data['active']
+        self.choice = data['choice']
         self.playable = data['playable'] if 'playable' in data else True
         self.isCheckItem.active = False
         return super(ItemLabel, self).refresh_view_attrs(rv, index, data)
@@ -69,3 +71,7 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
     def playMini(self, isPlay):
         if self.playable and isPlay:
             kv_helper.getApRoot().changeSrcMini(self.kvcam.get_data_source(),self.listType)
+
+    def choice_play(self):
+        if self.listType == 'PRESENTER':
+            self.parent.parent.choice_play(self.index)

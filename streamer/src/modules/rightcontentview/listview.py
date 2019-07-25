@@ -7,7 +7,6 @@ import datetime
 from src.modules.custom.linkaudio import LinkAudio
 
 class ListMedia(RecycleView):
-
     item_playing = ''
  
     def __init__(self, **kwargs):
@@ -19,7 +18,8 @@ class ListMedia(RecycleView):
                 lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 
                 'duration': cam['duration'] if 'duration' in cam else 0,
                 'list':'VIDEO',
-                'active': (False,True) [cam['id'] == self.item_playing]},
+                'active': (False,True) [cam['id'] == self.item_playing],
+                'choice':False},
                 helper._load_video()
             )
         )
@@ -75,7 +75,6 @@ class ListMedia(RecycleView):
             pass
 
 class ListImage(RecycleView):
- 
     item_playing = ''
 
     def __init__(self, **kwargs):
@@ -86,7 +85,8 @@ class ListImage(RecycleView):
             map(
                 lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 
                 'list':'IMAGE',
-                'active': (False,True) [cam['id'] == self.item_playing]},
+                'active': (False,True) [cam['id'] == self.item_playing],
+                'choice':False},
                 helper._load_image()
             )
         )
@@ -151,7 +151,8 @@ class ListCamera(RecycleView):
             map(
                 lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 
                 'list':'CAMERA',
-                'active': (False,True) [cam['id'] == self.item_playing]},
+                'active': (False,True) [cam['id'] == self.item_playing],
+                'choice':False},
                 helper._load_lscam()
             )
         )
@@ -207,8 +208,8 @@ class ListCamera(RecycleView):
             pass
 
 class ListPresenter(RecycleView):
-
     item_playing = ''
+    item_choice = ''
     listenerStream = None
     listLiving = []
 
@@ -218,11 +219,7 @@ class ListPresenter(RecycleView):
 
     def turnOnObserver(self,dt):
         if bool(store._get('FO100')):
-            activedBu = store.getCurrentActiveBusiness()
-            if bool(activedBu):
-                db = firebase.config()
-                if bool(db):
-                    self.listenerStream = db.child(f'l500/{activedBu}/LIST').stream(self.firebaseCallback)
+            firebase.startObserverActivedBu(self.firebaseCallback)
     
     def firebaseCallback(self, message):
         data = message['data']
@@ -264,6 +261,7 @@ class ListPresenter(RecycleView):
                 'rtmp': cam['rtmp'] if 'rtmp' in cam else cam['url'],
                 'list':'PRESENTER',
                 'active': (False,True) [cam['id'] == self.item_playing],
+                'choice': (False,True) [cam['id'] == self.item_choice],
                 'playable': False},
                 helper._load_ls_presenter()
             )
@@ -318,12 +316,26 @@ class ListPresenter(RecycleView):
                 child.active = True
             else:
                 child.active = False
+
     def refresh_view(self):
         try:
             for child in self.children[0].children:
                 child.refresh_view_attrs(self,child.index, self.data[child.index])
         except:
             pass
+
+    def choice_play(self, index):
+        firebase.makeChangePresenter(int(self.data[index]['id']))
+        self.item_choice = self.data[index]['id']
+        for obj in self.data:
+            obj['choice'] = False
+        self.data[index]['choice'] = True
+        for child in self.children[0].children:
+            if child.index == index:
+                child.choice = True
+            else:
+                child.choice = False
+        
 
 class ListSchedule(RecycleView):
     item_playing = ""

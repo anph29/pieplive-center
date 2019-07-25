@@ -39,6 +39,14 @@
             on_release:root.playMini(app.root.showMiniD)
             opacity: (0,1)[app.root.showMiniD and root.playable]
             tooltip_text: 'Play with mini display'
+        ImageButton:
+            size_hint:None,1
+            width: (0,12)[root.playable and root.listType == "PRESENTER"]
+            pos_hint:{'top':1, 'right':1}
+            source: helper._ICONS_PATH+'ic_radio_checked.png'
+            on_release:root.choice_play()
+            opacity: (0.2,1)[root.playable and root.choice]
+            tooltip_text: 'Choice Play'
         Label:
             size_hint:None,1
             width: (0,54)[root.listType == "VIDEO"]

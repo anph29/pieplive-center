@@ -11,7 +11,6 @@ from src.constants import UI
 
 class MediaScheduleView(MediaListView):
     def __init__(self, parent, *args, **kwargs):
-        self.totalDuration = 0
         super(MediaScheduleView, self).__init__(parent, *args, **kwargs)
 
     def makeDDList(self, ref):
@@ -28,7 +27,7 @@ class MediaScheduleView(MediaListView):
             droppedCallback=self.saveSortedList)
 
     def initUI(self):
-        super(MediaListView, self).initUI()
+        super(MediaScheduleView, self).initUI()
         #
         self.scrollZ.pack(fill=tk.BOTH, expand=True)
         self.ddlist.pack(fill=tk.Y, expand=True)
@@ -87,11 +86,11 @@ class MediaScheduleView(MediaListView):
 
     def saveSortedList(self):
         sorted = list(map(lambda x:x.value, self.ddlist._list_of_items))
-        index, timepoint = self.get1stEvalueTimepoint(sorted)
+        # index, timepoint = self.get1stEvalueTimepoint(sorted)
         self.clearData()
         self.writeLsMedia(sorted)
 
-    def get1stEvalueTimepoint(self, ls):
-        for i, m in enumerate(ls):
-            if 'timepoint' in m and int(m['timepoint']) > 0:
-                return i, m['timepoint']
+    # def get1stEvalueTimepoint(self, ls):
+    #     for i, m in enumerate(ls):
+    #         if 'timepoint' in m and int(m['timepoint']) > 0:
+    #             return i, m['timepoint']

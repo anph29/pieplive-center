@@ -16,11 +16,10 @@ def config():
     try:
         firebase = getFirebase()
         auth = firebase.auth()
-        faketoken = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodHRwczovL2lkZW50aXR5dG9vbGtpdC5nb29nbGVhcGlzLmNvbS9nb29nbGUuaWRlbnRpdHkuaWRlbnRpdHl0b29sa2l0LnYxLklkZW50aXR5VG9vbGtpdCIsImlhdCI6MTU2Mzk2NTY1OSwiZXhwIjoxNTYzOTY5MjU5LCJpc3MiOiJmaXJlYmFzZS1hZG1pbnNkay1zMHJlY0BwaWVwbWUtMTYxODAzLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwic3ViIjoiZmlyZWJhc2UtYWRtaW5zZGstczByZWNAcGllcG1lLTE2MTgwMy5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsInVpZCI6IntcIkZPMTAwXCI6NDAzM30ifQ.WxN_PBGyrB3lFvF_5B2ZcyqWCLSPV0dmgy-jqbi0S5Kmp1AMeTeX3c_ud38oZFKEt6C31gHYBK4nwhmAowJg0aPsEgr0ZWstSHC6JCRaYQAKZLibk2U-BlSq-FL71y9-Yclx1vJyMb30hkNVd6PB1BzfLSSc7WYmy0aJ3QKEUJGqLjaaW1_p9eOF3gA_vYSt8oOVbRNwtZR4vC5se7RG-zpXmCHyjYvVdMTNiLUPIxb4zsFq0D9ISEI_CneSfzgto5nMF73HjhDIdn8Ek6uq3csfzhEgvT5ibm_5nGmlkyoReQY4T48J5HbyHmpKL4mEXT6k8Vv9A1pBH3C7YvT9Xw'
         authen = auth.sign_in_with_custom_token(store._get('tokenfb'))
         store._set('firebaseAuth', authen)
         return firebase.database()
-    except HTTPError as e:
+    except:
         # print(e, '--firebase error--')
         return refreshToken()
 
@@ -45,10 +44,24 @@ def getTokenFromSession():
         'NV125': store._get('NV125'), # Token
         'LOGIN': store._get('NV101')
     })
-
     if res['status'] =='success':
         if res['elements'] == -3:
             return False
         else:
             return res['elements']
 
+def startObserverActivedBu(callback):
+    activedBu = store.getCurrentActiveBusiness()
+    if bool(activedBu):
+        db = config()
+          if bool(db):
+            firebaseAuth = store._get('firebaseAuth')
+            return db.child(f'l500/{activedBu}/LIST').stream(callback, token=firebaseAuth['idToken'])
+
+def makeChangePresenter(pl500):
+    activedBu = store.getCurrentActiveBusiness()
+    if bool(activedBu):
+        db = config()
+        if bool(db):
+            firebaseAuth = store._get('firebaseAuth')
+            db.child(f'l500/{activedBu}').update({"PRESENTER": pl500}, token=firebaseAuth['idToken'])

@@ -13,27 +13,23 @@ class MediaTab(tk.Frame):
 
     def __init__(self,  parent, *args, **kwargs):
         super(MediaTab, self).__init__( parent, *args, **kwargs)
+        self.parent = parent
         self.tbBgColor = '#fff'
         self._LS_MEDIA_DATA = []
         self._LS_MEDIA_UI = []
         self.listenerStream = None
+        self.tabType = None
+        self.totalDuration = 0
 
     def initUI(self):
         self.showLsMedia()
         self.showToolBar()
         self.after(500, self.turnOnObserver)
+        firebase.makeChangePresenter(0)
 
     def turnOnObserver(self):
-        if bool(store._get('FO100')):
-            if self.tabType == MediaType.PRESENTER:
-                activedBu = store.getCurrentActiveBusiness()
-                if bool(activedBu):
-                    db = firebase.config()
-                    if not db:
-                        login = Login()
-                        login.logout()
-                    else:
-                        self.listenerStream = db.child(f'l500/{activedBu}/LIST').stream(self.firebaseCallback)
+        if bool(store._get('FO100')) and self.tabType == MediaType.PRESENTER:
+            firebase.startObserverActivedBu(self.firebaseCallback)
 
     def firebaseCallback(self, message):
         data = message['data']
@@ -50,7 +46,6 @@ class MediaTab(tk.Frame):
                 id = int(data['_id'])
                 ln510 = int(data['LN510'])
                 self.changeStatePresenter(id, ln510)
-
 
     def changeStatePresenter(self, id, ln510):
         for m in self._LS_MEDIA_UI:
@@ -123,12 +118,16 @@ class MediaTab(tk.Frame):
         self.cmdAdd.pack(side=tk.LEFT, padx=5, pady=5)
         ToolTip(self.cmdAdd, "Add new media")
 
+    def addMediaToList(self, media):
+        pass
+
     def showLsMedia(self):
         self._LS_MEDIA_DATA = self.loadLsMedia()
-        for media in self._LS_MEDIA_DATA:
-            self.addMediaToList(media)
-            if self.tabType == MediaType.SCHEDULE:
-                self.totalDuration += int(media['duration'])
+        if bool(self._LS_MEDIA_DATA):
+            for media in self._LS_MEDIA_DATA:
+                self.addMediaToList(media)
+                if self.tabType == MediaType.SCHEDULE:
+                    self.totalDuration += int(media['duration'])
 
     def clearData(self, clearView=False):
         self._LS_MEDIA_DATA = []

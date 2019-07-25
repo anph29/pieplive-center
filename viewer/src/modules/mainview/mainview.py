@@ -43,8 +43,8 @@ class MainView(tk.Frame):
     def initGUI(self):
         # if not login
         if not bool(store._get('FO100')):
-            login = Login(self)
-            login.open()
+            self.login = Login(self)
+            self.login.open()
         #
         self.setStyle()
         self.updateMenu()
@@ -60,7 +60,7 @@ class MainView(tk.Frame):
         self.superWrapper.add(self.schedule, text="Schedule", image=icSchedule, compound=tk.LEFT)
         #
         icMedia = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_media_tab.png')
-        self.mediaList =  self.makeMediaListTab()
+        self.mediaList = self.makeMediaListTab()
         self.superWrapper.add(self.mediaList, text="Live View", image=icMedia, compound=tk.LEFT)
          #
         self.superWrapper.select(self.schedule)

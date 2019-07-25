@@ -1,7 +1,7 @@
 import tkinter as tk
 from src.modules.custom import DynamicGrid
 from src.modules.mediaitem import MediaItemBox
-from . import MediaTab
+from .mediatab import MediaTab
 from src.enums import MediaType
 
 class MediaGridView(DynamicGrid, MediaTab):

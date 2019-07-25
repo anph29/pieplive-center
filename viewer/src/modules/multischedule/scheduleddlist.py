@@ -1,9 +1,15 @@
 import tkinter as tk
-from src.module.custom import DDList, VerticalScrolledFrame
+from tkinter import messagebox
+from src.modules.custom import DDList, VerticalScrolledFrame
+from src.utils import helper
+from src.modules.custom import ToolTip
+from PIL import Image, ImageTk
+from src.modules.mediaitem import MediaItemSchedule
+
 
 class ScheduleDDList(tk.Frame):
     def __init__(self,  parent, *args, **kwargs):
-        super(MediaTab, self).__init__( parent, *args, **kwargs)
+        super(ScheduleDDList, self).__init__( parent, *args, **kwargs)
         self.tbBgColor = '#fff'
         self._LS_SCHEDULE_DATA = []
         self._LS_SCHEDULE_UI = []
@@ -12,23 +18,17 @@ class ScheduleDDList(tk.Frame):
         self.ddlist = self.makeDDList(self.scrollZ.interior)
         self.initUI()
 
-    def makeDDList(self, ref):
-        return DDList(ref, 
-            400,
-            42,
-            offset_x=5,
-            offset_y=5,
-            gap=5,
-            item_borderwidth=1,
-            item_relief=tk.FLAT,
-            borderwidth=0,
-            bg="#fff",
-            droppedCallback=self.saveSortedList)
-
     def initUI(self):
         self.showListSchedule()
         self.showToolBar()
 
+    def showListSchedule(self):
+        self._LS_SCHEDULE_DATA = self.loadSchedule()
+        for media in self._LS_SCHEDULE_DATA:
+            self.addToScheduleGUI(media)
+            # if self.tabType == MediaType.SCHEDULE:
+            #     self.totalDuration += int(media['duration'])
+            
     def showToolBar(self):
         self.checkall = tk.BooleanVar()
         self.toolbar = tk.Frame(self, height=50, relief=tk.FLAT, bg=self.tbBgColor)
@@ -40,6 +40,13 @@ class ScheduleDDList(tk.Frame):
         self.tbleft = tk.Frame(self.toolbar, relief=tk.FLAT, bg=self.tbBgColor)
         self.tbleft.pack(fil=tk.Y, side=tk.LEFT)
         self.showSelectAll()
+
+    def addToScheduleGUI(self, data):
+        item = self.ddlist.create_item(value=data)
+        ui = MediaItemSchedule(item, parentTab=self, media=data)
+        self._LS_SCHEDULE_UI.append(ui)
+        ui.pack(padx= (4,0), pady= (4,0), expand=True)
+        self.ddlist.add_item(item)
         
     def showSelectAll(self):
         # select all
@@ -83,20 +90,13 @@ class ScheduleDDList(tk.Frame):
             medi.checked.set(self.checkall.get())
 
     def showAddCamBtn(self):
-        popupaddresource = PopupAddResource(self)
+        # popupaddresource = PopupAddResource(self)
         imAdd = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}add-rgb24.png"))
         self.cmdAdd = tk.Label(self.tbright, image=imAdd, cursor='hand2', bg=self.tbBgColor)
         self.cmdAdd.image = imAdd
-        self.cmdAdd.bind("<Button-1>", popupaddresource.initGUI)
+        # self.cmdAdd.bind("<Button-1>", popupaddresource.initGUI)
         self.cmdAdd.pack(side=tk.LEFT, padx=5, pady=5)
         ToolTip(self.cmdAdd, "Add new media")
-
-    def showListSchedule(self):
-        self._LS_SCHEDULE_DATA = self.loadSchedule()
-        for media in self._LS_SCHEDULE_DATA:
-            self.addMediaToList(media)
-            if self.tabType == MediaType.SCHEDULE:
-                self.totalDuration += int(media['duration'])
 
     def clearData(self, clearView=False):
         self._LS_SCHEDULE_DATA = []
@@ -121,5 +121,6 @@ class ScheduleDDList(tk.Frame):
         filtered = list(filter(lambda x:x['id'] not in lsId, ls))
         self.clearData()
         self.writeSchedule(filtered)
-
-
+        
+    def saveSortedList(self):
+        print(';;;saveSortedList;;;;')

@@ -17,15 +17,14 @@ class VerticalScrolledFrame(Frame):
         # create a canvas object and a vertical scrollbar for scrolling it
         vscrollbar = Scrollbar(self, orient=VERTICAL)
         vscrollbar.pack(fill=Y, side=RIGHT, expand=FALSE)
-        self.canvas = Canvas(self, bd=0, highlightthickness=0,
-                        yscrollcommand=vscrollbar.set)
+        self.canvas = Canvas(self, bd=0, highlightthickness=0, yscrollcommand=vscrollbar.set)
         self.canvas.pack(side=LEFT, fill=BOTH, expand=TRUE)
         vscrollbar.config(command=self.canvas.yview)
 
         # reset the view
         self.canvas.xview_moveto(0)
         self.canvas.yview_moveto(0)
-        self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
+        # self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
         self.canvas.bind('<Configure>', self._configure_canvas)
 
         # create a frame inside the canvas which will be scrolled with it
@@ -41,6 +40,8 @@ class VerticalScrolledFrame(Frame):
             # update the canvas's width to fit the inner frame
             self.canvas.config(width=self.interior.winfo_reqwidth())
 
+    # track changes to the canvas and frame width and sync them,
+    # also updating the scrollbar
     def _configure_canvas(self, event):
         if self.interior.winfo_reqwidth() != self.canvas.winfo_width():
             # update the inner frame's width to fill the self.canvas
@@ -48,18 +49,14 @@ class VerticalScrolledFrame(Frame):
 
 
     def _on_mousewheel(self, event):
-        self.canvas.yview_scroll(-1*(event.delta/120), "units")
-    # track changes to the canvas and frame width and sync them,
-    # also updating the scrollbar
+        # self.canvas.yview_scroll(-1 * int(event.delta/120), "units")
+        self.canvas.yview_moveto(-1 * int(event.delta/120))
 
 
 if __name__ == "__main__":
-
     class SampleApp(Tk):
         def __init__(self, *args, **kwargs):
             root = Tk.__init__(self, *args, **kwargs)
-
-
             self.frame = VerticalScrolledFrame(root)
             self.frame.pack()
             self.label = Label(text="Shrink the window to activate the scrollbar.")

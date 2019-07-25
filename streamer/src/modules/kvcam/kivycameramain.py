@@ -100,7 +100,6 @@ class KivyCameraMain(Image):
                     timeout=1
                     command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-preset", "veryfast","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]  
                 elif self.resource_type == "RTSP":
-                    # -acodec copy -vcodec copy
                     timeout=3
                     # command = ["ffmpeg-win/ffmpeg.exe","-y","-rtsp_flags", "prefer_tcp","-i", self.url,"-flags","+global_header","-ar","44100","-vb",self.f_parent.v_bitrate,"-r","25",output]
                     # command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate, "-preset", "veryfast","-r","25",'-g','60','-threads', '2',output]
@@ -129,7 +128,6 @@ class KivyCameraMain(Image):
                     Clock.schedule_once(lambda x: self.pipe.kill() , 5)
                 Clock.schedule_once(self.process_set_data , 0)
         except :
-            print("Exception:")
             Clock.schedule_once(self.process_set_data , 0)
         
     def process_set_data(self, second):
@@ -146,23 +144,9 @@ class KivyCameraMain(Image):
             if self.capture is not None:
                 self.capture.release()
             self.stop_update_capture()
-            # if self.resource_type == 'IMG':
-            #     self.show_captured_img(self.url)
-            #     if self.f_parent is not None:
-            #         if self.category == "SCHEDULE":
-            #             self.f_parent.refresh_stream()
-            #         elif self.resource_type == "M3U8" or self.resource_type == "VIDEO":
-            #             self.f_parent.refresh_stream()
-            #         elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
-            #             self.f_parent.refresh_stream()
-                    
-            #         if self.schedule_type == 'duration':
-            #             self.f_parent.start_schedule(True)
-            #     self.typeOld = self.resource_type
-            # else:
+
             if self.resource_type == 'IMG' and '.gif' in self.url:
                 self.resource_type = 'GIF'
-
             if self.resource_type == 'CAMERA':
                 self.capture = cv2.VideoCapture(int(self.url))
             else:
@@ -223,7 +207,6 @@ class KivyCameraMain(Image):
                     if self.resource_type == 'GIF':
                         self.capture.release()
                         self.capture = cv2.VideoCapture(self.url)
-
                 else:
                     ret, frame = self.capture.retrieve()
                     if ret:

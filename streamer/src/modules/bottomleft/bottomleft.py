@@ -20,7 +20,6 @@ from src.modules.bottomleft.listmixer import RCVItemMixer
 from src.modules.bottomleft.listsource import ListSource 
 from src.modules.bottomleft.listsource import BoxSource 
 from src.modules.bottomleft.listsource import RCVItemSource
-from kivy.garden.knob import Knob
 from src.utils import ftype
 from src.utils import kivyhelper as kv_helper
 from src.modules.custom.filechoose import FileChooser
@@ -115,13 +114,14 @@ class AudioDialog(Popup):
     def __init__(self, parent, data = None, index = -1, *args):
         super(AudioDialog, self).__init__(*args)
         self.index = index
+        self.volume = 100
         if data is not None:
             self.inp_name.text = data['name']
             self.inp_source.text = data['src']
-            self.inp_volume.value = data['volume']
+            self.volume = data['volume']
 
     def _enter(self):
-        kv_helper.getApRoot().add_audio(self.index, self.inp_name.text, self.inp_source.text, self.inp_volume.value)
+        kv_helper.getApRoot().add_audio(self.index, self.inp_name.text, self.inp_source.text, self.volume)
         self.dismiss()
 
     def _cancel(self):

@@ -221,7 +221,8 @@ class ListPresenter(RecycleView):
             activedBu = store.getCurrentActiveBusiness()
             if bool(activedBu):
                 db = firebase.config()
-                self.listenerStream = db.child(f'l500/{activedBu}/LIST').stream(self.firebaseCallback)
+                if bool(db):
+                    self.listenerStream = db.child(f'l500/{activedBu}/LIST').stream(self.firebaseCallback)
     
     def firebaseCallback(self, message):
         data = message['data']

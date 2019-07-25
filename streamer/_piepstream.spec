@@ -7,7 +7,6 @@ block_cipher = None
 
 added_files = [
   ( 'src\\ui', 'src\\ui' ),
-  ( 'src\\images', 'src\\images' ),
   ( 'ffmpeg\\', 'ffmpeg\\' ),
   ( 'piepstream.kv', '.' ),
   ( 'resource.zip', '.' ),
@@ -33,7 +32,7 @@ pyz = PYZ(a.pure, a.zipped_data,
 exe = EXE(pyz,
           a.scripts,
           exclude_binaries=True,
-          name='pieplivecenter',
+          name='piepstream',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,

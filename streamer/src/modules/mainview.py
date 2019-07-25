@@ -269,7 +269,7 @@ class MainView(Widget):
             audio = {
                 "id": scryto.hash_md5_with_time(src.replace('\\', '/')),
                 "type": "audio",
-                "active": 1,
+                "active": 0,
                 "name": name,
                 "src": src,
                 "volume": volume
@@ -277,7 +277,7 @@ class MainView(Widget):
             self.lsSource.append(audio)
             helper._write_lsStaticSource(self.lsSource)
             self.bottom_left.list_source.add_source(audio)
-            self.bottom_left.list_mixer.add_source({'id': audio['id'],'name': name,'src': src,'volume': volume})
+            # self.bottom_left.list_mixer.add_source({'id': audio['id'],'name': name,'src': src,'volume': volume})
         else:
             self.lsSource[index]['name'] = name
             self.lsSource[index]['src'] = src

@@ -436,12 +436,10 @@
 <AudioDialog>:
     inp_name:inp_name
     inp_source:inp_source
-    inp_volume:inp_volume
-
     title: 'Add Audio'
     size_hint: None, None
     width: 400
-    height:500
+    height:300
     auto_dismiss: False
     BoxLayout:
         orientation: 'vertical'
@@ -449,21 +447,6 @@
         size: root.size
         padding:0,5,0,0
         spacing:10
-        # BoxLayout:
-        #     canvas.before:
-        #         Color:
-        #             rgb: .25,.25,.25
-        #         Rectangle:
-        #             pos: self.pos
-        #             size: self.size
-        #     size_hint:1,None
-        #     height:150
-        #     Widget:
-        #     Sound:
-        #         id:preview_audio
-        #         #load:"src/musics/anh-nang-trong-anh.mp3"
-        #         size_hint: 1, 1
-        #     Widget:
 
         BoxLayout:
             orientation: 'horizontal'
@@ -511,33 +494,6 @@
                 color: 1,1,1,1
                 background_color: 1,1,1,1
                 on_press: root._choose_audio()
-
-        BoxLayout:
-            orientation: 'horizontal'
-            size_hint:1,None
-            height:100
-            Label:
-                text: 'Volume'
-                size_hint: None, 1
-                width: 135
-                color: 1,1,1,1
-                font_size: sp(14)
-                valign:"top"
-                halign:"right"
-            Knob:
-                id:inp_volume
-                size: 100, 100
-                value: 100
-                show_marker: True
-                knobimg_source: "src/images/knob_metal.png"
-                marker_img: "src/images/bline.png"
-                markeroff_color: 0.3, 0.3, .3, 1
-            Label:
-                text: str(int(inp_volume.value))
-                size_hint: None, 1
-                width: 53
-                color: 1,1,1,1
-                font_size: sp(14)
         Widget:
         BoxLayout:
             orientation: 'horizontal'

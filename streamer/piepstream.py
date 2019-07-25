@@ -45,7 +45,7 @@ for font in KIVY_FONTS:
     LabelBase.register(**font)
 
 class PiepStream(App):
-    title = "PiepLiveCenter-Streamer Thử nghiệm"
+    title = "PiepLiveCenter-Streamer (Thử nghiệm)"
     mainView = ObjectProperty()
 
     def __init__(self, **kwargs):
@@ -60,11 +60,10 @@ class PiepStream(App):
     def on_stop(self):
         kivy_helper.getApRoot().on_stop()
 
-    def destroy(self):
-        kivy_helper.getApRoot().on_stop()
-
 if __name__ == '__main__':
     # if not admin.isUserAdmin():
     #     admin.runAsAdmin()
+    # from pathlib import Path
+    # home = str(Path.home())
     helper.makeSureResourceFolderExisted()
     PiepStream().run()

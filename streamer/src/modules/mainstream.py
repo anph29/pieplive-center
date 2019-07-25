@@ -43,7 +43,7 @@ class MainStream(RelativeLayout):
         self.reconnect = 0
         self.streamType = ''
         self.mgrSchedule = None
-        self.is_loop = False
+        self.is_loop = True
         self.current_schedule = -1
         self.deleteAllFile()
         timenow = datetime.datetime.now().strftime("%d%m%y%H%M%S")
@@ -154,16 +154,16 @@ class MainStream(RelativeLayout):
     def stream(self, fps):
         try:
             if self.isStream:
-                if self.parent is not None:
-                    self.canvas_parent_index = self.parent.canvas.indexof(self.canvas)
-                    if self.canvas_parent_index > -1:
-                        self.parent.canvas.remove(self.canvas)
-                self.fbo.add(self.canvas)
+                # if self.parent is not None:
+                #     self.canvas_parent_index = self.parent.canvas.indexof(self.canvas)
+                #     if self.canvas_parent_index > -1:
+                #         self.parent.canvas.remove(self.canvas)
+                # self.fbo.add(self.canvas)
                 self.fbo.draw()
                 self.pipe.stdin.write(self.fbo.pixels)
-                self.fbo.remove(self.canvas)
-                if self.parent is not None and self.canvas_parent_index > -1:
-                    self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
+                # self.fbo.remove(self.canvas)
+                # if self.parent is not None and self.canvas_parent_index > -1:
+                #     self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
                 self.reconnect = 0
         except:
             self.stopStream()
@@ -186,12 +186,11 @@ class MainStream(RelativeLayout):
             self.event.cancel()
         if self.pipe is not None:
             self.pipe.kill()
-        self.fbo.remove(self.canvas)
         if self.stop is not None:
             self.stop.set()
         self.fbo.remove(self.canvas)
-        if self.parent is not None and self.canvas_parent_index > -1:
-            self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
+        # if self.parent is not None and self.canvas_parent_index > -1:
+        #     self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
         print("--- STOP ---")
         
     def set_url_stream(self, urlStream):

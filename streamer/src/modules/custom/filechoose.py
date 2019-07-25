@@ -17,7 +17,6 @@ Builder.load_string('''
     padding:0
 ''')
 
-
 class FileChooser(Popup):
     callback = None
 

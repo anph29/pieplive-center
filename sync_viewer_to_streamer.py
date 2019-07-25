@@ -5,30 +5,31 @@ import shutil
 cwd = os.getcwd().replace("\\", "/")
 osname = platform.system()
 #
-vwr_src = f"{cwd}/viewer/src/"
-vwr_util = f"{vwr_src}utils/"
-vwr_model = f"{vwr_src}models/"
-vwr_module = f"{vwr_src}modules/"
+VIEWER_SRC = f"{cwd}/viewer/src/"
+VIEWER_UTIL = f"{VIEWER_SRC}utils/"
+VIEWER_MODEL = f"{VIEWER_SRC}models/"
+VIEWER_MODULE = f"{VIEWER_SRC}modules/"
 #
-str_src = f"{cwd}/streamer/src/"
-str_util = f"{str_src}utils/"
-str_model = f"{str_src}models/"
-str_module = f"{str_src}modules/"
+STREAM_SRC = f"{cwd}/streamer/src/"
+STREAM_UTIL = f"{STREAM_SRC}utils/"
+STREAM_MODEL = f"{STREAM_SRC}models/"
+STREAM_MODULE = f"{STREAM_SRC}modules/"
 #
 commands = [
     #util
-      f"{vwr_util}__init__.py#anph#{str_util}__init__.py"
-    , f"{vwr_util}helper.py#anph#{str_util}helper.py"
-    , f"{vwr_util}scryto.py#anph#{str_util}scryto.py"
-    , f"{vwr_util}ftype.py#anph#{str_util}ftype.py"
-    , f"{vwr_util}store.py#anph#{str_util}store.py"
-    , f"{vwr_util}firebase.py#anph#{str_util}firebase.py"
-    , f"{vwr_util}zip_helper.py#anph#{str_util}zip_helper.py"
+      f"{VIEWER_UTIL}__init__.py#anph#{STREAM_UTIL}__init__.py"
+    , f"{VIEWER_UTIL}helper.py#anph#{STREAM_UTIL}helper.py"
+    , f"{VIEWER_UTIL}scryto.py#anph#{STREAM_UTIL}scryto.py"
+    , f"{VIEWER_UTIL}ftype.py#anph#{STREAM_UTIL}ftype.py"
+    , f"{VIEWER_UTIL}store.py#anph#{STREAM_UTIL}store.py"
+    , f"{VIEWER_UTIL}firebase.py#anph#{STREAM_UTIL}firebase.py"
+    , f"{VIEWER_UTIL}zip_helper.py#anph#{STREAM_UTIL}zip_helper.py"
     #model
-    , f"{vwr_model}http_model.py#anph#{str_model}http_model.py"
-    , f"{vwr_model}l500_model.py#anph#{str_model}l500_model.py"
-    , f"{vwr_model}n100_model.py#anph#{str_model}n100_model.py"
-    , f"{vwr_model}q170_model.py#anph#{str_model}q170_model.py"
+    , f"{VIEWER_MODEL}__init__.py#anph#{STREAM_MODEL}__init__.py"
+    , f"{VIEWER_MODEL}http_model.py#anph#{STREAM_MODEL}http_model.py"
+    , f"{VIEWER_MODEL}l500_model.py#anph#{STREAM_MODEL}l500_model.py"
+    , f"{VIEWER_MODEL}n100_model.py#anph#{STREAM_MODEL}n100_model.py"
+    , f"{VIEWER_MODEL}q170_model.py#anph#{STREAM_MODEL}q170_model.py"
 ]
 for command in commands:
     shutil.copyfile(*command.split('#anph#'))

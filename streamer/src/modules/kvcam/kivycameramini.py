@@ -42,7 +42,6 @@ class KivyCameraMini(DragBehavior, Image):
     typeOld = StringProperty('')
     category = StringProperty('')
     data_src = None
-    schedule_type = StringProperty('')
 
     def __init__(self, **kwargs):
         super(KivyCameraMini, self).__init__(**kwargs)
@@ -82,11 +81,6 @@ class KivyCameraMini(DragBehavior, Image):
         self.duration_current = 0
         self.duration_total_n = 1
         self.duration_fps = 25
-        self.schedule_type = ''# '' / duration / end
-        if self.category == "SCHEDULE":
-            self.schedule_type = 'duration'
-            if self.data_src['duration'] == 0:
-                self.schedule_type = 'end'
         
         if self.pipe is not None:
             self.pipe.kill()
@@ -116,8 +110,6 @@ class KivyCameraMini(DragBehavior, Image):
                 except Exception as e:
                     print("Exception:", e)
                         
-                if self.category == "SCHEDULE" and dura == self.data_src['duration']: 
-                    self.schedule_type = 'end'
                 output = self.f_parent.mini_url_flv
                 timeout = 1
                 command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate, "-preset", "veryfast","-r","25",'-g','60','-threads', '2',output]
@@ -131,7 +123,6 @@ class KivyCameraMini(DragBehavior, Image):
                     timeout=1
                     command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-preset", "veryfast","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]
                 elif self.resource_type == "RTSP":
-                    # -acodec copy -vcodec copy
                     timeout=1
                     command = ["ffmpeg-win/ffmpeg.exe","-y","-i", self.url,"-acodec", "copy", "-vcodec", "copy","-r","25",'-threads', '2',output]
                 else:
@@ -182,7 +173,6 @@ class KivyCameraMini(DragBehavior, Image):
                 self.capture = cv2.VideoCapture(int(self.url))
             else:
                 self.capture = cv2.VideoCapture(self.url)
-            print('url-----',self.url)
 
             if self.capture is not None and self.capture.isOpened():
                 self.reconnect = 0
@@ -194,8 +184,6 @@ class KivyCameraMini(DragBehavior, Image):
                         self.f_parent.refresh_stream()
                     elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
                         self.f_parent.refresh_stream()
-                    if self.schedule_type == 'duration':
-                        self.f_parent.start_schedule(True)
                 self.typeOld = self.resource_type
             else:
                 if self.reconnect >= 3:
@@ -225,10 +213,7 @@ class KivyCameraMini(DragBehavior, Image):
         try:
             if self.capture.isOpened():
                 if not self.capture.grab():
-                    if self.category == 'SCHEDULE':
-                        if 'duration' in self.data_src and  self.data_src['duration'] is not None:
-                            if (self.data_src['duration'] == 0 or int(self.duration_current) >= self.data_src['duration']) and self.schedule_type == 'end':
-                                self.f_parent.process_schedule(1)
+                    pass
                 else:
                     ret, frame = self.capture.retrieve()
                     if ret:

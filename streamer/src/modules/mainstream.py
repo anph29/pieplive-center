@@ -402,7 +402,6 @@ class MainStream(RelativeLayout):
         if self.mgrSchedule is not None:
             self.mgrSchedule.cancel()
         self.current_schedule = self.f_parent.right_content.tab_schedule.ls_schedule.getCurrentIndex() + 1
-        
         if self.current_schedule >= len(self.ls_schedule):
             if self.is_loop:
                 self.current_schedule = 0
@@ -411,7 +410,6 @@ class MainStream(RelativeLayout):
         data_src = self.ls_schedule[self.current_schedule]
         self.f_parent.right_content.tab_schedule.ls_schedule.setPlayed(self.current_schedule)
         self._set_capture(data_src, 'SCHEDULE', True)
-        # self.mgrSchedule = Clock.schedule_once(self.process_schedule , self.ls_schedule[self.current_schedule]['duration']+3)
 
     def loop_schedule(self,_val):
         self.is_loop = _val

@@ -1,6 +1,6 @@
 import tkinter as tk
 from .leftschedule import LeftSchedule
-# from .multischedule import MultiSchedule
+from src.modules.multischedule import MultiSchedule
 from .rightschedule import RightSchedule
 
 class Schedule(tk.Frame):

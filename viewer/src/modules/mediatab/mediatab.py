@@ -7,6 +7,7 @@ from src.enums import MediaType
 from src.modules.popup import PopupAddResource
 from src.modules.custom import ToolTip
 from src.utils import firebase, store
+from src.modules.login import Login
 
 class MediaTab(tk.Frame):
 
@@ -28,7 +29,11 @@ class MediaTab(tk.Frame):
                 activedBu = store.getCurrentActiveBusiness()
                 if bool(activedBu):
                     db = firebase.config()
-                    self.listenerStream = db.child(f'l500/{activedBu}/LIST').stream(self.firebaseCallback)
+                    if not db:
+                        login = Login()
+                        login.logout()
+                    else:
+                        self.listenerStream = db.child(f'l500/{activedBu}/LIST').stream(self.firebaseCallback)
 
     def firebaseCallback(self, message):
         data = message['data']

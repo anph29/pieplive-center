@@ -2,8 +2,6 @@ from .pyrebase import pyrebase
 from . import store 
 from requests.exceptions import HTTPError
 from src.models import N100_model
-from src.constants import WS
-from src.modules.login import Login
 
 def getFirebase():
     return pyrebase.initialize_app({
@@ -31,13 +29,14 @@ def refreshToken():
         firebase = getFirebase()
         auth = firebase.auth()
         res = getTokenFromSession()
+        if not res:
+            return False
         store._set('tokenfb', res['tokenfb'])
         authen = auth.sign_in_with_custom_token(res['tokenfb'])
         store._set('firebaseAuth', authen)
         return firebase.database()
     except:
-        login = Login()
-        login.logout()
+       return False
 
 def getTokenFromSession():
     n100 = N100_model()
@@ -47,11 +46,9 @@ def getTokenFromSession():
         'LOGIN': store._get('NV101')
     })
 
-    if res[WS.STATUS] == WS.SUCCESS:
-        if res[WS.ELEMENTS] == -3:
-            login = Login()
-            login.logout()
-            return None
+    if res['status'] =='success':
+        if res['elements'] == -3:
+            return False
         else:
-            return res[WS.ELEMENTS]
+            return res['elements']
 

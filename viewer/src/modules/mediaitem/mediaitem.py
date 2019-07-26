@@ -47,16 +47,13 @@ class MediaItem(tk.Frame):
             self.destroy()
 
     def updateLightColor(self, ln510):
-        self.light.delete("all")
         self.LN510 = ln510
         frame = tk.PhotoImage(file=f'{helper._ICONS_PATH}live-red.png')
         if ln510 == 1: # Press ON
             frame = tk.PhotoImage(file=f'{helper._ICONS_PATH}live-orange.png')
         elif ln510 == 2: # READY
             frame = tk.PhotoImage(file=f'{helper._ICONS_PATH}live-green.png')
-
-        self.light.create_image(8, 8, image=frame, anchor=tk.CENTER)
-        # self.light.create_circle(6, 6, 6, fill=color, width=0)
+        self.light.configure(image=frame)
 
     def activePresenter(self):
         self.stopGIF = False
@@ -66,8 +63,7 @@ class MediaItem(tk.Frame):
             idx = (0, idx)[idx <= 2]
             frame = frames[idx]
             idx += 1
-            self.light.delete("all")
-            self.light.create_image(8, 8, image=frame, anchor=tk.CENTER)
+            self.light.configure(image=frame)
 
             if not self.stopGIF:
                 self.after(200, update, idx)

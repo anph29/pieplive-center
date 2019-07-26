@@ -64,4 +64,4 @@ def makeChangePresenter(pl500):
         db = config()
         if bool(db):
             firebaseAuth = store._get('firebaseAuth')
-            db.child(f'l500/{activedBu}').update({"PRESENTER": pl500}, token=firebaseAuth['idToken'])
+            db.child(f'l500/{activedBu}/PRESENTER').set(pl500, token=firebaseAuth['idToken'])

@@ -30,11 +30,10 @@ class MediaItemDnD(MediaItem):
         lblPush.pack(side=tk.LEFT, padx=5, pady=5)
          # traffic lignt
         if self.parentTab.tabType == MediaType.PRESENTER:
-            self.light = CanvasC(wrapper, width=16, height=16, borderwidth=0, highlightthickness=0)
-            self.light.pack(side=tk.LEFT)
             frame = tk.PhotoImage(file=f'{helper._ICONS_PATH}live-red.png')
-            self.light.create_image(8, 8, image=frame, anchor=tk.CENTER)
-            # self.light.create_circle(6, 6, 6, fill="#F00", width=0)
+            self.light = tk.Label(self.bottom, width=16, height=16, image=frame, bg=self.botBg)
+            self.light.photo = frame
+            self.light.pack(side=tk.LEFT)
         #check all
         checkbox = tk.Checkbutton(wrapper, variable=self.checked, onvalue=True, offvalue=False, height=1, width=1, bd=0, relief=tk.FLAT)
         checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)

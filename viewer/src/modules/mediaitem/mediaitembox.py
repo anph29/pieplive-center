@@ -74,11 +74,10 @@ class MediaItemBox(MediaItem):
         self.bottom.pack(side=tk.BOTTOM, fill=tk.X)
         # traffic light
         if self.parentTab.tabType == MediaType.PRESENTER:
-            self.light = CanvasC(self.bottom, width=16, height=16, borderwidth=0, highlightthickness=0, bg=self.botBg)
-            self.light.pack(side=tk.LEFT)
-            # self.light.create_circle(6, 6, 6, fill="#F00", width=0)
             frame = tk.PhotoImage(file=f'{helper._ICONS_PATH}live-red.png')
-            self.light.create_image(8, 8, image=frame, anchor=tk.CENTER)
+            self.light = tk.Label(self.bottom, width=16, height=16, image=frame, bg=self.botBg)
+            self.light.photo = frame
+            self.light.pack(side=tk.LEFT)
         # check all
         self.checkbox = tk.Checkbutton(self.bottom, variable=self.checked, onvalue=True, bg=self.botBg, offvalue=False, height=1, width=1, bd=0, relief=tk.FLAT)
         self.checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)

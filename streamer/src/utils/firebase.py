@@ -56,7 +56,7 @@ def startObserverActivedBu(callback):
         db = config()
         if bool(db):
             firebaseAuth = store._get('firebaseAuth')
-            return db.child(f'l500/{activedBu}/LIST').stream(callback, token=firebaseAuth['idToken'])
+            return db.child(f'l500/{activedBu}').stream(callback, token=firebaseAuth['idToken'])
 
 def makeChangePresenter(pl500):
     activedBu = store.getCurrentActiveBusiness()

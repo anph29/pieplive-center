@@ -82,7 +82,7 @@ class MediaItem(tk.Frame):
             else:
                 self.after(1000, countDown5time, count)
 
-        self.after(1000, countDown5time, 50)
+        self.after(1000, countDown5time, 5)
 
     def deactivePresenter(self):
         self.stopGIF = True

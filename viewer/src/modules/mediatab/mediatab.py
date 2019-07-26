@@ -113,6 +113,10 @@ class MediaTab(tk.Frame):
         self.clearView()
         self.showLsMedia()
         self.checkall.set(False)
+        #
+        self.stopListenerStream()
+        self.after(500, self.turnOnObserver)
+
 
     def tabDeleteAll(self, evt):
         filtered = list(filter(lambda x: x.checked.get(), self._LS_MEDIA_UI))

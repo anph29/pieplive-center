@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from src.utils import helper
 from PIL import Image
+from src.constants import UI
 
 class MediaItem(tk.Frame):
 
@@ -57,21 +58,31 @@ class MediaItem(tk.Frame):
         self.light.configure(image=frame)
         self.light.image = frame
 
+
     def activePresenter(self):
         self.stopGIF = False
         frames = [tk.PhotoImage(file=f'{helper._ICONS_PATH}live.gif',format = 'gif -index %i' % i) for i in range(0, 3)]
 
-        def update(idx):
+        def updateGIF(idx):
             idx = (0, idx)[idx <= 2]
             frame = frames[idx]
             idx += 1
             self.light.configure(image=frame)
             if not self.stopGIF:
-                self.after(200, update, idx)
+                self.after(200, updateGIF, idx)
             else:
                 self.updateLightColor(self.LN510)
-        #
-        update(0)
         
+        def countDown5time(count):
+            print(count, 'countcountcountcountcountcount')
+            self.light.configure(image=None, text=count, fg='#0f0', font=UI.TXT_FONT_HEAD)
+            count-=1
+            if count == 0:
+                updateGIF(0)
+            else:
+                self.after(1000, countDown5time, count)
+
+        self.after(1000, countDown5time, 50)
+
     def deactivePresenter(self):
         self.stopGIF = True

@@ -27,7 +27,7 @@ class MediaItemBox(MediaItem):
         self.vlcInited = False
         self.parentTab = parentTab
         self.set_data(media)
-        self.botBg = '#BDC3C7'
+        self.botBg = '#f0f0f0'
         self.after(100, self.initGUI)
         self.top = None
         self.volume = False

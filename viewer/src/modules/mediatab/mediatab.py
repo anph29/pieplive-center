@@ -20,7 +20,6 @@ class MediaTab(tk.Frame):
         self._LS_MEDIA_UI = []
         self.listenerStream = None
         self.totalDuration = 0
-        self.tabType = self.tabType or None
 
     def initUI(self):
         self.showLsMedia()

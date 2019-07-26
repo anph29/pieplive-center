@@ -57,13 +57,13 @@ class MainView(tk.Frame):
         #
         icSchedule = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_clock_tab.png')
         self.schedule = Schedule(self)
+        self.schedule.image = icSchedule
         self.superWrapper.add(self.schedule, text="Schedule", image=icSchedule, compound=tk.LEFT)
-        self.superWrapper.image = icSchedule
         #
         icMedia = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_media_tab.png')
         self.mediaList = self.makeMediaListTab()
-        self.superWrapper.add(self.mediaList, text="Live View", image=icMedia, compound=tk.LEFT)
         self.mediaList.image = icMedia
+        self.superWrapper.add(self.mediaList, text="Live View", image=icMedia, compound=tk.LEFT)
          #
         self.superWrapper.select(self.schedule)
         self.superWrapper.enable_traversal()
@@ -75,19 +75,23 @@ class MainView(tk.Frame):
         mediaListTab.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
         # 1
         icImg = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_image.png')
-        self.tab_image =  self.makeMediaTab(MediaType.IMAGE)
+        self.tab_image = self.makeMediaTab(MediaType.IMAGE)
+        self.tab_image.image = icImg
         mediaListTab.add(self.tab_image, text="Images", image=icImg, compound=tk.LEFT)
         # 2
         icVid = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_video.png')
-        self.tab_video =  self.makeMediaTab(MediaType.VIDEO)
+        self.tab_video = self.makeMediaTab(MediaType.VIDEO)
+        self.tab_video.image = icVid
         mediaListTab.add(self.tab_video, text="Videos", image=icVid, compound=tk.LEFT)
         # 3
         icCam = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_camera.png')
-        self.tab_camera =  self.makeMediaTab(MediaType.CAMERA)
+        self.tab_camera = self.makeMediaTab(MediaType.CAMERA)
+        self.tab_camera.image = icCam
         mediaListTab.add(self.tab_camera, text="Cameras", image=icCam, compound=tk.LEFT)
         # 4
         icPres = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_presenter.png')
-        self.tab_presenter =  self.makeMediaTab(MediaType.PRESENTER)
+        self.tab_presenter = self.makeMediaTab(MediaType.PRESENTER)
+        self.tab_presenter.image = icPres
         mediaListTab.add(self.tab_presenter, text="Presenters", image=icPres, compound=tk.LEFT)
         #
         mediaListTab.select(self.tab_image)

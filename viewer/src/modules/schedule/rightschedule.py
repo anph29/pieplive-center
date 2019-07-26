@@ -17,18 +17,22 @@ class RightSchedule(tk.Frame):
         # 1
         icImg = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_image.png')
         self.tab_image = self.makeMediaTab(MediaType.IMAGE)
+        self.tab_image.image = icImg
         self.scheduleTab.add(self.tab_image, text="Images", image=icImg, compound=tk.LEFT)
         # 2
         icVid = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_video.png')
         self.tab_video = self.makeMediaTab(MediaType.VIDEO)
+        self.tab_video.image = icVid
         self.scheduleTab.add(self.tab_video, text="Videos", image=icVid, compound=tk.LEFT)
         # 3
         icCam = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_camera.png')
         self.tab_camera = self.makeMediaTab(MediaType.CAMERA)
+        self.tab_camera.image = icCam
         self.scheduleTab.add(self.tab_camera, text="Cameras", image=icCam, compound=tk.LEFT)
         # 4
         icPres = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_presenter.png')
         self.tab_presenter = self.makeMediaTab(MediaType.PRESENTER)
+        self.tab_presenter.image = icPres
         self.scheduleTab.add(self.tab_presenter, text="Presenters", image=icPres, compound=tk.LEFT)
         #
         self.scheduleTab.select(self.tab_image)

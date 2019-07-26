@@ -49,13 +49,13 @@ class MediaItem(tk.Frame):
         self.LN510 = ln510
         ## OFF
         frame = tk.PhotoImage(file=f'{helper._ICONS_PATH}live-red.png')
-        if ln510 == 1: # ON-waiting
+        if ln510 == 1: # ON-WAITING
             frame = tk.PhotoImage(file=f'{helper._ICONS_PATH}live-orange.png')
-        elif ln510 == 2: # READY
+        elif ln510 == 2: #GOT-READY
             frame = tk.PhotoImage(file=f'{helper._ICONS_PATH}live-green.png')
         
-        print(self.light, frame, 'cccccccccccccccccccccccccc')
         self.light.configure(image=frame)
+        self.light.image = frame
 
     def activePresenter(self):
         self.stopGIF = False
@@ -66,7 +66,6 @@ class MediaItem(tk.Frame):
             frame = frames[idx]
             idx += 1
             self.light.configure(image=frame)
-
             if not self.stopGIF:
                 self.after(200, update, idx)
             else:

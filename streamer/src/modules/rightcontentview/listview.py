@@ -219,7 +219,7 @@ class ListPresenter(RecycleView):
 
     def turnOnObserver(self,dt):
         if bool(store._get('FO100')):
-            firebase.startObserverActivedBu(self.firebaseCallback)
+            self.listenerStream = firebase.startObserverActivedBu(self.firebaseCallback)
     
     def firebaseCallback(self, message):
         data = message['data']

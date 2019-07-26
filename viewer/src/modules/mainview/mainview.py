@@ -58,10 +58,12 @@ class MainView(tk.Frame):
         icSchedule = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_clock_tab.png')
         self.schedule = Schedule(self)
         self.superWrapper.add(self.schedule, text="Schedule", image=icSchedule, compound=tk.LEFT)
+        self.superWrapper.image = icSchedule
         #
         icMedia = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_media_tab.png')
         self.mediaList = self.makeMediaListTab()
         self.superWrapper.add(self.mediaList, text="Live View", image=icMedia, compound=tk.LEFT)
+        self.mediaList.image = icMedia
          #
         self.superWrapper.select(self.schedule)
         self.superWrapper.enable_traversal()

@@ -52,9 +52,9 @@ class MediaItemBox(MediaItem):
             try:
                 im = Image.open(self.url)
             except FileNotFoundError:
-                im = Image.open(helper._IMAGES_PATH + 'splash.png')
+                im = Image.open(helper._IMAGES_PATH + 'splash2.png')
         else:
-            im = Image.open(helper._IMAGES_PATH + 'splash-video.png')
+            im = Image.open(helper._IMAGES_PATH + 'splash-video2.png')
         w, h = im.size
         r = w / h   
         nH = self.top_height
@@ -76,7 +76,7 @@ class MediaItemBox(MediaItem):
         if self.parentTab.tabType == MediaType.PRESENTER:
             frame = tk.PhotoImage(file=f'{helper._ICONS_PATH}live-red.png')
             self.light = tk.Label(self.bottom, width=16, height=16, image=frame, bg=self.botBg)
-            self.light.photo = frame
+            self.light.image = frame
             self.light.pack(side=tk.LEFT)
         # check all
         self.checkbox = tk.Checkbutton(self.bottom, variable=self.checked, onvalue=True, bg=self.botBg, offvalue=False, height=1, width=1, bd=0, relief=tk.FLAT)

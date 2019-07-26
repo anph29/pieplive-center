@@ -21,7 +21,7 @@ class MediaItemDnD(MediaItem):
     def initGUI(self):
         #
         wrapper = tk.Frame(self)
-        wrapper.pack(expand=True)
+        wrapper.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         # push to schedule
         imgPush = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}push-left-b.png"))
         lblPush = tk.Label(wrapper, image=imgPush, cursor='hand2')
@@ -31,7 +31,7 @@ class MediaItemDnD(MediaItem):
          # traffic lignt
         if self.parentTab.tabType == MediaType.PRESENTER:
             frame = tk.PhotoImage(file=f'{helper._ICONS_PATH}live-red.png')
-            self.light = tk.Label(self.bottom, width=16, height=16, image=frame, bg=self.botBg)
+            self.light = tk.Label(wrapper, width=16, height=16, image=frame)
             self.light.photo = frame
             self.light.pack(side=tk.LEFT)
         #check all

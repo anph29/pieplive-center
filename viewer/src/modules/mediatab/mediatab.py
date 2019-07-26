@@ -19,21 +19,19 @@ class MediaTab(tk.Frame):
         self._LS_MEDIA_DATA = []
         self._LS_MEDIA_UI = []
         self.listenerStream = None
-        self.tabType = None
         self.totalDuration = 0
+        self.tabType = self.tabType or None
 
     def initUI(self):
         self.showLsMedia()
         self.showToolBar()
         self.after(500, self.turnOnObserver)
-        firebase.makeChangePresenter(0)
 
     def turnOnObserver(self):
         if bool(store._get('FO100')) and self.tabType == MediaType.PRESENTER:
             self.listenerStream = firebase.startObserverActivedBu(self.firebaseCallback)
 
     def firebaseCallback(self, message):
-        print(message,'fbbbbbb')
         path, data, event = message.values()
         if path == '/':
             self.onChangeLN510(data['LIST'])
@@ -140,9 +138,6 @@ class MediaTab(tk.Frame):
         self.cmdAdd.pack(side=tk.LEFT, padx=5, pady=5)
         ToolTip(self.cmdAdd, "Add new media")
 
-    def addMediaToList(self, media):
-        pass
-
     def showLsMedia(self):
         self._LS_MEDIA_DATA = self.loadLsMedia()
         if bool(self._LS_MEDIA_DATA):
@@ -150,6 +145,9 @@ class MediaTab(tk.Frame):
                 self.addMediaToList(media)
                 if self.tabType == MediaType.SCHEDULE:
                     self.totalDuration += int(media['duration'])
+
+    def addMediaToList(self, media):
+        pass
 
     def clearData(self, clearView=False):
         self._LS_MEDIA_DATA = []

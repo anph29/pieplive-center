@@ -35,4 +35,4 @@ class RightSchedule(tk.Frame):
         self.scheduleTab.enable_traversal()
 
     def makeMediaTab(self, tType):
-        return  MediaListView(self, tabType=tType, schedule=self.schedule, bg="#ccc")
+        return MediaListView(self, tabType=tType, schedule=self.schedule, bg="#ccc")

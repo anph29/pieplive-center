@@ -8,7 +8,6 @@ class MediaItem(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         super(MediaItem, self).__init__(parent, *args, **kwargs)
         self.checked = tk.BooleanVar()
-        self.light = None
         self.id = None
         self.name = None
         self.url = None
@@ -48,11 +47,14 @@ class MediaItem(tk.Frame):
 
     def updateLightColor(self, ln510):
         self.LN510 = ln510
+        ## OFF
         frame = tk.PhotoImage(file=f'{helper._ICONS_PATH}live-red.png')
-        if ln510 == 1: # Press ON
+        if ln510 == 1: # ON-waiting
             frame = tk.PhotoImage(file=f'{helper._ICONS_PATH}live-orange.png')
         elif ln510 == 2: # READY
             frame = tk.PhotoImage(file=f'{helper._ICONS_PATH}live-green.png')
+        
+        print(self.light, frame, 'cccccccccccccccccccccccccc')
         self.light.configure(image=frame)
 
     def activePresenter(self):

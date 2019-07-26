@@ -17,6 +17,7 @@ class MediaListView(MediaTab):
         if 'schedule' in (kwargs):
             self.schedule = kwargs['schedule']
             del kwargs['schedule']
+
         super(MediaListView, self).__init__(parent, *args, **kwargs)
         self.tbBgColor = '#F9EBEA' if self.tabType == MediaType.SCHEDULE else '#D5DBDB'
         self.parent = parent

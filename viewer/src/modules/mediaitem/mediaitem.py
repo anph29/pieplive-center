@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
+from src.utils import helper
+from PIL import Image
 
 class MediaItem(tk.Frame):
 
@@ -15,6 +17,7 @@ class MediaItem(tk.Frame):
         self.timepoint = None
         self.audio = None
         self.rtpm = None
+        self.LN510 = 0
         
     def get_data(self):
         return {
@@ -46,10 +49,32 @@ class MediaItem(tk.Frame):
     def updateLightColor(self, ln510):
         self.light.delete("all")
         self.LN510 = ln510
-        color = "#F00" # 0: OFF
+        frame = tk.PhotoImage(file=f'{helper._ICONS_PATH}live-red.png')
         if ln510 == 1: # Press ON
-            color = "#FF0"
+            frame = tk.PhotoImage(file=f'{helper._ICONS_PATH}live-orange.png')
         elif ln510 == 2: # READY
-            color = "#0F0"
-        self.light.create_circle(6, 6, 6, fill=color, width=0)
+            frame = tk.PhotoImage(file=f'{helper._ICONS_PATH}live-green.png')
 
+        self.light.create_image(8, 8, image=frame, anchor=tk.CENTER)
+        # self.light.create_circle(6, 6, 6, fill=color, width=0)
+
+    def activePresenter(self):
+        self.stopGIF = False
+        frames = [tk.PhotoImage(file=f'{helper._ICONS_PATH}live.gif',format = 'gif -index %i' % i) for i in range(0, 3)]
+
+        def update(idx):
+            idx = (0, idx)[idx <= 2]
+            frame = frames[idx]
+            idx += 1
+            self.light.delete("all")
+            self.light.create_image(8, 8, image=frame, anchor=tk.CENTER)
+
+            if not self.stopGIF:
+                self.after(200, update, idx)
+            else:
+                self.updateLightColor(self.LN510)
+        #
+        update(0)
+        
+    def deactivePresenter(self):
+        self.stopGIF = True

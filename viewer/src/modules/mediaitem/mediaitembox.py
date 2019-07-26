@@ -19,8 +19,8 @@ class MediaItemBox(MediaItem):
         super(MediaItemBox, self).__init__(parent, *args, **kwargs)
         self.parent = parent
         self.finished = False
-        self.cell_width = 240
-        self.top_height = 135
+        self.cell_width = 360
+        self.top_height = 203
         self.bot_height = 25
         self.buffer = None
         self.zoomIn = False
@@ -70,36 +70,39 @@ class MediaItemBox(MediaItem):
         self.topImage.pack()
 
     def initBOTTOM(self):
-        bottom = tk.Frame(self.wrapper, bd=5, relief=tk.FLAT, bg=self.botBg, width=self.cell_width, height=self.bot_height)
-        bottom.pack(side=tk.BOTTOM, fill=tk.X)
+        self.bottom = tk.Frame(self.wrapper, bd=5, relief=tk.FLAT, bg=self.botBg, width=self.cell_width, height=self.bot_height)
+        self.bottom.pack(side=tk.BOTTOM, fill=tk.X)
         # traffic light
         if self.parentTab.tabType == MediaType.PRESENTER:
-            self.light = CanvasC(bottom, width=15, height=15, borderwidth=0, highlightthickness=0, bg=self.botBg)
+            self.light = CanvasC(self.bottom, width=16, height=16, borderwidth=0, highlightthickness=0, bg=self.botBg)
             self.light.pack(side=tk.LEFT)
-            self.light.create_circle(6, 6, 6, fill="#F00", width=0)
-        self.checkbox = tk.Checkbutton(bottom, variable=self.checked, onvalue=True, bg=self.botBg, offvalue=False, height=1, width=1, bd=0, relief=tk.FLAT)
+            # self.light.create_circle(6, 6, 6, fill="#F00", width=0)
+            frame = tk.PhotoImage(file=f'{helper._ICONS_PATH}live-red.png')
+            self.light.create_image(8, 8, image=frame, anchor=tk.CENTER)
+        # check all
+        self.checkbox = tk.Checkbutton(self.bottom, variable=self.checked, onvalue=True, bg=self.botBg, offvalue=False, height=1, width=1, bd=0, relief=tk.FLAT)
         self.checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)
         # play
         if self.parentTab.tabType != MediaType.IMAGE:
             imagePlay = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}play-b.png"))
-            self.lblPlay = tk.Label(bottom, image=imagePlay, bg=self.botBg, cursor='hand2')
+            self.lblPlay = tk.Label(self.bottom, image=imagePlay, bg=self.botBg, cursor='hand2')
             self.lblPlay.image = imagePlay
             self.lblPlay.bind("<Button-1>", self.playOrPauseClick)
             self.lblPlay.pack(side=tk.LEFT)
         # label
-        lbl_name = PLabel(bottom, text=self.name, justify=tk.LEFT, elipsis=22, bg=self.botBg, font=UI.TXT_FONT, fg="#000")
+        lbl_name = PLabel(self.bottom, text=self.name, justify=tk.LEFT, elipsis=22, bg=self.botBg, font=UI.TXT_FONT, fg="#000")
         lbl_name.pack(side=tk.LEFT)
         # bin
         imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}trash-b.png"))
-        lbl_trash = tk.Label(bottom, image=imageBin, bg=self.botBg, cursor='hand2')
+        lbl_trash = tk.Label(self.bottom, image=imageBin, bg=self.botBg, cursor='hand2')
         lbl_trash.image = imageBin
         lbl_trash.bind("<Button-1>", self.deleteMedia)
         ToolTip(lbl_trash, "Delete") 
         lbl_trash.pack(side=tk.RIGHT)
-        bottom.pack(side=tk.BOTTOM, fill=tk.X)
+        self.bottom.pack(side=tk.BOTTOM, fill=tk.X)
         # zoom
         imgZom = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}zoom-in.png"))
-        self.lblZoom = tk.Label(bottom, image=imgZom, bg=self.botBg, cursor='hand2')
+        self.lblZoom = tk.Label(self.bottom, image=imgZom, bg=self.botBg, cursor='hand2')
         self.lblZoom.image = imgZom
         self.lblZoom.bind("<Button-1>", self.toggleZoom) 
         self.lblZoom.pack(side=tk.RIGHT)
@@ -107,7 +110,7 @@ class MediaItemBox(MediaItem):
         if self.parentTab.tabType != MediaType.IMAGE:
             # volume
             imgVolume = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}volume-mute.png"))
-            self.lblVolume = tk.Label(bottom, image=imgVolume, bg=self.botBg, cursor='hand2')
+            self.lblVolume = tk.Label(self.bottom, image=imgVolume, bg=self.botBg, cursor='hand2')
             self.lblVolume.image = imgVolume
             self.lblVolume.bind("<Button-1>", self.toggleMute) 
             self.lblVolume.pack(side=tk.RIGHT)
@@ -228,5 +231,6 @@ class MediaItemBox(MediaItem):
             self.lblPlay.config(cursor="wait")
         elif ln510 == 2: # READY
             self.lblPlay.config(cursor='hand2')
+
 
 

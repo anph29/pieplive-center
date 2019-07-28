@@ -54,14 +54,14 @@ class MainStream(RelativeLayout):
         del timenow
 
     def _load(self):
-        try:
-            command =  f'ffmpeg/ffmpeg.exe -y -nostats -loop 1 -i {helper._IMAGES_PATH}splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 {self.url_flv} {self.url_flv_hls} {self.mini_url_flv} {self.mini_url_flv_hls}'
-            si = subprocess.STARTUPINFO()
-            si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-            self.pipe2 = subprocess.Popen(command, startupinfo=si)
-            Clock.schedule_once(lambda x: self.pipe2.kill() , 5)
-        except IOError:
-            pass
+        # try:
+        #     # command =  f'ffmpeg/ffmpeg.exe -y -nostats -loop 1 -i {helper._IMAGES_PATH}splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 {self.url_flv} {self.url_flv_hls} {self.mini_url_flv} {self.mini_url_flv_hls}'
+        #     # si = subprocess.STARTUPINFO()
+        #     # si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        #     # self.pipe2 = subprocess.Popen(command, startupinfo=si)
+        #     # Clock.schedule_once(lambda x: self.pipe2.kill() , 5)
+        # except IOError:
+        pass
 
     def show_camera_mini(self):
         self.cameraMini.opacity = 1
@@ -154,16 +154,16 @@ class MainStream(RelativeLayout):
     def stream(self, fps):
         try:
             if self.isStream:
-                # if self.parent is not None:
-                #     self.canvas_parent_index = self.parent.canvas.indexof(self.canvas)
-                #     if self.canvas_parent_index > -1:
-                #         self.parent.canvas.remove(self.canvas)
-                # self.fbo.add(self.canvas)
+                if self.parent is not None:
+                    self.canvas_parent_index = self.parent.canvas.indexof(self.canvas)
+                    if self.canvas_parent_index > -1:
+                        self.parent.canvas.remove(self.canvas)
+                self.fbo.add(self.canvas)
                 self.fbo.draw()
                 self.pipe.stdin.write(self.fbo.pixels)
-                # self.fbo.remove(self.canvas)
-                # if self.parent is not None and self.canvas_parent_index > -1:
-                #     self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
+                self.fbo.remove(self.canvas)
+                if self.parent is not None and self.canvas_parent_index > -1:
+                    self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
                 self.reconnect = 0
         except:
             self.stopStream()
@@ -189,8 +189,8 @@ class MainStream(RelativeLayout):
         if self.stop is not None:
             self.stop.set()
         self.fbo.remove(self.canvas)
-        # if self.parent is not None and self.canvas_parent_index > -1:
-        #     self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
+        if self.parent is not None and self.canvas_parent_index > -1:
+            self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
         print("--- STOP ---")
         
     def set_url_stream(self, urlStream):
@@ -210,9 +210,9 @@ class MainStream(RelativeLayout):
         _map += f'[a{numau}]'
 
         if self.camera.resource_type == "VIDEO" or self.camera.resource_type == "M3U8":
-            url = self.url_flv
-            if self.camera.resource_type == "M3U8":
-                url = self.url_flv_hls
+            url = self.camera.url
+            # if self.camera.resource_type == "M3U8":
+            #     url = self.url_flv_hls
             numau += 1
             if self.camera.duration_current == 0:
                 inp.extend(["-i", url])
@@ -221,10 +221,8 @@ class MainStream(RelativeLayout):
             txt += f"[{numau}:a]volume=1[a{numau}];"
             _map += f'[a{numau}]'
 
-        if self.f_parent.showMiniD is True:
-            url = self.mini_url_flv
-            if self.cameraMini.resource_type == "M3U8":
-                url = self.mini_url_flv_hls
+        if self.f_parent.showMiniD is True and (self.cameraMini.resource_type == "VIDEO" or self.cameraMini.resource_type == "M3U8"):
+            url = self.cameraMini.url
             numau += 1
             if self.cameraMini.duration_current == 0:
                 inp.extend(["-i", url])

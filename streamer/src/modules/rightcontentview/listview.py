@@ -211,7 +211,6 @@ class ListPresenter(RecycleView):
     item_playing = ''
     item_choice = ''
     listenerStream = None
-    listLiving = []
 
     def __init__(self, **kwargs):
         super(ListPresenter, self).__init__(**kwargs)
@@ -232,12 +231,18 @@ class ListPresenter(RecycleView):
             self.onChangeLN510(data)
 
     def onChangePresenter(self, presenter):
-        pass
-        # for m in self.data:
-        #     if int(m['id']) == int(presenter):
-        #         m.activePresenter()
-        #     else:
-        #         m.deactivePresenter()
+        self.item_choice = str(presenter)
+        for obj in self.data:
+            if int(obj['id']) == int(presenter):
+                obj['choice'] = True
+            else:
+                obj['choice'] = False
+        
+        for child in self.children[0].children:
+            if int(child.id) == int(presenter):
+                child.choice = True
+            else:
+                child.choice = False
 
     def onChangeLN510(self, data):
         if bool(data):
@@ -250,10 +255,6 @@ class ListPresenter(RecycleView):
     def changeStatePresenter(self, media):
         _id = int(media['_id'])
         ln510 = int(media['LN510'])
-        if ln510 == 2:
-            self.listLiving.append(_id)
-        elif _id in self.listLiving:
-            self.listLiving.remove(_id)
         for m in self.data:
             if int(m['id']) == _id:
                 if ln510 == 2:
@@ -294,12 +295,6 @@ class ListPresenter(RecycleView):
 
     def refresh_list(self):
         self.set_data()
-        for m in self.data:
-            if int(m['id']) in self.listLiving:
-                m['playable'] = True
-            else:
-                m['playable'] = False
-        self.refresh_view()
         self.stopListenerStream()
         self.turnOnObserver(1)
 

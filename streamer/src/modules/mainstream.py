@@ -154,16 +154,16 @@ class MainStream(RelativeLayout):
     def stream(self, fps):
         try:
             if self.isStream:
-                # if self.parent is not None:
-                #     self.canvas_parent_index = self.parent.canvas.indexof(self.canvas)
-                #     if self.canvas_parent_index > -1:
-                #         self.parent.canvas.remove(self.canvas)
-                # self.fbo.add(self.canvas)
+                if self.parent is not None:
+                    self.canvas_parent_index = self.parent.canvas.indexof(self.canvas)
+                    if self.canvas_parent_index > -1:
+                        self.parent.canvas.remove(self.canvas)
+                self.fbo.add(self.canvas)
                 self.fbo.draw()
                 self.pipe.stdin.write(self.fbo.pixels)
-                # self.fbo.remove(self.canvas)
-                # if self.parent is not None and self.canvas_parent_index > -1:
-                #     self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
+                self.fbo.remove(self.canvas)
+                if self.parent is not None and self.canvas_parent_index > -1:
+                    self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
                 self.reconnect = 0
         except:
             self.stopStream()
@@ -189,8 +189,8 @@ class MainStream(RelativeLayout):
         if self.stop is not None:
             self.stop.set()
         self.fbo.remove(self.canvas)
-        # if self.parent is not None and self.canvas_parent_index > -1:
-        #     self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
+        if self.parent is not None and self.canvas_parent_index > -1:
+            self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
         print("--- STOP ---")
         
     def set_url_stream(self, urlStream):
@@ -213,25 +213,27 @@ class MainStream(RelativeLayout):
             url = self.url_flv
             if self.camera.resource_type == "M3U8":
                 url = self.url_flv_hls
-            numau += 1
-            if self.camera.duration_current == 0:
-                inp.extend(["-i", url])
-            else:
-                inp.extend(["-ss", helper.convertSecNoToHMS(self.camera.duration_current),"-i", url,"-flags","+global_header"])
-            txt += f"[{numau}:a]volume=1[a{numau}];"
-            _map += f'[a{numau}]'
+            if os.path.exists(url):
+                numau += 1
+                if self.camera.duration_current == 0:
+                    inp.extend(["-i", url])
+                else:
+                    inp.extend(["-ss", helper.convertSecNoToHMS(self.camera.duration_current),"-i", url,"-flags","+global_header"])
+                txt += f"[{numau}:a]volume=1[a{numau}];"
+                _map += f'[a{numau}]'
 
         if self.f_parent.showMiniD is True:
             url = self.mini_url_flv
             if self.cameraMini.resource_type == "M3U8":
                 url = self.mini_url_flv_hls
-            numau += 1
-            if self.cameraMini.duration_current == 0:
-                inp.extend(["-i", url])
-            else:
-                inp.extend(["-ss", helper.convertSecNoToHMS(self.cameraMini.duration_current),"-i", url,"-flags","+global_header"])
-            txt += f"[{numau}:a]volume=1[a{numau}];"
-            _map += f'[a{numau}]'
+            if os.path.exists(url):
+                numau += 1
+                if self.cameraMini.duration_current == 0:
+                    inp.extend(["-i", url])
+                else:
+                    inp.extend(["-ss", helper.convertSecNoToHMS(self.cameraMini.duration_current),"-i", url,"-flags","+global_header"])
+                txt += f"[{numau}:a]volume=1[a{numau}];"
+                _map += f'[a{numau}]'
 
         if 'audio' in self.camera.data_src:
             if self.camera.data_src['audio'] != '':

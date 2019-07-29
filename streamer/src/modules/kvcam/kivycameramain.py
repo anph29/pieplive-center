@@ -122,7 +122,7 @@ class KivyCameraMain(Image):
                 Clock.schedule_once(self.process_set_data ,timeout)
             else:
                 if self.typeOld == 'M3U8' or self.typeOld == 'VIDEO':
-                    command =  f'ffmpeg/ffmpeg.exe -y -loop 1 -i {self.default_frame} -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 -threads 2 {self.f_parent.url_flv} {self.f_parent.url_flv_hls}'
+                    command =  f'ffmpeg/ffmpeg.exe -y -nostats -loop 1 -i {self.default_frame} -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 -threads 2 {self.f_parent.url_flv} {self.f_parent.url_flv_hls}'
                     si = sp.STARTUPINFO()
                     si.dwFlags |= sp.STARTF_USESHOWWINDOW
                     self.pipe = sp.Popen(command, startupinfo=si)
@@ -133,10 +133,10 @@ class KivyCameraMain(Image):
         
     def process_set_data(self, second):
         try:
-            self.stop.set()
-            th = Thread(target=self.init_capture())
-            th.start()
-            # self.init_capture()
+            # self.stop.set()
+            # th = Thread(target=self.init_capture())
+            # th.start()
+            self.init_capture()
         except Exception:
             pass
 
@@ -173,16 +173,23 @@ class KivyCameraMain(Image):
                 self.typeOld = self.resource_type
             else:
                 print("cv2.error:")
-                if self.reconnect >= 3:
+                if self.reconnect >= 10:
                     if self.capture is not None:
                         self.capture.release()
                     self.show_captured_img(self.default_frame)
                 else:
                     self.reconnect += 1
-                    self.init_capture()
+                    Clock.schedule_once(self.process_set_data,1)
                 
         except Exception as e:
             print("Exception init_capture:", e)
+            if self.reconnect >= 10:
+                if self.capture is not None:
+                    self.capture.release()
+                self.show_captured_img(self.default_frame)
+            else:
+                self.reconnect += 1
+                Clock.schedule_once(self.process_set_data,1)
     
     def show_captured_img(self, url=None):
         cap = cv2.VideoCapture(url or self.url)

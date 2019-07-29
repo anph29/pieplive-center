@@ -90,7 +90,6 @@ class KivyCameraMini(DragBehavior, Image):
             self.capture.release()
         self.stop_update_capture()
         fps = 25
-        dura = 0
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
                 try:
@@ -101,11 +100,9 @@ class KivyCameraMini(DragBehavior, Image):
                             if fps >= 25:
                                 self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
                                 self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)
-                                dura = int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS))
                             else:
                                 self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
                                 self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/25
-                                dura = int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/25)
                     del _cap
                 except Exception as e:
                     print("Exception:", e)
@@ -125,7 +122,7 @@ class KivyCameraMini(DragBehavior, Image):
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-preset", "veryfast","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]
                 elif self.resource_type == "RTSP":
                     timeout=1
-                    command = ["ffmpeg/ffmpeg.exe","-y","-i", self.url,"-acodec", "copy", "-vcodec", "copy","-r","25",'-threads', '2',output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-acodec", "copy", "-vcodec", "copy","-r","25",'-threads', '2',output]
                 else:
                     if fps < 25:
                         command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",'-threads', '2',output]
@@ -143,7 +140,7 @@ class KivyCameraMini(DragBehavior, Image):
                 Clock.schedule_once(self.process_set_data ,timeout)
             else:
                 if self.typeOld == 'M3U8' or self.typeOld == 'VIDEO':
-                    command =  f'ffmpeg/ffmpeg.exe -y -loop 1 -i {self.default_frame} -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 -threads 2 {self.f_parent.mini_url_flv} {self.f_parent.mini_url_flv_hls}'
+                    command =  f'ffmpeg/ffmpeg.exe -y -nostats -loop 1 -i {self.default_frame} -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 -threads 2 {self.f_parent.mini_url_flv} {self.f_parent.mini_url_flv_hls}'
                     si = subprocess.STARTUPINFO()
                     si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
                     self.pipe = subprocess.Popen(command, startupinfo=si)
@@ -187,16 +184,23 @@ class KivyCameraMini(DragBehavior, Image):
                         self.f_parent.refresh_stream()
                 self.typeOld = self.resource_type
             else:
-                if self.reconnect >= 3:
+                if self.reconnect >= 10:
                     if self.capture is not None:
                         self.capture.release()
                     self.show_captured_img(self.default_frame)
                 else:
                     self.reconnect += 1
-                    self.init_capture()
+                    Clock.schedule_once(self.process_set_data,1)
                 
         except Exception as e:
             print("Exception init_capture:", e)
+            if self.reconnect >= 10:
+                if self.capture is not None:
+                    self.capture.release()
+                self.show_captured_img(self.default_frame)
+            else:
+                self.reconnect += 1
+                Clock.schedule_once(self.process_set_data,1)
     
     def show_captured_img(self, url=None):
         cap = cv2.VideoCapture(url or self.url)

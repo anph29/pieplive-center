@@ -113,7 +113,8 @@ class MainStream(RelativeLayout):
 
     def refresh_stream(self):
         if self.isStream is True:
-            self.pipe.kill()
+            # self.pipe.kill()
+            self.pipe.terminate()
             self.prepare()
 
     def _set_source(self,lsSource):
@@ -278,7 +279,10 @@ class MainStream(RelativeLayout):
             
             si = subprocess.STARTUPINFO()
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+            
             self.pipe = subprocess.Popen(self.command, stdin=subprocess.PIPE, startupinfo=si)
+            print("-------------------self.pipe.returncode",self.pipe.returncode)
+            print("-------------------self.pipe.pid",self.pipe.pid)
             return True
 
         except IOError:

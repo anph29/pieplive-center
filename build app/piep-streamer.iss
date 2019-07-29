@@ -39,7 +39,7 @@ Name: "german"; MessagesFile: "compiler:Languages\German.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "D:\QueenB\PiepLive-Center\streamer\dist\piepstream\pieplivecenter.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\QueenB\PiepLive-Center\streamer\dist\piepstream\piepstream.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\QueenB\PiepLive-Center\streamer\dist\piepstream\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 

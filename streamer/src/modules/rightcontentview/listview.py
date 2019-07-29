@@ -220,24 +220,36 @@ class ListPresenter(RecycleView):
     def turnOnObserver(self,dt):
         if bool(store._get('FO100')):
             self.listenerStream = firebase.startObserverActivedBu(self.firebaseCallback)
-    
-    def firebaseCallback(self, message):
-        data = message['data']
-        id = ln510 = 0
-        if bool(data):
-            if message['path'] == '/': # case init: get multi data
-                keys = list(data.keys())
-                for k in keys:
-                    media = data[k]
-                    id = int(media['_id'])
-                    ln510 = int(media['LN510'])
-                    self.changeStatePresenter(id, ln510)
-            else:# </PL500> case change: get single data
-                id = int(data['_id'])
-                ln510 = int(data['LN510'])
-                self.changeStatePresenter(id, ln510)
 
-    def changeStatePresenter(self, _id, ln510):
+    def firebaseCallback(self, message):
+        path, data, event = message.values()
+        if path == '/':
+            self.onChangeLN510(data['LIST'])
+            Clock.schedule_once(lambda x: self.onChangePresenter(data['PRESENTER']),0.5)
+        elif 'PRESENTER' in path:
+            self.onChangePresenter(data)
+        elif 'LIST' in path:
+            self.onChangeLN510(data)
+
+    def onChangePresenter(self, presenter):
+        pass
+        # for m in self.data:
+        #     if int(m['id']) == int(presenter):
+        #         m.activePresenter()
+        #     else:
+        #         m.deactivePresenter()
+
+    def onChangeLN510(self, data):
+        if bool(data):
+            if '_id' in data:  # case change: get single data
+                self.changeStatePresenter(data)
+            else:  # case init: get multi data
+                for k in list(data.keys()):
+                    self.changeStatePresenter(data[k])
+
+    def changeStatePresenter(self, media):
+        _id = int(media['_id'])
+        ln510 = int(media['LN510'])
         if ln510 == 2:
             self.listLiving.append(_id)
         elif _id in self.listLiving:

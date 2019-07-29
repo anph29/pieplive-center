@@ -1,4 +1,4 @@
-import sys, cv2, time, os, datetime
+import cv2, subprocess
 from kivy.uix.image import Image
 from kivy.clock import Clock
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
@@ -10,7 +10,6 @@ from threading import Thread, Event
 from kivy.lang import Builder
 from functools import partial
 from src.utils import helper
-from pathlib import Path
 
 _CAM_NUMS_FRAME = '-2562047788015215'
 
@@ -43,8 +42,6 @@ class KivyCameraMini(DragBehavior, Image):
     typeOld = StringProperty('')
     category = StringProperty('')
     data_src = None
-    url_flv = StringProperty('')
-    url_flv_old = StringProperty('')
 
     def __init__(self, **kwargs):
         super(KivyCameraMini, self).__init__(**kwargs)
@@ -75,7 +72,6 @@ class KivyCameraMini(DragBehavior, Image):
         return self._get_uid() in touch.ud
 
     def set_data_source(self, input, category):
-        self.url_flv_old = self.url
         self.data_src = input
         self.url = input['url']
         self.resource_type = input['type']
@@ -88,13 +84,15 @@ class KivyCameraMini(DragBehavior, Image):
         
         if self.pipe is not None:
             self.pipe.kill()
-
+        if self.pipe2 is not None:
+            self.pipe2.kill()
+        if self.capture is not None:
+            self.capture.release()
+        self.stop_update_capture()
         fps = 25
         dura = 0
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
-                timenow = datetime.datetime.now().strftime("%d%m%y%H%M%S")
-                self.url_flv = '../resource/temp/{}.flv'.format(timenow)
                 try:
                     _cap = cv2.VideoCapture(self.url)
                     if _cap.isOpened():
@@ -111,30 +109,45 @@ class KivyCameraMini(DragBehavior, Image):
                     del _cap
                 except Exception as e:
                     print("Exception:", e)
-                
+                        
+                output = self.f_parent.mini_url_flv
                 timeout = 1
-                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate, "-preset", "veryfast","-r","25",'-g','60','-threads', '2',self.url_flv]
+                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate, "-preset", "veryfast","-r","25",'-g','60','-threads', '2',output]
                 
                 if self.category == "PRESENTER":
                     self.url = self.data_src['rtmp']
+                    output = self.f_parent.mini_url_flv_hls
                     timeout=2
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-preset", "veryfast","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',self.url_flv]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-preset", "veryfast","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]
                 elif self.resource_type == "M3U8":
-                    self.url_flv = self.f_parent.mini_url_flv_hls
+                    output = self.f_parent.mini_url_flv_hls
                     timeout=1
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-preset", "veryfast","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',self.url_flv]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-preset", "veryfast","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]
                 elif self.resource_type == "RTSP":
                     timeout=1
-                    command = ["ffmpeg/ffmpeg.exe","-y","-i", self.url,"-acodec", "copy", "-vcodec", "copy","-r","25",'-threads', '2',self.url_flv]
-                elif fps < 25:
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",'-threads', '2',self.url_flv]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-i", self.url,"-acodec", "copy", "-vcodec", "copy","-r","25",'-threads', '2',output]
+                else:
+                    if fps < 25:
+                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",'-threads', '2',output]
+                    if self.typeOld == 'M3U8':
+                        command2 =  f'ffmpeg/ffmpeg.exe -y "-nostats -loop 1 -i {self.default_frame} -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 -threads 2 {self.f_parent.mini_url_flv_hls}'
+                        si = subprocess.STARTUPINFO()
+                        si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+                        self.pipe2 = subprocess.Popen(command2, startupinfo=si)
+                        Clock.schedule_once(lambda x: self.pipe2.kill() , 5)
                 
                 si = subprocess.STARTUPINFO()
                 si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
                 self.pipe = subprocess.Popen(command, startupinfo=si)
-                self.url = self.url_flv
+                self.url = output
                 Clock.schedule_once(self.process_set_data ,timeout)
             else:
+                if self.typeOld == 'M3U8' or self.typeOld == 'VIDEO':
+                    command =  f'ffmpeg/ffmpeg.exe -y -loop 1 -i {self.default_frame} -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 -threads 2 {self.f_parent.mini_url_flv} {self.f_parent.mini_url_flv_hls}'
+                    si = subprocess.STARTUPINFO()
+                    si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+                    self.pipe = subprocess.Popen(command, startupinfo=si)
+                    Clock.schedule_once(lambda x: self.pipe.kill() , 5)
                 Clock.schedule_once(self.process_set_data , 0)
         except :
             print("Exception:")
@@ -142,35 +155,30 @@ class KivyCameraMini(DragBehavior, Image):
         
     def process_set_data(self, second):
         try:
-            # self.stop.set()
-            # th = Thread(target=self.init_capture())
-            # th.start()
-            self.init_capture()
+            self.stop.set()
+            th = Thread(target=self.init_capture())
+            th.start()
+            # self.init_capture()
         except Exception:
             pass
 
     def init_capture(self):
         try:
-            _cap = None
+            if self.capture is not None:
+                self.capture.release()
+            self.stop_update_capture()
             
             if self.resource_type == 'IMG' and '.gif' in self.url:
                 self.resource_type = 'GIF'
-
             if self.resource_type == 'CAMERA':
-                _cap = cv2.VideoCapture(int(self.url))
+                self.capture = cv2.VideoCapture(int(self.url))
             else:
-                _cap = cv2.VideoCapture(self.url)
+                self.capture = cv2.VideoCapture(self.url)
 
-            if _cap is not None and _cap.isOpened():
+            if self.capture is not None and self.capture.isOpened():
                 self.reconnect = 0
-                self.capture = _cap
-                del _cap
-                if os.path.exists(self.url_flv_old):
-                    os.remove(self.url_flv_old)
                 if self.resource_type != 'VIDEO' and self.resource_type != "M3U8":
                     self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
-                
-                self.stop_update_capture()
                 self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
                 if self.f_parent is not None:
                     if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
@@ -179,17 +187,13 @@ class KivyCameraMini(DragBehavior, Image):
                         self.f_parent.refresh_stream()
                 self.typeOld = self.resource_type
             else:
-                print("cv2.error:")
                 if self.reconnect >= 3:
                     if self.capture is not None:
                         self.capture.release()
                     self.show_captured_img(self.default_frame)
-                    _cap.release()
-                    del _cap
                 else:
-                    _cap.release()
                     self.reconnect += 1
-                    Clock.schedule_once(self.process_set_data, 0.5)
+                    self.init_capture()
                 
         except Exception as e:
             print("Exception init_capture:", e)
@@ -210,9 +214,7 @@ class KivyCameraMini(DragBehavior, Image):
         try:
             if self.capture.isOpened():
                 if not self.capture.grab():
-                    if self.resource_type == 'GIF':
-                        self.capture.release()
-                        self.capture = cv2.VideoCapture(self.url)
+                    pass
                 else:
                     ret, frame = self.capture.retrieve()
                     if ret:
@@ -238,6 +240,8 @@ class KivyCameraMini(DragBehavior, Image):
     def release(self):
         if self.pipe is not None:
             self.pipe.kill()
+        if self.pipe2 is not None:
+            self.pipe2.kill()
         if self.capture is not None:
             self.capture.release()
 

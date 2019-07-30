@@ -55,11 +55,11 @@ class MainStream(RelativeLayout):
 
     def _load(self):
         try:
-            command =  f'ffmpeg/ffmpeg.exe -y -nostats -loop 1 -i {helper._IMAGES_PATH}splash.jpg -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 {self.url_flv} {self.url_flv_hls} {self.mini_url_flv} {self.mini_url_flv_hls}'
+            command =  f'ffmpeg/ffmpeg.exe -y -nostats -loop 1 -i {helper._IMAGES_PATH}splash.jpg -i ../resource/media/muted.mp3 -filter_complex "volume=0" -r 25 {self.url_flv} {self.url_flv_hls} {self.mini_url_flv} {self.mini_url_flv_hls}'
             si = subprocess.STARTUPINFO()
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             self.pipe2 = subprocess.Popen(command, startupinfo=si)
-            Clock.schedule_once(lambda x: self.pipe2.kill() , 5)
+            Clock.schedule_once(lambda x: self.pipe2.kill() , 15)
         except IOError:
             pass
 
@@ -113,8 +113,8 @@ class MainStream(RelativeLayout):
 
     def refresh_stream(self):
         if self.isStream is True:
-            # self.pipe.kill()
-            self.pipe.terminate()
+            self.pipe.kill()
+            # self.pipe.terminate()
             self.prepare()
 
     def _set_source(self,lsSource):
@@ -142,8 +142,9 @@ class MainStream(RelativeLayout):
             self.fbo.add(self.canvas)
 
             self.isStream = True
-            # Thread(target=self._process).start()
-            self._process()
+            self.stop.set()
+            Thread(target=self._process).start()
+            # self._process()
         except IOError:
             kv_helper.getApRoot().triggerStop()
         
@@ -223,16 +224,16 @@ class MainStream(RelativeLayout):
                 txt += f"[{numau}:a]volume=1[a{numau}];"
                 _map += f'[a{numau}]'
 
-        if self.f_parent.showMiniD is True:
-            url = self.mini_url_flv
+        if self.f_parent.showMiniD is True and (self.cameraMini.resource_type == "M3U8" or self.cameraMini.resource_type == "VIDEO"):
+            _url = self.mini_url_flv
             if self.cameraMini.resource_type == "M3U8":
-                url = self.mini_url_flv_hls
-            if os.path.exists(url):
+                _url = self.mini_url_flv_hls
+            if os.path.exists(_url):
                 numau += 1
                 if self.cameraMini.duration_current == 0:
-                    inp.extend(["-i", url])
+                    inp.extend(["-i", _url])
                 else:
-                    inp.extend(["-ss", helper.convertSecNoToHMS(self.cameraMini.duration_current),"-i", url,"-flags","+global_header"])
+                    inp.extend(["-ss", helper.convertSecNoToHMS(self.cameraMini.duration_current),"-i", _url,"-flags","+global_header"])
                 txt += f"[{numau}:a]volume=1[a{numau}];"
                 _map += f'[a{numau}]'
 
@@ -270,10 +271,12 @@ class MainStream(RelativeLayout):
             self.command = ['ffmpeg/ffmpeg.exe','-y','-framerate', '25','-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', '{}x{}'.format(self.f_width, self.f_height), '-i', '-']
             
             self.command.extend(self.draw_element())
+
             # encode
             self.command.extend(['-vb', str(self.v_bitrate),'-r', '25', '-pix_fmt', 'yuv420p','-g','60'])
 
             self.command.extend(["-vf", "fps=25",'-metadata', 'title="PiepLiveCenter"'])
+            
             # tream
             self.command.extend(['-f', 'flv', self.urlStream])
             
@@ -281,8 +284,6 @@ class MainStream(RelativeLayout):
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             
             self.pipe = subprocess.Popen(self.command, stdin=subprocess.PIPE, startupinfo=si)
-            print("-------------------self.pipe.returncode",self.pipe.returncode)
-            print("-------------------self.pipe.pid",self.pipe.pid)
             return True
 
         except IOError:

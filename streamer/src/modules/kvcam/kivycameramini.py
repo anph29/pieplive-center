@@ -127,7 +127,7 @@ class KivyCameraMini(DragBehavior, Image):
                     if fps < 25:
                         command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",'-threads', '2',output]
                     if self.typeOld == 'M3U8':
-                        command2 =  f'ffmpeg/ffmpeg.exe -y "-nostats -loop 1 -i {self.default_frame} -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 -threads 2 {self.f_parent.mini_url_flv_hls}'
+                        command2 =  f'ffmpeg/ffmpeg.exe -y "-nostats -loop 1 -i {self.default_frame} -i ../resource/media/muted.mp3 -filter_complex "volume=0" -r 25 -threads 2 {self.f_parent.mini_url_flv_hls}'
                         si = subprocess.STARTUPINFO()
                         si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
                         self.pipe2 = subprocess.Popen(command2, startupinfo=si)
@@ -140,7 +140,9 @@ class KivyCameraMini(DragBehavior, Image):
                 Clock.schedule_once(self.process_set_data ,timeout)
             else:
                 if self.typeOld == 'M3U8' or self.typeOld == 'VIDEO':
-                    command =  f'ffmpeg/ffmpeg.exe -y -nostats -loop 1 -i {self.default_frame} -i ../resource/media/muted.mp3 -filter_complex:0 "scale=-1:720,pad=1280:720:(1280-iw)/2:(720-ih)/2,setsar=1" -filter_complex:1 "volume=0" -r 25 -threads 2 {self.f_parent.mini_url_flv} {self.f_parent.mini_url_flv_hls}'
+                    command =  f'ffmpeg/ffmpeg.exe -y -nostats -loop 1 -i {self.default_frame} -i ../resource/media/muted.mp3 -filter_complex "volume=0" -r 25 -threads 2 {self.f_parent.mini_url_flv}'
+                    if self.typeOld == 'M3U8':
+                        command =  f'ffmpeg/ffmpeg.exe -y -nostats -loop 1 -i {self.default_frame} -i ../resource/media/muted.mp3 -filter_complex "volume=0" -r 25 -threads 2 {self.f_parent.mini_url_flv_hls}'
                     si = subprocess.STARTUPINFO()
                     si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
                     self.pipe = subprocess.Popen(command, startupinfo=si)

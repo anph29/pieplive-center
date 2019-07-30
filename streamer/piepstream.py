@@ -45,7 +45,7 @@ for font in KIVY_FONTS:
     LabelBase.register(**font)
 
 class PiepStream(App):
-    title = "PiepLiveCenter-Streamer (Thử nghiệm)"
+    title = "PiepLiveCenter-Streamer"
     mainView = ObjectProperty()
 
     def __init__(self, **kwargs):

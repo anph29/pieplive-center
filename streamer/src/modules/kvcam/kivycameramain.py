@@ -62,9 +62,9 @@ class KivyCameraMain(Image):
             self.pipe.kill()
         if self.pipe2 is not None:
             self.pipe2.kill()
-        # if self.capture is not None:
-        #     self.capture.release()
-        # self.stop_update_capture()
+        if self.capture is not None:
+            self.capture.release()
+        self.stop_update_capture()
         fps = 25
         dura = 0
         try:
@@ -85,7 +85,7 @@ class KivyCameraMain(Image):
                     del _cap
                 except Exception as e:
                     print("Exception:", e)
-                       
+                        
                 if self.category == "SCHEDULE" and dura == self.data_src['duration']: 
                     self.schedule_type = 'end'
                 output = self.f_parent.url_flv
@@ -143,7 +143,6 @@ class KivyCameraMain(Image):
             pass
 
     def init_capture(self):
-        _cap = None
         try:
             # if self.capture is not None:
             #     self.capture.release()
@@ -152,18 +151,12 @@ class KivyCameraMain(Image):
             if self.resource_type == 'IMG' and '.gif' in self.url:
                 self.resource_type = 'GIF'
             if self.resource_type == 'CAMERA':
-                _cap = cv2.VideoCapture(int(self.url))
+                self.capture = cv2.VideoCapture(int(self.url))
             else:
-                _cap = cv2.VideoCapture(self.url)
+                self.capture = cv2.VideoCapture(self.url)
             print('url-----',self.url)
 
-            if _cap is not None and _cap.isOpened():
-                if self.capture is not None:
-                    self.capture.release()
-                self.stop_update_capture()
-                self.capture = _cap
-                del _cap
-                
+            if self.capture is not None and self.capture.isOpened():
                 self.reconnect = 0
                 if self.resource_type != 'VIDEO' and self.resource_type != "M3U8":
                     self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)

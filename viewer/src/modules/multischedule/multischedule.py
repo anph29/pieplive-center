@@ -6,7 +6,7 @@ from .multischeduleright import MultiScheduleRight
 class MultiSchedule(tk.Frame):
 
     def __init__(self, parent, *args, **kwargs):
-        super(MultiSchedule, self).__init__()
+        super(MultiSchedule, self).__init__(parent, *args, **kwargs)
         self.parent = parent
         self.mutiLeft = None
         self.mutiRight = None
@@ -14,8 +14,8 @@ class MultiSchedule(tk.Frame):
 
     def initUI(self):
         #
-        self.mutiLeft = MultiScheduleLeft(self, bg='#f00', width=240)
-        self.mutiLeft.pack(side=tk.LEFT, fill=tk.BOTH)
+        self.mutiLeft = MultiScheduleLeft(self, bg='#fff')
+        self.mutiLeft.pack(side=tk.LEFT, fill=tk.Y)
         #
-        self.mutiRight = MultiScheduleRight(self, bg='#00f')
-        self.mutiRight.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+        self.mutiRight = MultiScheduleRight(self, bg='#f0f0f0')
+        self.mutiRight.pack(side=tk.LEFT, fill=tk.Y)

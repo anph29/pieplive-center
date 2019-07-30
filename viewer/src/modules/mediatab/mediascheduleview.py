@@ -14,17 +14,7 @@ class MediaScheduleView(MediaListView):
         super(MediaScheduleView, self).__init__(parent, *args, **kwargs)
 
     def makeDDList(self, ref):
-        return DDList(ref, 
-            820,
-            42,
-            offset_x=5,
-            offset_y=5,
-            gap=5,
-            item_borderwidth=1,
-            item_relief=tk.FLAT,
-            borderwidth=0,
-            bg="#fff",
-            droppedCallback=self.saveSortedList)
+        return DDList(ref, 820, 42, offset_x=5, offset_y=5, gap=5, item_borderwidth=1, item_relief=tk.FLAT, borderwidth=0, bg="#fff", droppedCallback=self.saveSortedList)
 
     def initUI(self):
         super(MediaScheduleView, self).initUI()

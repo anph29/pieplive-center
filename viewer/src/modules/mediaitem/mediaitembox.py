@@ -36,7 +36,7 @@ class MediaItemBox(MediaItem):
         ww = self.cell_width + 5
         wh = 5 + self.top_height + self.bot_height
         self.wrapper = tk.Frame(self, relief=tk.FLAT, bd=1 ,bg="#fff", width=ww, height=wh)
-        self.wrapper.pack(expand=True)
+        self.wrapper.pack(fill=tk.BOTH)
         self.initTOP()
         self.initBOTTOM()
         if self.mtype == 'VIDEO':

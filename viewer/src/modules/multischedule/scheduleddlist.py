@@ -4,23 +4,16 @@ from src.modules.custom import DDList, VerticalScrolledFrame
 from src.utils import helper
 from src.modules.custom import ToolTip
 from PIL import Image, ImageTk
-from src.modules.mediaitem import MediaItemSchedule
 
 
 class ScheduleDDList(tk.Frame):
     def __init__(self,  parent, *args, **kwargs):
         super(ScheduleDDList, self).__init__( parent, *args, **kwargs)
-        self.tbBgColor = '#fff'
         self._LS_SCHEDULE_DATA = []
         self._LS_SCHEDULE_UI = []
         self.parent = parent
-        self.scrollZ = VerticalScrolledFrame(self, style='scroll.TFrame')
+        self.scrollZ = VerticalScrolledFrame(self)
         self.ddlist = self.makeDDList(self.scrollZ.interior)
-        self.initUI()
-
-    def initUI(self):
-        self.showListSchedule()
-        self.showToolBar()
 
     def showListSchedule(self):
         self._LS_SCHEDULE_DATA = self.loadSchedule()
@@ -41,13 +34,6 @@ class ScheduleDDList(tk.Frame):
         self.tbleft.pack(fil=tk.Y, side=tk.LEFT)
         self.showSelectAll()
 
-    def addToScheduleGUI(self, data):
-        item = self.ddlist.create_item(value=data)
-        ui = MediaItemSchedule(item, parentTab=self, media=data)
-        self._LS_SCHEDULE_UI.append(ui)
-        ui.pack(padx= (4,0), pady= (4,0), expand=True)
-        self.ddlist.add_item(item)
-        
     def showSelectAll(self):
         # select all
         self.checkbox = tk.Checkbutton(self.tbleft , variable=self.checkall, onvalue=True, offvalue=False, height=2, width=2, bg=self.tbBgColor, bd=0, cursor='hand2', command=self.tabSelectAll)
@@ -71,6 +57,7 @@ class ScheduleDDList(tk.Frame):
         self.cmdF5.bind("<Button-1>", self.f5)
         self.cmdF5.pack(side=tk.RIGHT, padx=(0, 5), pady=5)
         ToolTip(self.cmdF5, "Refresh")
+       
 
     def f5(self, evt):
         self.clearView()
@@ -89,15 +76,6 @@ class ScheduleDDList(tk.Frame):
         for medi in self._LS_SCHEDULE_UI:
             medi.checked.set(self.checkall.get())
 
-    def showAddCamBtn(self):
-        # popupaddresource = PopupAddResource(self)
-        imAdd = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}add-rgb24.png"))
-        self.cmdAdd = tk.Label(self.tbright, image=imAdd, cursor='hand2', bg=self.tbBgColor)
-        self.cmdAdd.image = imAdd
-        # self.cmdAdd.bind("<Button-1>", popupaddresource.initGUI)
-        self.cmdAdd.pack(side=tk.LEFT, padx=5, pady=5)
-        ToolTip(self.cmdAdd, "Add new media")
-
     def clearData(self, clearView=False):
         self._LS_SCHEDULE_DATA = []
         self.writeSchedule([])
@@ -106,15 +84,7 @@ class ScheduleDDList(tk.Frame):
     
     def clearView(self):
         self._LS_SCHEDULE_UI = []
-
-    def addSchedule(self, data):
-            helper._add_to_sorted_schedule(data)
-
-    def loadSchedule(self):
-            return helper._load_sorted_schedule()
-
-    def writeSchedule(self, data):
-            helper._write_sorted_schedule(data)
+        self.ddlist._clear_all()
 
     def rmvSchedule(self, lsId):
         ls = self.loadSchedule()

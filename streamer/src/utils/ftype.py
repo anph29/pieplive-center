@@ -28,20 +28,11 @@ def isImage(fpath):
     heic - image/heic
         """
     kind = filetype.guess(fpath)
+    tupImg = ('jpg', 'jpx', 'png', 'gif', 'webp', 'cr2', 'tif', 'bmp', 'jxr', 'psd', 'ico', 'heic')
 
-    return False if kind == None else kind.extension in ['jpg',
-                                                         'jpx',
-                                                         'png',
-                                                         'gif',
-                                                         'webp',
-                                                         'cr2',
-                                                         'tif',
-                                                         'bmp',
-                                                         'jxr',
-                                                         'psd',
-                                                         'ico',
-                                                         'heic']\
-        or kind.mime in ['image/jpeg',
+    return False if kind == None else kind.extension in tupImg \
+        or fpath.lower().endswith(tupImg) \
+        or kind.mime in ('image/jpeg',
                          'image/jpx',
                          'image/png',
                          'image/gif',
@@ -52,7 +43,7 @@ def isImage(fpath):
                          'image/vnd.ms-photo',
                          'image/vnd.adobe.photoshop',
                          'image/x-icon',
-                         'image/heic']
+                         'image/heic')
 
 
 def isVideo(fpath):
@@ -69,16 +60,10 @@ def isVideo(fpath):
     flv - video/x-flv
     """
     kind = filetype.guess(fpath)
-    return False if kind == None else kind.extension in ['mp4',
-                                                         'm4v',
-                                                         'mkv',
-                                                         'webm',
-                                                         'mov',
-                                                         'avi',
-                                                         'wmv',
-                                                         'mpg',
-                                                         'flv'] \
-        or kind.mime in['video/mp4',
+    tupVideo = ('mp4', 'm4v', 'mkv', 'webm', 'mov', 'avi', 'wmv', 'mpg', 'flv')
+
+    return fpath.lower().endswith(tupVideo) if kind == None else kind.extension in tupVideo \
+        or kind.mime in('video/mp4',
                         'video/x-m4v',
                         'video/x-matroska',
                         'video/webm',
@@ -86,7 +71,7 @@ def isVideo(fpath):
                         'video/x-msvideo',
                         'video/x-ms-wmv',
                         'video/mpeg',
-                        'video/x-flv']
+                        'video/x-flv')
 
 
 def isAudio(fpath):
@@ -101,20 +86,16 @@ def isAudio(fpath):
     amr - audio/amr
     """
     kind = filetype.guess(fpath)
-    return False if kind == None else kind.extension in ['mid',
-                                                         'mp3',
-                                                         'm4a',
-                                                         'ogg',
-                                                         'flac',
-                                                         'wav',
-                                                         'amr'] \
-        or kind.mime in['audio/midi',
+    tupAudio = ('mid', 'mp3', 'm4a', 'ogg', 'flac', 'wav', 'amr')
+
+    return fpath.lower().endswith(tupAudio) if kind == None else kind.extension in tupAudio \
+        or kind.mime in('audio/midi',
                         'audio/mpeg',
                         'audio/m4a',
                         'audio/ogg',
                         'audio/x-flac',
                         'audio/x-wav',
-                        'audio/amr']
+                        'audio/amr')
 
 
 def isArchive(fpath):
@@ -144,29 +125,10 @@ def isArchive(fpath):
     lz - application/x-lzip
     """
     kind = filetype.guess(fpath)
-    return False if kind == None else kind.extension in ['epub',
-                                                         'zip',
-                                                         'tar',
-                                                         'rar',
-                                                         'gz',
-                                                         'bz2',
-                                                         '7z',
-                                                         'xz',
-                                                         'pdf',
-                                                         'exe',
-                                                         'swf',
-                                                         'rtf',
-                                                         'eot',
-                                                         'ps',
-                                                         'sqlite',
-                                                         'nes',
-                                                         'crx',
-                                                         'cab',
-                                                         'deb',
-                                                         'ar',
-                                                         'Z',
-                                                         'lz'] \
-        or kind.mime in['application/epub+zip',
+    tupArchive = ('epub', 'zip', 'tar', 'rar', 'gz', 'bz2', '7z', 'xz', 'pdf', 'exe', 'swf', 'rtf', 'eot', 'ps', 'sqlite', 'nes', 'crx', 'cab', 'deb', 'ar', 'Z', 'lz')
+
+    return fpath.lower().endswith(tupArchive) if kind == None else kind.extension in tupArchive \
+        or kind.mime in('application/epub+zip',
                         'application/zip',
                         'application/x-tar',
                         'application/x-rar-compressed',
@@ -187,7 +149,7 @@ def isArchive(fpath):
                         'application/x-deb',
                         'application/x-unix-archive',
                         'application/x-compress',
-                        'application/x-lzip']
+                        'application/x-lzip')
 
 
 def isFont(fpath):
@@ -199,11 +161,10 @@ def isFont(fpath):
     otf - application/font-sfnt
     """
     kind = filetype.guess(fpath)
-    return False if kind == None else kind.extension in ['woff',
-                                                         'woff2',
-                                                         'ttf',
-                                                         'otf'] \
-        or kind.mime in['application/font-woff',
+    tupFont = ('woff', 'woff2', 'ttf', 'otf')
+
+    return fpath.lower().endswith(tupFont) if kind == None else kind.extension in tupFont \
+        or kind.mime in('application/font-woff',
                         'application/font-woff',
                         'application/font-sfnt',
-                        'application/font-sfnt']
+                        'application/font-sfnt')

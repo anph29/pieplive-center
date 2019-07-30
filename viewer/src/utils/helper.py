@@ -66,7 +66,7 @@ def calc_schedule_runtime(index, schedule=[], startTime=0):
     else:
         return newSchedule
 """
-list schedule
+multi schedule
 """
 
 def _load_sorted_schedule():

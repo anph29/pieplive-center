@@ -6,6 +6,7 @@ class MultiScheduleRight(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         super(MultiScheduleRight, self).__init__(parent, *args, **kwargs)
         self.schedule = None
+        self.initUI()
 
     def initUI(self):
         self.schedule = SingleSchedule(self, bg="#fff")

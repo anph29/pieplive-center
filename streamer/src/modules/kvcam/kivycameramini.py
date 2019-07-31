@@ -169,6 +169,8 @@ class KivyCameraMini(DragBehavior, Image):
                         self.f_parent.refresh_stream()
                     elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
                         self.f_parent.refresh_stream()
+                    if self.f_parent.isStream is True:
+                        self.remove_file_flv()
                 self.typeOld = self.resource_type
             else:
                 if self.capture is not None:

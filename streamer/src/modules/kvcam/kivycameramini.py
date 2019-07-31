@@ -37,7 +37,6 @@ class KivyCameraMini(DragBehavior, Image):
     event_capture = None
     default_frame = helper._IMAGES_PATH + 'splash.jpg'
     pipe = None
-    pipe2 = None
     f_parent = None
     typeOld = StringProperty('')
     category = StringProperty('')
@@ -86,8 +85,6 @@ class KivyCameraMini(DragBehavior, Image):
         
         if self.pipe is not None:
             self.pipe.kill()
-        if self.pipe2 is not None:
-            self.pipe2.kill()
         if self.capture is not None:
             self.capture.release()
         self.stop_update_capture()
@@ -127,27 +124,13 @@ class KivyCameraMini(DragBehavior, Image):
                 else:
                     if fps < 25:
                         command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",'-threads', '2',output]
-                    if self.typeOld == 'M3U8':
-                        command2 =  f'ffmpeg/ffmpeg.exe -y "-nostats -loop 1 -i {self.default_frame} -i ../resource/media/muted.mp3 -filter_complex "volume=0" -r 25 -threads 2 {self.f_parent.mini_url_flv_hls}'
-                        si = subprocess.STARTUPINFO()
-                        si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-                        self.pipe2 = subprocess.Popen(command2, startupinfo=si)
-                        Clock.schedule_once(lambda x: self.pipe2.kill() , 5)
-                
+                    
                 si = subprocess.STARTUPINFO()
                 si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
                 self.pipe = subprocess.Popen(command, startupinfo=si)
                 self.url = output
                 Clock.schedule_once(self.process_set_data ,timeout)
             else:
-                if self.typeOld == 'M3U8' or self.typeOld == 'VIDEO':
-                    command =  f'ffmpeg/ffmpeg.exe -y -nostats -loop 1 -i {self.default_frame} -i ../resource/media/muted.mp3 -filter_complex "volume=0" -r 25 -threads 2 {self.f_parent.mini_url_flv}'
-                    if self.typeOld == 'M3U8':
-                        command =  f'ffmpeg/ffmpeg.exe -y -nostats -loop 1 -i {self.default_frame} -i ../resource/media/muted.mp3 -filter_complex "volume=0" -r 25 -threads 2 {self.f_parent.mini_url_flv_hls}'
-                    si = subprocess.STARTUPINFO()
-                    si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-                    self.pipe = subprocess.Popen(command, startupinfo=si)
-                    Clock.schedule_once(lambda x: self.pipe.kill() , 5)
                 Clock.schedule_once(self.process_set_data , 0)
         except :
             print("Exception:")
@@ -247,8 +230,6 @@ class KivyCameraMini(DragBehavior, Image):
     def release(self):
         if self.pipe is not None:
             self.pipe.kill()
-        if self.pipe2 is not None:
-            self.pipe2.kill()
         if self.capture is not None:
             self.capture.release()
 

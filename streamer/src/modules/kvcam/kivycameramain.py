@@ -23,7 +23,6 @@ class KivyCameraMain(Image):
     event_capture = None
     default_frame = helper._IMAGES_PATH + 'splash.jpg'
     pipe = None
-    pipe2 = None
     f_parent = None
     typeOld = StringProperty('')
     category = StringProperty('')
@@ -62,8 +61,6 @@ class KivyCameraMain(Image):
         
         if self.pipe is not None:
             self.pipe.kill()
-        if self.pipe2 is not None:
-            self.pipe2.kill()
         if self.capture is not None:
             self.capture.release()
         self.stop_update_capture()
@@ -104,18 +101,11 @@ class KivyCameraMain(Image):
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-preset", "veryfast","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]  
                 elif self.resource_type == "RTSP":
                     timeout=3
-                    
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i", self.url,"-pix_fmt", "yuv420p", "-flags","+global_header", "-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-threads', '2',output]
                 else:
                     if fps < 25:
                         command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",'-threads', '2',output]
-                    if self.typeOld == 'M3U8':
-                        command2 =  f'ffmpeg/ffmpeg.exe -y -nostats -loop 1 -i {self.default_frame} -i ../resource/media/muted.mp3 -filter_complex "volume=0" -r 25 -threads 2 {self.f_parent.url_flv_hls}'
-                        si = sp.STARTUPINFO()
-                        si.dwFlags |= sp.STARTF_USESHOWWINDOW
-                        self.pipe2 = sp.Popen(command2, startupinfo=si)
-                        Clock.schedule_once(lambda x: self.pipe2.kill() , 5)
-                
+                    
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
                 self.pipe = sp.Popen(command, startupinfo=si)
@@ -244,8 +234,6 @@ class KivyCameraMain(Image):
     def release(self):
         if self.pipe is not None:
             self.pipe.kill()
-        if self.pipe2 is not None:
-            self.pipe2.kill()
         if self.capture is not None:
             self.capture.release()
 

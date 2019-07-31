@@ -58,6 +58,21 @@ class MainStream(RelativeLayout):
             self.refresh_stream()
         self.cameraMini.opacity = 0
         self.cameraMini.release()
+        try:
+            if self.typeSwitch == 1:
+                self.remove_widget(self.camera)
+                self.remove_widget(self.cameraMini) 
+                self.typeSwitch = 0
+                self.camera.width = 1280
+                self.camera.height = 720
+                self.cameraMini.width = 320
+                self.cameraMini.height = 180
+                self.cameraMini.pos = self.camera.pos
+                self.camera.pos = (0,0)
+                self.add_widget(self.cameraMini,0)
+                self.add_widget(self.camera,1)
+        except:
+            pass
 
     def switch_display(self):
         try:
@@ -71,8 +86,8 @@ class MainStream(RelativeLayout):
                 self.cameraMini.height = 720
                 self.camera.pos = self.cameraMini.pos
                 self.cameraMini.pos = (0,0)
+                self.add_widget(self.camera,0)
                 self.add_widget(self.cameraMini,1)
-                self.add_widget(self.camera,1)
             elif self.typeSwitch == 1:
                 self.typeSwitch = 0
                 self.camera.width = 1280
@@ -81,9 +96,10 @@ class MainStream(RelativeLayout):
                 self.cameraMini.height = 180
                 self.cameraMini.pos = self.camera.pos
                 self.camera.pos = (0,0)
+                self.add_widget(self.cameraMini,0)
                 self.add_widget(self.camera,1)
-                self.add_widget(self.cameraMini,1)
         except:
+            print("abcd")
             pass
     
     def _set_capture(self, data_src, data_type, is_from_schedule):
@@ -258,7 +274,7 @@ class MainStream(RelativeLayout):
             self.command.extend(self.draw_element())
 
             # encode
-            self.command.extend(['-vb', str(self.v_bitrate),'-r', '25', '-pix_fmt', 'yuv420p','-g','60'])
+            self.command.extend(['-vb', str(self.v_bitrate),'-r', '25', '-pix_fmt', 'yuv420p'])
 
             self.command.extend(["-vf", "fps=25",'-metadata', 'title="PiepLiveCenter"'])
             

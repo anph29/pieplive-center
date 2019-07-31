@@ -1,4 +1,4 @@
-import cv2, subprocess, os
+import cv2, subprocess, os, datetime
 from kivy.uix.image import Image
 from kivy.clock import Clock
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
@@ -88,6 +88,7 @@ class KivyCameraMini(DragBehavior, Image):
         if self.capture is not None:
             self.capture.release()
         self.stop_update_capture()
+
         fps = 25
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
@@ -109,21 +110,21 @@ class KivyCameraMini(DragBehavior, Image):
                     print("Exception:", e)
 
                 timeout = 1
-                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate, "-preset", "veryfast","-r","25",'-g','60','-threads', '2',output]
+                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 
                 if self.category == "PRESENTER":
                     self.url = self.data_src['rtmp']
                     timeout=2
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-preset", "veryfast","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url, "-vsync","1","-ar","44100","-ab", "160k","-af", "aresample=async=1","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "M3U8":
                     timeout=1
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-preset", "veryfast","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync","1","-flags","+global_header","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "RTSP":
                     timeout=1
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-acodec", "copy", "-vcodec", "copy","-r","25",'-threads', '2',output]
                 else:
                     if fps < 25:
-                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",'-threads', '2',output]
+                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
                     
                 si = subprocess.STARTUPINFO()
                 si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
@@ -138,10 +139,10 @@ class KivyCameraMini(DragBehavior, Image):
         
     def process_set_data(self, second):
         try:
-            # self.stop.set()
-            # th = Thread(target=self.init_capture())
-            # th.start()
-            self.init_capture()
+            self.stop.set()
+            th = Thread(target=self.init_capture())
+            th.start()
+            # self.init_capture()
         except Exception:
             pass
 
@@ -204,6 +205,7 @@ class KivyCameraMini(DragBehavior, Image):
         try:
             if self.capture.isOpened():
                 if not self.capture.grab():
+                    print("Camera Mini Fail")
                     pass
                 else:
                     ret, frame = self.capture.retrieve()
@@ -218,7 +220,7 @@ class KivyCameraMini(DragBehavior, Image):
 
     def update_texture_from_frame(self, frame):
         try:
-            frame = self.resizeFrame(frame)
+            # frame = self.resizeFrame(frame)
             texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
             buf = cv2.flip(frame, 0).tostring()
             texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')

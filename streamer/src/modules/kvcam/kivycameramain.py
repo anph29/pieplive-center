@@ -46,6 +46,7 @@ class KivyCameraMain(Image):
         self.url_remove = self.url
         self.data_src = input
         self.url = input['url']
+        print('thong thong :',self.url)
         self.resource_type = input['type']
         self.category = category
         self.buffer_rate = 0
@@ -74,6 +75,7 @@ class KivyCameraMain(Image):
                     _cap = cv2.VideoCapture(self.url)
                     if _cap.isOpened():
                         fps = _cap.get(cv2.CAP_PROP_FPS)
+                        print('============',fps,'==========')
                         if self.resource_type == 'VIDEO':
                             if fps >= 25:
                                 self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
@@ -91,20 +93,20 @@ class KivyCameraMain(Image):
                     self.schedule_type = 'end'
 
                 timeout = 1
-                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate, "-preset", "veryfast","-r","25",'-g','60','-threads', '2',output]
+                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 if self.category == "PRESENTER":
                     self.url = self.data_src['rtmp']
                     timeout=2
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-preset", "veryfast","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url, "-vsync", "1","-ar","44100", "-ab", "160k","-af", "aresample=async=1","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "M3U8":
                     timeout=1
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-preset", "veryfast","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]  
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync", "1","-flags","+global_header","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",output]  
                 elif self.resource_type == "RTSP":
                     timeout=3
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i", self.url,"-pix_fmt", "yuv420p", "-flags","+global_header", "-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-threads', '2',output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i", self.url,"-pix_fmt", "yuv420p", "-flags","+global_header", "-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 else:
                     if fps < 25:
-                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",'-threads', '2',output]
+                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
                     
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
@@ -126,10 +128,10 @@ class KivyCameraMain(Image):
         
     def process_set_data(self, second):
         try:
-            # self.stop.set()
-            # th = Thread(target=self.init_capture())
-            # th.start()
-            self.init_capture()
+            self.stop.set()
+            th = Thread(target=self.init_capture())
+            th.start()
+            # self.init_capture()
         except Exception:
             pass
 
@@ -202,6 +204,7 @@ class KivyCameraMain(Image):
             if self.capture.isOpened():
                 # check is get next
                 if not self.capture.grab():
+                    print("Camera Main Fail")
                     if self.category == 'SCHEDULE':
                         if 'duration' in self.data_src and  self.data_src['duration'] is not None:
                             if (self.data_src['duration'] == 0 or int(self.duration_current) >= self.data_src['duration']) and self.schedule_type == 'end':
@@ -222,7 +225,7 @@ class KivyCameraMain(Image):
 
     def update_texture_from_frame(self, frame):
         try:
-            frame = self.resizeFrame(frame)
+            # frame = self.resizeFrame(frame)
             texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
             buf = cv2.flip(frame, 0).tostring()
             texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')

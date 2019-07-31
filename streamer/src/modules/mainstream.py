@@ -54,14 +54,14 @@ class MainStream(RelativeLayout):
         del timenow
 
     def _load(self):
-        try:
-            command =  f'ffmpeg/ffmpeg.exe -y -nostats -loop 1 -i {helper._IMAGES_PATH}splash.jpg -i ../resource/media/muted.mp3 -filter_complex "volume=0" -r 25 {self.url_flv} {self.url_flv_hls} {self.mini_url_flv} {self.mini_url_flv_hls}'
-            si = subprocess.STARTUPINFO()
-            si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-            self.pipe2 = subprocess.Popen(command, startupinfo=si)
-            Clock.schedule_once(lambda x: self.pipe2.kill() , 15)
-        except IOError:
-            pass
+        # try:
+        #     command =  f'ffmpeg/ffmpeg.exe -y -nostats -loop 1 -i {helper._IMAGES_PATH}splash.jpg -i ../resource/media/muted.mp3 -filter_complex "volume=0" -r 25 {self.url_flv} {self.url_flv_hls} {self.mini_url_flv} {self.mini_url_flv_hls}'
+        #     si = subprocess.STARTUPINFO()
+        #     si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        #     self.pipe2 = subprocess.Popen(command, startupinfo=si)
+        #     Clock.schedule_once(lambda x: self.pipe2.kill() , 5)
+        # except IOError:
+        pass
 
     def show_camera_mini(self):
         self.cameraMini.opacity = 1
@@ -116,6 +116,8 @@ class MainStream(RelativeLayout):
             self.pipe.kill()
             # self.pipe.terminate()
             self.prepare()
+            self.camera.remove_file_flv()
+            self.cameraMini.remove_file_flv()
 
     def _set_source(self,lsSource):
         self.lsSource = lsSource
@@ -212,20 +214,20 @@ class MainStream(RelativeLayout):
         _map += f'[a{numau}]'
 
         if self.camera.resource_type == "VIDEO" or self.camera.resource_type == "M3U8":
-            url = self.url_flv
-            if self.camera.resource_type == "M3U8":
-                url = self.url_flv_hls
+            url = self.camera.url
+            # if self.camera.resource_type == "M3U8":
+            #     url = self.url_flv_hls
             if os.path.exists(url):
                 numau += 1
                 if self.camera.duration_current == 0:
                     inp.extend(["-i", url])
                 else:
                     inp.extend(["-ss", helper.convertSecNoToHMS(self.camera.duration_current),"-i", url,"-flags","+global_header"])
-                txt += f"[{numau}:a]volume=1[a{numau}];"
+                txt += f"[{numau}:a]volume=2[a{numau}];"
                 _map += f'[a{numau}]'
 
         if self.f_parent.showMiniD is True and (self.cameraMini.resource_type == "M3U8" or self.cameraMini.resource_type == "VIDEO"):
-            _url = self.mini_url_flv
+            _url = self.cameraMini.url
             if self.cameraMini.resource_type == "M3U8":
                 _url = self.mini_url_flv_hls
             if os.path.exists(_url):
@@ -234,7 +236,7 @@ class MainStream(RelativeLayout):
                     inp.extend(["-i", _url])
                 else:
                     inp.extend(["-ss", helper.convertSecNoToHMS(self.cameraMini.duration_current),"-i", _url,"-flags","+global_header"])
-                txt += f"[{numau}:a]volume=1[a{numau}];"
+                txt += f"[{numau}:a]volume=2[a{numau}];"
                 _map += f'[a{numau}]'
 
         if 'audio' in self.camera.data_src:

@@ -1,4 +1,4 @@
-import cv2, subprocess
+import cv2, subprocess, os
 from kivy.uix.image import Image
 from kivy.clock import Clock
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
@@ -42,6 +42,7 @@ class KivyCameraMini(DragBehavior, Image):
     typeOld = StringProperty('')
     category = StringProperty('')
     data_src = None
+    url_remove = StringProperty('')
 
     def __init__(self, **kwargs):
         super(KivyCameraMini, self).__init__(**kwargs)
@@ -72,6 +73,7 @@ class KivyCameraMini(DragBehavior, Image):
         return self._get_uid() in touch.ud
 
     def set_data_source(self, input, category):
+        self.url_remove = self.url
         self.data_src = input
         self.url = input['url']
         self.resource_type = input['type']
@@ -92,6 +94,8 @@ class KivyCameraMini(DragBehavior, Image):
         fps = 25
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
+                timenow = datetime.datetime.now().strftime("%d%m%y%H%M%S")
+                output = '../resource/temp/{}.flv'.format(timenow)
                 try:
                     _cap = cv2.VideoCapture(self.url)
                     if _cap.isOpened():
@@ -106,18 +110,15 @@ class KivyCameraMini(DragBehavior, Image):
                     del _cap
                 except Exception as e:
                     print("Exception:", e)
-                        
-                output = self.f_parent.mini_url_flv
+
                 timeout = 1
                 command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate, "-preset", "veryfast","-r","25",'-g','60','-threads', '2',output]
                 
                 if self.category == "PRESENTER":
                     self.url = self.data_src['rtmp']
-                    output = self.f_parent.mini_url_flv_hls
                     timeout=2
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-preset", "veryfast","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]
                 elif self.resource_type == "M3U8":
-                    output = self.f_parent.mini_url_flv_hls
                     timeout=1
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-preset", "veryfast","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]
                 elif self.resource_type == "RTSP":
@@ -154,10 +155,10 @@ class KivyCameraMini(DragBehavior, Image):
         
     def process_set_data(self, second):
         try:
-            self.stop.set()
-            th = Thread(target=self.init_capture())
-            th.start()
-            # self.init_capture()
+            # self.stop.set()
+            # th = Thread(target=self.init_capture())
+            # th.start()
+            self.init_capture()
         except Exception:
             pass
 
@@ -166,7 +167,7 @@ class KivyCameraMini(DragBehavior, Image):
             if self.capture is not None:
                 self.capture.release()
             self.stop_update_capture()
-            
+
             if self.resource_type == 'IMG' and '.gif' in self.url:
                 self.resource_type = 'GIF'
             if self.resource_type == 'CAMERA':
@@ -186,9 +187,9 @@ class KivyCameraMini(DragBehavior, Image):
                         self.f_parent.refresh_stream()
                 self.typeOld = self.resource_type
             else:
+                if self.capture is not None:
+                    self.capture.release()
                 if self.reconnect >= 10:
-                    if self.capture is not None:
-                        self.capture.release()
                     self.show_captured_img(self.default_frame)
                 else:
                     self.reconnect += 1
@@ -196,9 +197,9 @@ class KivyCameraMini(DragBehavior, Image):
                 
         except Exception as e:
             print("Exception init_capture:", e)
+            if self.capture is not None:
+                self.capture.release()
             if self.reconnect >= 10:
-                if self.capture is not None:
-                    self.capture.release()
                 self.show_captured_img(self.default_frame)
             else:
                 self.reconnect += 1
@@ -239,7 +240,7 @@ class KivyCameraMini(DragBehavior, Image):
             buf = cv2.flip(frame, 0).tostring()
             texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
             self.texture = texture
-            del frame
+            del frame, texture
         except IOError:
             print("Exception update_texture_from_frame:")
 
@@ -254,8 +255,15 @@ class KivyCameraMini(DragBehavior, Image):
     def resizeFrame(self, frame):
         if frame is None:
             return frame
+        if frame.shape[1] >= 1280:
+            return frame
+            
         h, w, c = frame.shape
         r = w / h
         nH = self.f_height
         nW = int(nH * r)
         return cv2.resize(frame, (nW, nH), interpolation=cv2.INTER_AREA)
+
+    def remove_file_flv(self):
+        if os.path.exists(self.url_remove):
+            os.remove(self.url_remove)

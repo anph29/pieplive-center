@@ -23,12 +23,12 @@ class KivyCameraMain(Image):
     event_capture = None
     default_frame = helper._IMAGES_PATH + 'splash.jpg'
     pipe = None
-    pipe2 = None
     f_parent = None
     typeOld = StringProperty('')
     category = StringProperty('')
     data_src = None
     schedule_type = StringProperty('')
+    url_remove = StringProperty('')
 
     def __init__(self, **kwargs):
         super(KivyCameraMain, self).__init__(**kwargs)
@@ -43,8 +43,10 @@ class KivyCameraMain(Image):
         }
 
     def set_data_source(self, input, category):
+        self.url_remove = self.url
         self.data_src = input
         self.url = input['url']
+        print('thong thong :',self.url)
         self.resource_type = input['type']
         self.category = category
         self.buffer_rate = 0
@@ -60,8 +62,6 @@ class KivyCameraMain(Image):
         
         if self.pipe is not None:
             self.pipe.kill()
-        if self.pipe2 is not None:
-            self.pipe2.kill()
         if self.capture is not None:
             self.capture.release()
         self.stop_update_capture()
@@ -69,10 +69,13 @@ class KivyCameraMain(Image):
         dura = 0
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO":# or self.resource_type == "RTSP":
+                timenow = datetime.datetime.now().strftime("%d%m%y%H%M%S")
+                output = '../resource/temp/{}.flv'.format(timenow)
                 try:
                     _cap = cv2.VideoCapture(self.url)
                     if _cap.isOpened():
                         fps = _cap.get(cv2.CAP_PROP_FPS)
+                        print('============',fps,'==========')
                         if self.resource_type == 'VIDEO':
                             if fps >= 25:
                                 self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
@@ -88,33 +91,23 @@ class KivyCameraMain(Image):
                         
                 if self.category == "SCHEDULE" and dura == self.data_src['duration']: 
                     self.schedule_type = 'end'
-                output = self.f_parent.url_flv
+
                 timeout = 1
-                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate, "-preset", "veryfast","-r","25",'-g','60','-threads', '2',output]
+                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 if self.category == "PRESENTER":
                     self.url = self.data_src['rtmp']
-                    output = self.f_parent.url_flv_hls
                     timeout=2
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-preset", "veryfast","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url, "-vsync", "1","-ar","44100", "-ab", "160k","-af", "aresample=async=1","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "M3U8":
-                    output = self.f_parent.url_flv_hls
                     timeout=1
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url,"-pix_fmt", "yuv420p", "-vsync", "1","-flags","+global_header", "-preset", "veryfast","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-g','25','-threads', '2',output]  
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync", "1","-flags","+global_header","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",output]  
                 elif self.resource_type == "RTSP":
                     timeout=3
-                    # command = ["ffmpeg/ffmpeg.exe","-y","-rtsp_flags", "prefer_tcp","-i", self.url,"-flags","+global_header","-ar","44100","-vb",self.f_parent.v_bitrate,"-r","25",output]
-                    # command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate, "-preset", "veryfast","-r","25",'-g','60','-threads', '2',output]
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i", self.url,"-pix_fmt", "yuv420p", "-flags","+global_header", "-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",'-threads', '2',output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i", self.url,"-pix_fmt", "yuv420p", "-flags","+global_header", "-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 else:
                     if fps < 25:
-                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",'-threads', '2',output]
-                    if self.typeOld == 'M3U8':
-                        command2 =  f'ffmpeg/ffmpeg.exe -y "-nostats -loop 1 -i {self.default_frame} -i ../resource/media/muted.mp3 -filter_complex "volume=0" -r 25 -threads 2 {self.f_parent.url_flv_hls}'
-                        si = sp.STARTUPINFO()
-                        si.dwFlags |= sp.STARTF_USESHOWWINDOW
-                        self.pipe2 = sp.Popen(command2, startupinfo=si)
-                        Clock.schedule_once(lambda x: self.pipe2.kill() , 5)
-                
+                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                    
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
                 self.pipe = sp.Popen(command, startupinfo=si)
@@ -135,21 +128,22 @@ class KivyCameraMain(Image):
         
     def process_set_data(self, second):
         try:
-            # self.stop.set()
-            # th = Thread(target=self.init_capture())
-            # th.start()
-            self.init_capture()
+            self.stop.set()
+            th = Thread(target=self.init_capture())
+            th.start()
+            # self.init_capture()
         except Exception:
             pass
 
     def init_capture(self):
         try:
-            # if self.capture is not None:
-            #     self.capture.release()
-            # self.stop_update_capture()
+            if self.capture is not None:
+                self.capture.release()
+            self.stop_update_capture()
 
             if self.resource_type == 'IMG' and '.gif' in self.url:
                 self.resource_type = 'GIF'
+
             if self.resource_type == 'CAMERA':
                 self.capture = cv2.VideoCapture(int(self.url))
             else:
@@ -169,25 +163,28 @@ class KivyCameraMain(Image):
                         self.f_parent.refresh_stream()
                     elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
                         self.f_parent.refresh_stream()
-                    
                     if self.schedule_type == 'duration':
                         self.f_parent.start_schedule(True)
+                    
+                    if self.f_parent.isStream is True:
+                        self.remove_file_flv()
+                        
                 self.typeOld = self.resource_type
             else:
                 print("cv2.error:")
+                if self.capture is not None:
+                    self.capture.release()
                 if self.reconnect >= 10:
-                    if self.capture is not None:
-                        self.capture.release()
                     self.show_captured_img(self.default_frame)
                 else:
                     self.reconnect += 1
-                    Clock.schedule_once(self.process_set_data,1)
+                    Clock.schedule_once(self.process_set_data,0.5)
                 
         except Exception as e:
             print("Exception init_capture:", e)
+            if self.capture is not None:
+                self.capture.release()
             if self.reconnect >= 10:
-                if self.capture is not None:
-                    self.capture.release()
                 self.show_captured_img(self.default_frame)
             else:
                 self.reconnect += 1
@@ -210,6 +207,7 @@ class KivyCameraMain(Image):
             if self.capture.isOpened():
                 # check is get next
                 if not self.capture.grab():
+                    print("Camera Main Fail")
                     if self.category == 'SCHEDULE':
                         if 'duration' in self.data_src and  self.data_src['duration'] is not None:
                             if (self.data_src['duration'] == 0 or int(self.duration_current) >= self.data_src['duration']) and self.schedule_type == 'end':
@@ -230,28 +228,33 @@ class KivyCameraMain(Image):
 
     def update_texture_from_frame(self, frame):
         try:
-            frame = self.resizeFrame(frame)
+            # frame = self.resizeFrame(frame)
             texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
             buf = cv2.flip(frame, 0).tostring()
             texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
             self.texture = texture
-            # del frame
+            del frame, texture
         except IOError:
             print("Exception update_texture_from_frame:")
 
     def release(self):
         if self.pipe is not None:
             self.pipe.kill()
-        if self.pipe2 is not None:
-            self.pipe2.kill()
         if self.capture is not None:
             self.capture.release()
 
     def resizeFrame(self, frame):
         if frame is None:
             return frame
+        if frame.shape[1] >= 1280:
+            return frame
+
         h, w, c = frame.shape
         r = w / h
         nH = self.f_height
         nW = int(nH * r)
         return cv2.resize(frame, (nW, nH), interpolation=cv2.INTER_AREA)
+
+    def remove_file_flv(self):
+        if os.path.exists(self.url_remove):
+            os.remove(self.url_remove)

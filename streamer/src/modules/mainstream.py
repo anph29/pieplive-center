@@ -46,22 +46,9 @@ class MainStream(RelativeLayout):
         self.is_loop = True
         self.current_schedule = -1
         self.deleteAllFile()
-        timenow = datetime.datetime.now().strftime("%d%m%y%H%M%S")
-        self.url_flv = '../resource/temp/{}.flv'.format(timenow)
-        self.url_flv_hls = '../resource/temp/{}_hls.flv'.format(timenow)
-        self.mini_url_flv = '../resource/temp/mini_{}.flv'.format(timenow)
-        self.mini_url_flv_hls = '../resource/temp/mini_{}_hls.flv'.format(timenow)
-        del timenow
 
     def _load(self):
-        try:
-            command =  f'ffmpeg/ffmpeg.exe -y -nostats -loop 1 -i {helper._IMAGES_PATH}splash.jpg -i ../resource/media/muted.mp3 -filter_complex "volume=0" -r 25 {self.url_flv} {self.url_flv_hls} {self.mini_url_flv} {self.mini_url_flv_hls}'
-            si = subprocess.STARTUPINFO()
-            si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-            self.pipe2 = subprocess.Popen(command, startupinfo=si)
-            Clock.schedule_once(lambda x: self.pipe2.kill() , 15)
-        except IOError:
-            pass
+        pass
 
     def show_camera_mini(self):
         self.cameraMini.opacity = 1
@@ -71,6 +58,21 @@ class MainStream(RelativeLayout):
             self.refresh_stream()
         self.cameraMini.opacity = 0
         self.cameraMini.release()
+        try:
+            if self.typeSwitch == 1:
+                self.remove_widget(self.camera)
+                self.remove_widget(self.cameraMini) 
+                self.typeSwitch = 0
+                self.camera.width = 1280
+                self.camera.height = 720
+                self.cameraMini.width = 320
+                self.cameraMini.height = 180
+                self.cameraMini.pos = self.camera.pos
+                self.camera.pos = (0,0)
+                self.add_widget(self.cameraMini,0)
+                self.add_widget(self.camera,1)
+        except:
+            pass
 
     def switch_display(self):
         try:
@@ -84,8 +86,8 @@ class MainStream(RelativeLayout):
                 self.cameraMini.height = 720
                 self.camera.pos = self.cameraMini.pos
                 self.cameraMini.pos = (0,0)
+                self.add_widget(self.camera,0)
                 self.add_widget(self.cameraMini,1)
-                self.add_widget(self.camera,1)
             elif self.typeSwitch == 1:
                 self.typeSwitch = 0
                 self.camera.width = 1280
@@ -94,9 +96,10 @@ class MainStream(RelativeLayout):
                 self.cameraMini.height = 180
                 self.cameraMini.pos = self.camera.pos
                 self.camera.pos = (0,0)
+                self.add_widget(self.cameraMini,0)
                 self.add_widget(self.camera,1)
-                self.add_widget(self.cameraMini,1)
         except:
+            print("abcd")
             pass
     
     def _set_capture(self, data_src, data_type, is_from_schedule):
@@ -116,6 +119,8 @@ class MainStream(RelativeLayout):
             self.pipe.kill()
             # self.pipe.terminate()
             self.prepare()
+            self.camera.remove_file_flv()
+            self.cameraMini.remove_file_flv()
 
     def _set_source(self,lsSource):
         self.lsSource = lsSource
@@ -212,29 +217,25 @@ class MainStream(RelativeLayout):
         _map += f'[a{numau}]'
 
         if self.camera.resource_type == "VIDEO" or self.camera.resource_type == "M3U8":
-            url = self.url_flv
-            if self.camera.resource_type == "M3U8":
-                url = self.url_flv_hls
+            url = self.camera.url
             if os.path.exists(url):
                 numau += 1
                 if self.camera.duration_current == 0:
                     inp.extend(["-i", url])
                 else:
                     inp.extend(["-ss", helper.convertSecNoToHMS(self.camera.duration_current),"-i", url,"-flags","+global_header"])
-                txt += f"[{numau}:a]volume=1[a{numau}];"
+                txt += f"[{numau}:a]volume=2[a{numau}];"
                 _map += f'[a{numau}]'
 
         if self.f_parent.showMiniD is True and (self.cameraMini.resource_type == "M3U8" or self.cameraMini.resource_type == "VIDEO"):
-            _url = self.mini_url_flv
-            if self.cameraMini.resource_type == "M3U8":
-                _url = self.mini_url_flv_hls
+            _url = self.cameraMini.url
             if os.path.exists(_url):
                 numau += 1
                 if self.cameraMini.duration_current == 0:
                     inp.extend(["-i", _url])
                 else:
                     inp.extend(["-ss", helper.convertSecNoToHMS(self.cameraMini.duration_current),"-i", _url,"-flags","+global_header"])
-                txt += f"[{numau}:a]volume=1[a{numau}];"
+                txt += f"[{numau}:a]volume=2[a{numau}];"
                 _map += f'[a{numau}]'
 
         if 'audio' in self.camera.data_src:
@@ -273,7 +274,7 @@ class MainStream(RelativeLayout):
             self.command.extend(self.draw_element())
 
             # encode
-            self.command.extend(['-vb', str(self.v_bitrate),'-r', '25', '-pix_fmt', 'yuv420p','-g','60'])
+            self.command.extend(['-vb', str(self.v_bitrate),'-r', '25', '-pix_fmt', 'yuv420p'])
 
             self.command.extend(["-vf", "fps=25",'-metadata', 'title="PiepLiveCenter"'])
             
@@ -305,14 +306,9 @@ class MainStream(RelativeLayout):
                 self.pipe2.kill()
             if self.mgrSchedule is not None:
                 self.mgrSchedule.cancel()
-            if os.path.exists(self.url_flv):
-                os.remove(self.url_flv)
-            if os.path.exists(self.url_flv_hls):
-                os.remove(self.url_flv_hls)
-            if os.path.exists(self.mini_url_flv):
-                os.remove(self.mini_url_flv)
-            if os.path.exists(self.mini_url_flv_hls):
-                os.remove(self.mini_url_flv_hls)
+
+            self.deleteAllFile()
+            
         except IOError:
             print("Exception prepare:")
             return False

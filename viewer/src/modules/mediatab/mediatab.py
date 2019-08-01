@@ -22,8 +22,8 @@ class MediaTab(tk.Frame):
         self.totalDuration = 0
 
     def initUI(self):
-        self.showLsMedia()
         self.showToolBar()
+        self.showLsMedia()
         self.after(500, self.turnOnObserver)
 
     def turnOnObserver(self):
@@ -105,11 +105,11 @@ class MediaTab(tk.Frame):
         self.cmdF5 = tk.Label(self.tbright, image=imageBin,
                               cursor='hand2', bg=self.tbBgColor)
         self.cmdF5.image = imageBin
-        self.cmdF5.bind("<Button-1>", self.tabRefresh)
+        self.cmdF5.bind("<Button-1>", self.f5)
         self.cmdF5.pack(side=tk.RIGHT, padx=(0, 5), pady=5)
         ToolTip(self.cmdF5, "Refresh")
 
-    def tabRefresh(self, evt):
+    def f5(self, evt):
         self.clearView()
         self.showLsMedia()
         self.checkall.set(False)
@@ -124,7 +124,7 @@ class MediaTab(tk.Frame):
         if len(lsId) > 0:
             if messagebox.askyesno("PiepMe", "Are you sure delete all selected media?"):
                 self.deleteMediaItem(lsId)
-                self.tabRefresh(evt)
+                self.f5(evt)
 
     def tabSelectAll(self):
         for medi in self._LS_MEDIA_UI:

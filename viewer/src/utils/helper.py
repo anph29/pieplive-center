@@ -104,17 +104,17 @@ def duplicate_schedule_container(name):
     shutil.copyfile(src, dst)
 
 # -- @@ -- @@ -- 
-def _load_schedule_width_name(fname):
+def _load_schedule_width_fname(fname):
     path = makeSureScheduleFile(fname)
     if os.path.isfile(path):
         return loadJSON(path)
 
-def _write_schedule_width_name(fname, data):
+def _write_schedule_width_fname(fname, data):
     path = makeSureScheduleFile(fname)
     if os.path.isfile(path):
         writeJSON(path, data)
 
-def _add_to_schedule_width_name(fname, data):
+def _add_to_schedule_width_fname(fname, data):
     path = makeSureScheduleFile(fname)
     if os.path.isfile(path):
         appendJSON(path, data)

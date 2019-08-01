@@ -68,7 +68,7 @@ class MediaItemDnD(MediaItem):
 
     def deleteMedia(self, evt):
         super(MediaItemDnD, self).deleteMedia(evt)
-        self.parentTab.tabRefresh(None)
+        self.parentTab.f5(None)
 
     def callParentAddSchedule(self, evt):
         self.parentTab.callShowPopup(self.get_data())

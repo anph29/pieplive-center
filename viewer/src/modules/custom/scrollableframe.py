@@ -1,9 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import tkinter as tk
 from tkinter import *   # from x import * is bad practice
 from tkinter.ttk import *
 
 # http://tkinter.unpythonic.net/wiki/VerticalScrolledFrame
+
 
 class VerticalScrolledFrame(Frame):
     """A pure Tkinter scrollable frame that actually works!
@@ -11,20 +13,22 @@ class VerticalScrolledFrame(Frame):
     * Construct and pack/place/grid normally
     * This frame only allows vertical scrolling
     """
+
     def __init__(self, parent, *args, **kw):
-        Frame.__init__(self, parent, *args, **kw)            
+        Frame.__init__(self, parent, *args, **kw)
 
         # create a canvas object and a vertical scrollbar for scrolling it
-        vscrollbar = Scrollbar(self, orient=VERTICAL)
-        vscrollbar.pack(fill=Y, side=RIGHT, expand=FALSE)
-        self.canvas = Canvas(self, bd=0, highlightthickness=0, yscrollcommand=vscrollbar.set)
+        self.vscrollbar = Scrollbar(self, orient=VERTICAL)
+        self.vscrollbar.pack(fill=Y, side=RIGHT, expand=FALSE)
+        #
+        self.canvas = Canvas(self, bd=0, highlightthickness=0, yscrollcommand=self.vscrollbar.set)
         self.canvas.pack(side=LEFT, fill=BOTH, expand=TRUE)
-        vscrollbar.config(command=self.canvas.yview)
-
+        self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
+        #
+        self.vscrollbar.config(command=self.canvas.yview)
         # reset the view
         self.canvas.xview_moveto(0)
         self.canvas.yview_moveto(0)
-        # self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
         self.canvas.bind('<Configure>', self._configure_canvas)
 
         # create a frame inside the canvas which will be scrolled with it
@@ -49,7 +53,7 @@ class VerticalScrolledFrame(Frame):
 
 
     def _on_mousewheel(self, event):
-        # self.canvas.yview_scroll(-1 * int(event.delta/120), "units")
+        self.canvas.focus_set()
         self.canvas.yview_moveto(-1 * int(event.delta/120))
 
 

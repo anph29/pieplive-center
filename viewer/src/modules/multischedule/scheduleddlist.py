@@ -7,13 +7,28 @@ from PIL import Image, ImageTk
 
 
 class ScheduleDDList(tk.Frame):
+
     def __init__(self,  parent, *args, **kwargs):
         super(ScheduleDDList, self).__init__( parent, *args, **kwargs)
         self._LS_SCHEDULE_DATA = []
         self._LS_SCHEDULE_UI = []
         self.parent = parent
+      
+    def initUI(self):
+        self.showToolBar()
         self.scrollZ = VerticalScrolledFrame(self)
+        self.scrollZ.pack(fill=tk.BOTH, expand=True)
         self.ddlist = self.makeDDList(self.scrollZ.interior)
+        self.ddlist.pack(fill=tk.BOTH, expand=True)
+
+    def makeDDList(self, ref):
+        return DDList(ref, self.wrapperWidth, 42, offset_x=5, offset_y=5, gap=5, item_borderwidth=1, item_relief=tk.FLAT, borderwidth=0, bg="#fff", droppedCallback=self.saveSortedList)
+
+    def loadSchedule(self):
+        return []
+
+    def addToScheduleGUI(self, media):
+        pass
 
     def showListSchedule(self):
         self._LS_SCHEDULE_DATA = self.loadSchedule()
@@ -91,6 +106,9 @@ class ScheduleDDList(tk.Frame):
         filtered = list(filter(lambda x:x['id'] not in lsId, ls))
         self.clearData()
         self.writeSchedule(filtered)
+
+    def writeSchedule(self):
+        pass
         
     def saveSortedList(self):
         print(';;;saveSortedList;;;;')

@@ -104,7 +104,7 @@ class MainView(tk.Frame):
         self.parent.parent.config(menu=self.menubar)
     #
     def makeMediaTab(self, tType):
-        return MediaGridView(self, tabType=tType, borderwidth=0, bg="#ccc")
+        return MediaGridView(self, tabType=tType, borderwidth=0, bg="#fff")
     #
     def hideToolbar(self):
         self.toolbar.pack_forget()
@@ -155,11 +155,11 @@ class MainView(tk.Frame):
                 #presenter
                 presenter = list(filter(lambda l500: l500['LN508'] == 1, lsL500))
                 self.tab_presenter.renewData(presenter)
-                self.schedule.right.tab_presenter.tabRefresh(None)
+                self.schedule.right.tab_presenter.f5(None)
                 #camera
                 camera = list(filter(lambda l500: l500['LN508'] == 0, lsL500))
                 self.tab_camera.renewData(camera)
-                self.schedule.right.tab_camera.tabRefresh(None)
+                self.schedule.right.tab_camera.f5(None)
     #
     def loadCbxQ170(self):
         q170 = Q170_model()

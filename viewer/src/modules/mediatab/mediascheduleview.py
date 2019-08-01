@@ -52,10 +52,10 @@ class MediaScheduleView(MediaListView):
         else:
             self.addMediaToList(data)
             self.addMedia(data)
-        self.tabRefresh(None)
+        self.f5(None)
 
-    def tabRefresh(self, evt):
-        super(MediaScheduleView, self).tabRefresh(evt)
+    def f5(self, evt):
+        super(MediaScheduleView, self).f5(evt)
         ls = self.loadLsMedia()
         self.totalDuration = reduce(lambda sum, x: sum + x['duration'], ls, 0)
         self.lblDura.config(text=f'total duration: {helper.convertSecNoToHMS(self.totalDuration)}')
@@ -72,7 +72,7 @@ class MediaScheduleView(MediaListView):
         self.clearData()
         schedule = helper.calc_schedule_runtime(index, schedule=newLs, startTime=media['timepoint'])
         self.writeLsMedia(schedule)
-        self.tabRefresh(None)
+        self.f5(None)
 
     def saveSortedList(self):
         sorted = list(map(lambda x:x.value, self.ddlist._list_of_items))

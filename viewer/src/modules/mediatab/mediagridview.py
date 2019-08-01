@@ -17,7 +17,7 @@ class MediaGridView(DynamicGrid, MediaTab):
             self.showAddCamBtn()
 
     def addMediaToList(self, media):
-        ui = MediaItemBox(self.context, parentTab=self, media=media, bg="#f2f2f2", relief=tk.FLAT, bd=3)
+        ui = MediaItemBox(self.context, parentTab=self, media=media, bg="#fff", relief=tk.FLAT, bd=3)
         self._LS_MEDIA_UI.append(ui)
         self.after_effect(ui)
 

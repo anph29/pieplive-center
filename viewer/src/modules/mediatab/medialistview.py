@@ -95,4 +95,4 @@ class MediaListView(MediaTab):
                 map(lambda x: media if x['id'] == media['id'] else x, ls))
             self.clearData()
             self.writeLsMedia(newLs)
-        self.tabRefresh(None)
+        self.f5(None)

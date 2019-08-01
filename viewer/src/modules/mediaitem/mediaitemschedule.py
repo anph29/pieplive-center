@@ -10,6 +10,11 @@ from src.modules.custom import ToolTip
 class MediaItemSchedule(MediaItem):
      
     def __init__(self, parent, media=None, parentTab=None, *args, **kwargs):
+        if 'elipsis' in kwargs:
+            self.nameElipsis = kwargs['elipsis']
+            del kwargs['elipsis']
+        else:
+            self.nameElipsis = 60
         super(MediaItemSchedule, self).__init__(parent, *args, **kwargs)
         self.parent = parent
         self.parentTab = parentTab
@@ -34,7 +39,8 @@ class MediaItemSchedule(MediaItem):
         self.checkbox = tk.Checkbutton(wrapper, variable=self.checked, onvalue=True, offvalue=False, height=1, width=1, bd=0, relief=tk.FLAT)
         self.checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)
         # label
-        lbl_name = PLabel(wrapper, text=self.name, justify=tk.LEFT, elipsis=60, font=UI.TXT_FONT, fg="#000")
+        lbl_name = PLabel(wrapper, text=self.name, justify=tk.LEFT, elipsis=self.nameElipsis, font=UI.TXT_FONT, fg="#000")
+        ToolTip(lbl_name, self.name)
         lbl_name.pack(side=tk.LEFT)
         # bin
         imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}trash-b.png"))
@@ -70,4 +76,4 @@ class MediaItemSchedule(MediaItem):
 
     def deleteMedia(self, evt):
         super(MediaItemSchedule, self).deleteMedia(evt)
-        self.parentTab.tabRefresh(None)
+        self.parentTab.f5(None)

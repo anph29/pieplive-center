@@ -10,19 +10,15 @@ from src.modules.mediaitem import ScheduleHeadItem
 class SortedList(ScheduleDDList):
 
     def __init__(self, parent, *args, **kwargs):
+        self.parent = parent
         self.tbBgColor = '#E8DAEF'
+        self.wrapperWidth = 320
         super(SortedList, self).__init__(parent, *args, **kwargs)
         self.initUI()
 
-    def makeDDList(self, ref):
-        return DDList(ref, 360, 42, offset_x=5, offset_y=5, gap=5, item_borderwidth=1, item_relief=tk.FLAT, borderwidth=0, bg="#fff", droppedCallback=self.saveSortedList)
-
     def initUI(self):
+        super(SortedList, self).initUI()
         self.showListSchedule()
-        self.showToolBar()
-        #
-        self.scrollZ.pack(fill=tk.BOTH, expand=True)
-        self.ddlist.pack(fill=tk.Y, expand=True)
 
     def packRightToolbar(self):
         super(SortedList, self).packRightToolbar()
@@ -33,7 +29,7 @@ class SortedList(ScheduleDDList):
         item = self.ddlist.create_item(value=data)
         ui = ScheduleHeadItem(item, parentTab=self, media=data)
         self._LS_SCHEDULE_UI.append(ui)
-        ui.pack(padx= (4,0), pady= (4,0), expand=True)
+        ui.pack(padx=(4, 0), pady=(4, 0), expand=True)
         self.ddlist.add_item(item)
 
     def showAddCamBtn(self):
@@ -47,11 +43,18 @@ class SortedList(ScheduleDDList):
         self.cmdAdd.pack(side=tk.LEFT, padx=5, pady=5)
         ToolTip(self.cmdAdd, "Add new media")
 
-    def loadSchedule(self):                                              
-            return helper._load_sorted_schedule()
+    def loadScheduleDE(self, sch):
+        self.parent.schedule.setData(sch)
+        self.parent.schedule.showListSchedule()
+
+    def editSchedule(self, sch):
+        pass
+
+    def loadSchedule(self):
+        return helper._load_sorted_schedule()
 
     def addSchedule(self, data):
-            helper._add_to_sorted_schedule(data)
+        helper._add_to_sorted_schedule(data)
 
     def writeSchedule(self, data):
-            helper._write_sorted_schedule(data)
+        helper._write_sorted_schedule(data)

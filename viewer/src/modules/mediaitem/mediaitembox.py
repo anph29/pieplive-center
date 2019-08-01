@@ -27,7 +27,7 @@ class MediaItemBox(MediaItem):
         self.vlcInited = False
         self.parentTab = parentTab
         self.set_data(media)
-        self.botBg = '#f0f0f0'
+        self.botBg = '#f2f2f2'
         self.after(100, self.initGUI)
         self.top = None
         self.volume = False
@@ -44,7 +44,7 @@ class MediaItemBox(MediaItem):
             self.buffer.pack(side=tk.LEFT, fill=tk.Y)
 
     def initTOP(self):
-        self.top = tk.Frame(self.wrapper, bd=0, relief=tk.FLAT, bg="#ccc", width=self.cell_width, height=self.top_height)
+        self.top = tk.Frame(self.wrapper, bd=0, relief=tk.FLAT, bg="#f2f2f2", width=self.cell_width, height=self.top_height)
         self.top.pack(side=tk.TOP)
 
         self.top.bind("<Button-1>", self.playOrPauseClick)

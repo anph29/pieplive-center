@@ -91,14 +91,14 @@ class KivyCameraMini(DragBehavior, Image):
 
         fps = 25
         try:
-            if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
+            if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.resource_type == 'MP4':
                 timenow = datetime.datetime.now().strftime("%d%m%y%H%M%S")
                 output = '../resource/temp/{}.flv'.format(timenow)
                 try:
                     _cap = cv2.VideoCapture(self.url)
                     if _cap.isOpened():
                         fps = _cap.get(cv2.CAP_PROP_FPS)
-                        if self.resource_type == 'VIDEO':
+                        if self.resource_type == 'VIDEO' or self.resource_type == 'MP4':
                             if fps >= 25:
                                 self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
                                 self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)
@@ -110,7 +110,7 @@ class KivyCameraMini(DragBehavior, Image):
                     print("Exception:", e)
 
                 timeout = 1
-                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-vsync","1","-af","aresample=async=1","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 
                 if self.category == "PRESENTER":
                     self.url = self.data_src['rtmp']
@@ -121,10 +121,10 @@ class KivyCameraMini(DragBehavior, Image):
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync","1","-flags","+global_header","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "RTSP":
                     timeout=1
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-acodec", "copy", "-vcodec", "copy","-r","25",'-threads', '2',output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1","-acodec", "copy", "-vcodec", "copy","-r","25",'-threads', '2',output]
                 else:
                     if fps < 25:
-                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-vsync","1","-af","aresample=async=1","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
                     
                 si = subprocess.STARTUPINFO()
                 si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
@@ -169,7 +169,7 @@ class KivyCameraMini(DragBehavior, Image):
                         self.f_parent.refresh_stream()
                     elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
                         self.f_parent.refresh_stream()
-                    if self.f_parent.isStream is True:
+                    if self.f_parent.isStream is False:
                         self.remove_file_flv()
                 self.typeOld = self.resource_type
             else:
@@ -207,13 +207,12 @@ class KivyCameraMini(DragBehavior, Image):
         try:
             if self.capture.isOpened():
                 if not self.capture.grab():
-                    print("Camera Mini Fail")
                     pass
                 else:
                     ret, frame = self.capture.retrieve()
                     if ret:
-                        if self.resource_type == 'VIDEO' or self.resource_type == 'M3U8':
-                            if self.resource_type == 'VIDEO':
+                        if self.resource_type == 'VIDEO' or self.resource_type == 'MP4' or self.resource_type == 'M3U8':
+                            if self.resource_type == 'VIDEO' or self.resource_type == 'MP4':
                                 self.buffer_rate = self.capture.get(cv2.CAP_PROP_POS_FRAMES) / self.duration_total_n
                             self.duration_current = self.capture.get(cv2.CAP_PROP_POS_FRAMES)/self.capture.get(cv2.CAP_PROP_FPS)
                         self.update_texture_from_frame(frame)

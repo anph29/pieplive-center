@@ -161,16 +161,16 @@ class MainStream(RelativeLayout):
     def stream(self, fps):
         try:
             if self.isStream:
-                if self.parent is not None:
-                    self.canvas_parent_index = self.parent.canvas.indexof(self.canvas)
-                    if self.canvas_parent_index > -1:
-                        self.parent.canvas.remove(self.canvas)
-                self.fbo.add(self.canvas)
+                # if self.parent is not None:
+                #     self.canvas_parent_index = self.parent.canvas.indexof(self.canvas)
+                #     if self.canvas_parent_index > -1:
+                #         self.parent.canvas.remove(self.canvas)
+                # self.fbo.add(self.canvas)
                 self.fbo.draw()
                 self.pipe.stdin.write(self.fbo.pixels)
-                self.fbo.remove(self.canvas)
-                if self.parent is not None and self.canvas_parent_index > -1:
-                    self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
+                # self.fbo.remove(self.canvas)
+                # if self.parent is not None and self.canvas_parent_index > -1:
+                #     self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
                 self.reconnect = 0
         except:
             self.stopStream()
@@ -196,8 +196,8 @@ class MainStream(RelativeLayout):
         if self.stop is not None:
             self.stop.set()
         self.fbo.remove(self.canvas)
-        if self.parent is not None and self.canvas_parent_index > -1:
-            self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
+        # if self.parent is not None and self.canvas_parent_index > -1:
+        #     self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
         print("--- STOP ---")
         
     def set_url_stream(self, urlStream):
@@ -216,7 +216,7 @@ class MainStream(RelativeLayout):
         txt += f"[{numau}:a]volume=0[a{numau}];"
         _map += f'[a{numau}]'
 
-        if self.camera.resource_type == "VIDEO" or self.camera.resource_type == "M3U8":
+        if self.camera.resource_type == "VIDEO" or self.camera.resource_type == "MP4" or self.camera.resource_type == "M3U8":
             url = self.camera.url
             if os.path.exists(url):
                 numau += 1
@@ -227,7 +227,7 @@ class MainStream(RelativeLayout):
                 txt += f"[{numau}:a]volume=2[a{numau}];"
                 _map += f'[a{numau}]'
 
-        if self.f_parent.showMiniD is True and (self.cameraMini.resource_type == "M3U8" or self.cameraMini.resource_type == "VIDEO"):
+        if self.f_parent.showMiniD is True and (self.cameraMini.resource_type == "M3U8" or self.cameraMini.resource_type == "VIDEO" or self.cameraMini.resource_type == "MP4"):
             _url = self.cameraMini.url
             if os.path.exists(_url):
                 numau += 1
@@ -274,7 +274,7 @@ class MainStream(RelativeLayout):
             self.command.extend(self.draw_element())
 
             # encode
-            self.command.extend(['-vb', str(self.v_bitrate),'-r', '25', '-pix_fmt', 'yuv420p'])
+            self.command.extend(['-vb', str(self.v_bitrate),'-r', '25', '-pix_fmt', 'yuv420p',"-vsync","1"])
 
             self.command.extend(["-vf", "fps=25",'-metadata', 'title="PiepLiveCenter"'])
             

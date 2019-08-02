@@ -97,7 +97,7 @@ class KivyCameraMain(Image):
                 command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-vsync", "1","-af","aresample=async=1","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 if self.category == "PRESENTER":
                     self.url = self.data_src['rtmp']
-                    timeout=2
+                    timeout=3
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url, "-vsync", "1","-ar","44100", "-ab", "160k","-af", "aresample=async=1","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "M3U8":
                     timeout=1
@@ -142,7 +142,6 @@ class KivyCameraMain(Image):
                 self.capture = cv2.VideoCapture(int(self.url))
             else:
                 self.capture = cv2.VideoCapture(self.url)
-            print('url-----',self.url)
 
             if self.capture is not None and self.capture.isOpened():
                 self.reconnect = 0

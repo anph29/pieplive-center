@@ -29,12 +29,13 @@ class KivyCameraMain(Image):
     data_src = None
     schedule_type = StringProperty('')
     url_remove = StringProperty('')
+    _thread = None
+
 
     def __init__(self, **kwargs):
         super(KivyCameraMain, self).__init__(**kwargs)
         self.f_height = 720
         self.show_captured_img(self.default_frame)
-        self.stop = Event()
         self.data_src = {
             "id": "8c31e461881ac85d932bb461b132f32f",
             "name": "image",
@@ -46,7 +47,6 @@ class KivyCameraMain(Image):
         self.url_remove = self.url
         self.data_src = input
         self.url = input['url']
-        print('thong thong :',self.url)
         self.resource_type = input['type']
         self.category = category
         self.reconnect = 0
@@ -121,10 +121,11 @@ class KivyCameraMain(Image):
         
     def process_set_data(self, second):
         try:
-            self.stop.set()
-            th = Thread(target=self.init_capture())
-            th.start()
-            # self.init_capture()
+            # if self._thread is not None:
+            #     self._thread._stop()
+            # self._thread = Thread(target=self.init_capture())
+            # self._thread.start()
+            self.init_capture()
         except Exception:
             pass
 
@@ -145,8 +146,8 @@ class KivyCameraMain(Image):
 
             if self.capture is not None and self.capture.isOpened():
                 self.reconnect = 0
-                if self.resource_type != 'VIDEO' and self.resource_type != "M3U8":
-                    self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
+                # if self.resource_type != 'VIDEO' and self.resource_type != "M3U8":
+                self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
                 print(">>CAPTURE FINED:")
                 self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
                 if self.f_parent is not None:
@@ -194,7 +195,8 @@ class KivyCameraMain(Image):
     def stop_update_capture(self):
         if self.event_capture is not None:
             self.event_capture.cancel()
-
+    
+    @mainthread
     def update(self, dt):
         try:
             if self.capture.isOpened():
@@ -218,11 +220,14 @@ class KivyCameraMain(Image):
         except IOError:
             print("Exception update:")
 
+    @mainthread
     def update_texture_from_frame(self, frame):
         try:
             # frame = self.resizeFrame(frame)
             texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
-            buf = cv2.flip(frame, 0).tostring()
+            texture.flip_vertical()
+            # buf = cv2.flip(frame, 0).tostring()
+            buf = frame.tostring()
             texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
             self.texture = texture
             del frame, texture

@@ -1,6 +1,6 @@
 import cv2, subprocess, os, datetime
 from kivy.uix.image import Image
-from kivy.clock import Clock
+from kivy.clock import Clock, mainthread
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
 from kivy.graphics.texture import Texture
 from kivy.uix.behaviors import DragBehavior
@@ -42,12 +42,12 @@ class KivyCameraMini(DragBehavior, Image):
     category = StringProperty('')
     data_src = None
     url_remove = StringProperty('')
+    _thread = None
 
     def __init__(self, **kwargs):
         super(KivyCameraMini, self).__init__(**kwargs)
         self.f_height = 720
         self.show_captured_img(self.default_frame)
-        self.stop = Event()
         self.data_src = {
             "id": "8c31e461881ac85d932bb461b132f32f",
             "name": "image",
@@ -91,14 +91,14 @@ class KivyCameraMini(DragBehavior, Image):
 
         fps = 25
         try:
-            if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
+            if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.resource_type == 'MP4':
                 timenow = datetime.datetime.now().strftime("%d%m%y%H%M%S")
                 output = '../resource/temp/{}.flv'.format(timenow)
                 try:
                     _cap = cv2.VideoCapture(self.url)
                     if _cap.isOpened():
                         fps = _cap.get(cv2.CAP_PROP_FPS)
-                        if self.resource_type == 'VIDEO':
+                        if self.resource_type == 'VIDEO' or self.resource_type == 'MP4':
                             if fps >= 25:
                                 self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
                                 self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)
@@ -110,21 +110,21 @@ class KivyCameraMini(DragBehavior, Image):
                     print("Exception:", e)
 
                 timeout = 1
-                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-vsync","1","-af","aresample=async=1","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 
                 if self.category == "PRESENTER":
                     self.url = self.data_src['rtmp']
-                    timeout=2
+                    timeout=3
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url, "-vsync","1","-ar","44100","-ab", "160k","-af", "aresample=async=1","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "M3U8":
                     timeout=1
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync","1","-flags","+global_header","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "RTSP":
                     timeout=1
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-acodec", "copy", "-vcodec", "copy","-r","25",'-threads', '2',output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1","-acodec", "copy", "-vcodec", "copy","-r","25",'-threads', '2',output]
                 else:
                     if fps < 25:
-                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-vsync","1","-af","aresample=async=1","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
                     
                 si = subprocess.STARTUPINFO()
                 si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
@@ -139,10 +139,11 @@ class KivyCameraMini(DragBehavior, Image):
         
     def process_set_data(self, second):
         try:
-            self.stop.set()
-            th = Thread(target=self.init_capture())
-            th.start()
-            # self.init_capture()
+            # if self._thread is not None:
+            #     self._thread._stop()
+            # self._thread = Thread(target=self.init_capture())
+            # self._thread.start()
+            self.init_capture()
         except Exception:
             pass
 
@@ -169,7 +170,7 @@ class KivyCameraMini(DragBehavior, Image):
                         self.f_parent.refresh_stream()
                     elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
                         self.f_parent.refresh_stream()
-                    if self.f_parent.isStream is True:
+                    if self.f_parent.isStream is False:
                         self.remove_file_flv()
                 self.typeOld = self.resource_type
             else:
@@ -203,28 +204,31 @@ class KivyCameraMini(DragBehavior, Image):
         if self.event_capture is not None:
             self.event_capture.cancel()
 
+    @mainthread
     def update(self, dt):
         try:
             if self.capture.isOpened():
                 if not self.capture.grab():
-                    print("Camera Mini Fail")
                     pass
                 else:
                     ret, frame = self.capture.retrieve()
                     if ret:
-                        if self.resource_type == 'VIDEO' or self.resource_type == 'M3U8':
-                            if self.resource_type == 'VIDEO':
+                        if self.resource_type == 'VIDEO' or self.resource_type == 'MP4' or self.resource_type == 'M3U8':
+                            if self.resource_type == 'VIDEO' or self.resource_type == 'MP4':
                                 self.buffer_rate = self.capture.get(cv2.CAP_PROP_POS_FRAMES) / self.duration_total_n
                             self.duration_current = self.capture.get(cv2.CAP_PROP_POS_FRAMES)/self.capture.get(cv2.CAP_PROP_FPS)
                         self.update_texture_from_frame(frame)
         except IOError:
             print("Exception update:")
 
+    @mainthread
     def update_texture_from_frame(self, frame):
         try:
             # frame = self.resizeFrame(frame)
             texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
-            buf = cv2.flip(frame, 0).tostring()
+            texture.flip_vertical()
+            # buf = cv2.flip(frame, 0).tostring()
+            buf = frame.tostring()
             texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
             self.texture = texture
             del frame, texture

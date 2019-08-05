@@ -20,6 +20,7 @@ class MainStream(RelativeLayout):
     cameraMini= ObjectProperty()
     f_parent= ObjectProperty(None)
     typeSwitch = NumericProperty(0)
+    _thread = None
 
     def __init__(self, **kwargs):
         super(MainStream, self).__init__(**kwargs)
@@ -39,7 +40,6 @@ class MainStream(RelativeLayout):
         self.command = []
         self.event = None
         self.canvas_parent_index = 0
-        self.stop = Event()
         self.reconnect = 0
         self.streamType = ''
         self.mgrSchedule = None
@@ -117,7 +117,6 @@ class MainStream(RelativeLayout):
     def refresh_stream(self):
         if self.isStream is True:
             self.pipe.kill()
-            # self.pipe.terminate()
             self.prepare()
             self.camera.remove_file_flv()
             self.cameraMini.remove_file_flv()
@@ -147,9 +146,11 @@ class MainStream(RelativeLayout):
             self.fbo.add(self.canvas)
 
             self.isStream = True
-            self.stop.set()
-            Thread(target=self._process).start()
-            # self._process()
+            
+            if self._thread is not None:
+                self._thread._stop()
+            self._thread = Thread(target=self._process)
+            self._thread.start()
         except IOError:
             kv_helper.getApRoot().triggerStop()
         
@@ -157,7 +158,7 @@ class MainStream(RelativeLayout):
     def _process(self):
         self.event = Clock.schedule_interval(self.stream, 1/25)
 
-    @mainthread
+    # @mainthread
     def stream(self, fps):
         try:
             if self.isStream:
@@ -193,8 +194,6 @@ class MainStream(RelativeLayout):
             self.event.cancel()
         if self.pipe is not None:
             self.pipe.kill()
-        if self.stop is not None:
-            self.stop.set()
         self.fbo.remove(self.canvas)
         if self.parent is not None and self.canvas_parent_index > -1:
             self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
@@ -216,7 +215,7 @@ class MainStream(RelativeLayout):
         txt += f"[{numau}:a]volume=0[a{numau}];"
         _map += f'[a{numau}]'
 
-        if self.camera.resource_type == "VIDEO" or self.camera.resource_type == "M3U8":
+        if self.camera.resource_type == "VIDEO" or self.camera.resource_type == "MP4" or self.camera.resource_type == "M3U8":
             url = self.camera.url
             if os.path.exists(url):
                 numau += 1
@@ -227,7 +226,7 @@ class MainStream(RelativeLayout):
                 txt += f"[{numau}:a]volume=2[a{numau}];"
                 _map += f'[a{numau}]'
 
-        if self.f_parent.showMiniD is True and (self.cameraMini.resource_type == "M3U8" or self.cameraMini.resource_type == "VIDEO"):
+        if self.f_parent.showMiniD is True and (self.cameraMini.resource_type == "M3U8" or self.cameraMini.resource_type == "VIDEO" or self.cameraMini.resource_type == "MP4"):
             _url = self.cameraMini.url
             if os.path.exists(_url):
                 numau += 1
@@ -276,7 +275,7 @@ class MainStream(RelativeLayout):
             # encode
             self.command.extend(['-vb', str(self.v_bitrate),'-r', '25', '-pix_fmt', 'yuv420p'])
 
-            self.command.extend(["-vf", "fps=25",'-metadata', 'title="PiepLiveCenter"'])
+            # self.command.extend(["-vf", "fps=25"])
             
             # tream
             self.command.extend(['-f', 'flv', self.urlStream])

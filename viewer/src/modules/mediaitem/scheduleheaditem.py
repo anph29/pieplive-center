@@ -21,6 +21,9 @@ class ScheduleHeadItem(tk.Frame):
         self.actived = False
         self.set_data(media)
         self.initUI()
+        #
+        if self.id == 'STORE_SCHEDULE':
+            self.loadScheduleDE(None)
 
     def get_data(self):
         return {
@@ -80,7 +83,7 @@ class ScheduleHeadItem(tk.Frame):
             self.checkbox = tk.Checkbutton(self.fView, variable=self.checked, onvalue=True, offvalue=False, height=1, width=1, bd=0, relief=tk.FLAT, bg=self.itemBg)
             self.checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)
         # label
-        self.lbl_name = PLabel(self.fView, text=self.name, justify=tk.LEFT, elipsis=35, font=UI.TXT_FONT, fg="#000", cursor='hand2', bg=self.itemBg)
+        self.lbl_name = PLabel(self.fView, text=self.name, justify=tk.LEFT, elipsis=35, font=UI.TITLE_FONT if self.id == 'STORE_SCHEDULE' else UI.TXT_FONT, fg='#ff2d55' if self.id == 'STORE_SCHEDULE' else "#000", cursor='hand2', bg=self.itemBg)
         self.lbl_name.pack(side=tk.LEFT, padx= 27 if self.id == 'STORE_SCHEDULE' else 0)
         ToolTip(self.lbl_name, self.name)
         # push to schedule

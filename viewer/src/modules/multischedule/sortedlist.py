@@ -17,6 +17,7 @@ class SortedList(ScheduleDDList):
         super(SortedList, self).__init__(parent, *args, **kwargs)
         self.titleTxt = 'Schedule List'
         self.initUI()
+        
 
     def initUI(self):
         super(SortedList, self).initUI()

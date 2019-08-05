@@ -24,9 +24,12 @@ class SingleSchedule(ScheduleDDList):
 
     def showListSchedule(self):
         self._LS_SCHEDULE_DATA = self.loadSchedule()
-        for media in self._LS_SCHEDULE_DATA:
-            self.addToScheduleGUI(media)
-            self.totalDuration += int(media['duration'])
+        self.totalDuration = 0
+        for sch in self._LS_SCHEDULE_DATA:
+            self.addToScheduleGUI(sch)
+            self.totalDuration += int(sch['duration'])
+        #
+        self.lblDura.config(text=f'total duration: {helper.convertSecNoToHMS(self.totalDuration)}')
 
     def setData(self, sch):
         self.schName = sch['name'] if bool(sch) else ''
@@ -43,14 +46,15 @@ class SingleSchedule(ScheduleDDList):
             if bool(self.lblChk):
                 self.lblChk.pack_forget()
                 self.lblChk = None
+                
         elif not bool(self.lblChk):
             self.lblTitle.pack_forget()
-            self.lblTitle.pack(side=tk.LEFT, padx=10, pady=5)
+            self.lblTitle.pack(side=tk.LEFT, padx=20, pady=5)
             imageChk = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}check-green-s.png"))
             self.lblChk = tk.Label(self.title, image=imageChk, cursor='hand2', bg=self.tbBgColor)
             self.lblChk.image = imageChk
             self.lblChk.bind("<Button-1>", self.saveAsRunningSchedule)
-            self.lblChk.pack(padx=10, pady=5, side=tk.RIGHT)
+            self.lblChk.pack(padx=20, pady=5, side=tk.RIGHT)
             ToolTip(self.lblChk, "Save as Running Schedule")
 
     def saveAsRunningSchedule(self, evt):
@@ -118,8 +122,7 @@ class SingleSchedule(ScheduleDDList):
         super(SingleSchedule, self).f5(evt)
         ls = self.loadSchedule()
         self.totalDuration = reduce(lambda sum, x: sum + x['duration'], ls, 0)
-        self.lblDura.config(
-            text=f'total duration: {helper.convertSecNoToHMS(self.totalDuration)}')
+        self.lblDura.config(text=f'total duration: {helper.convertSecNoToHMS(self.totalDuration)}')
 
     def saveEdit(self, ls, media):
         newLs = list(map(lambda x: media if x['id'] == media['id'] else x, ls))

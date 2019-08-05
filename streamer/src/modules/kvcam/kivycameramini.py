@@ -110,7 +110,7 @@ class KivyCameraMini(DragBehavior, Image):
                     print("Exception:", e)
 
                 timeout = 1
-                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-vsync","1","-af","aresample=async=1","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 
                 if self.category == "PRESENTER":
                     self.url = self.data_src['rtmp']
@@ -121,10 +121,10 @@ class KivyCameraMini(DragBehavior, Image):
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync","1","-flags","+global_header","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "RTSP":
                     timeout=1
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1","-acodec", "copy", "-vcodec", "copy","-r","25",'-threads', '2',output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1","-acodec", "copy", "-vcodec", "copy","-r","25",output]
                 else:
                     if fps < 25:
-                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-vsync","1","-af","aresample=async=1","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
                     
                 si = subprocess.STARTUPINFO()
                 si.dwFlags |= subprocess.STARTF_USESHOWWINDOW

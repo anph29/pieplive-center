@@ -28,7 +28,7 @@ class MainStream(RelativeLayout):
         self.f_height = 720
         self.capture = None
         self.fps = 25
-        self.v_bitrate = "3072k"
+        self.v_bitrate = "3M"
         self.urlStream = ''
         self.devAudio = None
         self.deviceVolume = 100
@@ -99,7 +99,6 @@ class MainStream(RelativeLayout):
                 self.add_widget(self.cameraMini,0)
                 self.add_widget(self.camera,1)
         except:
-            print("abcd")
             pass
     
     def _set_capture(self, data_src, data_type, is_from_schedule):
@@ -137,14 +136,14 @@ class MainStream(RelativeLayout):
         try:
             if self.event is not None:
                 self.event.cancel()
-            self.fbo = Fbo(size=(self.f_width, self.f_height))
+            self.fbo = Fbo(size=(self.f_width, self.f_height))#,with_stencilbuffer=True
             with self.fbo:
                 ClearColor(0, 0, 0, 1)
                 ClearBuffers()
                 Scale(1, -1, 1)
                 Translate(-self.x, -self.y - self.f_height, 0)
             self.fbo.add(self.canvas)
-
+    
             self.isStream = True
             
             if self._thread is not None:
@@ -153,7 +152,6 @@ class MainStream(RelativeLayout):
             self._thread.start()
         except IOError:
             kv_helper.getApRoot().triggerStop()
-        
 
     def _process(self):
         self.event = Clock.schedule_interval(self.stream, 1/25)
@@ -162,16 +160,16 @@ class MainStream(RelativeLayout):
     def stream(self, fps):
         try:
             if self.isStream:
-                if self.parent is not None:
-                    self.canvas_parent_index = self.parent.canvas.indexof(self.canvas)
-                    if self.canvas_parent_index > -1:
-                        self.parent.canvas.remove(self.canvas)
-                self.fbo.add(self.canvas)
-                self.fbo.draw()
+                # if self.parent is not None:
+                #     self.canvas_parent_index = self.parent.canvas.indexof(self.canvas)
+                #     if self.canvas_parent_index > -1:
+                #         self.parent.canvas.remove(self.canvas)
+                # self.fbo.add(self.canvas)
+                # self.fbo.draw()
                 self.pipe.stdin.write(self.fbo.pixels)
-                self.fbo.remove(self.canvas)
-                if self.parent is not None and self.canvas_parent_index > -1:
-                    self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
+                # self.fbo.remove(self.canvas)
+                # if self.parent is not None and self.canvas_parent_index > -1:
+                #     self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
                 self.reconnect = 0
         except:
             self.stopStream()
@@ -195,8 +193,8 @@ class MainStream(RelativeLayout):
         if self.pipe is not None:
             self.pipe.kill()
         self.fbo.remove(self.canvas)
-        if self.parent is not None and self.canvas_parent_index > -1:
-            self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
+        # if self.parent is not None and self.canvas_parent_index > -1:
+        #     self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
         print("--- STOP ---")
         
     def set_url_stream(self, urlStream):

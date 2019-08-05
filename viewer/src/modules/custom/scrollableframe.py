@@ -18,12 +18,12 @@ class VerticalScrolledFrame(Frame):
         Frame.__init__(self, parent, *args, **kw)
 
         # create a canvas object and a vertical scrollbar for scrolling it
-        self.vscrollbar = Scrollbar(self, orient=VERTICAL)
+        self.vscrollbar = tk.Scrollbar(self, orient=VERTICAL, relief=tk.FLAT)
         self.vscrollbar.pack(fill=Y, side=RIGHT, expand=FALSE)
         #
         self.canvas = Canvas(self, bd=0, highlightthickness=0, yscrollcommand=self.vscrollbar.set)
         self.canvas.pack(side=LEFT, fill=BOTH, expand=TRUE)
-        self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
+        # self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
         #
         self.vscrollbar.config(command=self.canvas.yview)
         # reset the view

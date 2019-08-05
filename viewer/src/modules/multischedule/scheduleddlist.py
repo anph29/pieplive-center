@@ -4,7 +4,7 @@ from src.modules.custom import DDList, VerticalScrolledFrame
 from src.utils import helper
 from src.modules.custom import ToolTip
 from PIL import Image, ImageTk
-
+from src.constants import UI
 
 class ScheduleDDList(tk.Frame):
 
@@ -16,10 +16,19 @@ class ScheduleDDList(tk.Frame):
       
     def initUI(self):
         self.showToolBar()
+        self.showTitle()
+        #
         self.scrollZ = VerticalScrolledFrame(self)
         self.scrollZ.pack(fill=tk.BOTH, expand=True)
         self.ddlist = self.makeDDList(self.scrollZ.interior)
         self.ddlist.pack(fill=tk.BOTH, expand=True)
+
+    def showTitle(self):
+        self.title = tk.Frame(self, height=50, relief=tk.FLAT, bg=self.tbBgColor)
+        self.title.pack(fil=tk.X, side=tk.TOP)
+        #
+        self.lblTitle = tk.Label(self.title, text=self.titleTxt.upper(), bg=self.tbBgColor, font=UI.TITLE_FONT)
+        self.lblTitle.pack(pady=5)
 
     def makeDDList(self, ref):
         return DDList(ref, self.wrapperWidth, 42, offset_x=5, offset_y=5, gap=5, item_borderwidth=1, item_relief=tk.FLAT, borderwidth=0, bg="#fff", droppedCallback=self.saveSortedList)
@@ -29,13 +38,6 @@ class ScheduleDDList(tk.Frame):
 
     def addToScheduleGUI(self, media):
         pass
-
-    def showListSchedule(self):
-        self._LS_SCHEDULE_DATA = self.loadSchedule()
-        for media in self._LS_SCHEDULE_DATA:
-            self.addToScheduleGUI(media)
-            # if self.tabType == MediaType.SCHEDULE:
-            #     self.totalDuration += int(media['duration'])
             
     def showToolBar(self):
         self.checkall = tk.BooleanVar()
@@ -72,7 +74,6 @@ class ScheduleDDList(tk.Frame):
         self.cmdF5.bind("<Button-1>", self.f5)
         self.cmdF5.pack(side=tk.RIGHT, padx=(0, 5), pady=5)
         ToolTip(self.cmdF5, "Refresh")
-       
 
     def f5(self, evt):
         self.clearView()
@@ -107,8 +108,14 @@ class ScheduleDDList(tk.Frame):
         self.clearData()
         self.writeSchedule(filtered)
 
-    def writeSchedule(self):
-        pass
-        
     def saveSortedList(self):
-        print(';;;saveSortedList;;;;')
+        sorted = list(map(lambda x:x.value, self.ddlist._list_of_items))
+        filtered = list(filter(lambda x:bool(x) and x['id'] != 'STORE_SCHEDULE', sorted))
+        # index, timepoint = self.get1stEvalueTimepoint(sorted)
+        self.clearData()
+        self.writeSchedule(filtered)
+
+    # def get1stEvalueTimepoint(self, ls):
+    #     for i, m in enumerate(ls):
+    #         if 'timepoint' in m and int(m['timepoint']) > 0:
+    #             return i, m['timepoint']

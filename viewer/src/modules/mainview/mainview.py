@@ -121,21 +121,21 @@ class MainView(tk.Frame):
         rightToolbar = tk.Frame(self.toolbar, relief=tk.FLAT, bg='#fff')
         rightToolbar.pack(side=tk.RIGHT, fill=tk.Y)
         #
-        imgCheck = ImageTk.PhotoImage(Image.open(helper._ICONS_PATH+'close-pink.png'))
+        imgCheck = ImageTk.PhotoImage(Image.open(helper._ICONS_PATH+'close-pink-s.png'))
         lblCommandClear = tk.Label(rightToolbar, bd=1, image=imgCheck, bg="#fff")
         lblCommandClear.photo = imgCheck
-        lblCommandClear.pack(side=tk.RIGHT, fill=tk.Y, padx=(0, 20), pady=5)
+        lblCommandClear.pack(side=tk.RIGHT, fill=tk.Y, padx=(0, 10), pady=5)
         lblCommandClear.bind('<Button-1>', self.onClearResource)
         #
-        imgCheck = ImageTk.PhotoImage(Image.open(helper._ICONS_PATH+'check-green.png'))
+        imgCheck = ImageTk.PhotoImage(Image.open(helper._ICONS_PATH+'check-green-s.png'))
         lblCommandCheck = tk.Label(rightToolbar, bd=1, image=imgCheck, bg="#fff")
         lblCommandCheck.photo = imgCheck
-        lblCommandCheck.pack(side=tk.RIGHT, fill=tk.Y, padx=(10, 0), pady=5)
+        lblCommandCheck.pack(side=tk.RIGHT, fill=tk.Y, padx=(10, 5), pady=5)
         lblCommandCheck.bind('<Button-1>', self.onNewResource)
         #
         cbxData = {q170['NV106']: q170['FO100'] for q170 in self.loadCbxQ170()}
         cbxQ170 = LabeledCombobox(rightToolbar, cbxData, callback=self.onSelectBussiness, selected=store.getCurrentActiveBusiness(), bd=1, relief=tk.FLAT)
-        cbxQ170.pack(side=tk.RIGHT, padx=10, pady=10)
+        cbxQ170.pack(side=tk.RIGHT, padx=(10, 0), pady=10)
         #
         self.updateMenu()
     #

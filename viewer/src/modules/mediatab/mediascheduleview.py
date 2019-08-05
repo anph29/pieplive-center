@@ -32,7 +32,7 @@ class MediaScheduleView(MediaListView):
         item = self.ddlist.create_item(value=media, bg='#ddd')
         ui = MediaItemSchedule(item, parentTab=self, media=media)
         self._LS_MEDIA_UI.append(ui)
-        ui.pack(padx= (4,0), pady= (4,0), expand=True)
+        ui.pack(expand=True)
         self.ddlist.add_item(item)
 
     def showAddToSchedulePopup(self, data, edit=False):

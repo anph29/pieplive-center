@@ -82,25 +82,28 @@ def list_all_schedule():
     dirs = os.listdir(_PATH_SCHEDULE_DIR)
     return list(map(lambda f : f.endswith(".json"), dirs))
 
-def new_schedule_container(name, data=[]):
-    fname = get_verified_fname(name)
+def new_schedule_container(fname, data=[]):
+    path = get_verified_fname(fname)
     path = makeSureScheduleFile(fname)
-    if not os.path.isfile(path):
+    if os.path.isfile(path):
+        return False #failed to create
+    else:
         writeJSON(path, data)
+        return True
 
 def delete_schedule_container(fname):
     path = makeSureScheduleFile(fname)
     if os.path.isfile(path):
         os.remove(path)
 
-def rename_schedule_container(oldname, newname):
-    src = makeSureScheduleFile(oldname)
-    dst = makeSureScheduleFile(newname)
+def rename_schedule_container(old_fname, new_fname):
+    src = makeSureScheduleFile(old_fname)
+    dst = makeSureScheduleFile(new_fname)
     os.rename(src, dst)
 
-def duplicate_schedule_container(name):
-    src = makeSureScheduleFile(name)
-    dst = makeSureScheduleFile(name + '-COPY')
+def duplicate_schedule_container(fname):
+    src = makeSureScheduleFile(fname)
+    dst = makeSureScheduleFile(fname + '-COPY')
     shutil.copyfile(src, dst)
 
 # -- @@ -- @@ -- 

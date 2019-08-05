@@ -1,19 +1,55 @@
-from tkinter import *
-import time
-import os
-root = Tk()
+try:
+    import tkinter as tk
+    from tkinter import ttk
+except ImportError:
+    import Tkinter as tk
+    import ttk
 
-frames = [PhotoImage(file='D:/anph/python/PiepLive-Center/resource/icons/sound.gif',format = 'gif -index %i' % i) for i in range(0, 5)]
+from tkcalendar import Calendar, DateEntry
 
-def update(idx):
-    idx = (0, idx)[idx <= 4]
-    frame = frames[idx]
-    idx += 1
-    canvas.delete("all")
-    canvas.create_image(20, 20, image=frame, anchor=NW)
-    root.after(200, update, idx)
+def example1():
+    def print_sel():
+        print(cal.selection_get())
 
-canvas = Canvas(root)
-canvas.pack()
-root.after(0, update, 0)
+    top = tk.Toplevel(root)
+
+    cal = Calendar(top, font="Arial 14", selectmode='day', locale='en_US',
+                   cursor="hand1", year=2018, month=2, day=5)
+
+    cal.pack(fill="both", expand=True)
+    ttk.Button(top, text="ok", command=print_sel).pack()
+
+
+def example2():
+
+    top = tk.Toplevel(root)
+
+    cal = Calendar(top, selectmode='none')
+    date = cal.datetime.today() + cal.timedelta(days=2)
+    cal.calevent_create(date, 'Hello World', 'message')
+    cal.calevent_create(date, 'Reminder 2', 'reminder')
+    cal.calevent_create(date + cal.timedelta(days=-2), 'Reminder 1', 'reminder')
+    cal.calevent_create(date + cal.timedelta(days=3), 'Message', 'message')
+
+    cal.tag_config('reminder', background='red', foreground='yellow')
+
+    cal.pack(fill="both", expand=True)
+    ttk.Label(top, text="Hover over the events.").pack()
+
+
+def example3():
+    top = tk.Toplevel(root)
+
+    ttk.Label(top, text='Choose date').pack(padx=10, pady=10)
+
+    cal = DateEntry(top, width=12, background='#D2B4DE',
+                    foreground='#000', borderwidth=2, day=3, month=3, year=2019)
+    cal.pack(padx=10, pady=10)
+
+
+root = tk.Tk()
+ttk.Button(root, text='Calendar', command=example1).pack(padx=10, pady=10)
+ttk.Button(root, text='Calendar with events', command=example2).pack(padx=10, pady=10)
+ttk.Button(root, text='DateEntry', command=example3).pack(padx=10, pady=10)
+
 root.mainloop()

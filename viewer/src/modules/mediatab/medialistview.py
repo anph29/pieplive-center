@@ -48,15 +48,13 @@ class MediaListView(MediaTab):
         item = self.ddlist.create_item(value=media)
         ui = MediaItemDnD(item, parentTab=self, media=media)
         self._LS_MEDIA_UI.append(ui)
-        ui.pack(padx=(4, 0), pady=(4, 0), expand=True)
+        ui.pack(expand=True)
         self.ddlist.add_item(item)
 
     def showBtnPushAllToSchedule(self):
         # push to schedule
-        imgPush = ImageTk.PhotoImage(Image.open(
-            f"{helper._ICONS_PATH}push-left.png"))
-        lblPush = tk.Label(self.tbleft, image=imgPush,
-                           cursor='hand2', bg=self.tbBgColor)
+        imgPush = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}push-left.png"))
+        lblPush = tk.Label(self.tbleft, image=imgPush, cursor='hand2', bg=self.tbBgColor)
         lblPush.image = imgPush
         lblPush.bind("<Button-1>", self.pushAllToSchedule)
         lblPush.pack(side=tk.LEFT, padx=(5, 0))
@@ -67,8 +65,9 @@ class MediaListView(MediaTab):
 
     def saveSortedList(self):
         sorted = list(map(lambda x: x.value, self.ddlist._list_of_items))
+        filtered = list(filter(lambda x:bool(x), sorted))
         self.clearData()
-        self.writeLsMedia(sorted)
+        self.writeLsMedia(filtered)
 
     def callShowPopup(self, data):
         self.schedule.showAddToSchedulePopup(data)

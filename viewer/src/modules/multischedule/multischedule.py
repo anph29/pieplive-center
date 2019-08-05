@@ -25,7 +25,6 @@ class MultiScheduleRight(tk.Frame):
         self.singleschedule = SingleSchedule(self, bg="#fff")
         self.singleschedule.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-
 class MultiSchedule(tk.Frame):
 
     def __init__(self, parent, *args, **kwargs):
@@ -37,7 +36,7 @@ class MultiSchedule(tk.Frame):
 
     def initUI(self):
         self.mutiRight = MultiScheduleRight(self, bg='#f0f0f0')
-        self.mutiRight.pack(side=tk.RIGHT, fill=tk.Y, expand=True)
+        self.mutiRight.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
         #
         self.mutiLeft = MultiScheduleLeft(self, schedule=self.mutiRight.singleschedule, bg='#fff')
         self.mutiLeft.pack(side=tk.LEFT, fill=tk.Y)

@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 from .scheduleddlist import ScheduleDDList
 from src.modules.custom import DDList
 from src.utils import helper
@@ -6,6 +7,8 @@ from src.modules.mediaitem import MediaItemSchedule
 from functools import reduce
 from src.modules.popup import PopupAddSchedule
 from src.constants import UI
+from PIL import Image, ImageTk
+from src.modules.custom import ToolTip
 
 
 class SingleSchedule(ScheduleDDList):
@@ -15,34 +18,69 @@ class SingleSchedule(ScheduleDDList):
         self.tbBgColor = '#D4EFDF'
         self.wrapperWidth = 500
         self.totalDuration = 0
+        self.titleTxt = 'Schedule Detail'
         self.initUI()
+        self.lblChk = None
+
+    def showListSchedule(self):
+        self._LS_SCHEDULE_DATA = self.loadSchedule()
+        for media in self._LS_SCHEDULE_DATA:
+            self.addToScheduleGUI(media)
+            self.totalDuration += int(media['duration'])
 
     def setData(self, sch):
         self.schName = sch['name'] if bool(sch) else ''
+        self.lblTitle.config(text=f'{self.schName}')
         self.schId = sch['id'] if bool(sch) else ''
         self.schPath = sch['path'] if bool(sch) else ''
+        self.showTitleWidthSave()
+        self.clearView()
+
+    def showTitleWidthSave(self):
+        if self.schId == 'STORE_SCHEDULE':
+            self.lblTitle.pack_forget()
+            self.lblTitle.pack(pady=5)
+            if bool(self.lblChk):
+                self.lblChk.pack_forget()
+                self.lblChk = None
+        elif not bool(self.lblChk):
+            self.lblTitle.pack_forget()
+            self.lblTitle.pack(side=tk.LEFT, padx=10, pady=5)
+            imageChk = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}check-green-s.png"))
+            self.lblChk = tk.Label(self.title, image=imageChk, cursor='hand2', bg=self.tbBgColor)
+            self.lblChk.image = imageChk
+            self.lblChk.bind("<Button-1>", self.saveAsRunningSchedule)
+            self.lblChk.pack(padx=10, pady=5, side=tk.RIGHT)
+            ToolTip(self.lblChk, "Save as Running Schedule")
+
+    def saveAsRunningSchedule(self, evt):
+        if messagebox.askyesno("PiepMe", "Are you sure overwrite `RUNNING SCHEDULE`?"):
+            helper._write_schedule(self._LS_SCHEDULE_DATA)
 
     def addToScheduleGUI(self, media):
         item = self.ddlist.create_item(value=media, bg='#ddd')
         ui = MediaItemSchedule(item, parentTab=self, media=media, elipsis=20)
         self._LS_SCHEDULE_UI.append(ui)
-        ui.pack(padx=(4, 0), pady=(4, 0), expand=True)
+        ui.pack(expand=True)
         self.ddlist.add_item(item)
 
     def loadSchedule(self):
-        return helper._load_schedule_width_fname(self.schPath)
+        if self.schId == 'STORE_SCHEDULE':
+            return helper._load_schedule()
+        else:
+            return helper._load_schedule_width_fname(self.schPath)
 
     def addSchedule(self, data):
-        helper._add_to_schedule_width_fname(self.schPath, data)
+        if self.schId == 'STORE_SCHEDULE':
+            helper._add_to_schedule(data)
+        else:
+            helper._add_to_schedule_width_fname(self.schPath, data)
 
     def writeSchedule(self, data):
-        helper._write_schedule_width_fname(self.schPath, data)
-
-    # list_all_schedule
-    # new_schedule_container
-    # delete_schedule_container
-    # rename_schedule_container
-    # duplicate_schedule_container
+        if self.schId == 'STORE_SCHEDULE':
+            helper._write_schedule(data)
+        else:
+            helper._write_schedule_width_fname(self.schPath, data)
 
     def packRightToolbar(self):
         super(SingleSchedule, self).packRightToolbar()
@@ -54,7 +92,7 @@ class SingleSchedule(ScheduleDDList):
         item = self.ddlist.create_item(value=media, bg='#ddd')
         ui = MediaItemSchedule(item, parentTab=self, media=media)
         self._LS_SCHEDULE_UI.append(ui)
-        ui.pack(padx= (4,0), pady= (4,0), expand=True)
+        ui.pack(padx=(4, 0), pady=(4, 0), expand=True)
         self.ddlist.add_item(item)
 
     def showAddToSchedulePopup(self, data, edit=False):
@@ -64,11 +102,11 @@ class SingleSchedule(ScheduleDDList):
     def editRuntime(self, data):
         addresource = PopupAddSchedule(self, data)
         addresource.showChangeRuntimeUI()
-    
+
     def saveToSchedule(self, data):
         ls = self.loadSchedule()
         # check edit
-        filtered = list(filter(lambda x:x['id'] == data['id'], ls))
+        filtered = list(filter(lambda x: x['id'] == data['id'], ls))
         if len(filtered) > 0:
             self.saveEdit(ls, data)
         else:
@@ -80,7 +118,8 @@ class SingleSchedule(ScheduleDDList):
         super(SingleSchedule, self).f5(evt)
         ls = self.loadSchedule()
         self.totalDuration = reduce(lambda sum, x: sum + x['duration'], ls, 0)
-        self.lblDura.config(text=f'total duration: {helper.convertSecNoToHMS(self.totalDuration)}')
+        self.lblDura.config(
+            text=f'total duration: {helper.convertSecNoToHMS(self.totalDuration)}')
 
     def saveEdit(self, ls, media):
         newLs = list(map(lambda x: media if x['id'] == media['id'] else x, ls))
@@ -92,20 +131,10 @@ class SingleSchedule(ScheduleDDList):
         newLs = list(map(lambda x: media if x['id'] == media['id'] else x, ls))
         index = newLs.index(media)
         self.clearData()
-        schedule = helper.calc_schedule_runtime(index, schedule=newLs, startTime=media['timepoint'])
+        schedule = helper.calc_schedule_runtime(
+            index, schedule=newLs, startTime=media['timepoint'])
         self.writeSchedule(schedule)
         self.f5(None)
 
-    def saveSortedList(self):
-        sorted = list(map(lambda x:x.value, self.ddlist._list_of_items))
-        # index, timepoint = self.get1stEvalueTimepoint(sorted)
-        self.clearData()
-        self.writeSchedule(sorted)
-
-    # def get1stEvalueTimepoint(self, ls):
-    #     for i, m in enumerate(ls):
-    #         if 'timepoint' in m and int(m['timepoint']) > 0:
-    #             return i, m['timepoint']
-
-    def deleteMediaItem(self, id):
-        
+    def deleteMediaItem(self, lsId):
+        self.rmvSchedule(lsId)

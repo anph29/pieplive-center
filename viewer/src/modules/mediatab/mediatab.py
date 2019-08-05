@@ -81,29 +81,23 @@ class MediaTab(tk.Frame):
 
     def showSelectAll(self):
         # select all
-        self.checkbox = tk.Checkbutton(self.tbleft, variable=self.checkall, onvalue=True, offvalue=False,
-                                       height=2, width=2, bg=self.tbBgColor, bd=0, cursor='hand2', command=self.tabSelectAll)
+        self.checkbox = tk.Checkbutton(self.tbleft, variable=self.checkall, onvalue=True, offvalue=False, height=2, width=2, bg=self.tbBgColor, bd=0, cursor='hand2', command=self.tabSelectAll)
         self.checkbox.pack(side=tk.LEFT, fill=tk.Y)
         ToolTip(self.checkbox, 'Select all media')
 
     def packRightToolbar(self):
-        self.tbright = tk.Frame(
-            self.toolbar, relief=tk.FLAT, bg=self.tbBgColor)
+        self.tbright = tk.Frame(self.toolbar, relief=tk.FLAT, bg=self.tbBgColor)
         self.tbright.pack(fil=tk.Y, side=tk.RIGHT)
         # delete all
-        imageBin = ImageTk.PhotoImage(Image.open(
-            f"{helper._ICONS_PATH}trash-b24.png"))
-        self.cmdDelAll = tk.Label(
-            self.tbright, image=imageBin, cursor='hand2', bg=self.tbBgColor)
+        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}trash-b24.png"))
+        self.cmdDelAll = tk.Label( self.tbright, image=imageBin, cursor='hand2', bg=self.tbBgColor)
         self.cmdDelAll.image = imageBin
         self.cmdDelAll.bind("<Button-1>", self.tabDeleteAll)
         self.cmdDelAll.pack(side=tk.RIGHT, padx=(0, 15), pady=5)
         ToolTip(self.cmdDelAll, "Delete all selected")
         # refresh
-        imageBin = ImageTk.PhotoImage(
-            Image.open(f"{helper._ICONS_PATH}f5-b24.png"))
-        self.cmdF5 = tk.Label(self.tbright, image=imageBin,
-                              cursor='hand2', bg=self.tbBgColor)
+        imageBin = ImageTk.PhotoImage( Image.open(f"{helper._ICONS_PATH}f5-b24.png"))
+        self.cmdF5 = tk.Label(self.tbright, image=imageBin, cursor='hand2', bg=self.tbBgColor)
         self.cmdF5.image = imageBin
         self.cmdF5.bind("<Button-1>", self.f5)
         self.cmdF5.pack(side=tk.RIGHT, padx=(0, 5), pady=5)

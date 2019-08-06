@@ -29,7 +29,6 @@ class KivyCameraMain(Image):
     data_src = None
     schedule_type = StringProperty('')
     url_remove = StringProperty('')
-    _thread = None
 
 
     def __init__(self, **kwargs):
@@ -98,10 +97,10 @@ class KivyCameraMain(Image):
                 if self.category == "PRESENTER":
                     self.url = self.data_src['rtmp']
                     timeout=3
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url, "-vsync", "1","-ar","44100", "-ab", "160k","-af", "aresample=async=1","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000","-ar","44100","-ab","160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "M3U8":
                     timeout=1
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync", "1","-flags","+global_header","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",output]  
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync", "1","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-ar","44100", "-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]  
                 elif self.resource_type == "RTSP":
                     timeout=3
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i", self.url,"-pix_fmt", "yuv420p", "-flags","+global_header", "-vsync","1","-af","aresample=async=1","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",output]
@@ -121,10 +120,6 @@ class KivyCameraMain(Image):
         
     def process_set_data(self, second):
         try:
-            # if self._thread is not None:
-            #     self._thread._stop()
-            # self._thread = Thread(target=self.init_capture())
-            # self._thread.start()
             self.init_capture()
         except Exception:
             pass
@@ -226,8 +221,7 @@ class KivyCameraMain(Image):
             texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
             texture.flip_vertical()
             # buf = cv2.flip(frame, 0).tostring()
-            buf = frame.tostring()
-            texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
+            texture.blit_buffer(frame.tostring(), colorfmt='bgr', bufferfmt='ubyte')
             self.texture = texture
             # del frame, texture
         except IOError:

@@ -157,8 +157,10 @@ class KivyCameraMini(DragBehavior, Image):
 
             if self.capture is not None and self.capture.isOpened():
                 self.reconnect = 0
-                if self.resource_type != 'VIDEO' and self.resource_type != "M3U8":
-                    self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
+                self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+                self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+                # if self.resource_type != 'VIDEO' and self.resource_type != "M3U8":
+                self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
                 self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
                 if self.f_parent is not None:
                     if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
@@ -248,5 +250,8 @@ class KivyCameraMini(DragBehavior, Image):
         return cv2.resize(frame, (nW, nH), interpolation=cv2.INTER_AREA)
 
     def remove_file_flv(self):
-        if os.path.exists(self.url_remove):
-            os.remove(self.url_remove)
+        try:
+            if os.path.exists(self.url_remove):
+                os.remove(self.url_remove)
+        except:
+            pass

@@ -146,10 +146,11 @@ class MainStream(RelativeLayout):
     
             self.isStream = True
             
-            if self._thread is not None:
-                self._thread._stop()
-            self._thread = Thread(target=self._process)
-            self._thread.start()
+            # if self._thread is not None:
+            #     self._thread._stop()
+            # self._thread = Thread(target=self._process)
+            # self._thread.start()
+            self._process()
         except IOError:
             kv_helper.getApRoot().triggerStop()
 

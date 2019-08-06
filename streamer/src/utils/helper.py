@@ -7,40 +7,51 @@ from . import zip_helper
 import datetime
 import cv2
 import shutil
+import pathlib
 """
 """
-_BASE_PATH              = os.path.abspath('../resource').replace('\\', '/') + '/'
-_PATH_SETTING           = _BASE_PATH + 'cfg/setting.json'
-_PATH_FONT              = _BASE_PATH + 'cfg/font.json'
-_PATH_STORE             = _BASE_PATH + 'cfg/store.json'
-_PATH_IMAGE             = _BASE_PATH + 'cfg/image.json'
-_PATH_VIDEO             = _BASE_PATH + 'cfg/video.json'
-_PATH_CAMERA            = _BASE_PATH + 'cfg/camera.json'
-_PATH_PRESENTER         = _BASE_PATH + 'cfg/presenter.json'
-_PATH_SCHEDULE          = _BASE_PATH + 'cfg/schedule.json'
-_PATH_SCHEDULE_DIR      = _BASE_PATH + 'cfg/schedules/'
-_PATH_SCHEDULE_SORTED   = _BASE_PATH + 'cfg/schedules/sorted.json'
-_PATH_STATICSOURCE      = _BASE_PATH + 'cfg/staticsource.json'
-_ICONS_PATH             = _BASE_PATH + 'icons/'
-_IMAGES_PATH            = _BASE_PATH + 'images/'
-_LOGO_STREAMER          = _ICONS_PATH + 'logo-streamer.ico'
-_LOGO_VIEWER            = _ICONS_PATH + 'logo-viewer.png'
+USER_DIRECTORY = str(pathlib.Path.home()).replace('\\', '/')
+# C:\Users\luots\AppData\Local\PiepLiveCenter
+USER_LOCAL_PATH = USER_DIRECTORY + '/AppData/Local'
+RESOURCE_PATH = USER_LOCAL_PATH + '/PiepLiveCenter'
+_BASE_PATH = RESOURCE_PATH + '/'
+_PATH_SETTING = _BASE_PATH + 'cfg/setting.json'
+_PATH_FONT = _BASE_PATH + 'cfg/font.json'
+_PATH_STORE = _BASE_PATH + 'cfg/store.json'
+_PATH_IMAGE = _BASE_PATH + 'cfg/image.json'
+_PATH_VIDEO = _BASE_PATH + 'cfg/video.json'
+_PATH_CAMERA = _BASE_PATH + 'cfg/camera.json'
+_PATH_PRESENTER = _BASE_PATH + 'cfg/presenter.json'
+_PATH_SCHEDULE = _BASE_PATH + 'cfg/schedule.json'
+_PATH_SCHEDULE_DIR = _BASE_PATH + 'cfg/schedules/'
+_PATH_SCHEDULE_SORTED = _BASE_PATH + 'cfg/schedules/sorted.json'
+_PATH_STATICSOURCE = _BASE_PATH + 'cfg/staticsource.json'
+_ICONS_PATH = _BASE_PATH + 'icons/'
+_IMAGES_PATH = _BASE_PATH + 'images/'
+_LOGO_STREAMER = _ICONS_PATH + 'logo-streamer.ico'
+_LOGO_VIEWER = _ICONS_PATH + 'logo-viewer.png'
 
 """
 schedule
-"""     
+"""
+
+
 def _load_schedule():
     return loadJSON(_PATH_SCHEDULE)
+
 
 def _write_schedule(data):
     writeJSON(_PATH_SCHEDULE, data)
 
+
 def _add_to_schedule(data):
     appendJSON(_PATH_SCHEDULE, data)
+
 
 def calcCurentSeccondInDay():
     dt = datetime.datetime.now()
     return dt.hour * 3600 + dt.minute * 60 + dt.second
+
 
 def calc_schedule_runtime(index, schedule=[], startTime=0):
     isWriteToFile = not bool(schedule)
@@ -65,166 +76,228 @@ def calc_schedule_runtime(index, schedule=[], startTime=0):
         _write_schedule(newSchedule)
     else:
         return newSchedule
+
+
 """
 multi schedule
 """
 
+
 def _load_sorted_schedule():
     return loadJSON(_PATH_SCHEDULE_SORTED)
+
 
 def _write_sorted_schedule(data):
     writeJSON(_PATH_SCHEDULE_SORTED, data)
 
+
 def _add_to_sorted_schedule(data):
     appendJSON(_PATH_SCHEDULE_SORTED, data)
 
+
 def list_all_schedule():
     dirs = os.listdir(_PATH_SCHEDULE_DIR)
-    return list(map(lambda f : f.endswith(".json"), dirs))
+    return list(map(lambda f: f.endswith(".json"), dirs))
+
 
 def new_schedule_container(fname, data=[]):
     path = get_verified_fname(fname)
     path = makeSureScheduleFile(fname)
     if os.path.isfile(path):
-        return False #failed to create
+        return False  # failed to create
     else:
         writeJSON(path, data)
         return True
+
 
 def delete_schedule_container(fname):
     path = makeSureScheduleFile(fname)
     if os.path.isfile(path):
         os.remove(path)
 
+
 def rename_schedule_container(old_fname, new_fname):
     src = makeSureScheduleFile(old_fname)
     dst = makeSureScheduleFile(new_fname)
     os.rename(src, dst)
+
 
 def duplicate_schedule_container(fname):
     src = makeSureScheduleFile(fname)
     dst = makeSureScheduleFile(fname + '-COPY')
     shutil.copyfile(src, dst)
 
-# -- @@ -- @@ -- 
+# -- @@ -- @@ --
+
+
 def _load_schedule_width_fname(fname):
     path = makeSureScheduleFile(fname)
     if os.path.isfile(path):
         return loadJSON(path)
+
 
 def _write_schedule_width_fname(fname, data):
     path = makeSureScheduleFile(fname)
     if os.path.isfile(path):
         writeJSON(path, data)
 
+
 def _add_to_schedule_width_fname(fname, data):
     path = makeSureScheduleFile(fname)
     if os.path.isfile(path):
         appendJSON(path, data)
 
+
 def get_verified_fname(fname):
     fname = removeUnicode(fname)
     return re.sub(r"[^a-zA-Z0-9\.-_]", '', fname)
+
 
 def makeSureScheduleFile(name):
     fname = name if name.endswith('.json') else name + '.json'
     return f'{_PATH_SCHEDULE_DIR}{fname}'
 
+
 """
 ls camera
-"""     
+"""
+
+
 def _load_lscam():
     return loadJSON(_PATH_CAMERA)
+
 
 def _write_lscam(data):
     writeJSON(_PATH_CAMERA, data)
 
+
 def _add_to_lscam(data):
     appendJSON(_PATH_CAMERA, data)
+
+
 """
 ls image resource
 """
+
+
 def _load_image():
     return loadJSON(_PATH_IMAGE)
+
 
 def _write_image(data):
     writeJSON(_PATH_IMAGE, data)
 
+
 def _add_to_image(data):
     appendJSON(_PATH_IMAGE, data)
+
+
 """
 ls video resource
 """
+
+
 def _load_video():
     return loadJSON(_PATH_VIDEO)
+
 
 def _write_video(data):
     writeJSON(_PATH_VIDEO, data)
 
+
 def _add_to_video(data):
     appendJSON(_PATH_VIDEO, data)
+
+
 """
 ls presenter
 """
+
+
 def _load_ls_presenter():
     return loadJSON(_PATH_PRESENTER)
+
 
 def _write_lspresenter(data):
     writeJSON(_PATH_PRESENTER, data)
 
+
 def _add_to_spresenter(data):
     appendJSON(_PATH_PRESENTER, data)
+
+
 """
 ls static source
 """
+
+
 def _load_lsStaticSource():
     return loadJSON(_PATH_STATICSOURCE)
 
+
 def _write_lsStaticSource(data):
-   writeJSON(_PATH_STATICSOURCE, data)
-   
+    writeJSON(_PATH_STATICSOURCE, data)
+
+
 def _add_to_lsStaticSource(data):
     appendJSON(_PATH_STATICSOURCE, data)
+
+
 """
 ls font
 """
+
+
 def _load_font():
     return loadJSON(_PATH_FONT)
 
+
 def _write_font(data):
-   writeJSON(_PATH_FONT, data)
-   
+    writeJSON(_PATH_FONT, data)
+
+
 def _add_to_font(data):
     appendJSON(_PATH_FONT, data)
+
+
 """
 setting
 """
+
 
 def _read_setting(key=None):
     setting = loadJSON(_PATH_SETTING)
     return setting[key] if key is not None else setting
 
+
 def _write_setting(data):
     writeJSON(_PATH_SETTING, data)
-   
+
+
 def _load_setting():
     return loadJSON(_PATH_SETTING)
+
 
 """
 JSON helper
 """
+
+
 def loadJSON(path):
     with open(path, 'r', encoding='utf-8') as jdata:
         return json.load(jdata)
 
+
 def writeJSON(path, data):
-     with open(path, 'w', encoding='utf-8') as jflie:
+    with open(path, 'w', encoding='utf-8') as jflie:
         json.dump(data, jflie, indent=2)
+
 
 def appendJSON(path, data, auto_increment=False):
     jcam = loadJSON(path)
     jcam.append(data)
-    writeJSON(path,jcam)
+    writeJSON(path, jcam)
+
 
 def removeUnicode(str):
     str = re.sub(r"[àáạảãâầấậẩẫăằắặẳẵÄä]", 'a', str)
@@ -243,6 +316,7 @@ def removeUnicode(str):
     str = re.sub(r"Đ", 'D', str)
     return str
 
+
 def removeUnicodeLowerRmvSpace(str):
     str = str.replace(r"[àáạảãâầấậẩẫăằắặẳẵÄä]", 'a', str)
     str = str.replace(r"[èéẹẻẽêềếệểễ]", 'e', str)
@@ -254,56 +328,86 @@ def removeUnicodeLowerRmvSpace(str):
     str = str.replace(r"[\s:\/.]", "", str)
     return str
 
+
 def stringToBase64(s):
     return base64.b64encode(s.encode('utf-8'))
+
 
 def base64ToString(b):
     return base64.b64decode(b).decode('utf-8')
 
 # seconds in number -> toObj ? {h,m,s} : [hh:]mm:ss
+
+
 def convertSecNoToHMS(seconds, toObj=False):
     seconds = math.floor(seconds)
     h = math.floor(seconds / 3600)
     m = math.floor((seconds % 3600) / 60)
     s = seconds - h * 3600 - m * 60
-    hs = ('','0')[h < 10] + str(h)
-    ms = ('','0')[m < 10] + str(m)
-    ss = ('','0')[s < 10] + str(s)
+    hs = ('', '0')[h < 10] + str(h)
+    ms = ('', '0')[m < 10] + str(m)
+    ss = ('', '0')[s < 10] + str(s)
     if toObj:
-        return { 'h': hs, 'm': ms, 's': ss } 
+        return {'h': hs, 'm': ms, 's': ss}
     else:
         return f'{hs}:{ms}:{ss}'
 
+
 def convertHMSNoToSec(hms):
-    h,m,s = hms.values()
+    h, m, s = hms.values()
     return int(s) + int(m) * 60 + int(h) * 60 ** 2
 
+
 def makeSureResourceFolderExisted():
-    resrcPth = '../resource'
-    # resource
-    if not os.path.exists(resrcPth):
-        zip_helper.extractZip('./resource.zip', '../')
+     # resource
+    if not os.path.exists(RESOURCE_PATH):
+        zip_helper.extractZip('./resource.zip', USER_LOCAL_PATH)
     # resource/temp
-    if not os.path.exists(resrcPth + '/temp'):
-        os.mkdir(resrcPth + '/temp')
+    if not os.path.exists(RESOURCE_PATH + '/temp'):
+        os.mkdir(RESOURCE_PATH + '/temp')
     # resource/cfg
-    if not os.path.exists(resrcPth + '/cfg'):
-        os.mkdir(resrcPth + '/cfg')
+    if not os.path.exists(RESOURCE_PATH + '/cfg'):
+        os.mkdir(RESOURCE_PATH + '/cfg')
     # resource/cfg/schedules
-    if not os.path.exists(resrcPth + '/cfg/schedules'):
-        os.mkdir(resrcPth + '/cfg/schedules')
+    if not os.path.exists(RESOURCE_PATH + '/cfg/schedules'):
+        os.mkdir(RESOURCE_PATH + '/cfg/schedules')
     # sorted.json file
-    if not os.path.isfile(resrcPth + '/cfg/schedules/sorted.json'):
-       writeJSON(resrcPth + '/cfg/schedules/sorted.json', [])
+    if not os.path.isfile(RESOURCE_PATH + '/cfg/schedules/sorted.json'):
+        writeJSON(RESOURCE_PATH + '/cfg/schedules/sorted.json', [])
     # all cfg file
     checkResourceExistAndWriteIfNot('store', data={})
     for target in ['video', 'image', 'camera', 'schedule', 'presenter', 'staticsource', 'setting', 'font']:
-        checkResourceExistAndWriteIfNot(target)
+        checkResourceExistAndWriteIfNot(
+            target, data=getFontJSONContent(RESOURCE_PATH) if target == 'font' else {})
+
+
+def getFontJSONContent(resourcePath):
+    return [
+        {
+            "name": "opensans",
+            "fn_regular": f"{resourcePath}/fonts/opensans.ttf",
+            "fn_bold": f"{resourcePath}/fonts/opensans-bold.ttf"
+        },
+        {
+            "name": "roboto",
+            "fn_regular": f"{resourcePath}/fonts/roboto.ttf"
+        },
+        {
+            "name": "awkward-alone",
+            "fn_regular": f"{resourcePath}/fonts/awkward-alone.ttf"
+        },
+        {
+            "name": "good-brush",
+            "fn_regular": f"{resourcePath}/fonts/good-brush.ttf"
+        }
+    ]
+
 
 def checkResourceExistAndWriteIfNot(target, data=[]):
     path = f'{_BASE_PATH}cfg/{target}.json'
     if not os.path.isfile(path):
         writeJSON(path, data)
+
 
 def getMTypeFromUrl(url):
     URL = url.upper()
@@ -318,6 +422,7 @@ def getMTypeFromUrl(url):
     else:
         return False
 
+
 def getVideoDuration(fpath):
     try:
         dura = 0
@@ -326,7 +431,7 @@ def getVideoDuration(fpath):
             fps = _cap.get(cv2.CAP_PROP_FPS)
             fps = fps if fps > 25 else 25
             total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
-            dura =  int(total / fps)
+            dura = int(total / fps)
         _cap.release()
         return dura
     except expression:

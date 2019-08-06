@@ -376,31 +376,44 @@ def makeSureResourceFolderExisted():
         writeJSON(RESOURCE_PATH + '/cfg/schedules/sorted.json', [])
     # all cfg file
     checkResourceExistAndWriteIfNot('store', data={})
-    for target in ['video', 'image', 'camera', 'schedule', 'presenter', 'staticsource', 'setting', 'font']:
-        checkResourceExistAndWriteIfNot(
-            target, data=getFontJSONContent(RESOURCE_PATH) if target == 'font' else {})
+    # setting
+    checkResourceExistAndWriteIfNot('setting', data=getSettingJSONContent())
+    # font
+    checkResourceExistAndWriteIfNot('font', data=getFontJSONContent())
+    for target in ['video', 'image', 'camera', 'schedule', 'presenter', 'staticsource']:
+        checkResourceExistAndWriteIfNot(target)
 
 
-def getFontJSONContent(resourcePath):
+def getFontJSONContent():
     return [
         {
             "name": "opensans",
-            "fn_regular": f"{resourcePath}/fonts/opensans.ttf",
-            "fn_bold": f"{resourcePath}/fonts/opensans-bold.ttf"
+            "fn_regular": f"{RESOURCE_PATH}/fonts/opensans.ttf",
+            "fn_bold": f"{RESOURCE_PATH}/fonts/opensans-bold.ttf"
         },
         {
             "name": "roboto",
-            "fn_regular": f"{resourcePath}/fonts/roboto.ttf"
+            "fn_regular": f"{RESOURCE_PATH}/fonts/roboto.ttf"
         },
         {
             "name": "awkward-alone",
-            "fn_regular": f"{resourcePath}/fonts/awkward-alone.ttf"
+            "fn_regular": f"{RESOURCE_PATH}/fonts/awkward-alone.ttf"
         },
         {
             "name": "good-brush",
-            "fn_regular": f"{resourcePath}/fonts/good-brush.ttf"
+            "fn_regular": f"{RESOURCE_PATH}/fonts/good-brush.ttf"
         }
     ]
+
+
+def getSettingJSONContent():
+    return {
+        "application_resolution": ["1600", "900"],
+        "ouput_resolution": [1280, 720],
+        "vbitrate": "4M",
+        "stream_server": "",
+        "stream_key": ""
+    }
 
 
 def checkResourceExistAndWriteIfNot(target, data=[]):

@@ -65,7 +65,7 @@ class MainView(tk.Frame):
         self.mediaList.image = icMedia
         self.superWrapper.add(self.mediaList, text="Live View", image=icMedia, compound=tk.LEFT)
          #
-        self.superWrapper.select(self.schedule)
+        self.superWrapper.select(self.mediaList)
         self.superWrapper.enable_traversal()
 
     #
@@ -94,7 +94,7 @@ class MainView(tk.Frame):
         self.tab_presenter.image = icPres
         mediaListTab.add(self.tab_presenter, text="Presenters", image=icPres, compound=tk.LEFT)
         #
-        mediaListTab.select(self.tab_image)
+        mediaListTab.select(self.tab_presenter)
         mediaListTab.enable_traversal()
         #
         return mediaListTab

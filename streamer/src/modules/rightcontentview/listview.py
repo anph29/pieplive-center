@@ -1,10 +1,11 @@
 from kivy.uix.recycleview import RecycleView
 from src.utils import helper, firebase, store
-from kivy.properties import StringProperty
+from kivy.properties import StringProperty, BooleanProperty
 from kivy.clock import Clock
 from src.modules.custom.popup import PiepMeConfirmPopup
 import datetime
 from src.modules.custom.linkaudio import LinkAudio
+from src.utils import kivyhelper
 
 class ListMedia(RecycleView):
     item_playing = ''
@@ -209,8 +210,10 @@ class ListCamera(RecycleView):
 
 class ListPresenter(RecycleView):
     item_playing = ''
-    item_choice = ''
+    item_choice = '0'
     listenerStream = None
+    is_auto = BooleanProperty(True)
+    switch_proc = None
 
     def __init__(self, **kwargs):
         super(ListPresenter, self).__init__(**kwargs)
@@ -231,20 +234,41 @@ class ListPresenter(RecycleView):
             self.onChangeLN510(data)
 
     def onChangePresenter(self, presenter):
-        self.item_choice = str(presenter)
-        for obj in self.data:
-            if int(obj['id']) == int(presenter):
-                obj['choice'] = True
-            else:
-                obj['choice'] = False
-        
-        for child in self.children[0].children:
-            if int(child.id) == int(presenter):
-                child.choice = True
-            else:
-                child.choice = False
+        #choice status
+        if int(self.item_choice) == presenter:
+            pass
+        else:
+            if presenter == 0 and self.is_auto:
+                if self.switch_proc is not None:
+                    self.switch_proc.cancel()
+                
+                idx = -1
+                for child in self.children[0].children:
+                    if child.id == self.item_choice:
+                        idx = child.index
+                if idx != -1:
+                    for child in self.children[0].children:
+                        if child.index != idx and child.playable:
+                            presenter = int(child.id)
+                            firebase.makeChangePresenter(presenter)
+                            self.switch_proc = Clock.schedule_once(lambda x: kivyhelper.getApRoot().mainStream._switch_display(),10)
+                            break
+            self.item_choice = str(presenter)
+
+            for obj in self.data:
+                if int(obj['id']) == int(presenter):
+                    obj['choice'] = True
+                else:
+                    obj['choice'] = False
+            
+            for child in self.children[0].children:
+                if int(child.id) == int(presenter):
+                    child.choice = True
+                else:
+                    child.choice = False
 
     def onChangeLN510(self, data):
+        #play able status
         if bool(data):
             if '_id' in data:  # case change: get single data
                 self.changeStatePresenter(data)
@@ -266,6 +290,25 @@ class ListPresenter(RecycleView):
     def stopListenerStream(self):
         if bool(self.listenerStream):
             self.listenerStream.close()
+
+    def choice_play(self, index):
+        if self.data[index]['id'] == self.item_choice:
+            firebase.makeChangePresenter(0)
+            self.item_choice = "0"
+            self.data[index]['choice'] = False
+            for child in self.children[0].children:
+                child.choice = False
+        else:
+            firebase.makeChangePresenter(int(self.data[index]['id']))
+            self.item_choice = self.data[index]['id']
+            for obj in self.data:
+                obj['choice'] = False
+            self.data[index]['choice'] = True
+            for child in self.children[0].children:
+                if child.index == index:
+                    child.choice = True
+                else:
+                    child.choice = False
 
     def set_data(self):
         self.data = list(
@@ -330,25 +373,9 @@ class ListPresenter(RecycleView):
                 child.refresh_view_attrs(self,child.index, self.data[child.index])
         except:
             pass
-
-    def choice_play(self, index):
-        if self.data[index]['id'] == self.item_choice:
-            firebase.makeChangePresenter(0)
-            self.item_choice = "0"
-            self.data[index]['choice'] = False
-            for child in self.children[0].children:
-                child.choice = False
-        else:
-            firebase.makeChangePresenter(int(self.data[index]['id']))
-            self.item_choice = self.data[index]['id']
-            for obj in self.data:
-                obj['choice'] = False
-            self.data[index]['choice'] = True
-            for child in self.children[0].children:
-                if child.index == index:
-                    child.choice = True
-                else:
-                    child.choice = False
+    
+    def change_presenter_auto(self, _val):
+        self.is_auto = _val
         
 class ListSchedule(RecycleView):
     item_playing = ""

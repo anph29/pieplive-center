@@ -74,6 +74,10 @@ class MainStream(RelativeLayout):
         except:
             pass
 
+    def _switch_display(self):
+        if self.cameraMini.opacity != 0:
+            self.switch_display()
+
     def switch_display(self):
         try:
             self.remove_widget(self.camera)

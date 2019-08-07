@@ -8,7 +8,6 @@ from threading import Thread, Event
 import subprocess as sp
 from src.utils import helper
 from pathlib import Path
-from kivy.core.audio import SoundLoader
 from pydub import AudioSegment
 from pydub.playback import play
 
@@ -163,15 +162,7 @@ class KivyCameraMain(Image):
                         self.remove_file_flv()
 
                 self.typeOld = self.resource_type
-                
                 self.playAudio()
-                
-                
-                # sound = SoundLoader.load(self.url.replace('.flv','.wav'))
-                # if sound:
-                #     sound.play()
-                # else:
-                #     print('fail fail fail fail fail fail fail fail fail fail fail fail')
             else:
                 print("cv2.error:")
                 if self.capture is not None:
@@ -193,12 +184,10 @@ class KivyCameraMain(Image):
                 Clock.schedule_once(self.process_set_data,1)
 
     def playAudio(self):
-        
         # song = AudioSegment.from_file(self.url.replace('.flv','.wav'))
         # play(song)
         # player = MediaPlayer(self.url)
         pass
-        
     
     def show_captured_img(self, url=None):
         cap = cv2.VideoCapture(url or self.url)

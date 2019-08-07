@@ -55,6 +55,7 @@
             padding:2
             TabPresenter:
                 id:tab_presenter
+                f_root:root
                 canvas.before:
                     Color:
                         rgb: .0,.0,.0
@@ -272,6 +273,37 @@
         #     size_hint:None,None
         #     size: 20,20
         #     on_release: ls_presenter.remove_selected()
+        Widget:
+            size_hint:None,1
+            width: 2
+        CheckBox:
+            size_hint:None,1
+            width: 20
+            active:True
+            on_active: ls_presenter.change_presenter_auto(self.active)
+            canvas.before:
+                Color:
+                    rgb: 1,1,1
+                Rectangle:
+                    pos:self.center_x-8, self.center_y-8
+                    size:[16,16]
+                Color:
+                    rgb: 0,0,0
+                Rectangle:
+                    pos:self.center_x-7, self.center_y-7
+                    size:[14,14]
+        Label:
+            size_hint:None,1
+            color: 1.0,1.0,1.0,1
+            font_size: 12
+            padding: 2,0
+            text: 'Auto'
+            text_size: self.width, 24
+            valign: 'center'
+            halign: 'left'
+            markup: True
+        Widget:
+            size_hint:1,1
 
 <TabSchedule>:
     ls_schedule:ls_schedule
@@ -367,4 +399,3 @@
             valign: 'center'
             halign: 'right'
             markup: True
-                

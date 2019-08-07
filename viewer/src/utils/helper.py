@@ -10,23 +10,22 @@ import shutil
 """
 """
 USER_LOCAL_PATH = os.environ['LOCALAPPDATA'].replace('\\', '/')
-RESOURCE_PATH = USER_LOCAL_PATH + '/PiepLiveCenter'
-_BASE_PATH = RESOURCE_PATH + '/'
-_PATH_SETTING = _BASE_PATH + 'cfg/setting.json'
-_PATH_FONT = _BASE_PATH + 'cfg/font.json'
-_PATH_STORE = _BASE_PATH + 'cfg/store.json'
-_PATH_IMAGE = _BASE_PATH + 'cfg/image.json'
-_PATH_VIDEO = _BASE_PATH + 'cfg/video.json'
-_PATH_CAMERA = _BASE_PATH + 'cfg/camera.json'
-_PATH_PRESENTER = _BASE_PATH + 'cfg/presenter.json'
-_PATH_SCHEDULE = _BASE_PATH + 'cfg/schedule.json'
-_PATH_SCHEDULE_DIR = _BASE_PATH + 'cfg/schedules/'
-_PATH_SCHEDULE_SORTED = _BASE_PATH + 'cfg/schedules/sorted.json'
-_PATH_STATICSOURCE = _BASE_PATH + 'cfg/staticsource.json'
-_ICONS_PATH = _BASE_PATH + 'icons/'
-_IMAGES_PATH = _BASE_PATH + 'images/'
-_LOGO_STREAMER = _ICONS_PATH + 'logo-streamer.ico'
-_LOGO_VIEWER = _ICONS_PATH + 'logo-viewer.png'
+_BASE_PATH = USER_LOCAL_PATH + '/PiepLiveCenter/'
+_PATH_SETTING = f'{_BASE_PATH}cfg/setting.json'
+_PATH_FONT = f'{_BASE_PATH}cfg/font.json'
+_PATH_STORE = f'{_BASE_PATH}cfg/store.json'
+_PATH_IMAGE = f'{_BASE_PATH}cfg/image.json'
+_PATH_VIDEO = f'{_BASE_PATH}cfg/video.json'
+_PATH_CAMERA = f'{_BASE_PATH}cfg/camera.json'
+_PATH_PRESENTER = f'{_BASE_PATH}cfg/presenter.json'
+_PATH_SCHEDULE = f'{_BASE_PATH}cfg/schedule.json'
+_PATH_SCHEDULE_DIR = f'{_BASE_PATH}cfg/schedules/'
+_PATH_SCHEDULE_SORTED = f'{_BASE_PATH}cfg/schedules/sorted.json'
+_PATH_STATICSOURCE = f'{_BASE_PATH}cfg/staticsource.json'
+_ICONS_PATH = f'{_BASE_PATH}icons/'
+_IMAGES_PATH = f'{_BASE_PATH}images/'
+_LOGO_STREAMER = f'{_ICONS_PATH}logo-streamer.ico'
+_LOGO_VIEWER = f'{_ICONS_PATH}logo-viewer.png'
 
 """
 schedule
@@ -357,20 +356,20 @@ def convertHMSNoToSec(hms):
 
 def makeSureResourceFolderExisted():
      # resource
-    if not os.path.exists(RESOURCE_PATH):
+    if not os.path.exists(_BASE_PATH):
         zip_helper.extractZip('./resource.zip', USER_LOCAL_PATH)
     # resource/temp
-    if not os.path.exists(RESOURCE_PATH + '/temp'):
-        os.mkdir(RESOURCE_PATH + '/temp')
+    if not os.path.exists(f'{_BASE_PATH}temp'):
+        os.mkdir(f'{_BASE_PATH}temp')
     # resource/cfg
-    if not os.path.exists(RESOURCE_PATH + '/cfg'):
-        os.mkdir(RESOURCE_PATH + '/cfg')
+    if not os.path.exists(f'{_BASE_PATH}cfg'):
+        os.mkdir(f'{_BASE_PATH}cfg')
     # resource/cfg/schedules
-    if not os.path.exists(RESOURCE_PATH + '/cfg/schedules'):
-        os.mkdir(RESOURCE_PATH + '/cfg/schedules')
+    if not os.path.exists(f'{_BASE_PATH}cfg/schedules'):
+        os.mkdir(f'{_BASE_PATH}cfg/schedules')
     # sorted.json file
-    if not os.path.isfile(RESOURCE_PATH + '/cfg/schedules/sorted.json'):
-        writeJSON(RESOURCE_PATH + '/cfg/schedules/sorted.json', [])
+    if not os.path.isfile(f'{_BASE_PATH}cfg/schedules/sorted.json'):
+        writeJSON(f'{_BASE_PATH}cfg/schedules/sorted.json', [])
     # all cfg file
     checkResourceExistAndWriteIfNot('store', data={})
     # setting
@@ -385,20 +384,20 @@ def getFontJSONContent():
     return [
         {
             "name": "opensans",
-            "fn_regular": f"{RESOURCE_PATH}/fonts/opensans.ttf",
-            "fn_bold": f"{RESOURCE_PATH}/fonts/opensans-bold.ttf"
+            "fn_regular": f"{_BASE_PATH}fonts/opensans.ttf",
+            "fn_bold": f"{_BASE_PATH}fonts/opensans-bold.ttf"
         },
         {
             "name": "roboto",
-            "fn_regular": f"{RESOURCE_PATH}/fonts/roboto.ttf"
+            "fn_regular": f"{_BASE_PATH}fonts/roboto.ttf"
         },
         {
             "name": "awkward-alone",
-            "fn_regular": f"{RESOURCE_PATH}/fonts/awkward-alone.ttf"
+            "fn_regular": f"{_BASE_PATH}fonts/awkward-alone.ttf"
         },
         {
             "name": "good-brush",
-            "fn_regular": f"{RESOURCE_PATH}/fonts/good-brush.ttf"
+            "fn_regular": f"{_BASE_PATH}fonts/good-brush.ttf"
         }
     ]
 

@@ -39,10 +39,6 @@ from src.modules.rightcontentview.gridview import GridCamera
 from src.modules.rightcontentview.itemlabel import ItemLabel
 
 
-KIVY_FONTS = helper._load_font()
-for font in KIVY_FONTS:
-    LabelBase.register(**font)
-
 class PiepStream(App):
     title = "PiepLiveCenter-Streamer"
     mainView = ObjectProperty()
@@ -65,4 +61,7 @@ if __name__ == '__main__':
     # from pathlib import Path
     # home = str(Path.home())
     helper.makeSureResourceFolderExisted()
+    KIVY_FONTS = helper._load_font()
+    for font in KIVY_FONTS:
+        LabelBase.register(**font)
     PiepStream().run()

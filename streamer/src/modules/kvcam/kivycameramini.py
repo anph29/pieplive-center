@@ -92,7 +92,7 @@ class KivyCameraMini(DragBehavior, Image):
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.resource_type == 'MP4':
                 timenow = datetime.datetime.now().strftime("%d%m%y%H%M%S")
-                output = '../resource/temp/{}.flv'.format(timenow)
+                output = helper._BASE_PATH+'temp/{}.flv'.format(timenow)
                 try:
                     _cap = cv2.VideoCapture(self.url)
                     if _cap.isOpened():
@@ -109,7 +109,7 @@ class KivyCameraMini(DragBehavior, Image):
                     print("Exception:", e)
 
                 timeout = 1
-                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 
                 if self.category == "PRESENTER":
                     self.url = self.data_src['rtmp']
@@ -123,7 +123,7 @@ class KivyCameraMini(DragBehavior, Image):
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1","-acodec", "copy", "-vcodec", "copy","-r","25",output]
                 else:
                     if fps < 25:
-                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
                     
                 si = subprocess.STARTUPINFO()
                 si.dwFlags |= subprocess.STARTF_USESHOWWINDOW

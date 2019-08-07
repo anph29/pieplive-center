@@ -11,7 +11,7 @@ Builder.load_file('src/ui/itemlabel.kv')
 class ItemLabel(RecycleDataViewBehavior, FloatLayout):
     index = NumericProperty(0)
     dt_capture = ObjectProperty()
-    name = StringProperty()
+    name = StringProperty('')
     selected = BooleanProperty(False)
     selectable = BooleanProperty(True)
     kvcam = ObjectProperty()

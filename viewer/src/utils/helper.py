@@ -7,12 +7,9 @@ from . import zip_helper
 import datetime
 import cv2
 import shutil
-import pathlib
 """
 """
-USER_DIRECTORY = str(pathlib.Path.home()).replace('\\', '/')
-# C:\Users\luots\AppData\Local\PiepLiveCenter
-USER_LOCAL_PATH = USER_DIRECTORY + '/AppData/Local'
+USER_LOCAL_PATH = os.environ['LOCALAPPDATA'].replace('\\', '/')
 RESOURCE_PATH = USER_LOCAL_PATH + '/PiepLiveCenter'
 _BASE_PATH = RESOURCE_PATH + '/'
 _PATH_SETTING = _BASE_PATH + 'cfg/setting.json'

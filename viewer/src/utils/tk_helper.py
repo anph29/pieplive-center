@@ -29,3 +29,6 @@ def character_limit(strVar, limit=6):
 def verifyHMS_val(strvar):
     character_limit(strvar, limit=2)
     strvar.set(re.sub(r"^[^0-9]{2}$", '', strvar.get()))
+
+def getComboboxValueRange(end=60): 
+    return [ (f'{x}', f'0{x}')[x<10] for x in range(0,end) ]

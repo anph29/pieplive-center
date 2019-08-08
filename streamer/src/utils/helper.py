@@ -112,12 +112,6 @@ def delete_schedule_container(fname):
         os.remove(path)
 
 
-def rename_schedule_container(old_fname, new_fname):
-    src = makeSureScheduleFile(old_fname)
-    dst = makeSureScheduleFile(new_fname)
-    os.rename(src, dst)
-
-
 def duplicate_schedule_container(fname):
     src = makeSureScheduleFile(fname)
     dst = makeSureScheduleFile(fname + '-COPY')
@@ -357,7 +351,7 @@ def convertHMSNoToSec(hms):
 def makeSureResourceFolderExisted():
      # resource
     if not os.path.exists(_BASE_PATH):
-        zip_helper.extractZip('./resource.zip', USER_LOCAL_PATH)
+        zip_helper.extractZip('./PiepLiveCenter.zip', USER_LOCAL_PATH)
     # resource/temp
     if not os.path.exists(f'{_BASE_PATH}temp'):
         os.mkdir(f'{_BASE_PATH}temp')

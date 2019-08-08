@@ -131,23 +131,23 @@ class MainView(Widget):
 
     def start_stream(self):
         if self.mainStream.isStream is False:
-                if len(self.bottom_left.stream_server.text) == 0 or len(self.bottom_left.stream_key.text) == 0:
-                    return False
-                self.mainStream.set_url_stream(
-                    self.bottom_left.stream_server.text+self.bottom_left.stream_key.text)
-                if bool(self.mainStream.prepare()):
-                    self.mainStream.startStream()
-                    self.btn_start.text = "Stop Streaming"
-                    self.btn_start.background_color = .29, .41, .15, 0.9
-                    if self.setting['stream_server'] is not None:
-                        self.setting['stream_server'] = self.bottom_left.stream_server.text
-                    if self.setting['stream_key'] is not None:
-                        self.setting['stream_key'] = self.bottom_left.stream_key.text
-                    helper._write_setting(self.setting)
+            if len(self.bottom_left.stream_server.text) == 0 or len(self.bottom_left.stream_key.text) == 0:
+                return False
+            self.mainStream.set_url_stream(
+                self.bottom_left.stream_server.text+self.bottom_left.stream_key.text)
+            if bool(self.mainStream.prepare()):
+                self.mainStream.startStream()
+                self.btn_start.text = "Stop"
+                self.btn_start.background_color = .29, .41, .15, 0.9
+                if self.setting['stream_server'] is not None:
+                    self.setting['stream_server'] = self.bottom_left.stream_server.text
+                if self.setting['stream_key'] is not None:
+                    self.setting['stream_key'] = self.bottom_left.stream_key.text
+                helper._write_setting(self.setting)
 
         elif self.mainStream.isStream is True:
             self.mainStream.stopStream()
-            self.btn_start.text = "Start Streaming"
+            self.btn_start.text = "Start"
             self.btn_start.background_color = .29, .41, .55, 1
 
     def show_mini_display(self):
@@ -168,7 +168,7 @@ class MainView(Widget):
 
     def triggerStop(self):
         self.mainStream.stopStream()
-        self.btn_start.text = "Start Streaming"
+        self.btn_start.text = "Start"
         self.btn_start.background_color = .29, .41, .55, 1
 
     def on_off_source(self, index, value):

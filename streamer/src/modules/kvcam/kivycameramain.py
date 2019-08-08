@@ -91,7 +91,7 @@ class KivyCameraMain(Image):
                 except Exception as e:
                     print("Exception:", e)
                         
-                if self.category == "SCHEDULE" and dura == self.data_src['duration']: 
+                if self.category == "SCHEDULE" and dura == self.data_src['duration']:
                     self.schedule_type = 'end'
 
                 timeout = 1
@@ -99,10 +99,10 @@ class KivyCameraMain(Image):
                 if self.category == "PRESENTER":
                     self.url = self.data_src['rtmp']
                     timeout=2
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000","-ar","44100","-ab","160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000","-preset","fast","-ar","44100","-ab","160k","-vb",self.f_parent.v_bitrate,"-g","60","-r","25",output]
                 elif self.resource_type == "M3U8":
                     timeout=1
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync", "1","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-ar","44100", "-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]  
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync", "1","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-ar","44100", "-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "RTSP":
                     timeout=2
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i", self.url,"-pix_fmt", "yuv420p", "-flags","+global_header", "-vsync","1","-af","aresample=async=1","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",output]
@@ -145,7 +145,7 @@ class KivyCameraMain(Image):
                 self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
                 self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
                 # if self.resource_type != 'VIDEO' and self.resource_type != "M3U8":
-                self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
+                #     self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
                 print(">>CAPTURE FINED:")
                 self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
                 if self.f_parent is not None:
@@ -234,7 +234,7 @@ class KivyCameraMain(Image):
             # buf = cv2.flip(frame, 0).tostring()
             texture.blit_buffer(frame.tostring(), colorfmt='bgr', bufferfmt='ubyte')
             self.texture = texture
-            # del frame, texture
+            del frame, texture
         except IOError:
             print("Exception update_texture_from_frame:")
 

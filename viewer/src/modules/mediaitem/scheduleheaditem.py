@@ -6,7 +6,8 @@ from src.utils import helper, scryto
 from src.constants import UI
 from src.modules.custom import ToolTip, PLabel
 from tkcalendar import DateEntry
-from datetime import datetime
+from datetime import datetime, timedelta
+from src.utils import store
 
 
 class ScheduleHeadItem(tk.Frame):
@@ -19,10 +20,11 @@ class ScheduleHeadItem(tk.Frame):
         self.name = ''
         self.path = ''
         self.actived = False
+        self.isRunningSch = False
         self.set_data(media)
         self.initUI()
         #
-        if self.id == 'STORE_SCHEDULE':
+        if self.isRunningSch:
             self.loadScheduleDE(None)
 
     def get_data(self):
@@ -37,6 +39,7 @@ class ScheduleHeadItem(tk.Frame):
         self.name = media['name'] if bool(media) else ''
         self.path = media['path'] if bool(media) else ''
         self.itemBg = '#F4ECF7'
+        self.isRunningSch = self.id == 'STORE_SCHEDULE'
 
     def deleteSchedule(self, evt):
         if messagebox.askyesno("PiepMe", f"Are you sure to delete schedule: `{self.name}`?"):
@@ -78,15 +81,16 @@ class ScheduleHeadItem(tk.Frame):
     def initUI(self):
         self.fView = tk.Frame(self, bg=self.itemBg)
         self.fView.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        if self.id != 'STORE_SCHEDULE':
+        if not self.isRunningSch:
             # check all
             self.checkbox = tk.Checkbutton(self.fView, variable=self.checked, onvalue=True, offvalue=False, height=1, width=1, bd=0, relief=tk.FLAT, bg=self.itemBg)
             self.checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)
         # label
         self.lbl_name = PLabel(self.fView, text=self.name, justify=tk.LEFT, elipsis=35,
-            font=UI.TITLE_FONT if self.id == 'STORE_SCHEDULE' else UI.TXT_FONT,
-            fg='#ff2d55' if self.id == 'STORE_SCHEDULE' else "#000", cursor='hand2', bg=self.itemBg)
-        self.lbl_name.pack(side=tk.LEFT, padx= 27 if self.id == 'STORE_SCHEDULE' else 0)
+            font=UI.TITLE_FONT if self.isRunningSch else UI.TXT_FONT,
+            fg='#ff2d55' if self.isRunningSch else "#000",
+            cursor='hand2', bg=self.itemBg)
+        self.lbl_name.pack(side=tk.LEFT, padx= 27 if self.isRunningSch else 0)
         ToolTip(self.lbl_name, self.name)
         # push to schedule
         imgPush = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}push-right-b.png"))
@@ -94,7 +98,7 @@ class ScheduleHeadItem(tk.Frame):
         self.lblPush.image = imgPush
         self.lblPush.bind("<Button-1>", self.loadScheduleDE)
         self.lblPush.pack(side=tk.RIGHT, padx=5, pady=5)
-        if self.id != 'STORE_SCHEDULE':
+        if not self.isRunningSch:
             # bin
             imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}trash-b.png"))
             self.lbl_trash = tk.Label(self.fView, image=imageBin, cursor='hand2', bg=self.itemBg)
@@ -123,7 +127,7 @@ class ScheduleHeadItem(tk.Frame):
         self.lbl_name.config(bg=self.itemBg)
         self.lblPush.config(bg=self.itemBg)
         #
-        if self.id != 'STORE_SCHEDULE':
+        if not self.isRunningSch:
             self.checkbox.config(bg=self.itemBg)
             self.lbl_trash.config(bg=self.itemBg)
             self.lblPen.config(bg=self.itemBg)
@@ -140,16 +144,11 @@ class ScheduleHeadItem(tk.Frame):
             self.parentTab.f5(None)
 
     def saveEditSchedule(self, evt):
-        if not bool(self.id):# create
-            self.id = scryto.hash_md5_with_time(self.path)
-            self.path = self.getPathFromCalendar()
-
         self.parentTab.saveSchedule({
             'path': self.path,
             'id': self.id,
             'name': self.eName.get()
         })
-
 
 class ScheduleHeadItemEdit(ScheduleHeadItem):
     def __init__(self, parent, parentTab=None, media=None, *args, **kwargs):
@@ -157,18 +156,27 @@ class ScheduleHeadItemEdit(ScheduleHeadItem):
 
     def initUI(self):
         self.initUIEdit()
-    
-    def getPathFromCalendar(self):
-        date = self.calendar.get()
-        return date.replace('/', '')
+
+    def saveEditSchedule(self, evt):
+        if not bool(self.id):# create
+            self.id = scryto.hash_md5_with_time(self.path)
+            date = self.calendar.get()
+            self.path = date.replace('/', '')
+
+        super(ScheduleHeadItemEdit, self).saveEditSchedule(evt)
         
     def packDate(self):
+        fmt = "%d/%m/%Y"
+        lastSchedule = store._get('LAST_SCHEDULE')
         # Date
-        today = datetime.today()
+        schDate = datetime.strptime(lastSchedule, fmt) if lastSchedule else datetime.today()
+        nextDate = schDate + timedelta(days=1)
+        store._set('LAST_SCHEDULE', datetime.strftime(nextDate, fmt))
+        #
         self.calendar = DateEntry(self.fEdit, width=10, background='#D2B4DE', foreground='#000', borderwidth=2, selectbackground='#E8DAEF',
-            day=today.day, month=today.month, year=today.year, firstweekday='sunday', locale='vi_VN')
+                                day=schDate.day, month=schDate.month, year=schDate.year, firstweekday='sunday', locale='vi_VN')
         self.calendar.pack(side=tk.LEFT, fill=tk.X, padx=(5, 0))
-        self.generateNameFromDate(today)
+        self.generateNameFromDate(schDate)
         self.calendar.bind('<<DateEntrySelected>>', self.selectedDateEntry)
 
     def selectedDateEntry(self, evt):

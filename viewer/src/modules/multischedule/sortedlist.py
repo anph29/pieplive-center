@@ -56,8 +56,8 @@ class SortedList(ScheduleDDList):
         ToolTip(self.cmdAdd, "Create schedule")
 
     def createSchedule(self, evt):
-        filtered = list(filter(lambda ui: isinstance(ui, ScheduleHeadItemEdit), self._LS_SCHEDULE_UI))
-        if 0 == len(filtered):
+        editableFiltered = list(filter(lambda ui: isinstance(ui, ScheduleHeadItemEdit), self._LS_SCHEDULE_UI))
+        if 0 == len(editableFiltered):# no one element edit able
             item = self.ddlist.create_item(value={})
             ui = ScheduleHeadItemEdit(item, parentTab=self)
             self._LS_SCHEDULE_UI.append(ui)
@@ -91,11 +91,11 @@ class SortedList(ScheduleDDList):
         filtered = list(filter(lambda x: x['id'] == sch['id'], ls))
         if len(filtered) > 0:
             self.saveEdit(ls, sch)
-        elif self.newScheduleContainer(sch):
+        elif self.newScheduleContainer(sch):# create
             self.addToScheduleGUI(sch)
             self.addSchedule(sch)
         else:
-            pass # alert somethings
+            pass # alert somethings when create failed: dupplicate name,..
         #
         self.f5(None)
 
@@ -118,9 +118,6 @@ class SortedList(ScheduleDDList):
 
     def newScheduleContainer(self, sch):
         return helper.new_schedule_container(sch['path'])
-
-    # def renameScheduleContainer(self, sch):
-    #     helper.rename_schedule_container(sch['path'])
 
     def duplicateScheduleContainer(self, sch):
         helper.duplicate_schedule_container(sch['path'])

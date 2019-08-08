@@ -62,19 +62,26 @@ class MediaItem(tk.Frame):
     def activePresenter(self):
         self.stopGIF = False
         # count down 5 sec
-        countFrame = [tk.PhotoImage(file=f'{helper._ICONS_PATH}count.gif',format=f'gif -index {i}') for i in range(0, 5)]
+        countFrame = [tk.PhotoImage(file=f'{helper._ICONS_PATH}count.gif',format=f'gif -index {i}') for i in range(0, 15)]
         def updateGIFCount(idx):
-            if idx == 5:
+            if idx == 15:
                 updateGIFLive(0)
             else:
-                idx = (0, idx)[idx <= 4]
+                idx = (0, idx)[idx <= 14]
                 frame = countFrame[idx]
                 self.light.configure(image=frame)
                 idx += 1
-                if not self.stopGIF:
-                    self.after(1000, updateGIFCount, idx)
-                else:
+                if self.stopGIF:
                     self.updateLightColor(self.LN510)
+                else:
+                    if idx % 3 == 0:
+                        timing = 700
+                    elif idx % 3 == 1:
+                        timing = 200
+                    elif idx % 3 == 2:
+                        timing = 100
+                    #
+                    self.after(timing, updateGIFCount, idx)
         # interval live stastus
         liveFrame = [tk.PhotoImage(file=f'{helper._ICONS_PATH}live.gif',format=f'gif -index {i}') for i in range(0, 3)]
         def updateGIFLive(idx):
@@ -82,10 +89,10 @@ class MediaItem(tk.Frame):
             frame = liveFrame[idx]
             self.light.configure(image=frame)
             idx += 1
-            if not self.stopGIF:
-                self.after(200, updateGIFLive, idx)
-            else:
+            if self.stopGIF:
                 self.updateLightColor(self.LN510)
+            else:
+                self.after(200, updateGIFLive, idx)
         # start point
         self.after(0, updateGIFCount, 0)
                 

@@ -25,8 +25,8 @@ LicenseFile=D:\anph\python\PiepLive-Center\viewer\LICENSE.txt
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 OutputDir=D:\anph\python\PiepLive-Center\build app
-OutputBaseFilename=pieplivemanager-05082019
-SetupIconFile=D:\anph\python\PiepLive-Center\resource\icons\logo-viewer.ico
+OutputBaseFilename=pieplivemanager-07082019
+SetupIconFile=D:\anph\python\PiepLive-Center\PiepLiveCenter\icons\logo-viewer.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern

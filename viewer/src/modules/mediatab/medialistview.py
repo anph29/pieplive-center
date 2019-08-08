@@ -44,6 +44,24 @@ class MediaListView(MediaTab):
             self.showBtnPushAllToSchedule()
         self.showSelectAll()
 
+    def packRightToolbar(self):
+        super(MediaListView, self).packRightToolbar()
+        # lock
+        imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}unlock-24.png"))
+        self.cmdLock = tk.Label(self.tbright, image=imgLock, cursor='hand2', bg=self.tbBgColor)
+        self.cmdLock.image = imgLock
+        self.cmdLock.bind("<Button-1>", self.toggleLock)
+        self.cmdLock.pack(side=tk.RIGHT, padx=(0, 5))
+        ToolTip(self.cmdLock, "Lock")
+
+    def toggleLock(self, evt):
+        un = 'un' if self.ddlist.getLock() else ''
+        imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}{un}lock-24.png"))
+        self.cmdLock.configure(image=imgLock)
+        self.cmdLock.image = imgLock
+        ToolTip(self.cmdLock, f"{un}locked")
+        self.ddlist.setLock(not self.ddlist.getLock())
+
     def addMediaToList(self, media):
         item = self.ddlist.create_item(value=media)
         ui = MediaItemDnD(item, parentTab=self, media=media)

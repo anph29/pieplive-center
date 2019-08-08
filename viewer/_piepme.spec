@@ -3,7 +3,7 @@
 block_cipher = None
 
 added_files = [
-  ( 'resource.zip', '.' )
+  ( 'PiepLiveCenter.zip', '.' )
 ]
 
 a = Analysis(['piepme.py'],
@@ -28,7 +28,7 @@ exe = EXE(pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=True, icon='..\\resource\\icons\\logo-viewer.ico')
+          console=True, icon='..\\PiepLiveCenter\\icons\\logo-viewer.ico')
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,

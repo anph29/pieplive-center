@@ -74,6 +74,21 @@ class ScheduleDDList(tk.Frame):
         self.cmdF5.bind("<Button-1>", self.f5)
         self.cmdF5.pack(side=tk.RIGHT, padx=(0, 5), pady=5)
         ToolTip(self.cmdF5, "Refresh")
+        # lock
+        imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}unlock-24.png"))
+        self.cmdLock = tk.Label(self.tbright, image=imgLock, cursor='hand2', bg=self.tbBgColor)
+        self.cmdLock.image = imgLock
+        self.cmdLock.bind("<Button-1>", self.toggleLock)
+        self.cmdLock.pack(side=tk.RIGHT, padx=(0, 5))
+        ToolTip(self.cmdLock, "unlocked")
+
+    def toggleLock(self, evt):
+        un = 'un' if self.ddlist.getLock() else ''
+        imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}{un}lock-24.png"))
+        self.cmdLock.configure(image=imgLock)
+        self.cmdLock.image = imgLock
+        ToolTip(self.cmdLock, f"{un}locked")
+        self.ddlist.setLock(not self.ddlist.getLock())
 
     def f5(self, evt):
         self.clearView()

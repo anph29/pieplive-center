@@ -51,7 +51,7 @@ class SingleSchedule(ScheduleDDList):
             self.lblTitle.pack_forget()
             self.lblTitle.pack(side=tk.LEFT, padx=20, pady=5)
             imageChk = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}check-green-s.png"))
-            self.lblChk = tk.Label(self.title, image=imageChk, cursor='hand2', bg=self.tbBgColor)
+            self.lblChk = tk.Label(self.title, image=imageChk, font=UI.TXT_FONT, cursor='hand2', bg=self.tbBgColor)
             self.lblChk.image = imageChk
             self.lblChk.bind("<Button-1>", self.saveAsRunningSchedule)
             self.lblChk.pack(padx=20, pady=5, side=tk.RIGHT)

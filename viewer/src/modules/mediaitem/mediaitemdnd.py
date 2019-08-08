@@ -26,19 +26,7 @@ class MediaItemDnD(MediaItem):
         #
         wrapper = tk.Frame(self, bg=self.itemBg)
         wrapper.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        # push to schedule
-        imgPush = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}push-left-b.png"))
-        lblPush = tk.Label(wrapper, image=imgPush, cursor='hand2', bg=self.itemBg)
-        lblPush.image = imgPush
-        lblPush.bind("<Button-1>", self.callParentAddSchedule)
-        lblPush.pack(side=tk.LEFT, padx=5, pady=5)
-         # traffic lignt
-        if self.parentTab.tabType == MediaType.PRESENTER:
-            frame = tk.PhotoImage(file=f'{helper._ICONS_PATH}live-red.png')
-            self.light = tk.Label(wrapper, width=16, height=16, image=frame, bg=self.itemBg)
-            self.light.photo = frame
-            self.light.pack(side=tk.LEFT)
-        #check all
+        #checkbox
         checkbox = tk.Checkbutton(wrapper, variable=self.checked, onvalue=True, offvalue=False, height=1, width=1, bd=0, relief=tk.FLAT, bg=self.itemBg)
         checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)
         # label
@@ -61,6 +49,18 @@ class MediaItemDnD(MediaItem):
         ToolTip(lblPen, "Edit")
         lblPen.pack(side=tk.RIGHT)
         self.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        # push to schedule
+        imgPush = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}add-to-sch.png"))
+        lblPush = tk.Label(wrapper, image=imgPush, cursor='hand2', bg=self.itemBg)
+        lblPush.image = imgPush
+        lblPush.bind("<Button-1>", self.callParentAddSchedule)
+        lblPush.pack(side=tk.RIGHT, padx=5, pady=5)
+        # traffic lignt
+        if self.parentTab.tabType == MediaType.PRESENTER:
+            frame = tk.PhotoImage(file=f'{helper._ICONS_PATH}live-red.png')
+            self.light = tk.Label(wrapper, width=16, height=16, image=frame, bg=self.itemBg)
+            self.light.photo = frame
+            self.light.pack(side=tk.RIGHT)
         #duration
         if self.parentTab.tabType == MediaType.VIDEO:
             hms = helper.convertSecNoToHMS(self.duration)

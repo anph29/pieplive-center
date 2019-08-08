@@ -40,10 +40,8 @@ class MediaListView(MediaTab):
     def packLeftToolbar(self):
         super(MediaListView, self).packLeftToolbar()
         self.checkbox.destroy()
-        if self.tabType != MediaType.SCHEDULE:
-            self.showBtnPushAllToSchedule()
         self.showSelectAll()
-
+        
     def packRightToolbar(self):
         super(MediaListView, self).packRightToolbar()
         # lock
@@ -52,6 +50,8 @@ class MediaListView(MediaTab):
         self.cmdLock.image = imgLock
         self.cmdLock.bind("<Button-1>", self.toggleLock)
         self.cmdLock.pack(side=tk.RIGHT, padx=(0, 5))
+        if self.tabType != MediaType.SCHEDULE:
+            self.showBtnPushAllToSchedule()
         ToolTip(self.cmdLock, "Lock")
 
     def toggleLock(self, evt):
@@ -69,13 +69,14 @@ class MediaListView(MediaTab):
         ui.pack(expand=True)
         self.ddlist.add_item(item)
 
+    # push all to schedule
     def showBtnPushAllToSchedule(self):
-        # push to schedule
-        imgPush = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}push-left.png"))
-        lblPush = tk.Label(self.tbleft, image=imgPush, cursor='hand2', bg=self.tbBgColor)
-        lblPush.image = imgPush
-        lblPush.bind("<Button-1>", self.pushAllToSchedule)
-        lblPush.pack(side=tk.LEFT, padx=(5, 0))
+        imgPush = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}push-all-sch.png"))
+        self.cmdPush = tk.Label(self.tbright, image=imgPush, cursor='hand2', bg=self.tbBgColor)
+        self.cmdPush.image = imgPush
+        self.cmdPush.bind("<Button-1>", self.pushAllToSchedule)
+        self.cmdPush.pack(side=tk.RIGHT, padx=(5, 0))
+        ToolTip(self.cmdPush, "Push all selected to schedule")
 
     def clearView(self):
         super(MediaListView, self).clearView()

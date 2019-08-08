@@ -82,18 +82,15 @@ class MainView(tk.Frame):
         self.superWrapper = ttk.Notebook(self)
         self.superWrapper.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
         #
-        icSchedule = tk.PhotoImage(
-            file=helper._ICONS_PATH + 'ic_clock_tab.png')
+        icSchedule = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_clock_tab.png')
         self.schedule = Schedule(self)
         self.schedule.image = icSchedule
-        self.superWrapper.add(self.schedule, text="Schedule",
-                              image=icSchedule, compound=tk.LEFT)
+        self.superWrapper.add(self.schedule, text="Schedule", image=icSchedule, compound=tk.LEFT)
         #
         icMedia = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_media_tab.png')
         self.mediaList = self.makeMediaListTab()
         self.mediaList.image = icMedia
-        self.superWrapper.add(self.mediaList, text="Live View",
-                              image=icMedia, compound=tk.LEFT)
+        self.superWrapper.add(self.mediaList, text="Live View", image=icMedia, compound=tk.LEFT)
         #
         self.superWrapper.select(self.schedule)
         self.superWrapper.enable_traversal()

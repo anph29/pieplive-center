@@ -39,6 +39,7 @@ class PopupEditResource(PopupAddResource):
         self.name = tk.StringVar()
         self.url = tk.StringVar()
         self.setupData()
+        urlEditabel = self.mtype in ['VIDEO', 'IMG']
         # name
         fName = tk.Frame(fFile, pady=10, padx=20)
         lName = tk.Label(fName, text="Name:", width=6, anchor=tk.W, font=UI.TXT_FONT)
@@ -48,14 +49,17 @@ class PopupEditResource(PopupAddResource):
         fName.pack(side=tk.TOP, fill=tk.X)
         # URL
         fUrl = tk.Frame(fFile, pady=10, padx=20)
+        fUrl.pack(side=tk.TOP, fill=tk.X)
         lUrl = tk.Label(fUrl, text="URL:", width=6, anchor=tk.W, font=UI.TXT_FONT)
         lUrl.pack(side=tk.LEFT, fill=tk.Y)
-        self.eUrl = tk.Entry(fUrl, textvariable=self.url, width=45, borderwidth=5, relief=tk.FLAT)
+        self.eUrl = tk.Entry(fUrl, textvariable=self.url, width=45 if urlEditabel else 100, borderwidth=5, relief=tk.FLAT, state=tk.NORMAL if urlEditabel else tk.DISABLED)
         self.eUrl.pack(side=tk.LEFT, fill=tk.X)
-        btnChoose = tk.Button(fUrl, text="Choose..", relief=tk.RAISED, padx=5, pady=5, command=self.askFileName, font=UI.TXT_FONT)
-        btnChoose.configure(width=7)
-        btnChoose.pack(side=tk.RIGHT, fill=tk.Y)
-        fUrl.pack(side=tk.TOP, fill=tk.X)
+        # btn Choose
+        if urlEditabel:
+            btnChoose = tk.Button(fUrl, text="Choose..", relief=tk.RAISED, padx=5, pady=5, command=self.askFileName, font=UI.TXT_FONT)
+            btnChoose.configure(width=7)
+            btnChoose.pack(side=tk.RIGHT, fill=tk.Y)
+        # duration
         if self.mtype == 'VIDEO':
             self.packDuration(fFile)
         # error msg

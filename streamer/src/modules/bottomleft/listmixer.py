@@ -52,8 +52,8 @@ class BoxMixer(SelectableBox):
 class RCVItemMixer(RecycleDataViewBehavior, BoxLayout):
     index = NumericProperty(0)
     volume = NumericProperty(0)
-    src = StringProperty()
-    name = StringProperty()
+    src = StringProperty('')
+    name = StringProperty('')
     audio_volume = ObjectProperty()
     audio_status = ObjectProperty()
     clock = ObjectProperty()
@@ -66,7 +66,7 @@ class RCVItemMixer(RecycleDataViewBehavior, BoxLayout):
         self.name = data['name']
         self.src = data['src']
         self.volume = data['volume']
-        self.id = data['id']
+        self._id = data['id']
         return super(RCVItemMixer, self).refresh_view_attrs(rv, index, data)
 
     def on_touch_down(self, touch):
@@ -81,4 +81,4 @@ class RCVItemMixer(RecycleDataViewBehavior, BoxLayout):
     def onChangeVolume(self):
         if self.clock is not None:
             self.clock.cancel()
-        self.clock = Clock.schedule_once(lambda x:kv_helper.getApRoot().changeAudioVolume(self.id, self.audio_volume.value), 1)
+        self.clock = Clock.schedule_once(lambda x:kv_helper.getApRoot().changeAudioVolume(self._id, self.audio_volume.value), 1)

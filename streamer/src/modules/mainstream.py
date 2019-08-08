@@ -74,6 +74,10 @@ class MainStream(RelativeLayout):
         except:
             pass
 
+    def _switch_display(self):
+        if self.cameraMini.opacity != 0:
+            self.switch_display()
+
     def switch_display(self):
         try:
             self.remove_widget(self.camera)
@@ -210,7 +214,7 @@ class MainStream(RelativeLayout):
         txt = _map = ''
 
         numau += 1
-        inp.extend(['-stream_loop','-1',"-i", '../resource/media/muted.mp3'])
+        inp.extend(['-stream_loop','-1',"-i", helper._BASE_PATH+'media/muted.mp3'])
         txt += f"[{numau}:a]volume=0[a{numau}];"
         _map += f'[a{numau}]'
 
@@ -415,7 +419,7 @@ class MainStream(RelativeLayout):
         self.is_loop = _val
         
     def deleteAllFile(self):
-        folder = '../resource/temp'
+        folder = helper._BASE_PATH+'temp/'
         for the_file in os.listdir(folder):
             file_path = os.path.join(folder, the_file)
             try:

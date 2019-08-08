@@ -8,6 +8,8 @@ from threading import Thread, Event
 import subprocess as sp
 from src.utils import helper
 from pathlib import Path
+from pydub import AudioSegment
+from pydub.playback import play
 
 class KivyCameraMain(Image):
     capture = ObjectProperty(None)
@@ -70,7 +72,7 @@ class KivyCameraMain(Image):
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.resource_type == 'MP4':# or self.resource_type == "RTSP":
                 timenow = datetime.datetime.now().strftime("%d%m%y%H%M%S")
-                output = '../resource/temp/{}.flv'.format(timenow)
+                output = helper._BASE_PATH+'temp/{}.flv'.format(timenow)
                 try:
                     _cap = cv2.VideoCapture(self.url)
                     if _cap.isOpened():
@@ -93,20 +95,20 @@ class KivyCameraMain(Image):
                     self.schedule_type = 'end'
 
                 timeout = 1
-                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output, output.replace('.flv','.wav')]
                 if self.category == "PRESENTER":
                     self.url = self.data_src['rtmp']
-                    timeout=3
+                    timeout=2
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000","-ar","44100","-ab","160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "M3U8":
                     timeout=1
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync", "1","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-ar","44100", "-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]  
                 elif self.resource_type == "RTSP":
-                    timeout=3
+                    timeout=2
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i", self.url,"-pix_fmt", "yuv420p", "-flags","+global_header", "-vsync","1","-af","aresample=async=1","-ar","44100", "-ab", "160k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 else:
                     if fps < 25:
-                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", "../resource/media/muted2.mp3","-ar","44100","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output,output.replace('.flv','.wav')]
                     
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
@@ -160,6 +162,7 @@ class KivyCameraMain(Image):
                         self.remove_file_flv()
 
                 self.typeOld = self.resource_type
+                self.playAudio()
             else:
                 print("cv2.error:")
                 if self.capture is not None:
@@ -179,6 +182,12 @@ class KivyCameraMain(Image):
             else:
                 self.reconnect += 1
                 Clock.schedule_once(self.process_set_data,1)
+
+    def playAudio(self):
+        # song = AudioSegment.from_file(self.url.replace('.flv','.wav'))
+        # play(song)
+        # player = MediaPlayer(self.url)
+        pass
     
     def show_captured_img(self, url=None):
         cap = cv2.VideoCapture(url or self.url)

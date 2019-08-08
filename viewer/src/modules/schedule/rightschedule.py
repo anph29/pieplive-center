@@ -12,7 +12,7 @@ class RightSchedule(tk.Frame):
         self.initUI()
 
     def initUI(self):
-        self.scheduleTab = ttk.Notebook(self)
+        self.scheduleTab = ttk.Notebook(self, style="sub.TNotebook")
         self.scheduleTab.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
         # 1
         icImg = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_image.png')

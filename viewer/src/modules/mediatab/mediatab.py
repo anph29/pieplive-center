@@ -32,13 +32,14 @@ class MediaTab(tk.Frame):
 
     def firebaseCallback(self, message):
         path, data, event = message.values()
-        if path == '/':
-            self.onChangeLN510(data['LIST'])
-            self.after(500, self.onChangePresenter, data['PRESENTER'])
-        elif 'PRESENTER' in path:
-            self.onChangePresenter(data)
-        elif 'LIST' in path:
-            self.onChangeLN510(data)
+        if bool(data):
+            if path == '/':
+                self.onChangeLN510(data['LIST'])
+                self.after(500, self.onChangePresenter, data['PRESENTER'])
+            elif 'PRESENTER' in path:
+                self.onChangePresenter(data)
+            elif 'LIST' in path:
+                self.onChangeLN510(data)
 
     def onChangePresenter(self, presenter):
         for m in self._LS_MEDIA_UI:

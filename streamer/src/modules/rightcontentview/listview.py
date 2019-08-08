@@ -225,13 +225,14 @@ class ListPresenter(RecycleView):
 
     def firebaseCallback(self, message):
         path, data, event = message.values()
-        if path == '/':
-            self.onChangeLN510(data['LIST'])
-            Clock.schedule_once(lambda x: self.onChangePresenter(data['PRESENTER']),0.5)
-        elif 'PRESENTER' in path:
-            self.onChangePresenter(data)
-        elif 'LIST' in path:
-            self.onChangeLN510(data)
+        if bool(data):
+            if path == '/':
+                self.onChangeLN510(data['LIST'])
+                Clock.schedule_once(lambda x: self.onChangePresenter(data['PRESENTER']),0.5)
+            elif 'PRESENTER' in path:
+                self.onChangePresenter(data)
+            elif 'LIST' in path:
+                self.onChangeLN510(data)
 
     def onChangePresenter(self, presenter):
         #choice status

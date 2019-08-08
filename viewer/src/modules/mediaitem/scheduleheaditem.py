@@ -122,7 +122,7 @@ class ScheduleHeadItem(tk.Frame):
 
     def changeBgFollowActivation(self, active=False):
         self.actived = active
-        self.itemBg = '#D2B4DE' if self.actived else '#F4ECF7'
+        self.itemBg = '#E8DAEF' if self.actived else '#F4ECF7'
         self.fView.config(bg=self.itemBg)
         self.lbl_name.config(bg=self.itemBg)
         self.lblPush.config(bg=self.itemBg)

@@ -30,7 +30,7 @@ class MainView(tk.Frame):
     def setStyle(self):
         style = ttk.Style()
         style.theme_create("TabStyle", parent="alt", settings={
-            "scroll.TFrame":{"background":"#fff"},
+            "scroll.TFrame":{"background":"#ccc"},
             "TNotebook": {
                 "configure": {"tabmargins": [5, 0, 0, 5]}  # L T R B
             },
@@ -67,7 +67,6 @@ class MainView(tk.Frame):
          #
         self.superWrapper.select(self.mediaList)
         self.superWrapper.enable_traversal()
-
     #
     def makeMediaListTab(self):
         # 0

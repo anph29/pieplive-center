@@ -74,7 +74,7 @@ class MainStream(RelativeLayout):
         except:
             pass
 
-    def _switch_display(self):
+    def switch_display_auto(self):
         if self.cameraMini.opacity != 0:
             self.switch_display()
 

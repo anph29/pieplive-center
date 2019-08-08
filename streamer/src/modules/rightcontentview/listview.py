@@ -251,7 +251,7 @@ class ListPresenter(RecycleView):
                         if child.index != idx and child.playable:
                             presenter = int(child.id)
                             firebase.makeChangePresenter(presenter)
-                            self.switch_proc = Clock.schedule_once(lambda x: kivyhelper.getApRoot().mainStream._switch_display(),10)
+                            self.switch_proc = Clock.schedule_once(lambda x: kivyhelper.getApRoot().switch_display_auto(),10)
                             break
             self.item_choice = str(presenter)
 

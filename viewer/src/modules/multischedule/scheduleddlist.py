@@ -108,7 +108,7 @@ class ScheduleDDList(tk.Frame):
             medi.checked.set(self.checkall.get())
 
     def clearData(self, clearView=False):
-        self._LS_SCHEDULE_DATA = []
+        # self._LS_SCHEDULE_DATA = []
         self.writeSchedule([])
         if clearView:
             self.clearView()

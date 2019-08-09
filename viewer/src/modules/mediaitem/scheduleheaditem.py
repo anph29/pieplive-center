@@ -81,23 +81,20 @@ class ScheduleHeadItem(tk.Frame):
     def initUI(self):
         self.fView = tk.Frame(self, bg=self.itemBg)
         self.fView.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
         if not self.isRunningSch:
             # check all
             self.checkbox = tk.Checkbutton(self.fView, variable=self.checked, onvalue=True, offvalue=False, height=1, width=1, bd=0, relief=tk.FLAT, bg=self.itemBg)
             self.checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)
         # label
-        self.lbl_name = PLabel(self.fView, text=self.name, justify=tk.LEFT, elipsis=35,
+        self.lbl_name = PLabel(self.fView, text=self.name, justify=tk.LEFT, elipsis=25,
             font=UI.TITLE_FONT if self.isRunningSch else UI.TXT_FONT,
             fg='#ff2d55' if self.isRunningSch else "#000",
             cursor='hand2', bg=self.itemBg)
+        self.lbl_name.bind('<Double-Button-1>', self.loadScheduleDE)
         self.lbl_name.pack(side=tk.LEFT, padx= 27 if self.isRunningSch else 0)
         ToolTip(self.lbl_name, self.name)
-        # push to schedule
-        imgPush = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}push-right-b.png"))
-        self.lblPush = tk.Label(self.fView, image=imgPush, cursor='hand2', bg=self.itemBg)
-        self.lblPush.image = imgPush
-        self.lblPush.bind("<Button-1>", self.loadScheduleDE)
-        self.lblPush.pack(side=tk.RIGHT, padx=5, pady=5)
+       
         if not self.isRunningSch:
             # bin
             imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}trash-b.png"))
@@ -113,6 +110,13 @@ class ScheduleHeadItem(tk.Frame):
             self.lblPen.bind("<Button-1>", self.editSchedule)
             self.lblPen.pack(side=tk.RIGHT)
             ToolTip(self.lblPen, "Edit")
+
+        # push to schedule
+        imgPush = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}push-right-b.png"))
+        self.lblPush = tk.Label(self.fView, image=imgPush, cursor='hand2', bg=self.itemBg)
+        self.lblPush.image = imgPush
+        self.lblPush.bind("<Button-1>", self.loadScheduleDE)
+        self.lblPush.pack(side=tk.RIGHT, padx=5, pady=5)
         #
         self.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
@@ -166,25 +170,16 @@ class ScheduleHeadItemEdit(ScheduleHeadItem):
         super(ScheduleHeadItemEdit, self).saveEditSchedule(evt)
         
     def packDate(self):
-        fmt = "%d/%m/%Y"
-        lastSchedule = store._get('LAST_SCHEDULE')
-        # Date
-        schDate = datetime.strptime(lastSchedule, fmt) if lastSchedule else datetime.today()
-        nextDate = schDate + timedelta(days=1)
-        store._set('LAST_SCHEDULE', datetime.strftime(nextDate, fmt))
+        schDate = self.parentTab.findLastDateInSchedule()
         #
         self.calendar = DateEntry(self.fEdit, width=10, background='#D2B4DE', foreground='#000', borderwidth=2, selectbackground='#E8DAEF',
                                 day=schDate.day, month=schDate.month, year=schDate.year, firstweekday='sunday', locale='vi_VN')
         self.calendar.pack(side=tk.LEFT, fill=tk.X, padx=(5, 0))
-        self.generateNameFromDate(schDate)
+        schName = self.parentTab.generateNameFromDate(schDate)
+        self.eName.set(schName)
         self.calendar.bind('<<DateEntrySelected>>', self.selectedDateEntry)
 
     def selectedDateEntry(self, evt):
-        self.generateNameFromDate(self.calendar.get_date())
-        
-    def generateNameFromDate(self, date):
-        # Return the day of the week as an integer, where Monday is 0 and Sunday is 6.
-        wDay = date.weekday()
-        weekDay = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ Nhật']
-        schName = weekDay[wDay] +f' - {self.calendar.get()}'
+        schName = self.parentTab.generateNameFromDate(self.calendar.get_date())
         self.eName.set(schName)
+

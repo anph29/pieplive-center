@@ -25,9 +25,10 @@ class SingleSchedule(ScheduleDDList):
     def showListSchedule(self):
         self._LS_SCHEDULE_DATA = self.loadSchedule()
         self.totalDuration = 0
-        for sch in self._LS_SCHEDULE_DATA:
-            self.addToScheduleGUI(sch)
-            self.totalDuration += int(sch['duration'])
+        if bool(self._LS_SCHEDULE_DATA):
+            for sch in self._LS_SCHEDULE_DATA:
+                self.addToScheduleGUI(sch)
+                self.totalDuration += int(sch['duration'])
         #
         self.lblDura.config(text=f'total duration: {helper.convertSecNoToHMS(self.totalDuration)}')
 

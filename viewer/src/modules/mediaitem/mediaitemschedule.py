@@ -65,8 +65,8 @@ class MediaItemSchedule(MediaItem):
         dura = PLabel(wrapper, text=f"duration: {hms}", fg='#008000', font=UI.TXT_FONT, bg=self.itemBg)
         dura.pack(side=tk.RIGHT, padx=5)
         #timepoint
-        h,m,s = helper.convertSecNoToHMS(self.timepoint, toObj=True).values()
-        runtime = PLabel(wrapper, text=f"runtime: {h}h{m}m{s}s", fg='#00F', font=UI.TXT_FONT, cursor='hand2', bg=self.itemBg)
+        HMS = helper.convertSecNoToHMS(self.timepoint)
+        runtime = PLabel(wrapper, text=f"runtime: {HMS}", fg='#00F', font=UI.TXT_FONT, cursor='hand2', bg=self.itemBg)
         runtime.bind("<Button-1>", self.editRuntime)
         runtime.pack(side=tk.RIGHT, padx=5)
     

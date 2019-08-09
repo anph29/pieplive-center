@@ -31,8 +31,10 @@ class MediaItemDnD(MediaItem):
         checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)
         # label
         lbl_name = PLabel(wrapper, text=self.name, justify=tk.LEFT, elipsis=(35, 30)[self.parentTab.tabType == MediaType.VIDEO], font=UI.TXT_FONT, fg="#000", cursor='hand2', bg=self.itemBg)
-        ToolTip(lbl_name, self.name)
         lbl_name.pack(side=tk.LEFT)
+        lbl_name.bind('<Double-Button-1>', self.callParentAddSchedule)
+
+        ToolTip(lbl_name, self.name)
         # bin
         imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}trash-b.png"))
         lbl_trash = tk.Label(wrapper, image=imageBin, cursor='hand2', bg=self.itemBg)

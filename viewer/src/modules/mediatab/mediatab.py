@@ -148,7 +148,7 @@ class MediaTab(tk.Frame):
         pass
 
     def clearData(self, clearView=False):
-        self._LS_MEDIA_DATA = []
+        # self._LS_MEDIA_DATA = []
         self.writeLsMedia([])
         if clearView:
             self.clearView()

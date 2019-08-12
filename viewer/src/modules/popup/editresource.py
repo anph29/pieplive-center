@@ -96,7 +96,7 @@ class PopupEditResource(PopupAddResource):
         ##
         hh = ttk.Combobox(fDura, values=tk_helper.getComboboxValueRange(end=100), width=4, textvariable=self.hh, justify='right')
         hh.bind("<FocusIn>", lambda args: hh.select_range('0', tk.END))
-        hh.current(h)
+        hh.current(int(h))
         hh.pack(side=tk.LEFT, fill=tk.X, padx=5)
         ##
         separator = tk.Label(fDura, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
@@ -104,7 +104,7 @@ class PopupEditResource(PopupAddResource):
         ##
         mm = ttk.Combobox(fDura, values=tk_helper.getComboboxValueRange(), width=4, textvariable=self.mm, justify='right')
         mm.bind("<FocusIn>", lambda args: hh.select_range('0', tk.END))
-        mm.current(m)
+        mm.current(int(m))
         mm.pack(side=tk.LEFT, fill=tk.X, padx=5)
         ##
         separator = tk.Label(fDura, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
@@ -112,7 +112,7 @@ class PopupEditResource(PopupAddResource):
         ##
         ss = ttk.Combobox(fDura, values=tk_helper.getComboboxValueRange(), width=4, textvariable=self.ss, justify='right')
         ss.bind("<FocusIn>", lambda args: ss.select_range('0', tk.END))
-        ss.current(s)
+        ss.current(int(s))
         ss.pack(side=tk.LEFT, fill=tk.X, padx=5)
 
     def limithh(self, *arg):

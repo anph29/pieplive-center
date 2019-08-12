@@ -3,7 +3,7 @@
 block_cipher = None
 
 added_files = [
-  ( 'PiepLiveCenter.zip', '.' )
+  ( '../PiepLiveCenter.zip', '.' )
 ]
 
 a = Analysis(['piepme.py'],

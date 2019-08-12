@@ -58,7 +58,7 @@ class PopupAddSchedule(object):
         ##
         hh = ttk.Combobox(fDura, values=tk_helper.getComboboxValueRange(end=100), width=4, textvariable=self.hh, justify='right')
         hh.bind("<FocusIn>", lambda args: hh.select_range('0', tk.END))
-        hh.current(h)
+        hh.current(int(h))
         hh.pack(side=tk.LEFT, fill=tk.X, padx=5)
         ##
         separator = tk.Label(fDura, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
@@ -66,7 +66,7 @@ class PopupAddSchedule(object):
         ##
         mm = ttk.Combobox(fDura, values=tk_helper.getComboboxValueRange(), width=4, textvariable=self.mm, justify='right')
         mm.bind("<FocusIn>", lambda args: hh.select_range('0', tk.END))
-        mm.current(m)
+        mm.current(int(m))
         mm.pack(side=tk.LEFT, fill=tk.X, padx=5)
         ##
         separator = tk.Label(fDura, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
@@ -74,7 +74,7 @@ class PopupAddSchedule(object):
         ##
         ss = ttk.Combobox(fDura, values=tk_helper.getComboboxValueRange(), width=4, textvariable=self.ss, justify='right')
         ss.bind("<FocusIn>", lambda args: ss.select_range('0', tk.END))
-        ss.current(s)
+        ss.current(int(s))
         ss.pack(side=tk.LEFT, fill=tk.X, padx=5)
         #4. Button
         fBtn = tk.Frame(wrapper, pady=10, padx=20)
@@ -112,7 +112,7 @@ class PopupAddSchedule(object):
         ##
         HH = ttk.Combobox(fTime, values=tk_helper.getComboboxValueRange(end=100), textvariable=self.HH, width=4, justify='right')
         HH.bind("<FocusIn>", lambda args: HH.select_range('0', tk.END))
-        HH.current(H)
+        HH.current(int(H))
         HH.pack(side=tk.LEFT, fill=tk.X, padx=5)
         ##
         separator = tk.Label(fTime, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
@@ -120,7 +120,7 @@ class PopupAddSchedule(object):
         ##
         MM = ttk.Combobox(fTime, values=tk_helper.getComboboxValueRange(), width=4, textvariable=self.MM, justify='right')
         MM.bind("<FocusIn>", lambda args: MM.select_range('0', tk.END))
-        MM.current(M)
+        MM.current(int(M))
         MM.pack(side=tk.LEFT, fill=tk.X, padx=5)
         ##
         separator = tk.Label(fTime, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
@@ -128,7 +128,7 @@ class PopupAddSchedule(object):
         ##
         SS = ttk.Combobox(fTime, values=tk_helper.getComboboxValueRange(), width=4, textvariable=self.SS, justify='right')
         SS.bind("<FocusIn>", lambda args: SS.select_range('0', tk.END))
-        SS.current(S)
+        SS.current(int(S))
         SS.pack(side=tk.LEFT, fill=tk.X, padx=5)
          #1. Button
         fBtn = tk.Frame(wrapper, pady=10, padx=20)

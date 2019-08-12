@@ -7,8 +7,8 @@ from threading import Thread, Event
 import subprocess as sp
 from src.utils import helper, kivyhelper
 from pathlib import Path
-from pydub import AudioSegment
-from pydub.playback import play
+# from pydub import AudioSegment
+# from pydub.playback import play
 
 class KivyCameraMain(Image):
     capture = ObjectProperty(None)
@@ -169,6 +169,7 @@ class KivyCameraMain(Image):
                     self.capture.release()
                 if self.reconnect >= 10:
                     self.show_captured_img(self.default_frame)
+                    kivyhelper.getApRoot().loading = False
                 else:
                     self.reconnect += 1
                     Clock.schedule_once(self.process_set_data,0.5)

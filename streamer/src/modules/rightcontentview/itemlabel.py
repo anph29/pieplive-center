@@ -4,7 +4,7 @@ from kivy.properties import ObjectProperty, NumericProperty, ObjectProperty, Boo
 from src.modules.custom.popup import PiepMeConfirmPopup
 from src.modules.kvcam.labelcamera import LabelCamera
 from kivy.lang import Builder
-from src.utils import kivyhelper as kv_helper
+from src.utils import kivyhelper
 from src.modules.custom.addschedule import AddSchedule
 
 Builder.load_file('src/ui/itemlabel.kv')
@@ -17,6 +17,7 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
     kvcam = ObjectProperty()
     isCheckItem = ObjectProperty()
     active = BooleanProperty(False)
+    activeMini = BooleanProperty(False)
     choice = BooleanProperty(False)
     playable = BooleanProperty(False)
     duration = NumericProperty(0)
@@ -35,6 +36,7 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
         self.listType = data['list']
         self.data = data
         self.active = data['active']
+        self.activeMini = data['activeMini']
         self.choice = data['choice']
         self.playable = data['playable'] if 'playable' in data else True
         self.isCheckItem.active = False
@@ -60,23 +62,23 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
         self.parent.parent.remove(self.index)
 
     def add_to_schedule(self):
-        kv_helper.getApRoot().open_add_schedule(self.data)
+        kivyhelper.getApRoot().open_add_schedule(self.data)
     
     def play(self):
         if self.playable:
-            kv_helper.getApRoot().loading = True
+            kivyhelper.getApRoot().loading = True
             self.isCheckItem.active = False
             self.parent.parent.setPlayed(self.index)
-            kv_helper.getApRoot().changeSrc(self.kvcam.get_data_source(),self.listType)
-            if self.listType == 'PRESENTER':
+            kivyhelper.getApRoot().changeSrc(self.kvcam.get_data_source(),self.listType)
+            if self.listType == 'PRESENTER' and kivyhelper.getApRoot().presenterAuto:
                 self.parent.parent.choice_play(self.index)
 
-    
     def playMini(self, isPlay):
         if self.playable and isPlay:
-            kv_helper.getApRoot().loading = True
-            kv_helper.getApRoot().changeSrcMini(self.kvcam.get_data_source(),self.listType)
+            kivyhelper.getApRoot().loadingMini = True
+            self.parent.parent.setPlayedMini(self.index)
+            kivyhelper.getApRoot().changeSrcMini(self.kvcam.get_data_source(),self.listType)
 
     def choice_play(self):
-        if self.listType == 'PRESENTER':
+        if self.playable and self.listType == 'PRESENTER':
             self.parent.parent.choice_play(self.index)

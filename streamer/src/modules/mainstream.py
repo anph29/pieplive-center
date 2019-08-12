@@ -1,7 +1,6 @@
-import src.utils.kivyhelper as kv_helper
-from src.utils import helper
+from src.utils import helper, kivyhelper
 from threading import Thread, Event
-from kivy.clock import Clock, mainthread
+from kivy.clock import Clock
 from kivy.graphics import Fbo, ClearColor, ClearBuffers, Scale, Translate
 from kivy.uix.relativelayout import RelativeLayout
 from src.modules.kvcam.kivycameramain import KivyCameraMain
@@ -156,12 +155,11 @@ class MainStream(RelativeLayout):
             # self._thread.start()
             self._process()
         except IOError:
-            kv_helper.getApRoot().triggerStop()
+            kivyhelper.getApRoot().triggerStop()
 
     def _process(self):
         self.event = Clock.schedule_interval(self.stream, 1/25)
 
-    # @mainthread
     def stream(self, fps):
         try:
             if self.isStream:
@@ -186,7 +184,7 @@ class MainStream(RelativeLayout):
             
     def reconnecting(self, dt):
         if self.reconnect > 10:
-            kv_helper.getApRoot().triggerStop()
+            kivyhelper.getApRoot().triggerStop()
         else:
             if bool(self.prepare()):
                 self.startStream()

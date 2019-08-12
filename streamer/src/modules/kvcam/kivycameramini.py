@@ -152,7 +152,7 @@ class KivyCameraMini(DragBehavior, Image):
                 self.capture = cv2.VideoCapture(self.url)
 
             if self.capture is not None and self.capture.isOpened():
-                kivyhelper.getApRoot().loading = False
+                kivyhelper.getApRoot().loadingMini = False
                 self.reconnect = 0
                 self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
                 self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
@@ -172,6 +172,7 @@ class KivyCameraMini(DragBehavior, Image):
                     self.capture.release()
                 if self.reconnect >= 10:
                     self.show_captured_img(self.default_frame)
+                    kivyhelper.getApRoot().loadingMini = False
                 else:
                     self.reconnect += 1
                     Clock.schedule_once(self.process_set_data,1)

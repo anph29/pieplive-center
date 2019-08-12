@@ -5,13 +5,10 @@ from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, Num
 from kivy.graphics.texture import Texture
 from kivy.uix.behaviors import DragBehavior
 from kivy.graphics import Rectangle, Color
-from src.modules.rightcontentview.itemcamera import ItemCamera
 from threading import Thread, Event
 from kivy.lang import Builder
 from functools import partial
 from src.utils import helper, kivyhelper
-
-_CAM_NUMS_FRAME = '-2562047788015215'
 
 kv = '''
 <KivyCameraMini>:

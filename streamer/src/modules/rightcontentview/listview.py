@@ -265,7 +265,7 @@ class ListPresenter(RecycleView):
 
     def firebaseCallback(self, message):
         path, data, event = message.values()
-        if bool(data):
+        if data is not None:
             if path == '/':
                 self.onChangeLN510(data['LIST'])
                 Clock.schedule_once(lambda x: self.onChangePresenter(data['PRESENTER']),0.5)

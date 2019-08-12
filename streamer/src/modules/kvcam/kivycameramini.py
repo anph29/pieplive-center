@@ -5,13 +5,10 @@ from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, Num
 from kivy.graphics.texture import Texture
 from kivy.uix.behaviors import DragBehavior
 from kivy.graphics import Rectangle, Color
-from src.modules.rightcontentview.itemcamera import ItemCamera
 from threading import Thread, Event
 from kivy.lang import Builder
 from functools import partial
-from src.utils import helper
-
-_CAM_NUMS_FRAME = '-2562047788015215'
+from src.utils import helper, kivyhelper
 
 kv = '''
 <KivyCameraMini>:
@@ -110,11 +107,10 @@ class KivyCameraMini(DragBehavior, Image):
 
                 timeout = 1
                 command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
-                
                 if self.category == "PRESENTER":
                     self.url = self.data_src['rtmp']
-                    timeout=3
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url, "-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000","-preset","medium","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                    timeout=2
+                    command = ["ffmpeg/ffmpeg.exe","-y","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000","-preset","medium","-ar","44100","-ab","160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "M3U8":
                     timeout=1
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-ar","44100", "-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
@@ -156,11 +152,12 @@ class KivyCameraMini(DragBehavior, Image):
                 self.capture = cv2.VideoCapture(self.url)
 
             if self.capture is not None and self.capture.isOpened():
+                kivyhelper.getApRoot().loading = False
                 self.reconnect = 0
                 self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
                 self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
                 # if self.resource_type != 'VIDEO' and self.resource_type != "M3U8":
-                self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
+                # self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
                 self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
                 if self.f_parent is not None:
                     if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
@@ -201,7 +198,6 @@ class KivyCameraMini(DragBehavior, Image):
         if self.event_capture is not None:
             self.event_capture.cancel()
 
-    @mainthread
     def update(self, dt):
         try:
             if self.capture.isOpened():
@@ -218,7 +214,6 @@ class KivyCameraMini(DragBehavior, Image):
         except IOError:
             print("Exception update:")
 
-    @mainthread
     def update_texture_from_frame(self, frame):
         try:
             # frame = self.resizeFrame(frame)
@@ -236,6 +231,7 @@ class KivyCameraMini(DragBehavior, Image):
             self.pipe.kill()
         if self.capture is not None:
             self.capture.release()
+        print('MINICAM','Release')
 
     def resizeFrame(self, frame):
         if frame is None:

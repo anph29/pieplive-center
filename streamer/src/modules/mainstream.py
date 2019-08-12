@@ -304,6 +304,8 @@ class MainStream(RelativeLayout):
                 self.pipe.kill()
             if self.camera is not None:
                 self.camera.release()
+            if self.cameraMini is not None:
+                self.cameraMini.release()
             if self.pipe2 is not None:
                 self.pipe2.kill()
             if self.mgrSchedule is not None:

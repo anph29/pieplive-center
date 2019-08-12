@@ -23,6 +23,7 @@ class MainView(Widget):
     showMiniD = BooleanProperty(False)
     switchDisplay = BooleanProperty(False)
     idSoundDevice = StringProperty('')
+    loading = BooleanProperty(False)
 
     def __init__(self, **kwargs):
         super(MainView, self).__init__(**kwargs)

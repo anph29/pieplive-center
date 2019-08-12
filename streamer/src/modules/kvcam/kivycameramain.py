@@ -3,10 +3,9 @@ from kivy.uix.image import Image
 from kivy.clock import Clock, mainthread
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
 from kivy.graphics.texture import Texture
-from src.modules.rightcontentview.itemcamera import ItemCamera
 from threading import Thread, Event
 import subprocess as sp
-from src.utils import helper
+from src.utils import helper, kivyhelper
 from pathlib import Path
 from pydub import AudioSegment
 from pydub.playback import play
@@ -99,7 +98,7 @@ class KivyCameraMain(Image):
                 if self.category == "PRESENTER":
                     self.url = self.data_src['rtmp']
                     timeout=2
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000","-preset","medium","-ar","44100","-ab","160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000","-preset","medium","-ar","44100","-ab","160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "M3U8":
                     timeout=1
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync", "1","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-ar","44100", "-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
@@ -141,12 +140,13 @@ class KivyCameraMain(Image):
                 self.capture = cv2.VideoCapture(self.url)
 
             if self.capture is not None and self.capture.isOpened():
+                kivyhelper.getApRoot().loading = False
                 self.reconnect = 0
                 self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
                 self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
                 # if self.resource_type != 'VIDEO' and self.resource_type != "M3U8":
                 #     self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
-                print(">>CAPTURE FINED:")
+                print(">>CAPTURE FINED:", self.duration_fps)
                 self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
                 if self.f_parent is not None:
                     if self.category == "SCHEDULE":
@@ -201,7 +201,6 @@ class KivyCameraMain(Image):
         if self.event_capture is not None:
             self.event_capture.cancel()
     
-    @mainthread
     def update(self, dt):
         try:
             if self.capture.isOpened():
@@ -225,7 +224,6 @@ class KivyCameraMain(Image):
         except IOError:
             print("Exception update:")
 
-    @mainthread
     def update_texture_from_frame(self, frame):
         try:
             # frame = self.resizeFrame(frame)
@@ -243,6 +241,7 @@ class KivyCameraMain(Image):
             self.pipe.kill()
         if self.capture is not None:
             self.capture.release()
+            print('MAINCAM','Release')
 
     def resizeFrame(self, frame):
         if frame is None:

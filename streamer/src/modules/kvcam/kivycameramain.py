@@ -6,7 +6,7 @@ from kivy.graphics.texture import Texture
 from src.modules.rightcontentview.itemcamera import ItemCamera
 from threading import Thread, Event
 import subprocess as sp
-from src.utils import helper
+from src.utils import helper, kivyhelper
 from pathlib import Path
 from pydub import AudioSegment
 from pydub.playback import play
@@ -141,6 +141,7 @@ class KivyCameraMain(Image):
                 self.capture = cv2.VideoCapture(self.url)
 
             if self.capture is not None and self.capture.isOpened():
+                kivyhelper.getApRoot().loading = False
                 self.reconnect = 0
                 self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
                 self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)

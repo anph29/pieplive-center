@@ -9,7 +9,7 @@ from src.modules.rightcontentview.itemcamera import ItemCamera
 from threading import Thread, Event
 from kivy.lang import Builder
 from functools import partial
-from src.utils import helper
+from src.utils import helper, kivyhelper
 
 _CAM_NUMS_FRAME = '-2562047788015215'
 
@@ -156,6 +156,7 @@ class KivyCameraMini(DragBehavior, Image):
                 self.capture = cv2.VideoCapture(self.url)
 
             if self.capture is not None and self.capture.isOpened():
+                kivyhelper.getApRoot().loading = False
                 self.reconnect = 0
                 self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
                 self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)

@@ -64,6 +64,7 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
     
     def play(self):
         if self.playable:
+            kv_helper.getApRoot().loading = True
             self.isCheckItem.active = False
             self.parent.parent.setPlayed(self.index)
             kv_helper.getApRoot().changeSrc(self.kvcam.get_data_source(),self.listType)
@@ -73,6 +74,7 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
     
     def playMini(self, isPlay):
         if self.playable and isPlay:
+            kv_helper.getApRoot().loading = True
             kv_helper.getApRoot().changeSrcMini(self.kvcam.get_data_source(),self.listType)
 
     def choice_play(self):

@@ -1,7 +1,5 @@
 #:import helper src.utils.helper
 <BottomLeft>:
-    stream_server : stream_server
-    stream_key : stream_key
     list_source : list_source
     list_mixer : list_mixer
 
@@ -57,6 +55,7 @@
             orientation:'horizontal'
             padding:5
             spacing:10
+            Widget:
             ImageButton:
                 size_hint:None,1
                 padding: 5
@@ -138,7 +137,7 @@
             size_hint:1, None
             height: dp(26)
             font_size:sp(11)
-            text: '[color=ffffff]Stream[/color]'
+            text: '[color=ffffff]Presenter active[/color]'
             markup: True
         
         BoxLayout:
@@ -147,22 +146,6 @@
             height: self.parent.height - dp(28)
             padding:0,5,0,0
             spacing:5
-            TextInput:
-                id: stream_server
-                size_hint: 1, None
-                height: 26
-                font_size:sp(12)
-                color: 0,0,0,1
-                multiline:False
-                hint_text:'Sever'
-            TextInput:
-                id: stream_key
-                size_hint: 1, None
-                height: 26
-                font_size:sp(12)
-                color: 1,1,1,1
-                multiline:False
-                hint_text:'Key'
             Widget:
 
 <TextDialog>:

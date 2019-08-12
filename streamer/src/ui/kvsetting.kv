@@ -1,0 +1,102 @@
+#:import helper src.utils.helper
+
+<KVSetting>:
+    rcv_stream:rcv_stream
+    stream_server:stream_server
+    stream_key:stream_key
+    title: 'Link Stream'
+    color:1,0,0,1
+    size_hint:None, None
+    width:sp(500)
+    height:sp(400)
+    auto_dismiss: False
+    padding:20
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint:1, 1
+        padding: 0,10,0,0
+        spacing:5
+        ListStream:
+            id:rcv_stream
+            viewclass: 'RCVStream'
+            size_hint:1,None
+            height: self.parent.height - dp(130)
+            scroll_type: ['bars', 'content']
+            bar_width: 10
+            canvas.before:
+                Color: 
+                    rgb:(.1,.1,.1)
+                Rectangle:
+                    size:self.size
+                    pos:self.pos
+            BoxAudio:
+                spacing: 1
+                default_size: None, 22
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                multiselect: False
+                touch_multiselect: False
+        
+        TextInput:
+            id: stream_server
+            size_hint: 1, None
+            height: 26
+            font_size:sp(12)
+            color: 0,0,0,1
+            multiline:False
+            hint_text:'Sever'
+        TextInput:
+            id: stream_key
+            size_hint: 1, None
+            height: 26
+            font_size:sp(12)
+            color: 1,1,1,1
+            multiline:False
+            hint_text:'Key'
+
+        Widget:
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, None
+            pos_hint:{'y':0, 'right':1}
+            spacing:10
+            height: 50
+            padding:0
+            Widget:
+            Button:
+                text: 'OK'
+                on_release: root.on_ok()
+                width:100
+            Button:
+                text: 'Cancel'  
+                on_release: root.on_cancel()
+                width:100
+
+
+<RCVStream>:
+    canvas.before:
+        Color: 
+            rgb:((.1,.1,.1),(.25,.25,.25))[root.active]
+        Rectangle:
+            size:self.size
+            pos:self.pos
+    padding: 0,1,0,1
+    BoxLayout:
+        orientation:'horizontal'
+        size_hint: 1, None
+        height: 22
+        spacing:5
+    
+        MyLabel:
+            size_hint: 1, 1
+            padding: 10,0
+            font_size: 13
+            text: root.name
+            text_size: self.width, self.height
+            valign: 'center'
+            halign: 'justify'
+            color: 1,1,1,1
+            markup: True
+            on_release: root.set_active()

@@ -95,11 +95,11 @@ class HTTP_MODEL():
         #7. mk request
         req = Request(url, data=data, method=method)
         req.add_header("Accept", "application/json")
-        print(f'>>>>>>>>>>REQUEST -> method={method}, url={url}, data={data}')
+        print(f'>>>>>>>>>> {method} {url} data={data}')
         #8. receive RESPONSE
         with urlopen(req) as response:
             json_str = response.read().decode("utf-8")
             data_json = json.loads(json_str)
-            print(f'>>>>>>>>>>RESPONSE -> status={data_json["status"]}, len={len(json_str)}')
+            print(f'>>>>>>>>>> RESPONSE -> status={data_json["status"]}, len={len(json_str)}')
             return data_json
 

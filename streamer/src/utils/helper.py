@@ -112,10 +112,11 @@ def delete_schedule_container(fname):
         os.remove(path)
 
 
-def duplicate_schedule_container(fname):
-    src = makeSureScheduleFile(fname)
-    dst = makeSureScheduleFile(fname + '-COPY')
+def duplicate_schedule_container(frName, toName):
+    src = makeSureScheduleFile(frName)
+    dst = makeSureScheduleFile(toName)
     shutil.copyfile(src, dst)
+    return toName
 
 # -- @@ -- @@ --
 

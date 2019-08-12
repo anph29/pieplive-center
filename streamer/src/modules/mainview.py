@@ -4,6 +4,7 @@ from src.modules.bottomleft.bottomleft import TextDialog
 from src.modules.bottomleft.bottomleft import ImageDialog
 from src.modules.bottomleft.bottomleft import AudioDialog
 from src.modules.custom.addschedule import AddSchedule
+from src.modules.kvsetting import KVSetting
 from src.modules.mainstream import MainStream
 from src.utils import helper, scryto
 from kivy.lang import Builder
@@ -24,6 +25,10 @@ class MainView(Widget):
     switchDisplay = BooleanProperty(False)
     idSoundDevice = StringProperty('')
     loading = BooleanProperty(False)
+    loadingMini = BooleanProperty(False)
+    presenterAuto = BooleanProperty(True)
+    streamServer = StringProperty('')
+    streamKey = StringProperty('')
 
     def __init__(self, **kwargs):
         super(MainView, self).__init__(**kwargs)
@@ -46,12 +51,11 @@ class MainView(Widget):
         if self.setting['vbitrate'] is not None:
             self.v_bitrate = self.mainStream.v_bitrate = self.setting['vbitrate']
         if self.setting['stream_server'] is not None:
-            self.bottom_left.stream_server.text = self.setting['stream_server']
+            self.streamServer = self.setting['stream_server']
         if self.setting['stream_key'] is not None:
-            self.bottom_left.stream_key.text = self.setting['stream_key']
+            self.streamKey = self.setting['stream_key']
 
-        self.mainStream.urlStream = self.bottom_left.stream_server.text + \
-            self.bottom_left.stream_key.text
+        self.mainStream.urlStream = self.streamServer + self.streamKey
         self.initAudio()
         self.initSource()
         self.bottom_left.list_mixer.set_source(self.lsAudio)
@@ -133,24 +137,26 @@ class MainView(Widget):
 
     def start_stream(self):
         if self.mainStream.isStream is False:
-            if len(self.bottom_left.stream_server.text) == 0 or len(self.bottom_left.stream_key.text) == 0:
+            if len(self.streamServer) == 0 or len(self.streamKey) == 0:
                 return False
-            self.mainStream.set_url_stream(
-                self.bottom_left.stream_server.text+self.bottom_left.stream_key.text)
+            self.mainStream.set_url_stream(self.streamServer + self.streamKey)
             if bool(self.mainStream.prepare()):
                 self.mainStream.startStream()
                 self.btn_start.text = "Stop"
                 self.btn_start.background_color = .29, .41, .15, 0.9
-                if self.setting['stream_server'] is not None:
-                    self.setting['stream_server'] = self.bottom_left.stream_server.text
-                if self.setting['stream_key'] is not None:
-                    self.setting['stream_key'] = self.bottom_left.stream_key.text
-                helper._write_setting(self.setting)
 
         elif self.mainStream.isStream is True:
             self.mainStream.stopStream()
             self.btn_start.text = "Start"
             self.btn_start.background_color = .29, .41, .55, 1
+
+    def save_setting(self, stream_server, stream_key):
+        if self.setting['stream_server'] is not None:
+            self.streamServer = self.setting['stream_server'] = stream_server
+        if self.setting['stream_key'] is not None:
+            self.streamKey = self.setting['stream_key'] = stream_key
+        self.mainStream.urlStream = self.streamServer + self.streamKey
+        helper._write_setting(self.setting)
 
     def show_mini_display(self):
         if self.showMiniD is False:
@@ -213,7 +219,8 @@ class MainView(Widget):
             self.mainStream.on_change_audio()
 
     def openSetting(self):
-        pass
+        self.settingPop = KVSetting(self)
+        self.settingPop.open()
 
     def add_source(self, type):
         if type == 'IMAGE':

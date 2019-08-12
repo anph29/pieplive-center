@@ -4,8 +4,7 @@ from kivy.properties import ObjectProperty, NumericProperty, ObjectProperty, Boo
 from src.modules.custom.popup import PiepMeConfirmPopup
 from src.modules.kvcam.labelcamera import LabelCamera
 from kivy.lang import Builder
-from src.utils import kivyhelper as kvhelper
-from src.utils import helper
+from src.utils import helper, kivyhelper
 import datetime
 
 Builder.load_file('src/ui/itemschedule.kv')
@@ -56,7 +55,7 @@ class ItemSchedule(RecycleDataViewBehavior, FloatLayout):
     def play(self):
         self.isCheckItem.active = False
         self.parent.parent.setPlayed(self.index)
-        kvhelper.getApRoot().changeSrc(self.kvcam.get_data_source(),'SCHEDULE')
+        kivyhelper.getApRoot().changeSrc(self.kvcam.get_data_source(),'SCHEDULE')
         self.parent.parent.makeTimePoint(self.index)
 
     def up(self):

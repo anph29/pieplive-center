@@ -9,6 +9,7 @@ from src.utils import kivyhelper
 
 class ListMedia(RecycleView):
     item_playing = ''
+    item_playing_mini = ''
  
     def __init__(self, **kwargs):
         super(ListMedia, self).__init__(**kwargs)
@@ -20,6 +21,7 @@ class ListMedia(RecycleView):
                 'duration': cam['duration'] if 'duration' in cam else 0,
                 'list':'VIDEO',
                 'active': (False,True) [cam['id'] == self.item_playing],
+                'activeMini': (False,True) [cam['id'] == self.item_playing_mini],
                 'choice':False},
                 helper._load_video()
             )
@@ -67,6 +69,17 @@ class ListMedia(RecycleView):
                 child.active = True
             else:
                 child.active = False
+
+    def setPlayedMini(self,index):
+        self.item_playing_mini = self.data[index]['id']
+        for obj in self.data:
+            obj['activeMini'] = False
+        self.data[index]['activeMini'] = True
+        for child in self.children[0].children:
+            if child.index == index:
+                child.activeMini = True
+            else:
+                child.activeMini = False
     
     def refresh_view(self):
         try:
@@ -77,6 +90,7 @@ class ListMedia(RecycleView):
 
 class ListImage(RecycleView):
     item_playing = ''
+    item_playing_mini = ''
 
     def __init__(self, **kwargs):
         super(ListImage, self).__init__(**kwargs)
@@ -87,6 +101,7 @@ class ListImage(RecycleView):
                 lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 
                 'list':'IMAGE',
                 'active': (False,True) [cam['id'] == self.item_playing],
+                'activeMini': (False,True) [cam['id'] == self.item_playing_mini],
                 'choice':False},
                 helper._load_image()
             )
@@ -135,6 +150,17 @@ class ListImage(RecycleView):
             else:
                 child.active = False
 
+    def setPlayedMini(self,index):
+        self.item_playing_mini = self.data[index]['id']
+        for obj in self.data:
+            obj['activeMini'] = False
+        self.data[index]['activeMini'] = True
+        for child in self.children[0].children:
+            if child.index == index:
+                child.activeMini = True
+            else:
+                child.activeMini = False
+
     def refresh_view(self):
         try:
             for child in self.children[0].children:
@@ -144,6 +170,7 @@ class ListImage(RecycleView):
 
 class ListCamera(RecycleView):
     item_playing = ""
+    item_playing_mini = ""
     def __init__(self, **kwargs):
         super(ListCamera, self).__init__(**kwargs)
 
@@ -153,6 +180,7 @@ class ListCamera(RecycleView):
                 lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 
                 'list':'CAMERA',
                 'active': (False,True) [cam['id'] == self.item_playing],
+                'activeMini': (False,True) [cam['id'] == self.item_playing_mini],
                 'choice':False},
                 helper._load_lscam()
             )
@@ -201,6 +229,17 @@ class ListCamera(RecycleView):
             else:
                 child.active = False
 
+    def setPlayedMini(self,index):
+        self.item_playing_mini = self.data[index]['id']
+        for obj in self.data:
+            obj['activeMini'] = False
+        self.data[index]['activeMini'] = True
+        for child in self.children[0].children:
+            if child.index == index:
+                child.activeMini = True
+            else:
+                child.activeMini = False
+
     def refresh_view(self):
         try:
             for child in self.children[0].children:
@@ -210,6 +249,7 @@ class ListCamera(RecycleView):
 
 class ListPresenter(RecycleView):
     item_playing = ''
+    item_playing_mini = ''
     item_choice = '0'
     listenerStream = None
     is_auto = BooleanProperty(True)
@@ -225,7 +265,7 @@ class ListPresenter(RecycleView):
 
     def firebaseCallback(self, message):
         path, data, event = message.values()
-        if bool(data):
+        if data is not None:
             if path == '/':
                 self.onChangeLN510(data['LIST'])
                 Clock.schedule_once(lambda x: self.onChangePresenter(data['PRESENTER']),0.5)
@@ -239,7 +279,7 @@ class ListPresenter(RecycleView):
         if int(self.item_choice) == presenter:
             pass
         else:
-            if presenter == 0 and self.is_auto:
+            if presenter == 0 and kivyhelper.getApRoot().presenterAuto:
                 if self.switch_proc is not None:
                     self.switch_proc.cancel()
                 
@@ -318,6 +358,7 @@ class ListPresenter(RecycleView):
                 'rtmp': cam['rtmp'] if 'rtmp' in cam else cam['url'],
                 'list':'PRESENTER',
                 'active': (False,True) [cam['id'] == self.item_playing],
+                'activeMini': (False,True) [cam['id'] == self.item_playing_mini],
                 'choice': (False,True) [cam['id'] == self.item_choice],
                 'playable': False},
                 helper._load_ls_presenter()
@@ -368,6 +409,17 @@ class ListPresenter(RecycleView):
             else:
                 child.active = False
 
+    def setPlayedMini(self,index):
+        self.item_playing_mini = self.data[index]['id']
+        for obj in self.data:
+            obj['activeMini'] = False
+        self.data[index]['activeMini'] = True
+        for child in self.children[0].children:
+            if child.index == index:
+                child.activeMini = True
+            else:
+                child.activeMini = False
+
     def refresh_view(self):
         try:
             for child in self.children[0].children:
@@ -376,7 +428,7 @@ class ListPresenter(RecycleView):
             pass
     
     def change_presenter_auto(self, _val):
-        self.is_auto = _val
+        kivyhelper.getApRoot().presenterAuto = _val
         
 class ListSchedule(RecycleView):
     item_playing = ""

@@ -72,12 +72,7 @@ class MediaItemBox(MediaItem):
     def initBOTTOM(self):
         self.bottom = tk.Frame(self.wrapper, bd=5, relief=tk.FLAT, bg=self.botBg, width=self.cell_width, height=self.bot_height)
         self.bottom.pack(side=tk.BOTTOM, fill=tk.X)
-        # traffic light
-        if self.parentTab.tabType == MediaType.PRESENTER:
-            frame = tk.PhotoImage(file=f'{helper._ICONS_PATH}live-red.png')
-            self.light = tk.Label(self.bottom, width=16, height=16, image=frame, bg=self.botBg)
-            self.light.image = frame
-            self.light.pack(side=tk.LEFT)
+        
         # check all
         self.checkbox = tk.Checkbutton(self.bottom, variable=self.checked, onvalue=True, bg=self.botBg, offvalue=False, height=1, width=1, bd=0, relief=tk.FLAT)
         self.checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)
@@ -114,6 +109,12 @@ class MediaItemBox(MediaItem):
             self.lblVolume.bind("<Button-1>", self.toggleMute) 
             self.lblVolume.pack(side=tk.RIGHT)
             ToolTip(self.lblZoom, "Zoom in")
+        # traffic light
+        if self.parentTab.tabType == MediaType.PRESENTER:
+            frame = tk.PhotoImage(file=f'{helper._ICONS_PATH}live-red.png')
+            self.light = tk.Label(self.bottom, width=16, height=16, image=frame, bg=self.botBg)
+            self.light.image = frame
+            self.light.pack(side=tk.RIGHT)
 
     def initVLC(self, evt):
         # video, camera || presenter onlinne

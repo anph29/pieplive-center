@@ -10,6 +10,7 @@ from src.modules.menu import MainMenu
 from src.modules.login import Login
 from src.enums import MediaType
 from src.modules.schedule import Schedule
+from src.modules.com import PiepManager
 import PIL
 from PIL import Image, ImageTk
 
@@ -99,8 +100,20 @@ class MainView(tk.Frame):
         #
         self.setStyle()
         self.updateMenu()
-        self.showToolbar()
         self.showBigTabWrapper()
+
+    def afterLogin(self):
+        self.toolbar = tk.Frame(self, relief=tk.FLAT, bg="#fff")
+        self.toolbar.pack(side=tk.TOP, fill=tk.X)
+        self.packRightToolbar()
+        self.packCOMtab()
+
+    def afterLogout(self):
+        self.updateMenu()
+        self.tab_camera.clearData()
+        self.tab_presenter.clearData()
+        self.toolbar.pack_forget()
+        self.superWrapper.forget(self.tabCOM)
 
     def showBigTabWrapper(self):
         self.superWrapper = ttk.Notebook(self)
@@ -120,8 +133,12 @@ class MainView(tk.Frame):
             self.mediaList, text="Live View", image=icMedia, compound=tk.LEFT
         )
         # C.O.M
+        if bool(store._get('FO100')):
+            self.packCOMtab()
+        
+    def packCOMtab(self):
         icCom = tk.PhotoImage(file=helper._ICONS_PATH + "se-icon.png")
-        self.tabCOM = self.makeMediaListTab()
+        self.tabCOM = PiepManager(self)
         self.tabCOM.image = icCom
         self.superWrapper.add(self.tabCOM, text="C.O.M", image=icCom, compound=tk.LEFT)
         #
@@ -165,18 +182,7 @@ class MainView(tk.Frame):
         self.parent.parent.config(menu=self.menubar)
 
     def makeMediaGrid(self, tType):
-        return MediaGridView(self, tabType=tType, borderwidth=0, bg="#fff")
-
-    def hideToolbar(self):
-        self.toolbar.pack_forget()
-        self.updateMenu()
-
-    def showToolbar(self):
-        self.toolbar = tk.Frame(self, relief=tk.FLAT, bg="#fff")
-        self.toolbar.pack(side=tk.TOP, fill=tk.X)
-        #
-        if bool(store._get("FO100")):
-            self.packRightToolbar()
+        return MediaGridView(self, tabType=tType, borderwidth=0, bg="#fff")              
 
     def packRightToolbar(self):
         rightToolbar = tk.Frame(self.toolbar, relief=tk.FLAT, bg="#fff")

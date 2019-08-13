@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import tkinter as tk
-from tkinter import *   # from x import * is bad practice
+from tkinter import *  # from x import * is bad practice
 from tkinter.ttk import *
 
 # http://tkinter.unpythonic.net/wiki/VerticalScrolledFrame
@@ -21,7 +21,9 @@ class VerticalScrolledFrame(Frame):
         self.vscrollbar = tk.Scrollbar(self, orient=VERTICAL, relief=tk.FLAT)
         self.vscrollbar.pack(fill=Y, side=RIGHT, expand=FALSE)
         #
-        self.canvas = Canvas(self, bd=0, highlightthickness=0, yscrollcommand=self.vscrollbar.set)
+        self.canvas = Canvas(
+            self, bd=0, highlightthickness=0, yscrollcommand=self.vscrollbar.set
+        )
         self.canvas.pack(side=LEFT, fill=BOTH, expand=TRUE)
         # self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
         #
@@ -29,12 +31,14 @@ class VerticalScrolledFrame(Frame):
         # reset the view
         self.canvas.xview_moveto(0)
         self.canvas.yview_moveto(0)
-        self.canvas.bind('<Configure>', self._configure_canvas)
+        self.canvas.bind("<Configure>", self._configure_canvas)
 
         # create a frame inside the canvas which will be scrolled with it
         self.interior = Frame(self.canvas)
-        self.interior_id = self.canvas.create_window(0, 0, window=self.interior, anchor=NW)
-        self.interior.bind('<Configure>', self._configure_interior)
+        self.interior_id = self.canvas.create_window(
+            0, 0, window=self.interior, anchor=NW
+        )
+        self.interior.bind("<Configure>", self._configure_interior)
 
     def _configure_interior(self, event):
         # update the scrollbars to match the size of the inner frame
@@ -51,13 +55,13 @@ class VerticalScrolledFrame(Frame):
             # update the inner frame's width to fill the self.canvas
             self.canvas.itemconfigure(self.interior_id, width=self.canvas.winfo_width())
 
-
     def _on_mousewheel(self, event):
         self.canvas.focus_set()
-        self.canvas.yview_moveto(-1 * int(event.delta/120))
+        self.canvas.yview_moveto(-1 * int(event.delta / 120))
 
 
 if __name__ == "__main__":
+
     class SampleApp(Tk):
         def __init__(self, *args, **kwargs):
             root = Tk.__init__(self, *args, **kwargs)

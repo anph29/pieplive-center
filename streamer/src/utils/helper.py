@@ -7,28 +7,29 @@ from . import zip_helper
 import datetime
 import cv2
 import shutil
+
 """
 VARIABLE
 """
-USER_LOCAL_PATH = os.environ['LOCALAPPDATA'].replace('\\', '/')
-_BASE_PATH = USER_LOCAL_PATH + '/PiepLiveCenter/'
-_PATH_FONT = f'{_BASE_PATH}cfg/font.json'
-_PATH_STORE = f'{_BASE_PATH}cfg/store.json'
-_PATH_IMAGE = f'{_BASE_PATH}cfg/image.json'
-_PATH_VIDEO = f'{_BASE_PATH}cfg/video.json'
-_PATH_AUDIO = f'{_BASE_PATH}cfg/audio.json'
-_PATH_CAMERA = f'{_BASE_PATH}cfg/camera.json'
-_PATH_SCHEDULE = f'{_BASE_PATH}cfg/schedule.json'
-_PATH_SETTING = f'{_BASE_PATH}cfg/setting.json'
-_PATH_PRESENTER = f'{_BASE_PATH}cfg/presenter.json'
-_PATH_KEY_STREAM = f'{_BASE_PATH}cfg/keystream.json'
-_PATH_SCHEDULE_DIR = f'{_BASE_PATH}cfg/schedules/'
-_PATH_STATICSOURCE = f'{_BASE_PATH}cfg/staticsource.json'
-_PATH_SCHEDULE_SORTED = f'{_BASE_PATH}cfg/schedules/sorted.json'
-_ICONS_PATH = f'{_BASE_PATH}icons/'
-_IMAGES_PATH = f'{_BASE_PATH}images/'
-_LOGO_STREAMER = f'{_ICONS_PATH}logo-streamer.ico'
-_LOGO_VIEWER = f'{_ICONS_PATH}logo-viewer.png'
+USER_LOCAL_PATH = os.environ["LOCALAPPDATA"].replace("\\", "/")
+_BASE_PATH = USER_LOCAL_PATH + "/PiepLiveCenter/"
+_PATH_FONT = f"{_BASE_PATH}cfg/font.json"
+_PATH_STORE = f"{_BASE_PATH}cfg/store.json"
+_PATH_IMAGE = f"{_BASE_PATH}cfg/image.json"
+_PATH_VIDEO = f"{_BASE_PATH}cfg/video.json"
+_PATH_AUDIO = f"{_BASE_PATH}cfg/audio.json"
+_PATH_CAMERA = f"{_BASE_PATH}cfg/camera.json"
+_PATH_SCHEDULE = f"{_BASE_PATH}cfg/schedule.json"
+_PATH_SETTING = f"{_BASE_PATH}cfg/setting.json"
+_PATH_PRESENTER = f"{_BASE_PATH}cfg/presenter.json"
+_PATH_KEY_STREAM = f"{_BASE_PATH}cfg/keystream.json"
+_PATH_SCHEDULE_DIR = f"{_BASE_PATH}cfg/schedules/"
+_PATH_STATICSOURCE = f"{_BASE_PATH}cfg/staticsource.json"
+_PATH_SCHEDULE_SORTED = f"{_BASE_PATH}cfg/schedules/sorted.json"
+_ICONS_PATH = f"{_BASE_PATH}icons/"
+_IMAGES_PATH = f"{_BASE_PATH}images/"
+_LOGO_STREAMER = f"{_ICONS_PATH}logo-streamer.ico"
+_LOGO_VIEWER = f"{_ICONS_PATH}logo-viewer.png"
 
 """
 schedule
@@ -52,22 +53,28 @@ def calcCurentSeccondInDay():
     return dt.hour * 3600 + dt.minute * 60 + dt.second
 
 
-def calc_schedule_runtime(index, schedule=[], startTime=0):
+def calc_schedule_runtime(index, schedule=[], startTime=-1):
     isWriteToFile = not bool(schedule)
     schedule = schedule or _load_schedule()
-    startTime = startTime or calcCurentSeccondInDay()
+    # default is current second inday
+    if startTime == -1:
+        startTime = calcCurentSeccondInDay()
     newSchedule = []
     flagStart = False
     currentPoint = startTime
     for i, sch in enumerate(schedule):
         if i == index:
             flagStart = True
-        #
+        # 
         if flagStart:
-            sch['timepoint'] = currentPoint
-            currentPoint += sch['duration']
+            sch["timepoint"] = currentPoint
+            currentPoint += sch["duration"]
+            # 
+            secIn1Day = 24 * 60 * 60                               
+            if currentPoint >= secIn1Day:
+                currentPoint -= secIn1Day
         else:
-            sch['timepoint'] = 0
+            sch["timepoint"] = 0
         #
         newSchedule.append(sch)
     #
@@ -121,6 +128,7 @@ def duplicate_schedule_container(frName, toName):
     shutil.copyfile(src, dst)
     return toName
 
+
 # -- @@ -- @@ --
 
 
@@ -144,12 +152,12 @@ def _add_to_schedule_width_fname(fname, data):
 
 def get_verified_fname(fname):
     fname = removeUnicode(fname)
-    return re.sub(r"[^a-zA-Z0-9\.-_]", '', fname)
+    return re.sub(r"[^a-zA-Z0-9\.-_]", "", fname)
 
 
 def makeSureScheduleFile(name):
-    fname = name if name.endswith('.json') else name + '.json'
-    return f'{_PATH_SCHEDULE_DIR}{fname}'
+    fname = name if name.endswith(".json") else name + ".json"
+    return f"{_PATH_SCHEDULE_DIR}{fname}"
 
 
 """
@@ -312,12 +320,12 @@ JSON helper
 
 
 def loadJSON(path):
-    with open(path, 'r', encoding='utf-8') as jdata:
+    with open(path, "r", encoding="utf-8") as jdata:
         return json.load(jdata)
 
 
 def writeJSON(path, data):
-    with open(path, 'w', encoding='utf-8') as jflie:
+    with open(path, "w", encoding="utf-8") as jflie:
         json.dump(data, jflie, indent=2)
 
 
@@ -333,41 +341,41 @@ UNICODE helper
 
 
 def removeUnicode(str):
-    str = re.sub(r"[àáạảãâầấậẩẫăằắặẳẵÄä]", 'a', str)
-    str = re.sub(r"[èéẹẻẽêềếệểễ]", 'e', str)
-    str = re.sub(r"[ìíịỉĩ]", 'i', str)
-    str = re.sub(r"[òóọỏõôồốộổỗơờớợởỡÖö]", 'o', str)
-    str = re.sub(r"[ùúụủũưừứựửữ]", 'u', str)
-    str = re.sub(r"[ỳýỵỷỹ]", 'y', str)
+    str = re.sub(r"[àáạảãâầấậẩẫăằắặẳẵÄä]", "a", str)
+    str = re.sub(r"[èéẹẻẽêềếệểễ]", "e", str)
+    str = re.sub(r"[ìíịỉĩ]", "i", str)
+    str = re.sub(r"[òóọỏõôồốộổỗơờớợởỡÖö]", "o", str)
+    str = re.sub(r"[ùúụủũưừứựửữ]", "u", str)
+    str = re.sub(r"[ỳýỵỷỹ]", "y", str)
     str = re.sub(r"đ", "d", str)
-    str = re.sub(r"[ÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴ]", 'A', str)
-    str = re.sub(r"[ÈÉẸẺẼÊỀẾỆỂỄ]", 'E', str)
-    str = re.sub(r"[ÌÍỊỈĨ]", 'I', str)
-    str = re.sub(r"[ÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠ]", 'O', str)
-    str = re.sub(r"[ÙÚỤỦŨƯỪỨỰỬỮÜü]", 'U', str)
-    str = re.sub(r"[ỲÝỴỶỸ]", 'Y', str)
-    str = re.sub(r"Đ", 'D', str)
+    str = re.sub(r"[ÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴ]", "A", str)
+    str = re.sub(r"[ÈÉẸẺẼÊỀẾỆỂỄ]", "E", str)
+    str = re.sub(r"[ÌÍỊỈĨ]", "I", str)
+    str = re.sub(r"[ÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠ]", "O", str)
+    str = re.sub(r"[ÙÚỤỦŨƯỪỨỰỬỮÜü]", "U", str)
+    str = re.sub(r"[ỲÝỴỶỸ]", "Y", str)
+    str = re.sub(r"Đ", "D", str)
     return str
 
 
 def removeUnicodeLowerRmvSpace(str):
-    str = str.replace(r"[àáạảãâầấậẩẫăằắặẳẵÄä]", 'a', str)
-    str = str.replace(r"[èéẹẻẽêềếệểễ]", 'e', str)
-    str = str.replace(r"[ìíịỉĩ]", 'i', str)
-    str = str.replace(r"[òóọỏõôồốộổỗơờớợởỡÖö]", 'o', str)
-    str = str.replace(r"[ùúụủũưừứựửữ]", 'u', str)
-    str = str.replace(r"[ỳýỵỷỹ]", 'y', str)
+    str = str.replace(r"[àáạảãâầấậẩẫăằắặẳẵÄä]", "a", str)
+    str = str.replace(r"[èéẹẻẽêềếệểễ]", "e", str)
+    str = str.replace(r"[ìíịỉĩ]", "i", str)
+    str = str.replace(r"[òóọỏõôồốộổỗơờớợởỡÖö]", "o", str)
+    str = str.replace(r"[ùúụủũưừứựửữ]", "u", str)
+    str = str.replace(r"[ỳýỵỷỹ]", "y", str)
     str = str.replace(r"đ", "d", str)
     str = str.replace(r"[\s:\/.]", "", str)
     return str
 
 
 def stringToBase64(s):
-    return base64.b64encode(s.encode('utf-8'))
+    return base64.b64encode(s.encode("utf-8"))
 
 
 def base64ToString(b):
-    return base64.b64decode(b).decode('utf-8')
+    return base64.b64decode(b).decode("utf-8")
 
 
 def convertSecNoToHMS(seconds, toObj=False):
@@ -376,13 +384,13 @@ def convertSecNoToHMS(seconds, toObj=False):
     h = math.floor(seconds / 3600)
     m = math.floor((seconds % 3600) / 60)
     s = seconds - h * 3600 - m * 60
-    hs = ('', '0')[h < 10] + str(h)
-    ms = ('', '0')[m < 10] + str(m)
-    ss = ('', '0')[s < 10] + str(s)
+    hs = ("", "0")[h < 10] + str(h)
+    ms = ("", "0")[m < 10] + str(m)
+    ss = ("", "0")[s < 10] + str(s)
     if toObj:
-        return {'h': hs, 'm': ms, 's': ss}
+        return {"h": hs, "m": ms, "s": ss}
     else:
-        return f'{hs}:{ms}:{ss}'
+        return f"{hs}:{ms}:{ss}"
 
 
 def convertHMSNoToSec(hms):
@@ -391,34 +399,43 @@ def convertHMSNoToSec(hms):
 
 
 def makeSureResourceFolderExisted():
-     # resource
+    # resource
     if not os.path.exists(_BASE_PATH):
-        zip_helper.extractZip('./PiepLiveCenter.zip', USER_LOCAL_PATH)
+        zip_helper.extractZip("./PiepLiveCenter.zip", USER_LOCAL_PATH)
     # resource/temp
-    if not os.path.exists(f'{_BASE_PATH}temp'):
-        os.mkdir(f'{_BASE_PATH}temp')
+    if not os.path.exists(f"{_BASE_PATH}temp"):
+        os.mkdir(f"{_BASE_PATH}temp")
     # resource/cfg
-    if not os.path.exists(f'{_BASE_PATH}cfg'):
-        os.mkdir(f'{_BASE_PATH}cfg')
+    if not os.path.exists(f"{_BASE_PATH}cfg"):
+        os.mkdir(f"{_BASE_PATH}cfg")
     # resource/cfg/schedules
-    if not os.path.exists(f'{_BASE_PATH}cfg/schedules'):
-        os.mkdir(f'{_BASE_PATH}cfg/schedules')
+    if not os.path.exists(f"{_BASE_PATH}cfg/schedules"):
+        os.mkdir(f"{_BASE_PATH}cfg/schedules")
     # sorted schedule file
-    if not os.path.isfile(f'{_BASE_PATH}cfg/schedules/sorted.json'):
-        writeJSON(f'{_BASE_PATH}cfg/schedules/sorted.json', [])
+    if not os.path.isfile(f"{_BASE_PATH}cfg/schedules/sorted.json"):
+        writeJSON(f"{_BASE_PATH}cfg/schedules/sorted.json", [])
     # store
-    checkResourceExistAndWriteIfNot('store', data={})
+    checkResourceExistAndWriteIfNot("store", data={})
     # setting
-    checkResourceExistAndWriteIfNot('setting', data=getSettingJSONContent())
+    checkResourceExistAndWriteIfNot("setting", data=getSettingJSONContent())
     # font
-    checkResourceExistAndWriteIfNot('font', data=getFontJSONContent())
+    checkResourceExistAndWriteIfNot("font", data=getFontJSONContent())
     # ...rest cfg file
-    for target in ['video', 'image', 'camera', 'schedule', 'audio', 'presenter', 'staticsource', 'keystream']:
+    for target in [
+        "video",
+        "image",
+        "camera",
+        "schedule",
+        "audio",
+        "presenter",
+        "staticsource",
+        "keystream",
+    ]:
         checkResourceExistAndWriteIfNot(target)
 
 
 def checkResourceExistAndWriteIfNot(target, data=[]):
-    path = f'{_BASE_PATH}cfg/{target}.json'
+    path = f"{_BASE_PATH}cfg/{target}.json"
     if not os.path.isfile(path):
         writeJSON(path, data)
 
@@ -428,20 +445,11 @@ def getFontJSONContent():
         {
             "name": "opensans",
             "fn_regular": f"{_BASE_PATH}fonts/opensans.ttf",
-            "fn_bold": f"{_BASE_PATH}fonts/opensans-bold.ttf"
+            "fn_bold": f"{_BASE_PATH}fonts/opensans-bold.ttf",
         },
-        {
-            "name": "roboto",
-            "fn_regular": f"{_BASE_PATH}fonts/roboto.ttf"
-        },
-        {
-            "name": "awkward-alone",
-            "fn_regular": f"{_BASE_PATH}fonts/awkward-alone.ttf"
-        },
-        {
-            "name": "good-brush",
-            "fn_regular": f"{_BASE_PATH}fonts/good-brush.ttf"
-        }
+        {"name": "roboto", "fn_regular": f"{_BASE_PATH}fonts/roboto.ttf"},
+        {"name": "awkward-alone", "fn_regular": f"{_BASE_PATH}fonts/awkward-alone.ttf"},
+        {"name": "good-brush", "fn_regular": f"{_BASE_PATH}fonts/good-brush.ttf"},
     ]
 
 
@@ -451,20 +459,20 @@ def getSettingJSONContent():
         "ouput_resolution": [1280, 720],
         "vbitrate": "4M",
         "stream_server": "",
-        "stream_key": ""
+        "stream_key": "",
     }
 
 
 def getMTypeFromUrl(url):
     URL = url.upper()
-    if 'RTSP' in URL:
-        return 'RTSP'
-    elif 'MP4' in URL:
-        return 'MP4'
-    elif 'M3U8' in URL:
-        return 'M3U8'
-    elif 'JPG' in URL or 'PNG' in URL:
-        return 'IMG'
+    if "RTSP" in URL:
+        return "RTSP"
+    elif "MP4" in URL:
+        return "MP4"
+    elif "M3U8" in URL:
+        return "M3U8"
+    elif "JPG" in URL or "PNG" in URL:
+        return "IMG"
     else:
         return False
 

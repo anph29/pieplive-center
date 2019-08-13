@@ -53,20 +53,26 @@ def calcCurentSeccondInDay():
     return dt.hour * 3600 + dt.minute * 60 + dt.second
 
 
-def calc_schedule_runtime(index, schedule=[], startTime=0):
+def calc_schedule_runtime(index, schedule=[], startTime=-1):
     isWriteToFile = not bool(schedule)
     schedule = schedule or _load_schedule()
-    startTime = startTime or calcCurentSeccondInDay()
+    # default is current second inday
+    if startTime == -1:
+        startTime = calcCurentSeccondInDay()
     newSchedule = []
     flagStart = False
     currentPoint = startTime
     for i, sch in enumerate(schedule):
         if i == index:
             flagStart = True
-        #
+        # 
         if flagStart:
             sch["timepoint"] = currentPoint
             currentPoint += sch["duration"]
+            # 
+            secIn1Day = 24 * 60 * 60                               
+            if currentPoint >= secIn1Day:
+                currentPoint -= secIn1Day
         else:
             sch["timepoint"] = 0
         #

@@ -3,22 +3,23 @@ from . import helper
 
 
 def getCurrentActiveBusiness():
-    return _get('actived_business')
+    return _get("actived_business")
 
 
 def setCurrentActiveBusiness(fo100):
-    return _set('actived_business', fo100)
+    return _set("actived_business", fo100)
+
 
 # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 
 def from_store():
-    with open(helper._PATH_STORE, 'r', encoding='utf-8') as store:
+    with open(helper._PATH_STORE, "r", encoding="utf-8") as store:
         return json.load(store)
 
 
 def to_store(data):
-    with open(helper._PATH_STORE, 'w', encoding='utf-8') as store:
+    with open(helper._PATH_STORE, "w", encoding="utf-8") as store:
         json.dump(data, store, indent=2)
 
 

@@ -47,9 +47,7 @@ class HTTP_MODEL:
         return self.http_request(path, param, "PUT", tokenMethod=scryto.createTokenV2)
 
     def v2_delete(self, path, param):
-        return self.http_request(
-            path, param, "DELETE", tokenMethod=scryto.createTokenV2
-        )
+        return self.http_request(path, param, "DELETE", tokenMethod=scryto.createTokenV2)
 
     def v2_patch(self, path, param):
         return self.http_request(path, param, "PATCH", tokenMethod=scryto.createTokenV2)

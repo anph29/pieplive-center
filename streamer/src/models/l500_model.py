@@ -5,6 +5,7 @@ from src.utils import helper
 class L500_model(HTTP_MODEL):
     def __init__(self):
         super(L500_model, self).__init__()
+
     # 'FO100': 1932,  # ID của DN
     # 'FO100M': 0,  # ID của member (BTV)
     # 'PL500': 0,  # ID Link
@@ -13,10 +14,11 @@ class L500_model(HTTP_MODEL):
     # 'LIMIT': 20,
     # 'LOGIN': 'Ân'
     def l2019_listoftabL500_prov(self, param):
-        return self.v2_get('/v2/service/l500/l2019_listoftabL500_prov', param)
+        return self.v2_get("/v2/service/l500/l2019_listoftabL500_prov", param)
 
-#POST
-#Lưu thông tin CAMERA
+
+# POST
+# Lưu thông tin CAMERA
 #  FO100: , // ID Owner
 #  LV501: , // Name CAMERA (Note)
 #  LV502: , // IP

@@ -21,8 +21,7 @@ class P300_model(HTTP_MODEL):
     #       LOGIN
     #  }
     def listoftabP300EByOwner(self, param):
-        return self._get('/v2/service/p300e/p2019_listoftabP300EByOwner', param)
-
+        return self._get("/v2/service/p300e/p2019_listoftabP300EByOwner", param)
 
     # POST
     # Hàm cập nhật thông tin P300 (tuy chon)
@@ -71,4 +70,4 @@ class P300_model(HTTP_MODEL):
     # @returns -2;// Bài này không tồn tại hoặc đã bị xóa
     #
     def updatetabP300_prov(self, param):
-        return self.v3_post('/v3/service/p300/p2018_v2_updatetabP300_prov', param)
+        return self.v3_post("/v3/service/p300/p2018_v2_updatetabP300_prov", param)

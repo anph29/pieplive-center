@@ -8,8 +8,10 @@ class DynamicGrid(tk.Frame):
         super(DynamicGrid, self).__init__(parent, *args, **kwargs)
         self.parent = parent
         self.lsBox = []
-        self.context = ScrolledText(self, wrap="char", bd=0, relief=tk.FLAT, highlightthickness=0)
-        self.context.tag_configure('center', justify=tk.CENTER)
+        self.context = ScrolledText(
+            self, wrap="char", bd=0, relief=tk.FLAT, highlightthickness=0
+        )
+        self.context.tag_configure("center", justify=tk.CENTER)
         self.context.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
     def getContext(self):

@@ -15,7 +15,18 @@ except NameError:
 
 
 class Item(Frame):
-    def __init__(self, ddlist, master, value, width, height, selection_handler=None, drag_handler=None, drop_handler=None, **kwargs):
+    def __init__(
+        self,
+        ddlist,
+        master,
+        value,
+        width,
+        height,
+        selection_handler=None,
+        drag_handler=None,
+        drop_handler=None,
+        **kwargs
+    ):
 
         kwargs.setdefault("class_", "Item")
         Frame.__init__(self, master, **kwargs)
@@ -57,8 +68,7 @@ class Item(Frame):
         self._x = x
         self._y = y
 
-        self.place(in_=container, x=x, y=y,
-                   width=self._width, height=self._height)
+        self.place(in_=container, x=x, y=y, width=self._width, height=self._height)
 
         self.bind_class(self._tag, "<ButtonPress-1>", self._on_selection)
         self.bind_class(self._tag, "<B1-Motion>", self._on_drag)
@@ -124,7 +134,20 @@ class Item(Frame):
 
 
 class DDList(Frame):
-    def __init__(self, master, item_width=0, item_height=0, item_relief=None, item_background=None, item_borderwidth=None, offset_x=0, offset_y=0, gap=0, droppedCallback=None, **kwargs):
+    def __init__(
+        self,
+        master,
+        item_width=0,
+        item_height=0,
+        item_relief=None,
+        item_background=None,
+        item_borderwidth=None,
+        offset_x=0,
+        offset_y=0,
+        gap=0,
+        droppedCallback=None,
+        **kwargs
+    ):
         kwargs["width"] = item_width + offset_x * 2
         kwargs["height"] = offset_y * 2
 
@@ -166,8 +189,17 @@ class DDList(Frame):
         if self._item_background is not None:
             kwargs.setdefault("background", self._item_background)
 
-        item = Item(self, self.master, value, self._item_width, self._item_height,
-                    self._on_item_selected, self._on_item_dragged, self._on_item_dropped, **kwargs)
+        item = Item(
+            self,
+            self.master,
+            value,
+            self._item_width,
+            self._item_height,
+            self._on_item_selected,
+            self._on_item_dragged,
+            self._on_item_dropped,
+            **kwargs
+        )
         return item
 
     def configure_items(self, **kwargs):
@@ -183,7 +215,7 @@ class DDList(Frame):
 
             for i in range(index, len(self._list_of_items)):
                 _item = self._list_of_items[i]
-                _item.move(0,  self._item_height + self._gap)
+                _item.move(0, self._item_height + self._gap)
 
                 self._position[_item] += 1
 
@@ -221,7 +253,7 @@ class DDList(Frame):
 
         for i in range(index, len(self._list_of_items)):
             _item = self._list_of_items[i]
-            _item.move(0,  -(self._item_height+self._gap))
+            _item.move(0, -(self._item_height + self._gap))
             self._position[_item] -= 1
 
         if len(self._list_of_items) == 0:
@@ -262,7 +294,8 @@ class DDList(Frame):
         if self._left < x < self._right and self._top < y < self._bottom:
 
             quotient, remainder = divmod(
-                y-self._offset_y, self._item_height + self._gap)
+                y - self._offset_y, self._item_height + self._gap
+            )
 
             if remainder < self._item_height:
 
@@ -270,15 +303,19 @@ class DDList(Frame):
 
                 if new_container != self._index_of_empty_container:
                     if new_container > self._index_of_empty_container:
-                        for index in range(self._index_of_empty_container+1, new_container+1, 1):
+                        for index in range(
+                            self._index_of_empty_container + 1, new_container + 1, 1
+                        ):
                             item = self._get_item_of_virtual_list(index)
 
-                            item.move(0, -(self._item_height+self._gap))
+                            item.move(0, -(self._item_height + self._gap))
                     else:
-                        for index in range(self._index_of_empty_container-1, new_container-1, -1):
+                        for index in range(
+                            self._index_of_empty_container - 1, new_container - 1, -1
+                        ):
                             item = self._get_item_of_virtual_list(index)
 
-                            item.move(0, self._item_height+self._gap)
+                            item.move(0, self._item_height + self._gap)
 
                     self._index_of_empty_container = new_container
 
@@ -301,12 +338,16 @@ class DDList(Frame):
         self._list_of_items.insert(self._index_of_empty_container, item)
 
         x = self._offset_x
-        y = self._offset_y + self._index_of_empty_container * \
-            (self._item_height + self._gap)
+        y = self._offset_y + self._index_of_empty_container * (
+            self._item_height + self._gap
+        )
 
         item.set_position(x, y)
 
-        for i in range(min(self._index_of_selected_item, self._index_of_empty_container), max(self._index_of_selected_item, self._index_of_empty_container)+1):
+        for i in range(
+            min(self._index_of_selected_item, self._index_of_empty_container),
+            max(self._index_of_selected_item, self._index_of_empty_container) + 1,
+        ):
             item = self._list_of_items[i]
             self._position[item] = i
 
@@ -336,8 +377,16 @@ if __name__ == "__main__":
     root.title("DDList example")
     root.geometry("%dx%d%+d%+d" % (640, 550, 0, 0))
 
-    sortable_list = DDList(root, 200, 100, offset_x=10, offset_y=10,
-                           gap=10, item_borderwidth=1, item_relief="groove")
+    sortable_list = DDList(
+        root,
+        200,
+        100,
+        offset_x=10,
+        offset_y=10,
+        gap=10,
+        item_borderwidth=1,
+        item_relief="groove",
+    )
     sortable_list.pack(expand=True, fill=BOTH)
 
     for i in range(4):
@@ -364,11 +413,11 @@ if __name__ == "__main__":
 
         entry_of_index.delete(0, END)
         sortable_list.delete_item(index)
-    entry_of_index.bind('<Return>', delete_item)
+
+    entry_of_index.bind("<Return>", delete_item)
 
     entry_of_index.pack(side=LEFT)
 
-    Button(frame, text="Delete", command=delete_item).pack(
-        side=LEFT, padx=(3, 0))
+    Button(frame, text="Delete", command=delete_item).pack(side=LEFT, padx=(3, 0))
 
     root.mainloop()

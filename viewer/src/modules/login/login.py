@@ -10,26 +10,24 @@ from tkinter import messagebox
 from src.constants import WS, UI
 import time
 
+
 class Login(object):
     loginPopup = None
 
     def __init__(self, parent):
         self.parent = parent
         super(Login, self).__init__()
-    
+
     def logout(self):
         if messagebox.askyesno("PiepMe", "Are you sure to logout?"):
             # clear store
             store._new({})
-            # clear resource 
-            self.parent.tab_camera.clearData()
-            self.parent.tab_presenter.clearData()
-            #
-            self.parent.hideToolbar()
+            # clear resource
             self.open()
+            self.parent.afterLogout()
 
     def open(self):
-         # first destroy
+        # first destroy
         if None is not self.loginPopup:
             self.loginPopup.destroy()
         # init
@@ -50,29 +48,51 @@ class Login(object):
         # PiepMe ID
         self.fPid = tk.Frame(loginMainFrame, pady=15)
         self.fPid.pack()
-        ePid = tk.Entry(self.fPid, textvariable=self.NV117, borderwidth=5, relief=tk.FLAT)
-        ePid.insert(0, 'GP2Y6B')  # 'PiepMe ID')
-        ePid.bind("<FocusIn>", lambda args: ePid.delete('0', 'end'))
+        ePid = tk.Entry(
+            self.fPid, textvariable=self.NV117, borderwidth=5, relief=tk.FLAT
+        )
+        ePid.insert(0, "GP2Y6B")  # 'PiepMe ID')
+        ePid.bind("<FocusIn>", lambda args: ePid.delete("0", "end"))
         ePid.config(font=UI.TXT_FONT)
         self.NV117.trace("w", self.autoUpperNV117)
         ePid.pack(side=tk.LEFT, fill=tk.X)
         #
-        btnLogin = tk.Button(self.fPid, text="Login", bd=2, bg="#ff2d55", fg="#fff", relief=tk.RAISED, command=self.onSendNV117)
+        btnLogin = tk.Button(
+            self.fPid,
+            text="Login",
+            bd=2,
+            bg="#ff2d55",
+            fg="#fff",
+            relief=tk.RAISED,
+            command=self.onSendNV117,
+        )
         btnLogin.config(width=7, font=UI.TXT_FONT)
         btnLogin.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
         # Verify TOKEN
         self.fToken = tk.Frame(loginMainFrame, pady=15)
-        eToken = tk.Entry(self.fToken, textvariable=self.PV161, borderwidth=5, relief=tk.FLAT)
-        eToken.insert(0, 'Token')
-        eToken.bind("<FocusIn>", lambda args: eToken.delete('0', 'end'))
+        eToken = tk.Entry(
+            self.fToken, textvariable=self.PV161, borderwidth=5, relief=tk.FLAT
+        )
+        eToken.insert(0, "Token")
+        eToken.bind("<FocusIn>", lambda args: eToken.delete("0", "end"))
         eToken.config(font=UI.TXT_FONT)
         eToken.pack(side=tk.LEFT, fill=tk.X)
         #
-        btnVerify = tk.Button(self.fToken, text="Verify", bd=2, bg="#ff2d55", fg="#fff", relief=tk.RAISED, command=self.onVerify)
+        btnVerify = tk.Button(
+            self.fToken,
+            text="Verify",
+            bd=2,
+            bg="#ff2d55",
+            fg="#fff",
+            relief=tk.RAISED,
+            command=self.onVerify,
+        )
         btnVerify.config(width=7, font=UI.TXT_FONT)
         btnVerify.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
         #
-        lblCommand = tk.Label(self.fToken, text="Check your PiepMe message to get verify token!")
+        lblCommand = tk.Label(
+            self.fToken, text="Check your PiepMe message to get verify token!"
+        )
         btnVerify.config(font=UI.TXT_FONT)
         btnVerify.pack()
         # nv117 invalid
@@ -85,7 +105,6 @@ class Login(object):
         lblTOkenError = tk.Label(self.fTokenInvalid, text="Token invalid!", fg="#f00")
         lblTOkenError.config(font=UI.TXT_FONT)
         lblTOkenError.pack(side=tk.LEFT, fill=tk.Y)
-
 
     def autoUpperNV117(self, *arg):
         self.NV117.set(self.NV117.get().upper())
@@ -111,14 +130,14 @@ class Login(object):
         pv161 = self.PV161.get()
         if regex.match(pv161):
             res = self.pieplivecenterLogin(self.NV117.get(), pv161)
-            print(res, 'loginggggg')
+            print(res, "loginggggg")
             if res[WS.STATUS] == WS.SUCCESS and res[WS.ELEMENTS] != -1:
                 # save login
                 store._new(res[WS.ELEMENTS])
                 #
-                self.parent.showToolbar()
                 self.loginPopup.destroy()
-
+                self.parent.afterLogin()
+                
             else:
                 self.fTokenInvalid.pack(side=tk.LEFT, fill=tk.Y)
         else:
@@ -126,15 +145,19 @@ class Login(object):
 
     def getOtpViaNV117(self, nv117):
         n100 = N100_model()
-        return n100.getOtpViaNV117({
-            'NV117': nv117,  # PiepMeID
-            'LOGIN': hex(get_mac())  # IP hoặc Mac address (của máy)
-        })
+        return n100.getOtpViaNV117(
+            {
+                "NV117": nv117,  # PiepMeID
+                "LOGIN": hex(get_mac()),  # IP hoặc Mac address (của máy)
+            }
+        )
 
     def pieplivecenterLogin(self, nv117, pv161):
         n100 = N100_model()
-        return n100.pieplivecenterLogin({
-            'NV117': nv117,  # PiepMeID
-            'PV161': pv161,  # OTP (login)
-            'LOGIN': hex(get_mac())  # IP hoặc Mac address (của máy)
-        })
+        return n100.pieplivecenterLogin(
+            {
+                "NV117": nv117,  # PiepMeID
+                "PV161": pv161,  # OTP (login)
+                "LOGIN": hex(get_mac()),  # IP hoặc Mac address (của máy)
+            }
+        )

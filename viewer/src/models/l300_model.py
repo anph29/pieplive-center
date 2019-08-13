@@ -1,4 +1,3 @@
-
 from . import HTTP_MODEL
 
 
@@ -7,9 +6,9 @@ class L300_model(HTTP_MODEL):
         super(L300_model, self).__init__()
 
     # POST
-    #{
+    # {
     #   FO100: // fo100 doanh nghiep
-    #   PN303 // 
+    #   PN303 //
     #   LV302 //IP
     #   LV303 // phone
     #   POS // vị trí camera, nếu insert L300 cho camera
@@ -24,4 +23,4 @@ class L300_model(HTTP_MODEL):
     # }
 
     def updatetabP300_prov(self, param):
-        return self._post('/v1/service/l300/l2018_live_inserttabL300_prov', param)
+        return self._post("/v1/service/l300/l2018_live_inserttabL300_prov", param)

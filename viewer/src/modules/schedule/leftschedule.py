@@ -1,6 +1,6 @@
 import tkinter as tk
-from src.modules.schedulecontent import SortedList
-from src.modules.schedulecontent import SingleSchedule
+from .sortedlist import SortedList
+from .singleschedule import SingleSchedule
 
 
 class ScheduleHead(tk.Frame):

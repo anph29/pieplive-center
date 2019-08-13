@@ -1,19 +1,13 @@
-import kivy
+import kivy, cv2
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
-from kivy.properties import ObjectProperty, NumericProperty, ObjectProperty, BooleanProperty, StringProperty
+from kivy.properties import ObjectProperty, NumericProperty, BooleanProperty, StringProperty
 from kivy.uix.popup import Popup
 from src.modules.custom.filechoose import FileChooser
 from src.utils import ftype, helper, scryto
-import src.utils.kivyhelper as kv_helper
-import cv2
-
 from kivy.uix.recycleview import RecycleView
 from src.modules.recyclelayout.recyclegridlayout import SelectableBox
-from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
-import src.utils.kivyhelper as kv_helper
-from kivy.graphics import Rectangle, Color
 
 Builder.load_file('src/ui/kvsetting.kv')
 
@@ -22,7 +16,6 @@ class KVSetting(Popup):
     stream_server = ObjectProperty()
     stream_key = ObjectProperty()
     callback = ObjectProperty()
-    lsStream = []
 
     def __init__(self, parent):
         super(KVSetting, self).__init__()
@@ -30,13 +23,8 @@ class KVSetting(Popup):
         self.lsStream = []
         self.stream_server.text = parent.streamServer
         self.stream_key.text = parent.streamKey
-
-        # for _idx, _s in enumerate(parent.lsSource):
-        #     if _s['type'] == 'audio':
-        #         _audio = {'name': _s['name'],'src': _s['src'],'volume': _s['volume'],'active':True if _s['src'] == src else False}
-        #         self.lsStream.append(_audio)
-
-        # self.rcv_stream.set_source(self.lsStream)
+        self.rcv_stream.set_parent(self)
+        self.rcv_stream.set_data()
 
     def on_ok(self):
         try:
@@ -52,13 +40,30 @@ class KVSetting(Popup):
     def on_cancel(self):
         self.dismiss()
 
+    def getLink(self,data):
+        self.stream_server.text = data['key_a']
+        self.stream_key.text = data['key_b']
+
 
 class ListStream(RecycleView):
     list_source = ObjectProperty()
+    item_playing = ''
 
     def __init__(self, **kwargs):
         super(ListStream, self).__init__(**kwargs)
         self.data = []
+
+    def set_parent(self,_parent):
+        self.f_parent = _parent
+
+    def set_data(self):
+        self.data = list(
+            map(
+                lambda item: {'id': item['id'],'label': item['label'], 'key_a': item['key_a'], 'key_b': item['key_b'],
+                'active': (False,True) [item['id'] == self.item_playing]},
+                helper._load_ls_key()
+            )
+        )
         
     def set_source(self,sources):
         self.data = sources
@@ -70,6 +75,7 @@ class ListStream(RecycleView):
         return -1
     
     def set_active(self,index):
+        self.item_playing = self.data[index]['id']
         for obj in self.data:
             obj['active'] = False
         self.data[index]['active'] = True
@@ -78,6 +84,9 @@ class ListStream(RecycleView):
                 child.active = True
             else:
                 child.active = False
+        if self.f_parent is not None:
+            self.f_parent.getLink(self.data[index])
+        
 
 class BoxAudio(SelectableBox):
     """ Adds selection and focus behaviour to the view. """
@@ -93,7 +102,7 @@ class RCVStream(RecycleDataViewBehavior, BoxLayout):
 
     def refresh_view_attrs(self, rv, index, data):
         self.index = index
-        self.name = data['name']
+        self.name = data['label']
         self.active = data['active']
         return super(RCVStream, self).refresh_view_attrs(rv, index, data)
 

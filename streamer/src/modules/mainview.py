@@ -135,6 +135,12 @@ class MainView(Widget):
         if self.mainStream is not None:
             self.mainStream.on_change_Volume(id, volume)
 
+    def addPresenting(self, item):
+        self.bottom_left.list_presenting.add_source(item)
+
+    def deletePresenting(self, _id):
+        self.bottom_left.list_presenting.del_source(_id)
+
     def start_stream(self):
         if self.mainStream.isStream is False:
             if len(self.streamServer) == 0 or len(self.streamKey) == 0:

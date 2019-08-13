@@ -180,7 +180,6 @@
             on_release: ls_image.remove_selected()
             tooltip_text:'Delete the selected'
 
-
 <TabCamera>:
     ls_camera:ls_camera
     ListCamera:
@@ -266,20 +265,13 @@
                 pos: self.pos
                 size: self.size
         Widget:
+            size_hint:1,1
         ImageButton:
             source: helper._ICONS_PATH + 'f5W.png'
             size_hint:None,None
             size: 20,20
             on_release: ls_presenter.refresh_list()
             tooltip_text:'Refresh'
-        # ImageButton:
-        #     source: helper._ICONS_PATH + 'trash.png'
-        #     size_hint:None,None
-        #     size: 20,20
-        #     on_release: ls_presenter.remove_selected()
-        Widget:
-            size_hint:None,1
-            width: 2
         CheckBox:
             size_hint:None,1
             width: 20
@@ -302,12 +294,10 @@
             font_size: 12
             padding: 2,0
             text: 'Auto'
-            text_size: self.width, 24
+            width: 30
             valign: 'center'
             halign: 'left'
             markup: True
-        Widget:
-            size_hint:1,1
 
 <TabSchedule>:
     ls_schedule:ls_schedule
@@ -343,7 +333,16 @@
             Rectangle:
                 pos: self.pos
                 size: self.size
+        Label:
+            size_hint:None,1
+            color: 1.0,1.0,1.0,1
+            font_size: 12
+            text: 'Total time: '+ls_schedule.total_time+' '
+            valign: 'center'
+            halign: 'right'
+            markup: True
         Widget:
+            size_hint:1,1
         ImageButton:
             source: helper._ICONS_PATH + 'play-w.png'
             size_hint:None,None
@@ -390,17 +389,7 @@
             font_size: 12
             padding: 2,0
             text: 'Loop'
-            text_size: self.width, 24
+            width: 30
             valign: 'center'
             halign: 'left'
-            markup: True
-        Widget:
-            size_hint:1,1
-        Label:
-            size_hint:None,1
-            color: 1.0,1.0,1.0,1
-            font_size: 12
-            text: 'Total time: '+ls_schedule.total_time+' '
-            valign: 'center'
-            halign: 'right'
             markup: True

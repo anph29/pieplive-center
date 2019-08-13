@@ -20,6 +20,9 @@ from src.modules.bottomleft.listmixer import RCVItemMixer
 from src.modules.bottomleft.listsource import ListSource 
 from src.modules.bottomleft.listsource import BoxSource 
 from src.modules.bottomleft.listsource import RCVItemSource
+from src.modules.bottomleft.listpresenting import ListPresenting 
+from src.modules.bottomleft.listpresenting import BoxPresenting
+from src.modules.bottomleft.listpresenting import RCVPresenting
 from src.utils import ftype
 from src.utils import kivyhelper as kv_helper
 from src.modules.custom.filechoose import FileChooser

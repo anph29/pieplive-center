@@ -168,24 +168,24 @@ class ListImage(RecycleView):
         except:
             pass
 
-class ListAudio(RecycleView):
-    item_playing = ''
-    item_playing_mini = ''
+class ListAudios(RecycleView):
 
     def __init__(self, **kwargs):
-        super(ListAudio, self).__init__(**kwargs)
+        super(ListAudios, self).__init__(**kwargs)
 
     def set_data(self):
         self.data = list(
             map(
-                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 
-                'list':'AUDIO',
-                'active': (False,True) [cam['id'] == self.item_playing],
-                'activeMini': (False,True) [cam['id'] == self.item_playing_mini],
-                'choice':False},
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'],
+                'volume':cam['volume'],
+                'active': cam['active'] if 'active' in cam else False,
+                'list':'AUDIO'},
                 helper._load_ls_audio()
             )
         )
+
+    def get_data(self):
+        return self.data
 
     def remove(self, index):
         if self.data:
@@ -195,7 +195,7 @@ class ListAudio(RecycleView):
     def clean_data_to_save_json(self):
         return list(
             map(
-                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type']},
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'volume':cam['volume'],'active': cam['active']},
                 list(self.data)
             )
         )
@@ -219,27 +219,9 @@ class ListAudio(RecycleView):
         if temp == 1:
             helper._write_lsaudio(self.clean_data_to_save_json())
 
-    def setPlayed(self,index):
-        self.item_playing = self.data[index]['id']
-        for obj in self.data:
-            obj['active'] = False
-        self.data[index]['active'] = True
-        for child in self.children[0].children:
-            if child.index == index:
-                child.active = True
-            else:
-                child.active = False
-
-    def setPlayedMini(self,index):
-        self.item_playing_mini = self.data[index]['id']
-        for obj in self.data:
-            obj['activeMini'] = False
-        self.data[index]['activeMini'] = True
-        for child in self.children[0].children:
-            if child.index == index:
-                child.activeMini = True
-            else:
-                child.activeMini = False
+    def setActive(self,index,val):
+        self.data[index]['active'] = val
+        helper._write_lsaudio(self.clean_data_to_save_json())
 
     def refresh_view(self):
         try:

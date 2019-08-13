@@ -23,7 +23,9 @@ class AddAudio(Popup):
             "id":scryto.hash_md5_with_time(self.url.text.replace('\\', '/')),
             "name": self.name.text,
             "url": self.url.text,
-            "type": "AUDIO"
+            "type": "AUDIO",
+            'volume':100,
+            'active': False
         })
         kv_helper.getApRoot().init_right_content_audio()
         self.dismiss()
@@ -50,7 +52,7 @@ class AddAudio(Popup):
 
     def choosed_file(self, selection):
         if len(selection) == 1:
-            if ftype.isImage(selection[0]):
+            if ftype.isAudio(selection[0]):
                 self.local_file(selection[0], 'AUDIO')
             else:
                 self.error = True
@@ -62,7 +64,7 @@ class AddAudio(Popup):
 
     def get_type_from_link(self):
         URL = self.url.text.upper()
-        if '.MP3' in URL or '.ACC' in URL or '.WAV' in URL:
+        if '.MP3' in URL or '.MID' in URL or '.WAV' in URL or '.M4A' in URL or '.OGG' in URL or '.FLAC' in URL or '.AMR' in URL:
             return 'AUDIO'
         else:
             return False

@@ -238,21 +238,21 @@ class MainStream(RelativeLayout):
                 txt += f"[{numau}:a]volume=2[a{numau}];"
                 _map += f'[a{numau}]'
 
-        if 'audio' in self.camera.data_src:
-            if self.camera.data_src['audio'] != '':
-                inp.extend(['-stream_loop','-1',"-i", self.camera.data_src['audio']])
-                numau += 1
-                txt += f'[{numau}:a]volume=1[a{numau}];'
-                _map += f'[a{numau}]'
+        if 'audio' in self.camera.data_src and self.camera.data_src['audio'] != '':
+            inp.extend(['-stream_loop','-1',"-i", self.camera.data_src['audio']])
+            numau += 1
+            txt += f'[{numau}:a]volume=1[a{numau}];'
+            _map += f'[a{numau}]'
 
-        if len(self.lsSource) > 0:
-            for value in self.lsSource:
-                if value['active'] == 1:
-                    if value['type'] == 'audio' and os.path.exists(value['src']) is True:
-                        inp.extend(['-stream_loop','-1',"-i", value['src']])
-                        numau += 1
-                        txt += f'[{numau}:a]volume={str(value["volume"]/100)}[a{numau}];'
-                        _map += f'[a{numau}]'
+        
+        lstAudio = self.f_parent.right_content.tab_audio.ls_audio.get_data() #helper._load_ls_audio()
+        if len(lstAudio) > 0:
+            for value in lstAudio:
+                if value['active'] is True and os.path.exists(value['url']) is True:
+                    inp.extend(['-stream_loop','-1',"-i", value['url']])
+                    numau += 1
+                    txt += f'[{numau}:a]volume={str(value["volume"]/100)}[a{numau}];'
+                    _map += f'[a{numau}]'
         if self.devAudio is not None:
             inp.extend(['-f', 'dshow', '-i', 'audio={}'.format(self.devAudio)])
             numau += 1

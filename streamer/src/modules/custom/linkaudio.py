@@ -1,19 +1,13 @@
 import kivy
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
-from kivy.properties import ObjectProperty, NumericProperty, ObjectProperty, BooleanProperty, StringProperty
+from kivy.properties import ObjectProperty, NumericProperty, BooleanProperty, StringProperty
 from kivy.uix.popup import Popup
 from src.modules.custom.filechoose import FileChooser
-from src.utils import ftype, helper, scryto
-import src.utils.kivyhelper as kv_helper
-import cv2
-
 from kivy.uix.recycleview import RecycleView
 from src.modules.recyclelayout.recyclegridlayout import SelectableBox
-from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
-import src.utils.kivyhelper as kv_helper
-from kivy.graphics import Rectangle, Color
+from src.utils import ftype, helper, scryto
 
 Builder.load_file('src/ui/linkaudio.kv')
 
@@ -27,19 +21,20 @@ class LinkAudio(Popup):
         self.idx = idx
         self.callback = callback
         self.lsAudio = []
-
-        for _idx, _s in enumerate(parent.lsSource):
-            if _s['type'] == 'audio':
-                _audio = {'name': _s['name'],'src': _s['src'],'volume': _s['volume'],'active':True if _s['src'] == src else False}
-                self.lsAudio.append(_audio)
-
+        self.lsAudio = list(
+            map(
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'],
+                'active':True if cam['url'] == src else False},
+                helper._load_ls_audio()
+            )
+        )
         self.rcv_audio.set_source(self.lsAudio)
 
     def on_ok(self):
         try:
             idx = self.rcv_audio.getIndexOfSeleced()
             if idx != -1:
-                src = self.lsAudio[idx]['src']
+                src = self.lsAudio[idx]['url']
                 self.callback(src, self.idx)
                 self.dismiss()
         except:

@@ -2,7 +2,7 @@
 <BottomLeft>:
     list_source : list_source
     list_mixer : list_mixer
-
+    list_presenting:list_presenting
     BoxLayout:
         canvas.before:
             Color:
@@ -137,16 +137,25 @@
             size_hint:1, None
             height: dp(26)
             font_size:sp(11)
-            text: '[color=ffffff]Presenter active[/color]'
+            text: '[color=ffffff]Active Presenter[/color]'
             markup: True
         
-        BoxLayout:
-            orientation:'vertical'
+        ListPresenting:
+            id:list_presenting
+            viewclass: 'RCVPresenting'
             size_hint:1,None
             height: self.parent.height - dp(28)
-            padding:0,5,0,0
-            spacing:5
-            Widget:
+            scroll_type: ['bars', 'content']
+            bar_width: 10
+            BoxPresenting:
+                default_size_hint: 1, None
+                default_size: None, 35
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                multiselect: False
+                touch_multiselect: False
+                spacing: 2
 
 <TextDialog>:
     inp_name:inp_name

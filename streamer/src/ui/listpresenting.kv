@@ -1,0 +1,18 @@
+#:import helper src.utils.helper
+<RCVPresenting>:
+    spacing:3
+    padding:5,3,5,3
+    canvas.before:
+        Color: 
+            rgb:(.15,.15,.15)
+        Rectangle:
+            size:self.size
+            pos:self.pos
+    Label:
+        color: 1.0,1.0,1.0,1
+        font_size: 12
+        text: root.name
+        text_size: self.width, 24
+        valign: 'center'
+        halign: 'justify'
+        markup: True

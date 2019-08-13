@@ -1,0 +1,97 @@
+<BoxLayout>:
+    orientation: 'horizontal'
+
+<Label>:
+    valign: 'middle' #['bottom', 'middle', 'center', 'top']
+    halign: 'left' #['left', 'center', 'right', 'auto']
+
+<AddAudio>:
+    name:name
+    url:url
+    title: 'Add Image'
+    color:1,0,0,1
+    size_hint:None, None
+    width:sp(500)
+    height:sp(300)
+    auto_dismiss: False
+    padding:20
+    BoxLayout:
+        padding:20, 0, 20, 0
+        spacing:10
+        Widget:
+        BoxLayout:
+            orientation:'horizontal'
+            height: 30
+            spacing:10
+            Label:
+                text:'Name'
+                size_hint_x:.15
+                text_size: self.size
+            TextInput:
+                id:name
+                valign: 'middle'
+                halign: 'auto'
+                color:0,0,0,1
+                size_hint_x:.8
+                multiline:False
+                font_size:sp(12)
+                hint_text:'Name'
+                color: 0,0,0,1
+        BoxLayout:
+            orientation:'horizontal'
+            height: 30
+            spacing:10
+            Label:
+                text:'URL'
+                size_hint_x:.15
+                text_size: self.size
+            TextInput:
+                id:url
+                valign: 'middle'
+                halign: 'auto'
+                size_hint_x:.6
+                multiline:False
+                font_size:sp(12)
+                hint_text:'URL'
+                color: 0,0,0,1
+            Button:
+                text: 'Choose file..'
+                on_release: root.open_file_browser()
+                size_hint:.2,1
+
+        BoxLayout:
+            size_hint:((0,0),(1,None))[root.error]
+            height: 30
+            opacity:(0,1)[root.error]
+            Label:
+                opacity:0
+                text:'error'
+                size_hint_x:.15
+            Label:
+                text:'File not allowed!'
+                valign: 'center'
+                halign: 'left'
+                text_size: self.size
+                color:1,0,0,1
+                size_hint_x:.6
+
+        Widget:
+        FloatLayout:
+            size_hint: 1, None
+            height: 50
+
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint: None, 1
+                pos_hint:{'y':0, 'right':1}
+                spacing:10
+                width:200
+                padding:0
+                Button:
+                    text: 'OK'
+                    on_release: root.on_ok()
+                    width:100
+                Button:
+                    text: 'Cancel'  
+                    on_release: root.on_cancel()
+                    width:100

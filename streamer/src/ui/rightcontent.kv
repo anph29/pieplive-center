@@ -2,13 +2,27 @@
 <RightContent>:
     tab_media:tab_media
     tab_image:tab_image
+    tab_audio:tab_audio
     tab_camera:tab_camera
     tab_presenter:tab_presenter
     tab_schedule:tab_schedule
-    tab_width: self.size[0] / 5
+    tab_width: self.size[0] / 6
     size_hint:1,1
     pos_hint:{'y': 0, 'center_x': .5}
     do_default_tab: False
+
+    TabbedPanelItem:
+        text: 'Audio'
+        Box25:
+            padding:2
+            TabAudio:
+                id:tab_audio
+                canvas.before:
+                    Color:
+                        rgb: .0,.0,.0
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
 
     TabbedPanelItem:
         text: 'Image'
@@ -178,6 +192,58 @@
             size_hint:None,None
             size: 20,20
             on_release: ls_image.remove_selected()
+            tooltip_text:'Delete the selected'
+
+<TabAudio>:
+    ls_audio:ls_audio
+    ListAudio:
+        id:ls_audio
+        viewclass: 'ItemAudio'
+        size_hint: 1,None
+        height: int(self.parent.height - 30)
+        scroll_type: ['bars', 'content']
+        bar_width: 10
+        GridCamera:
+            cols:1
+            spacing:1
+            padding:1
+            default_size_hint: 1, None
+            default_size: None, 30
+            multiselect: False
+            touch_multiselect: False
+            size_hint_y: None
+            height: self.minimum_height
+
+    BoxLayout:
+        orientation:'horizontal'
+        size_hint:1, None
+        height:30
+        padding:5
+        spacing:8
+        canvas.before:
+            Color:
+                rgb:.20, .20, .20
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Widget:
+        ImageButton:
+            source: helper._ICONS_PATH + 'add-w36.png'
+            size_hint:None,None
+            size: 20,20
+            on_release: root.open_add_audio()
+            tooltip_text:'Add'
+        ImageButton:
+            source: helper._ICONS_PATH + 'f5W.png'
+            size_hint:None,None
+            size: 20,20
+            on_release: ls_audio.refresh_list()
+            tooltip_text:'refresh'
+        ImageButton:
+            source: helper._ICONS_PATH + 'trash.png'
+            size_hint:None,None
+            size: 20,20
+            on_release: ls_audio.remove_selected()
             tooltip_text:'Delete the selected'
 
 <TabCamera>:

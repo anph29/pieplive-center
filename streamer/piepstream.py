@@ -31,12 +31,12 @@ from src.modules.custom.piepimage import PiepImage
 from src.modules.bottomleft.bottomleft import BottomLeft
 
 from src.modules.rightcontentview.rightcontent import RightContent
-from src.modules.rightcontentview.listview import ListMedia
-from src.modules.rightcontentview.listview import ListCamera
-from src.modules.rightcontentview.listview import ListPresenter
-from src.modules.rightcontentview.listview import ListSchedule
+from src.modules.rightcontentview.listview import *
+# from src.modules.rightcontentview.listview import ListAudio
+# from src.modules.rightcontentview.listview import ListCamera
+# from src.modules.rightcontentview.listview import ListPresenter
+# from src.modules.rightcontentview.listview import ListSchedule
 from src.modules.rightcontentview.gridview import GridCamera
-from src.modules.rightcontentview.itemlabel import ItemLabel
 
 
 class PiepStream(App):

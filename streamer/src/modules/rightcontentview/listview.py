@@ -168,6 +168,86 @@ class ListImage(RecycleView):
         except:
             pass
 
+class ListAudio(RecycleView):
+    item_playing = ''
+    item_playing_mini = ''
+
+    def __init__(self, **kwargs):
+        super(ListAudio, self).__init__(**kwargs)
+
+    def set_data(self):
+        self.data = list(
+            map(
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 
+                'list':'AUDIO',
+                'active': (False,True) [cam['id'] == self.item_playing],
+                'activeMini': (False,True) [cam['id'] == self.item_playing_mini],
+                'choice':False},
+                helper._load_ls_audio()
+            )
+        )
+
+    def remove(self, index):
+        if self.data:
+            self.data.pop(index)
+            helper._write_lsaudio(self.clean_data_to_save_json())
+
+    def clean_data_to_save_json(self):
+        return list(
+            map(
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type']},
+                list(self.data)
+            )
+        )
+
+    def refresh_list(self):
+        self.set_data()
+        self.refresh_view()
+    
+    def remove_selected(self):
+        PiepMeConfirmPopup(message='Are you sure to delete the selected source?',
+                            callback_ok=self.process_del_selected,
+                            callback_cancel=lambda: True)
+                            
+    def process_del_selected(self):
+        temp = 0
+        for child in self.children[0].children:
+            if child.isCheckItem.active and child.selected == False:
+                temp = 1
+                if self.data:
+                    self.data.pop(child.index)
+        if temp == 1:
+            helper._write_lsaudio(self.clean_data_to_save_json())
+
+    def setPlayed(self,index):
+        self.item_playing = self.data[index]['id']
+        for obj in self.data:
+            obj['active'] = False
+        self.data[index]['active'] = True
+        for child in self.children[0].children:
+            if child.index == index:
+                child.active = True
+            else:
+                child.active = False
+
+    def setPlayedMini(self,index):
+        self.item_playing_mini = self.data[index]['id']
+        for obj in self.data:
+            obj['activeMini'] = False
+        self.data[index]['activeMini'] = True
+        for child in self.children[0].children:
+            if child.index == index:
+                child.activeMini = True
+            else:
+                child.activeMini = False
+
+    def refresh_view(self):
+        try:
+            for child in self.children[0].children:
+                child.refresh_view_attrs(self,child.index, self.data[child.index])
+        except:
+            pass
+
 class ListCamera(RecycleView):
     item_playing = ""
     item_playing_mini = ""

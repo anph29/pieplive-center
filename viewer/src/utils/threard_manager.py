@@ -25,8 +25,7 @@ class PiepThread(Thread):
 
     def run(self):
         self.callback and self.callback()
-        self.parent and self.parent.on_thread_finished(
-            self, 'Anph')
+        self.parent and self.parent.on_thread_finished(self, "Anph")
 
     def is_running(self):
         return self.isAlive()
@@ -38,12 +37,13 @@ class PiepThread(Thread):
             return True
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+
     def anph(dt):
-        print(dt, 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+        print(dt, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
     def anph1(dt):
-        print(dt, 'aaaaaaaaaaaaaaaaaaa2222222222222aaaaaaaaaaaaaaaaaaaa')
+        print(dt, "aaaaaaaaaaaaaaaaaaa2222222222222aaaaaaaaaaaaaaaaaaaa")
 
     mgr = Manager()
     thread = mgr.new_thread(anph1)

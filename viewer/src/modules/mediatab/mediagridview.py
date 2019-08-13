@@ -4,6 +4,7 @@ from src.modules.mediaitem import MediaItemBox
 from .mediatab import MediaTab
 from src.enums import MediaType
 
+
 class MediaGridView(DynamicGrid, MediaTab):
     def __init__(self, parent, tabType=None, *args, **kwargs):
         super(MediaGridView, self).__init__(parent, *args, **kwargs)
@@ -17,7 +18,9 @@ class MediaGridView(DynamicGrid, MediaTab):
             self.showAddCamBtn()
 
     def addMediaToList(self, media):
-        ui = MediaItemBox(self.context, parentTab=self, media=media, bg="#fff", relief=tk.FLAT, bd=3)
+        ui = MediaItemBox(
+            self.context, parentTab=self, media=media, bg="#fff", relief=tk.FLAT, bd=3
+        )
         self._LS_MEDIA_UI.append(ui)
         self.after_effect(ui)
 

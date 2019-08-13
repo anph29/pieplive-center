@@ -2,6 +2,7 @@ import tkinter as tk
 from src.modules.login import Login
 from src.utils import store
 
+
 class MainMenu(tk.Menu):
     def __init__(self, parent, *args, **kwargs):
         self.parent = parent
@@ -28,7 +29,7 @@ class MainMenu(tk.Menu):
     def initHelpMenu(self):
         self.helpmenu = tk.Menu(self, tearoff=0)
         # if login
-        if bool(store._get('FO100')):
+        if bool(store._get("FO100")):
             self.helpmenu.add_command(label="Logout", command=self.login.logout)
         else:
             self.helpmenu.add_command(label="Login", command=self.login.open)
@@ -36,7 +37,6 @@ class MainMenu(tk.Menu):
         self.helpmenu.add_command(label="Help Index", command=lambda: False)
         self.helpmenu.add_command(label="About..", command=lambda: False)
         self.add_cascade(label="Help", menu=self.helpmenu)
-
 
     def commandDelete(self):
         pass

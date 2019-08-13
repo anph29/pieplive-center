@@ -11,9 +11,9 @@ def makePiepMePopup(title, w=300, h=200, padx=20, pady=10):
     pmPopup.wm_title(title)
     pmPopup.geometry(f"{w}x{h}+{x}+{y}")
     imgicon = tk.PhotoImage(file=helper._LOGO_VIEWER)
-    pmPopup.tk.call('wm', 'iconphoto', pmPopup._w, imgicon)
+    pmPopup.tk.call("wm", "iconphoto", pmPopup._w, imgicon)
     pmPopup.resizable(0, 0)
-    pmPopup.attributes('-topmost', 'true')
+    pmPopup.attributes("-topmost", "true")
 
     return pmPopup
 
@@ -31,8 +31,8 @@ def character_limit(strVar, limit=6):
 
 def verifyHMS_val(strvar):
     character_limit(strvar, limit=2)
-    strvar.set(re.sub(r"^[^0-9]{2}$", '', strvar.get()))
+    strvar.set(re.sub(r"^[^0-9]{2}$", "", strvar.get()))
 
 
 def getComboboxValueRange(end=60):
-    return [(f'{x}', f'0{x}')[x < 10] for x in range(0, end)]
+    return [(f"{x}", f"0{x}")[x < 10] for x in range(0, end)]

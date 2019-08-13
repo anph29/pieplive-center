@@ -10,7 +10,7 @@ from src.modules.menu import MainMenu
 from src.modules.login import Login
 from src.enums import MediaType
 from src.modules.schedule import Schedule
-from src.modules.com import PiepManager
+from src.modules.com import ListP300
 import PIL
 from PIL import Image, ImageTk
 
@@ -138,7 +138,7 @@ class MainView(tk.Frame):
         
     def packCOMtab(self):
         icCom = tk.PhotoImage(file=helper._ICONS_PATH + "se-icon.png")
-        self.tabCOM = PiepManager(self)
+        self.tabCOM = ListP300(self)
         self.tabCOM.image = icCom
         self.superWrapper.add(self.tabCOM, text="C.O.M", image=icCom, compound=tk.LEFT)
         #

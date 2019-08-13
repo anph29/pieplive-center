@@ -75,9 +75,9 @@ def calc_schedule_runtime(index, schedule=[], startTime=-1):
                 currentPoint -= secIn1Day
         else:
             sch["timepoint"] = 0
-        #
+        # 
         newSchedule.append(sch)
-    #
+    # 
     if isWriteToFile:
         _write_schedule(newSchedule)
     else:

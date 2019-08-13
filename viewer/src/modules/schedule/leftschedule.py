@@ -25,8 +25,8 @@ class ScheduleDetail(tk.Frame):
         self.singleschedule = SingleSchedule(self, bg="#fff")
         self.singleschedule.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-class LeftSchedule(tk.Frame):
 
+class LeftSchedule(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         super(LeftSchedule, self).__init__(parent, *args, **kwargs)
         self.parent = parent
@@ -35,8 +35,10 @@ class LeftSchedule(tk.Frame):
         self.initUI()
 
     def initUI(self):
-        self.mutiRight = ScheduleDetail(self, bg='#f0f0f0')
+        self.mutiRight = ScheduleDetail(self, bg="#f0f0f0")
         self.mutiRight.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
         #
-        self.mutiLeft = ScheduleHead(self, schedule=self.mutiRight.singleschedule, bg='#fff')
+        self.mutiLeft = ScheduleHead(
+            self, schedule=self.mutiRight.singleschedule, bg="#fff"
+        )
         self.mutiLeft.pack(side=tk.LEFT, fill=tk.Y)

@@ -12,23 +12,23 @@ VARIABLE
 """
 USER_LOCAL_PATH = os.environ['LOCALAPPDATA'].replace('\\', '/')
 _BASE_PATH = USER_LOCAL_PATH + '/PiepLiveCenter/'
-_PATH_KEY             = f'{_BASE_PATH}cfg/key.json'
-_PATH_FONT            = f'{_BASE_PATH}cfg/font.json'
-_PATH_STORE           = f'{_BASE_PATH}cfg/store.json'
-_PATH_IMAGE           = f'{_BASE_PATH}cfg/image.json'
-_PATH_VIDEO           = f'{_BASE_PATH}cfg/video.json'
-_PATH_AUDIO           = f'{_BASE_PATH}cfg/audio.json'
-_PATH_CAMERA          = f'{_BASE_PATH}cfg/camera.json'
-_PATH_SCHEDULE        = f'{_BASE_PATH}cfg/schedule.json'
-_PATH_SETTING         = f'{_BASE_PATH}cfg/setting.json'
-_PATH_PRESENTER       = f'{_BASE_PATH}cfg/presenter.json'
-_PATH_SCHEDULE_DIR    = f'{_BASE_PATH}cfg/schedules/'
-_PATH_STATICSOURCE    = f'{_BASE_PATH}cfg/staticsource.json'
+_PATH_FONT = f'{_BASE_PATH}cfg/font.json'
+_PATH_STORE = f'{_BASE_PATH}cfg/store.json'
+_PATH_IMAGE = f'{_BASE_PATH}cfg/image.json'
+_PATH_VIDEO = f'{_BASE_PATH}cfg/video.json'
+_PATH_AUDIO = f'{_BASE_PATH}cfg/audio.json'
+_PATH_CAMERA = f'{_BASE_PATH}cfg/camera.json'
+_PATH_SCHEDULE = f'{_BASE_PATH}cfg/schedule.json'
+_PATH_SETTING = f'{_BASE_PATH}cfg/setting.json'
+_PATH_PRESENTER = f'{_BASE_PATH}cfg/presenter.json'
+_PATH_KEY_STREAM = f'{_BASE_PATH}cfg/keystream.json'
+_PATH_SCHEDULE_DIR = f'{_BASE_PATH}cfg/schedules/'
+_PATH_STATICSOURCE = f'{_BASE_PATH}cfg/staticsource.json'
 _PATH_SCHEDULE_SORTED = f'{_BASE_PATH}cfg/schedules/sorted.json'
-_ICONS_PATH           = f'{_BASE_PATH}icons/'
-_IMAGES_PATH          = f'{_BASE_PATH}images/'
-_LOGO_STREAMER        = f'{_ICONS_PATH}logo-streamer.ico'
-_LOGO_VIEWER          = f'{_ICONS_PATH}logo-viewer.png'
+_ICONS_PATH = f'{_BASE_PATH}icons/'
+_IMAGES_PATH = f'{_BASE_PATH}images/'
+_LOGO_STREAMER = f'{_ICONS_PATH}logo-streamer.ico'
+_LOGO_VIEWER = f'{_ICONS_PATH}logo-viewer.png'
 
 """
 schedule
@@ -218,6 +218,8 @@ def _write_lspresenter(data):
 
 def _add_to_lspresenter(data):
     appendJSON(_PATH_PRESENTER, data)
+
+
 """
 ls audio
 """
@@ -233,6 +235,23 @@ def _write_lsaudio(data):
 
 def _add_to_lsaudio(data):
     appendJSON(_PATH_AUDIO, data)
+
+
+"""
+ls key stream
+"""
+
+
+def _load_ls_key():
+    return loadJSON(_PATH_KEY_STREAM)
+
+
+def _write_lskey(data):
+    writeJSON(_PATH_KEY_STREAM, data)
+
+
+def _add_to_lskey(data):
+    appendJSON(_PATH_KEY_STREAM, data)
 
 
 """
@@ -285,23 +304,6 @@ def _write_setting(data):
 
 def _load_setting():
     return loadJSON(_PATH_SETTING)
-
-
-"""
-ls key
-"""
-
-
-def _load_ls_key():
-    return loadJSON(_PATH_PRESENTER)
-
-
-def _write_lskey(data):
-    writeJSON(_PATH_PRESENTER, data)
-
-
-def _add_to_lskey(data):
-    appendJSON(_PATH_PRESENTER, data)
 
 
 """
@@ -411,7 +413,7 @@ def makeSureResourceFolderExisted():
     # font
     checkResourceExistAndWriteIfNot('font', data=getFontJSONContent())
     # ...rest cfg file
-    for target in ['video', 'image', 'camera', 'schedule', 'audio', 'presenter', 'staticsource', 'key']:
+    for target in ['video', 'image', 'camera', 'schedule', 'audio', 'presenter', 'staticsource', 'keystream']:
         checkResourceExistAndWriteIfNot(target)
 
 

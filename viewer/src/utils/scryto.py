@@ -6,19 +6,20 @@ import time
 
 def createToken(input, keysIgnor=[]):
     try:
-        if 'token' in input:
-            del input['token']
+        if "token" in input:
+            del input["token"]
         #
-        input['v'] = 'v1'
-        input['keyToken'] = 'Piepme2017'  #
+        input["v"] = "v1"
+        input["keyToken"] = "Piepme2017"  #
         #
         sorted_key = sorted(input)
 
         def lambdaX(v):
-            return f'{v}={input[v]}' if v not in keysIgnor else ''
+            return f"{v}={input[v]}" if v not in keysIgnor else ""
+
         #
         maped_ls = map(lambdaX, sorted_key)
-        paramStr = '&'.join(list(maped_ls))
+        paramStr = "&".join(list(maped_ls))
         #
         return hash_md5(paramStr)
     except:
@@ -27,20 +28,24 @@ def createToken(input, keysIgnor=[]):
 
 def createTokenV2(input, isRecursive=False):
     try:
-        if 'token' in input:
-            del input['token']
+        if "token" in input:
+            del input["token"]
 
         if isRecursive is False:
-            input['v'] = 'v1'
-            input['keyToken'] = 'Piepme2017'  #
+            input["v"] = "v1"
+            input["keyToken"] = "Piepme2017"  #
 
         sorted_key = sorted(input)
 
         def lambdaX(v):
-            return f'{v}={input[v]}' if type(input[v]) is not dict else createTokenV2(input[v], True)
+            return (
+                f"{v}={input[v]}"
+                if type(input[v]) is not dict
+                else createTokenV2(input[v], True)
+            )
 
         maped_ls = map(lambdaX, sorted_key)
-        paramStr = '&'.join(list(maped_ls))
+        paramStr = "&".join(list(maped_ls))
 
         return paramStr if isRecursive else hash_md5(paramStr)
     except:
@@ -49,24 +54,24 @@ def createTokenV2(input, isRecursive=False):
 
 def createTokenV3(input, isRecursive=False):
     try:
-        if 'token' in input:
-            del input['token']
+        if "token" in input:
+            del input["token"]
 
         if isRecursive is False:
-            input['v'] = 'v1'
-            input['keyToken'] = 'Piepme2017'
+            input["v"] = "v1"
+            input["keyToken"] = "Piepme2017"
         sorted_key = sorted(input)
 
         # improve non-charater from v2
         def lambdaX(v):
             if type(input[v]) is not dict:
-                after_regex = re.sub(r"[^a-zA-Z0-9]", '', str(input[v]))
-                return f'{v}={after_regex}'
+                after_regex = re.sub(r"[^a-zA-Z0-9]", "", str(input[v]))
+                return f"{v}={after_regex}"
             else:
                 return createTokenV3(input[v], True)
 
         maped_ls = map(lambdaX, sorted_key)
-        paramStr = '&'.join(list(maped_ls))
+        paramStr = "&".join(list(maped_ls))
 
         return paramStr if isRecursive else hash_md5(paramStr)
     except:
@@ -79,10 +84,11 @@ def hash_md5_with_time(s):
 
 
 def hash_md5(s):
-    s = s.encode('utf-8')
+    s = s.encode("utf-8")
     m = hashlib.md5()
     m.update(s)
     return m.hexdigest()
+
 
 # // ---------------------------------------------------------------------------------------------
 # aesDecryptWithKey(cipherData, $key) {

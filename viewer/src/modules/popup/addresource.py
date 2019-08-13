@@ -6,6 +6,7 @@ from src.utils import tk_helper, scryto
 from src.constants import UI
 from src.enums import MediaType
 
+
 class PopupAddResource(object):
     def __init__(self, parent):
         self.parent = parent
@@ -18,13 +19,15 @@ class PopupAddResource(object):
         # first destroy
         if None is not self.popup:
             self.popup.destroy()
-        self.popup = tk_helper.makePiepMePopup('Add Media', w=450, h=250, padx=0, pady=0)
+        self.popup = tk_helper.makePiepMePopup(
+            "Add Media", w=450, h=250, padx=0, pady=0
+        )
         self.makeMasterTab()
-    
+
     def makeMasterTab(self):
         #
         self.masterTab = ttk.Notebook(self.popup)
-        self.masterTab.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=(2,0))
+        self.masterTab.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=(2, 0))
         # 1
         self.tabFile = self.initTabFileUI()
         self.masterTab.add(self.tabFile, text="Choose file")
@@ -41,18 +44,38 @@ class PopupAddResource(object):
         fUrl = tk.Frame(fFolder, pady=10, padx=20)
         lUrl = tk.Label(fUrl, text="URL:", width=6, anchor=tk.W, font=UI.TXT_FONT)
         lUrl.pack(side=tk.LEFT, fill=tk.Y)
-        self.eUrlFolder = tk.Entry(fUrl, textvariable=self.url, width=45, borderwidth=5, relief=tk.FLAT)
+        self.eUrlFolder = tk.Entry(
+            fUrl, textvariable=self.url, width=45, borderwidth=5, relief=tk.FLAT
+        )
         self.eUrlFolder.pack(side=tk.LEFT, fill=tk.X)
-        btnChoose = tk.Button(fUrl, text="Choose..", relief=tk.RAISED, padx=5, pady=5, command=self.askFolderName, font=UI.TXT_FONT)
+        btnChoose = tk.Button(
+            fUrl,
+            text="Choose..",
+            relief=tk.RAISED,
+            padx=5,
+            pady=5,
+            command=self.askFolderName,
+            font=UI.TXT_FONT,
+        )
         btnChoose.configure(width=7)
         btnChoose.pack(side=tk.RIGHT, fill=tk.Y)
         fUrl.pack(side=tk.TOP, fill=tk.X)
         # bot button
-        fBtn = tk.Frame(fFolder,  pady=10, padx=20)
-        btnCancel = tk.Button(fBtn, text="Cancel", bd=2, relief=tk.RAISED, command=self.popup.destroy)
+        fBtn = tk.Frame(fFolder, pady=10, padx=20)
+        btnCancel = tk.Button(
+            fBtn, text="Cancel", bd=2, relief=tk.RAISED, command=self.popup.destroy
+        )
         btnCancel.configure(width=7)
         btnCancel.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
-        btnOk = tk.Button(fBtn, text="OK", bd=2, bg="#ff2d55", fg="#fff", relief=tk.RAISED, command=self.onOkFolder)
+        btnOk = tk.Button(
+            fBtn,
+            text="OK",
+            bd=2,
+            bg="#ff2d55",
+            fg="#fff",
+            relief=tk.RAISED,
+            command=self.onOkFolder,
+        )
         btnOk.configure(width=7)
         btnOk.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
         fBtn.pack(side=tk.BOTTOM, fill=tk.X)
@@ -67,16 +90,28 @@ class PopupAddResource(object):
         fName = tk.Frame(fFile, pady=10, padx=20)
         lName = tk.Label(fName, text="Name:", width=6, anchor=tk.W, font=UI.TXT_FONT)
         lName.pack(side=tk.LEFT, fill=tk.Y)
-        self.eName = tk.Entry(fName, textvariable=self.name, width=100, borderwidth=5, relief=tk.FLAT)
+        self.eName = tk.Entry(
+            fName, textvariable=self.name, width=100, borderwidth=5, relief=tk.FLAT
+        )
         self.eName.pack(side=tk.LEFT, fill=tk.X)
         fName.pack(side=tk.TOP, fill=tk.X)
         # URL
         fUrl = tk.Frame(fFile, pady=10, padx=20)
         lUrl = tk.Label(fUrl, text="URL:", width=6, anchor=tk.W, font=UI.TXT_FONT)
         lUrl.pack(side=tk.LEFT, fill=tk.Y)
-        self.eUrl = tk.Entry(fUrl, textvariable=self.url, width=45, borderwidth=5, relief=tk.FLAT)
+        self.eUrl = tk.Entry(
+            fUrl, textvariable=self.url, width=45, borderwidth=5, relief=tk.FLAT
+        )
         self.eUrl.pack(side=tk.LEFT, fill=tk.X)
-        btnChoose = tk.Button(fUrl, text="Choose..", relief=tk.RAISED, padx=5, pady=5, command=self.askFileName, font=UI.TXT_FONT)
+        btnChoose = tk.Button(
+            fUrl,
+            text="Choose..",
+            relief=tk.RAISED,
+            padx=5,
+            pady=5,
+            command=self.askFileName,
+            font=UI.TXT_FONT,
+        )
         btnChoose.configure(width=7)
         btnChoose.pack(side=tk.RIGHT, fill=tk.Y)
         fUrl.pack(side=tk.TOP, fill=tk.X)
@@ -86,10 +121,20 @@ class PopupAddResource(object):
         lError.pack(side=tk.LEFT, fill=tk.Y, padx=5, pady=5)
         # bot button
         fBtn = tk.Frame(fFile, pady=10, padx=20)
-        btnCancel = tk.Button(fBtn, text="Cancel", bd=2, relief=tk.RAISED, command=self.popup.destroy)
+        btnCancel = tk.Button(
+            fBtn, text="Cancel", bd=2, relief=tk.RAISED, command=self.popup.destroy
+        )
         btnCancel.configure(width=7)
         btnCancel.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
-        btnOk = tk.Button(fBtn, text="OK", bd=2, bg="#ff2d55", fg="#fff", relief=tk.RAISED, command=self.onOkFile)
+        btnOk = tk.Button(
+            fBtn,
+            text="OK",
+            bd=2,
+            bg="#ff2d55",
+            fg="#fff",
+            relief=tk.RAISED,
+            command=self.onOkFile,
+        )
         btnOk.configure(width=7)
         btnOk.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
         fBtn.pack(side=tk.BOTTOM, fill=tk.X)
@@ -97,22 +142,26 @@ class PopupAddResource(object):
         return fFile
 
     def getTypeAllowedFromMediaType(self):
-        ''''''
+        """"""
         if self.parent.tabType == MediaType.IMAGE:
-            return (("image files", "*.png *.jpg"),("all files", "*.*"))
+            return (("image files", "*.png *.jpg"), ("all files", "*.*"))
         elif self.parent.tabType == MediaType.VIDEO:
-            return (("video files", "*.mov *.mp4 *.mkv *.flv"),("all files", "*.*"))
+            return (("video files", "*.mov *.mp4 *.mkv *.flv"), ("all files", "*.*"))
 
     def askFileName(self):
         self.fError.pack_forget()
-        path = filedialog.askopenfilename(initialdir="/", title="Select file", filetypes=self.getTypeAllowedFromMediaType())
+        path = filedialog.askopenfilename(
+            initialdir="/",
+            title="Select file",
+            filetypes=self.getTypeAllowedFromMediaType(),
+        )
         fname = os.fsdecode(path)
         if ftype.isImage(fname):
             self.useLocal = True
-            self.mtype = 'IMG'
+            self.mtype = "IMG"
         elif ftype.isVideo(fname):
             self.useLocal = True
-            self.mtype = 'VIDEO'
+            self.mtype = "VIDEO"
         else:
             self.fError.pack(side=tk.TOP, fill=tk.X)
         # fill data
@@ -131,35 +180,34 @@ class PopupAddResource(object):
         self.eUrlFolder.insert(0, self.directory)
 
     def getNameFromPath(self, fpath):
-        return fpath.split('/')[-1]
+        return fpath.split("/")[-1]
         # return ''.join((fpath.split('/')[-1]).split('.')[0,-1])
 
     def onOkFolder(self):
         if bool(self.directory):
             for file in os.listdir(self.directory):
                 fname = os.fsdecode(file)
-                fpath = os.path.join(self.directory, fname).replace('\\', '/')
+                fpath = os.path.join(self.directory, fname).replace("\\", "/")
                 if os.path.isfile(fpath):
                     isImg = ftype.isImage(fpath)
                     isVideo = ftype.isVideo(fpath)
                     if isImg or isVideo:
                         dt = {
-                            "id" : scryto.hash_md5_with_time(fpath),
+                            "id": scryto.hash_md5_with_time(fpath),
                             "name": self.getNameFromPath(fpath),
-                            "url": fpath
+                            "url": fpath,
                         }
                         if self.parent.tabType == MediaType.IMAGE and isImg:
-                            dt["type"] = 'IMG'
+                            dt["type"] = "IMG"
                             self.parent.addMediaToList(dt)
                             self.parent.addMedia(dt)
                         elif self.parent.tabType == MediaType.VIDEO and isVideo:
-                            dt["type"] = 'VIDEO'
+                            dt["type"] = "VIDEO"
                             dt["duration"] = helper.getVideoDuration(fpath)
                             self.parent.addMediaToList(dt)
                             self.parent.addMedia(dt)
-            #   
+            #
         self.popup.destroy()
-
 
     def onOkFile(self):
         if self.useLocal:
@@ -179,10 +227,14 @@ class PopupAddResource(object):
             "name": str(self.name.get()),
             "url": str(url),
             "type": self.mtype,
-            "id" : scryto.hash_md5_with_time(url)
+            "id": scryto.hash_md5_with_time(url),
         }
         # add duration
-        if self.useLocal and self.parent.tabType == MediaType.VIDEO and ftype.isVideo(url):
+        if (
+            self.useLocal
+            and self.parent.tabType == MediaType.VIDEO
+            and ftype.isVideo(url)
+        ):
             dt["duration"] = helper.getVideoDuration(url)
 
         self.parent.addMediaToList(dt)

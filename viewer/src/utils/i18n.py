@@ -6,12 +6,12 @@ from . import store
 
 
 def from_store():
-    with open(helper._PATH_STORE, 'r', encoding='utf-8') as store:
+    with open(helper._PATH_STORE, "r", encoding="utf-8") as store:
         return json.load(store)
 
 
 def to_store(data):
-    with open(helper._PATH_STORE, 'w', encoding='utf-8') as store:
+    with open(helper._PATH_STORE, "w", encoding="utf-8") as store:
         json.dump(data, store, indent=2)
 
 

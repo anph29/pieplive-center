@@ -3,6 +3,7 @@ import hashlib
 import re
 import time
 
+
 def createToken(input, keysIgnor=[]):
     try:
         if 'token' in input:
@@ -12,6 +13,7 @@ def createToken(input, keysIgnor=[]):
         input['keyToken'] = 'Piepme2017'  #
         #
         sorted_key = sorted(input)
+
         def lambdaX(v):
             return f'{v}={input[v]}' if v not in keysIgnor else ''
         #
@@ -21,6 +23,7 @@ def createToken(input, keysIgnor=[]):
         return hash_md5(paramStr)
     except:
         print(sys.exc_info())
+
 
 def createTokenV2(input, isRecursive=False):
     try:
@@ -64,14 +67,16 @@ def createTokenV3(input, isRecursive=False):
 
         maped_ls = map(lambdaX, sorted_key)
         paramStr = '&'.join(list(maped_ls))
-        
+
         return paramStr if isRecursive else hash_md5(paramStr)
     except:
         print(sys.exc_info())
 
+
 def hash_md5_with_time(s):
     timestamp = time.time()
     return hash_md5(s + str(timestamp))
+
 
 def hash_md5(s):
     s = s.encode('utf-8')

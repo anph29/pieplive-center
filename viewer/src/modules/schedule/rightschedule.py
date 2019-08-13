@@ -24,7 +24,7 @@ class RightSchedule(tk.Frame):
         self.tab_video = self.makeMediaTab(MediaType.VIDEO)
         self.tab_video.image = icVid
         self.scheduleTab.add(self.tab_video, text="Videos", image=icVid, compound=tk.LEFT)
-        # 3
+        # 3                                                 
         icCam = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_camera.png')
         self.tab_camera = self.makeMediaTab(MediaType.CAMERA)
         self.tab_camera.image = icCam

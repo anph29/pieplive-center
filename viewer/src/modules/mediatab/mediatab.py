@@ -176,7 +176,7 @@ class MediaTab(tk.Frame):
         elif self.tabType == MediaType.VIDEO:
             helper._add_to_video(data)
         elif self.tabType == MediaType.PRESENTER:
-            helper._add_to_spresenter(data)
+            helper._add_to_lspresenter(data)
         elif self.tabType == MediaType.SCHEDULE:
             helper._add_to_schedule(data)
 

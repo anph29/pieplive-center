@@ -4,11 +4,12 @@ from . import helper
 
 def getCurrentActiveBusiness():
     return _get('actived_business')
-    
+
+
 def setCurrentActiveBusiness(fo100):
     return _set('actived_business', fo100)
 
-#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 
 def from_store():

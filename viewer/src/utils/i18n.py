@@ -4,6 +4,7 @@ from . import store
 
 # NV130
 
+
 def from_store():
     with open(helper._PATH_STORE, 'r', encoding='utf-8') as store:
         return json.load(store)

@@ -1,5 +1,6 @@
 from . import HTTP_MODEL
-    
+
+
 class Q170_model(HTTP_MODEL):
     def __init__(self):
         super(Q170_model, self).__init__()

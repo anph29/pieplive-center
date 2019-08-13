@@ -26,11 +26,12 @@ def isImage(fpath):
     psd - image/vnd.adobe.photoshop
     ico - image/x-icon
     heic - image/heic
-        """
+    """
     kind = filetype.guess(fpath)
-    tupImg = ('jpg', 'jpx', 'png', 'gif', 'webp', 'cr2', 'tif', 'bmp', 'jxr', 'psd', 'ico', 'heic')
+    tupImg = ('jpg', 'jpx', 'png', 'gif', 'webp', 'cr2',
+              'tif', 'bmp', 'jxr', 'psd', 'ico', 'heic')
 
-    return False if kind == None else kind.extension in tupImg \
+    return fpath.lower().endswith(tupImg) if kind == None else kind.extension in tupImg \
         or fpath.lower().endswith(tupImg) \
         or kind.mime in ('image/jpeg',
                          'image/jpx',
@@ -125,7 +126,8 @@ def isArchive(fpath):
     lz - application/x-lzip
     """
     kind = filetype.guess(fpath)
-    tupArchive = ('epub', 'zip', 'tar', 'rar', 'gz', 'bz2', '7z', 'xz', 'pdf', 'exe', 'swf', 'rtf', 'eot', 'ps', 'sqlite', 'nes', 'crx', 'cab', 'deb', 'ar', 'Z', 'lz')
+    tupArchive = ('epub', 'zip', 'tar', 'rar', 'gz', 'bz2', '7z', 'xz', 'pdf', 'exe',
+                  'swf', 'rtf', 'eot', 'ps', 'sqlite', 'nes', 'crx', 'cab', 'deb', 'ar', 'Z', 'lz')
 
     return fpath.lower().endswith(tupArchive) if kind == None else kind.extension in tupArchive \
         or kind.mime in('application/epub+zip',

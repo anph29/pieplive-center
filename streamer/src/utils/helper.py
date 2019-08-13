@@ -8,24 +8,27 @@ import datetime
 import cv2
 import shutil
 """
+VARIABLE
 """
 USER_LOCAL_PATH = os.environ['LOCALAPPDATA'].replace('\\', '/')
 _BASE_PATH = USER_LOCAL_PATH + '/PiepLiveCenter/'
-_PATH_SETTING = f'{_BASE_PATH}cfg/setting.json'
-_PATH_FONT = f'{_BASE_PATH}cfg/font.json'
-_PATH_STORE = f'{_BASE_PATH}cfg/store.json'
-_PATH_IMAGE = f'{_BASE_PATH}cfg/image.json'
-_PATH_VIDEO = f'{_BASE_PATH}cfg/video.json'
-_PATH_CAMERA = f'{_BASE_PATH}cfg/camera.json'
-_PATH_PRESENTER = f'{_BASE_PATH}cfg/presenter.json'
-_PATH_SCHEDULE = f'{_BASE_PATH}cfg/schedule.json'
-_PATH_SCHEDULE_DIR = f'{_BASE_PATH}cfg/schedules/'
+_PATH_KEY             = f'{_BASE_PATH}cfg/key.json'
+_PATH_FONT            = f'{_BASE_PATH}cfg/font.json'
+_PATH_STORE           = f'{_BASE_PATH}cfg/store.json'
+_PATH_IMAGE           = f'{_BASE_PATH}cfg/image.json'
+_PATH_VIDEO           = f'{_BASE_PATH}cfg/video.json'
+_PATH_AUDIO           = f'{_BASE_PATH}cfg/audio.json'
+_PATH_CAMERA          = f'{_BASE_PATH}cfg/camera.json'
+_PATH_SCHEDULE        = f'{_BASE_PATH}cfg/schedule.json'
+_PATH_SETTING         = f'{_BASE_PATH}cfg/setting.json'
+_PATH_PRESENTER       = f'{_BASE_PATH}cfg/presenter.json'
+_PATH_SCHEDULE_DIR    = f'{_BASE_PATH}cfg/schedules/'
+_PATH_STATICSOURCE    = f'{_BASE_PATH}cfg/staticsource.json'
 _PATH_SCHEDULE_SORTED = f'{_BASE_PATH}cfg/schedules/sorted.json'
-_PATH_STATICSOURCE = f'{_BASE_PATH}cfg/staticsource.json'
-_ICONS_PATH = f'{_BASE_PATH}icons/'
-_IMAGES_PATH = f'{_BASE_PATH}images/'
-_LOGO_STREAMER = f'{_ICONS_PATH}logo-streamer.ico'
-_LOGO_VIEWER = f'{_ICONS_PATH}logo-viewer.png'
+_ICONS_PATH           = f'{_BASE_PATH}icons/'
+_IMAGES_PATH          = f'{_BASE_PATH}images/'
+_LOGO_STREAMER        = f'{_ICONS_PATH}logo-streamer.ico'
+_LOGO_VIEWER          = f'{_ICONS_PATH}logo-viewer.png'
 
 """
 schedule
@@ -213,8 +216,23 @@ def _write_lspresenter(data):
     writeJSON(_PATH_PRESENTER, data)
 
 
-def _add_to_spresenter(data):
+def _add_to_lspresenter(data):
     appendJSON(_PATH_PRESENTER, data)
+"""
+ls audio
+"""
+
+
+def _load_ls_audio():
+    return loadJSON(_PATH_AUDIO)
+
+
+def _write_lsaudio(data):
+    writeJSON(_PATH_AUDIO, data)
+
+
+def _add_to_lsaudio(data):
+    appendJSON(_PATH_AUDIO, data)
 
 
 """
@@ -270,6 +288,23 @@ def _load_setting():
 
 
 """
+ls key
+"""
+
+
+def _load_ls_key():
+    return loadJSON(_PATH_PRESENTER)
+
+
+def _write_lskey(data):
+    writeJSON(_PATH_PRESENTER, data)
+
+
+def _add_to_lskey(data):
+    appendJSON(_PATH_PRESENTER, data)
+
+
+"""
 JSON helper
 """
 
@@ -288,6 +323,11 @@ def appendJSON(path, data, auto_increment=False):
     jcam = loadJSON(path)
     jcam.append(data)
     writeJSON(path, jcam)
+
+
+"""
+UNICODE helper
+"""
 
 
 def removeUnicode(str):
@@ -327,10 +367,9 @@ def stringToBase64(s):
 def base64ToString(b):
     return base64.b64decode(b).decode('utf-8')
 
-# seconds in number -> toObj ? {h,m,s} : [hh:]mm:ss
-
 
 def convertSecNoToHMS(seconds, toObj=False):
+    # seconds in number -> toObj ? {h,m,s} : [hh:]mm:ss
     seconds = math.floor(seconds)
     h = math.floor(seconds / 3600)
     m = math.floor((seconds % 3600) / 60)
@@ -362,17 +401,24 @@ def makeSureResourceFolderExisted():
     # resource/cfg/schedules
     if not os.path.exists(f'{_BASE_PATH}cfg/schedules'):
         os.mkdir(f'{_BASE_PATH}cfg/schedules')
-    # sorted.json file
+    # sorted schedule file
     if not os.path.isfile(f'{_BASE_PATH}cfg/schedules/sorted.json'):
         writeJSON(f'{_BASE_PATH}cfg/schedules/sorted.json', [])
-    # all cfg file
+    # store
     checkResourceExistAndWriteIfNot('store', data={})
     # setting
     checkResourceExistAndWriteIfNot('setting', data=getSettingJSONContent())
     # font
     checkResourceExistAndWriteIfNot('font', data=getFontJSONContent())
-    for target in ['video', 'image', 'camera', 'schedule', 'presenter', 'staticsource']:
+    # ...rest cfg file
+    for target in ['video', 'image', 'camera', 'schedule', 'audio', 'presenter', 'staticsource', 'key']:
         checkResourceExistAndWriteIfNot(target)
+
+
+def checkResourceExistAndWriteIfNot(target, data=[]):
+    path = f'{_BASE_PATH}cfg/{target}.json'
+    if not os.path.isfile(path):
+        writeJSON(path, data)
 
 
 def getFontJSONContent():
@@ -405,12 +451,6 @@ def getSettingJSONContent():
         "stream_server": "",
         "stream_key": ""
     }
-
-
-def checkResourceExistAndWriteIfNot(target, data=[]):
-    path = f'{_BASE_PATH}cfg/{target}.json'
-    if not os.path.isfile(path):
-        writeJSON(path, data)
 
 
 def getMTypeFromUrl(url):

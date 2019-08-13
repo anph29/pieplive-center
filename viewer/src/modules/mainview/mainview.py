@@ -29,7 +29,7 @@ class MainView(tk.Frame):
     #
 
     def setStyle(self):
-        # '''L T R B'''
+        # Left Top Right Bottom
         style = ttk.Style()
         style.theme_create("TabStyle", parent="alt", settings={
             # scroll frame
@@ -40,7 +40,7 @@ class MainView(tk.Frame):
             },
             "TNotebook.Tab": {  # tab head
                 "configure": {"padding": [15, 7, 15, 7], "background": "#f2f2f2", "relief": tk.FLAT},
-                "map": {"background": [("selected", "#fff")], "foreground ":[("selected", "#ff2d55")]}
+                "map": {"background": [("selected", "#fff")], "foreground ": [("selected", "#ff2d55")]}
             },
             "sub.TNotebook": {  # big zone
                 "configure": {"background": "#F4ECF7"}
@@ -81,16 +81,25 @@ class MainView(tk.Frame):
     def showBigTabWrapper(self):
         self.superWrapper = ttk.Notebook(self)
         self.superWrapper.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-        #
-        icSchedule = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_clock_tab.png')
+        # Schedule
+        icSchedule = tk.PhotoImage(
+            file=helper._ICONS_PATH + 'ic_clock_tab.png')
         self.schedule = Schedule(self)
         self.schedule.image = icSchedule
-        self.superWrapper.add(self.schedule, text="Schedule", image=icSchedule, compound=tk.LEFT)
-        #
+        self.superWrapper.add(self.schedule, text="Schedule",
+                              image=icSchedule, compound=tk.LEFT)
+        # Live View
         icMedia = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_media_tab.png')
         self.mediaList = self.makeMediaListTab()
         self.mediaList.image = icMedia
-        self.superWrapper.add(self.mediaList, text="Live View", image=icMedia, compound=tk.LEFT)
+        self.superWrapper.add(self.mediaList, text="Live View",
+                              image=icMedia, compound=tk.LEFT)
+        # C.O.M
+        icCom = tk.PhotoImage(file=helper._ICONS_PATH + 'se-icon.png')
+        self.tabCOM = self.makeMediaListTab()
+        self.tabCOM.image = icCom
+        self.superWrapper.add(self.tabCOM, text="C.O.M",
+                              image=icCom, compound=tk.LEFT)
         #
         self.superWrapper.select(self.schedule)
         self.superWrapper.enable_traversal()
@@ -102,25 +111,25 @@ class MainView(tk.Frame):
         mediaListTab.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
         # 1
         icImg = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_image.png')
-        self.tab_image = self.makeMediaTab(MediaType.IMAGE)
+        self.tab_image = self.makeMediaGrid(MediaType.IMAGE)
         self.tab_image.image = icImg
         mediaListTab.add(self.tab_image, text="Images",
                          image=icImg, compound=tk.LEFT)
         # 2
         icVid = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_video.png')
-        self.tab_video = self.makeMediaTab(MediaType.VIDEO)
+        self.tab_video = self.makeMediaGrid(MediaType.VIDEO)
         self.tab_video.image = icVid
         mediaListTab.add(self.tab_video, text="Videos",
                          image=icVid, compound=tk.LEFT)
         # 3
         icCam = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_camera.png')
-        self.tab_camera = self.makeMediaTab(MediaType.CAMERA)
+        self.tab_camera = self.makeMediaGrid(MediaType.CAMERA)
         self.tab_camera.image = icCam
         mediaListTab.add(self.tab_camera, text="Cameras",
                          image=icCam, compound=tk.LEFT)
         # 4
         icPres = tk.PhotoImage(file=helper._ICONS_PATH + 'ic_presenter.png')
-        self.tab_presenter = self.makeMediaTab(MediaType.PRESENTER)
+        self.tab_presenter = self.makeMediaGrid(MediaType.PRESENTER)
         self.tab_presenter.image = icPres
         mediaListTab.add(self.tab_presenter, text="Presenters",
                          image=icPres, compound=tk.LEFT)
@@ -136,7 +145,7 @@ class MainView(tk.Frame):
         self.parent.parent.config(menu=self.menubar)
     #
 
-    def makeMediaTab(self, tType):
+    def makeMediaGrid(self, tType):
         return MediaGridView(self, tabType=tType, borderwidth=0, bg="#fff")
     #
 

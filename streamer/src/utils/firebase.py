@@ -1,7 +1,8 @@
 from .pyrebase import pyrebase
-from . import store 
+from . import store
 from requests.exceptions import HTTPError
 from src.models import N100_model
+
 
 def getFirebase():
     return pyrebase.initialize_app({
@@ -11,6 +12,7 @@ def getFirebase():
         "storageBucket": "piepme-161803.appspot.com",
         # "serviceAccount": "path/to/serviceAccountCredentials.json"
     })
+
 
 def config():
     try:
@@ -22,6 +24,7 @@ def config():
     except:
         # print(e, '--firebase error--')
         return refreshToken()
+
 
 def refreshToken():
     try:
@@ -35,20 +38,22 @@ def refreshToken():
         store._set('firebaseAuth', authen)
         return firebase.database()
     except:
-       return False
+        return False
+
 
 def getTokenFromSession():
     n100 = N100_model()
     res = n100.f5fb_login_viewer({
-        'NV117': store._get('NV117'), # PiepMeID
-        'NV125': store._get('NV125'), # Token
+        'NV117': store._get('NV117'),  # PiepMeID
+        'NV125': store._get('NV125'),  # Token
         'LOGIN': store._get('NV101')
     })
-    if res['status'] =='success':
+    if res['status'] == 'success':
         if res['elements'] == -3:
             return False
         else:
             return res['elements']
+
 
 def startObserverActivedBu(callback):
     activedBu = store.getCurrentActiveBusiness()
@@ -58,10 +63,12 @@ def startObserverActivedBu(callback):
             firebaseAuth = store._get('firebaseAuth')
             return db.child(f'l500/{activedBu}').stream(callback, token=firebaseAuth['idToken'])
 
+
 def makeChangePresenter(pl500):
     activedBu = store.getCurrentActiveBusiness()
     if bool(activedBu):
         db = config()
         if bool(db):
             firebaseAuth = store._get('firebaseAuth')
-            db.child(f'l500/{activedBu}/PRESENTER').set(pl500, token=firebaseAuth['idToken'])
+            db.child(f'l500/{activedBu}/PRESENTER').set(pl500,
+                                                        token=firebaseAuth['idToken'])

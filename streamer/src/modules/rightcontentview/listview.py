@@ -222,6 +222,7 @@ class ListAudios(RecycleView):
     def setActive(self,index,val):
         self.data[index]['active'] = val
         helper._write_lsaudio(self.clean_data_to_save_json())
+        kivyhelper.getApRoot().mainStream.refresh_stream()
 
     def refresh_view(self):
         try:

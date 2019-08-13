@@ -2,7 +2,7 @@ from kivy.uix.widget import Widget
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty
 from src.modules.bottomleft.bottomleft import TextDialog
 from src.modules.bottomleft.bottomleft import ImageDialog
-from src.modules.bottomleft.bottomleft import AudioDialog
+# from src.modules.bottomleft.bottomleft import AudioDialog
 from src.modules.custom.addschedule import AddSchedule
 from src.modules.kvsetting import KVSetting
 from src.modules.mainstream import MainStream
@@ -115,13 +115,29 @@ class MainView(Widget):
                 self.mainStream.show_text( _s['id'], _s['label'], _s['font'], _s['size'],
                                         _s['color'], _s['pos_x'], _s['pos_y'], _s['active'], True)
             elif _s['type'] == 'image':
-                self.mainStream.show_image( _s['id'], _s['src'], _s['pos_x'], _s['pos_y'],
-                                        _s['width'], _s['height'], _s['active'], True)
-            elif _s['type'] == 'audio' and _s['active'] == 1:
-                _audio = {'id': _s['id'],'name': _s['name'],'src': _s['src'],'volume': _s['volume']}
-                self.lsAudio.append(_audio)
-        self.mainStream.lsSource = self.lsSource
+                self.mainStream.show_image( _s['id'], _s['src'], _s['pos_x'], _s['pos_y'], _s['width'], _s['height'], _s['active'], True)
+
         self.bottom_left.list_source.set_source(self.lsSource)
+
+    def add_mixer(self, index, name, src, volume):
+        if index == -1:
+            audio = {
+                "id": scryto.hash_md5_with_time(src.replace('\\', '/')),
+                "type": "audio",
+                "active": 0,
+                "name": name,
+                "src": src,
+                "volume": volume
+            }
+            self.lsSource.append(audio)
+            helper._write_lsStaticSource(self.lsSource)
+            self.bottom_left.list_source.add_source(audio)
+        else:
+            self.lsSource[index]['name'] = name
+            self.lsSource[index]['src'] = src
+            self.lsSource[index]['volume'] = volume
+            self.bottom_left.list_source.update_source(index,{"name":name, "active": self.lsSource[index]["active"]})
+            self.bottom_left.list_mixer.update_source({'id': self.lsSource[index]['id'],'name': name,'src': src,'volume': volume})
 
     def changeSrc(self, data_src, data_type):
         if bool(data_src) and self.mainStream is not None:
@@ -212,21 +228,9 @@ class MainView(Widget):
 
     def on_off_source(self, index, value):
         ite = self.lsSource[index]
-        if ite['type'] == 'audio':
-            if value:
-                _audio = {'id': ite['id'],'name':  ite['name'], 'src': ite['name'],
-                          'volume': ite['volume']}
-                self.bottom_left.list_mixer.add_source(_audio)
-            else:
-                self.bottom_left.list_mixer.del_source(ite['id'])
-        else:
-            self.mainStream.on_off_source(ite['id'], value)
-
+        self.mainStream.on_off_source(ite['id'], value)
         self.lsSource[index]["active"] = value
         helper._write_lsStaticSource(self.lsSource)
-        self.mainStream._set_source(self.lsSource)
-        if ite['type'] == 'audio':
-            self.mainStream.on_change_audio()
 
     def openSetting(self):
         self.settingPop = KVSetting(self)
@@ -238,9 +242,6 @@ class MainView(Widget):
             obj.open()
         elif type == 'TEXT':
             obj = TextDialog(self)
-            obj.open()
-        elif type == 'AUDIO':
-            obj = AudioDialog(self)
             obj.open()
 
     def add_text(self, index, name, label, font, size, color, pos_x, pos_y):
@@ -304,27 +305,6 @@ class MainView(Widget):
             self.bottom_left.list_source.update_source(index,{"name":name, "active": self.lsSource[index]["active"]})
             self.mainStream.show_image(self.lsSource[index]['id'], src, pos_x, pos_y, int(width), int(height), self.lsSource[index]["active"], False)
 
-    def add_audio(self, index, name, src, volume):
-        if index == -1:
-            audio = {
-                "id": scryto.hash_md5_with_time(src.replace('\\', '/')),
-                "type": "audio",
-                "active": 0,
-                "name": name,
-                "src": src,
-                "volume": volume
-            }
-            self.lsSource.append(audio)
-            helper._write_lsStaticSource(self.lsSource)
-            self.bottom_left.list_source.add_source(audio)
-            # self.bottom_left.list_mixer.add_source({'id': audio['id'],'name': name,'src': src,'volume': volume})
-        else:
-            self.lsSource[index]['name'] = name
-            self.lsSource[index]['src'] = src
-            self.lsSource[index]['volume'] = volume
-            self.bottom_left.list_source.update_source(index,{"name":name, "active": self.lsSource[index]["active"]})
-            self.bottom_left.list_mixer.update_source({'id': self.lsSource[index]['id'],'name': name,'src': src,'volume': volume})
-
     def delete_source(self, index):
         if self.lsSource[index]['type'] == 'audio':
             self.bottom_left.list_mixer.del_source(self.lsSource[index]['id'])
@@ -337,9 +317,9 @@ class MainView(Widget):
         if self.right_content is not None:
             self.right_content.tab_presenter.ls_presenter.stopListenerStream()
 
-    def on_change_position(self, id, pos_x, pos_y):
+    def on_change_position(self, _id, pos_x, pos_y):
         for _s in self.lsSource:
-            if _s['id'] == id:
+            if _s['id'] == _id:
                 _s['pos_x'] = pos_x
                 _s['pos_y'] = pos_y
                 helper._write_lsStaticSource(self.lsSource)
@@ -352,9 +332,6 @@ class MainView(Widget):
             obj.open()
         elif ite['type'] == 'text':
             obj = TextDialog(self, ite, index)
-            obj.open()
-        elif ite['type'] == 'audio':
-            obj = AudioDialog(self, ite, index)
             obj.open()
     
     def open_add_schedule(self, data):

@@ -1,16 +1,15 @@
 from kivy.uix.recycleview import RecycleView
 from src.modules.recyclelayout.recyclegridlayout import SelectableGrid
 from src.modules.recyclelayout.recyclegridlayout import SelectableBox
-from kivy.properties import ObjectProperty, NumericProperty, ObjectProperty, BooleanProperty, StringProperty
+from kivy.properties import ObjectProperty, NumericProperty, BooleanProperty, StringProperty
 from kivy.properties import ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.uix.scrollview import ScrollView
-import src.utils.kivyhelper as kv_helper
 from kivy.lang import Builder
-from kivy.graphics import Rectangle, Color
 from src.modules.custom.popup import PiepMeConfirmPopup
+from src.utils import kivyhelper
 
 Builder.load_file('src/ui/listsource.kv')
 
@@ -26,14 +25,12 @@ class ListSource(RecycleView):
         if sources is not None:
             for i in sources:
                 self.data.append({"name":i["name"], "active": i["active"]})
-                # "id":scryto.hash_md5_with_time(self.url.text.replace('\\', '/')),
 
     def add_source(self, item):
         self.data.append({"name":item["name"], "active": item["active"]})
 
     def update_source(self, pos, item):
         self.data[pos].update(item)
-        #self.children[0].children[pos].name = item["name"]
 
     def del_source(self, pos):
         del(self.data[pos])
@@ -46,7 +43,7 @@ class ListSource(RecycleView):
     def delete_source(self):
         for child in self.children[0].children:
             if child.selected:
-                kv_helper.getApRoot().delete_source(child.index)
+                kivyhelper.getApRoot().delete_source(child.index)
                 del(self.data[child.index])
     
     def on_change_check(self, index, active):
@@ -58,7 +55,7 @@ class ListSource(RecycleView):
     def edit_source(self):
         for child in self.children[0].children:
             if child.selected:
-                kv_helper.getApRoot().on_edit_source(child.index)
+                kivyhelper.getApRoot().on_edit_source(child.index)
 
 class BoxSource(SelectableBox):
     """ Adds selection and focus behaviour to the view. """
@@ -93,4 +90,4 @@ class RCVItemSource(RecycleDataViewBehavior, BoxLayout):
         elif self.active == 0:
             self.active = 1
         self.parent.parent.on_change_check(self.index,self.active)
-        kv_helper.getApRoot().on_off_source(self.index,self.active)
+        kivyhelper.getApRoot().on_off_source(self.index,self.active)

@@ -425,81 +425,81 @@
                 font_size: sp(14)
                 on_press: root._cancel()
 
-<AudioDialog>:
-    inp_name:inp_name
-    inp_source:inp_source
-    title: 'Add Audio'
-    size_hint: None, None
-    width: 400
-    height:300
-    auto_dismiss: False
-    BoxLayout:
-        orientation: 'vertical'
-        pos: self.pos
-        size: root.size
-        padding:0,5,0,0
-        spacing:10
+# <AudioDialog>:
+#     inp_name:inp_name
+#     inp_source:inp_source
+#     title: 'Add Audio'
+#     size_hint: None, None
+#     width: 400
+#     height:300
+#     auto_dismiss: False
+#     BoxLayout:
+#         orientation: 'vertical'
+#         pos: self.pos
+#         size: root.size
+#         padding:0,5,0,0
+#         spacing:10
 
-        BoxLayout:
-            orientation: 'horizontal'
-            size_hint:1,None
-            height:30
-            Label:
-                text: 'Name'
-                size_hint: None, 1
-                width: 135
-                color: 1,1,1,1
-                font_size: sp(14)
-                valign:"top"
-                halign:"right"
-            TextInput:
-                id: inp_name
-                size_hint: None, 1
-                width: 240
-                font_size: sp(14)
-                multiline: False
+#         BoxLayout:
+#             orientation: 'horizontal'
+#             size_hint:1,None
+#             height:30
+#             Label:
+#                 text: 'Name'
+#                 size_hint: None, 1
+#                 width: 135
+#                 color: 1,1,1,1
+#                 font_size: sp(14)
+#                 valign:"top"
+#                 halign:"right"
+#             TextInput:
+#                 id: inp_name
+#                 size_hint: None, 1
+#                 width: 240
+#                 font_size: sp(14)
+#                 multiline: False
 
-        BoxLayout:
-            orientation: 'horizontal'
-            size_hint:1,None
-            height:30
-            Label:
-                text: 'source'
-                size_hint: None, 1
-                width: 135
-                font_size: sp(14)
-                color: 1,1,1,1
-                valign:"top"
-                halign:"right"
+#         BoxLayout:
+#             orientation: 'horizontal'
+#             size_hint:1,None
+#             height:30
+#             Label:
+#                 text: 'source'
+#                 size_hint: None, 1
+#                 width: 135
+#                 font_size: sp(14)
+#                 color: 1,1,1,1
+#                 valign:"top"
+#                 halign:"right"
 
-            TextInput:
-                id: inp_source
-                size_hint: None, 1
-                width: 180
-                font_size: sp(14)
-                multiline: False
-            Button:
-                text:'choose'
-                size_hint: None, 1
-                width: 60
-                font_size: sp(14)
-                color: 1,1,1,1
-                background_color: 1,1,1,1
-                on_press: root._choose_audio()
-        Widget:
-        BoxLayout:
-            orientation: 'horizontal'
-            size_hint: 1, None
-            height:30
-            spacing:5
-            Widget:
-            Button:
-                text: 'Enter'
-                background_color: 1,1,1,1
-                font_size: sp(14)
-                on_press: root._enter()
-            Button:
-                text: 'Cancel'
-                background_color: 1,1,1,1
-                font_size: sp(14)
-                on_press: root._cancel()
+#             TextInput:
+#                 id: inp_source
+#                 size_hint: None, 1
+#                 width: 180
+#                 font_size: sp(14)
+#                 multiline: False
+#             Button:
+#                 text:'choose'
+#                 size_hint: None, 1
+#                 width: 60
+#                 font_size: sp(14)
+#                 color: 1,1,1,1
+#                 background_color: 1,1,1,1
+#                 on_press: root._choose_audio()
+#         Widget:
+#         BoxLayout:
+#             orientation: 'horizontal'
+#             size_hint: 1, None
+#             height:30
+#             spacing:5
+#             Widget:
+#             Button:
+#                 text: 'Enter'
+#                 background_color: 1,1,1,1
+#                 font_size: sp(14)
+#                 on_press: root._enter()
+#             Button:
+#                 text: 'Cancel'
+#                 background_color: 1,1,1,1
+#                 font_size: sp(14)
+#                 on_press: root._cancel()

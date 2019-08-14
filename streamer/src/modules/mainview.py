@@ -169,14 +169,15 @@ class MainView(Widget):
 
     def main_display_status(self, val):
         self.mainDisplayStt = val
-        if self.mainDisplayStt is False and self.miniDisplayStt is False and self.mainStream.isStream is True:
-            # get_number_active
-            self.triggerStop()
+        if self.mainStream.isStream is True:
+            if self.mainDisplayStt is False and self.miniDisplayStt is False and self.right_content.tab_presenter.ls_presenter.get_number_active() == 0 :
+                self.triggerStop()
 
     def mini_display_status(self, val):
         self.miniDisplayStt = val
-        if self.mainDisplayStt is False and self.miniDisplayStt is False and self.mainStream.isStream is True:
-            self.triggerStop()
+        if self.mainStream.isStream is True:
+            if self.mainDisplayStt is False and self.miniDisplayStt is False and self.right_content.tab_presenter.ls_presenter.get_number_active() == 0 :
+                self.triggerStop()
 
     def start_stream(self):
         if self.mainStream.isStream is False:

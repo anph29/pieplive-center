@@ -19,6 +19,7 @@ class MediaTab(tk.Frame):
         self._LS_MEDIA_UI = []
         self.listenerStream = None
         self.totalDuration = 0
+        self.tabType = None
 
     def initUI(self):
         self.showToolBar()
@@ -30,7 +31,7 @@ class MediaTab(tk.Frame):
             self.listenerStream = firebase.startObserverActivedBu(self.firebaseCallback)
 
     def firebaseCallback(self, message):
-        path, data, event = message.values()
+        path, data, _ = message.values()
         if data != None:
             if path == "/":
                 self.onChangeLN510(data["LIST"])

@@ -79,3 +79,14 @@ def makeChangePresenter(pl500):
             db.child(f"l500/{activedBu}/PRESENTER").set(
                 pl500, token=firebaseAuth["idToken"]
             )
+
+
+def setP300AfterStartStream(data):
+    activedBu = store.getCurrentActiveBusiness()
+    if bool(activedBu):
+        db = config()
+        if bool(db):
+            firebaseAuth = store._get("firebaseAuth")
+            db.child(f"l500/{activedBu}/P300").set(data, token=firebaseAuth["idToken"])
+
+   

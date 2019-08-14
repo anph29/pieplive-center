@@ -198,10 +198,10 @@ class MediaItemBox(MediaItem):
             self.vlcInited = True
 
     def toggleZoom(self, evt):
-        w = self.winfo_width()
-        h = self.winfo_height()
-        x = self.winfo_x()
-        y = self.winfo_y()
+        # w = self.winfo_width()
+        # h = self.winfo_height()
+        # x = self.winfo_x()
+        # y = self.winfo_y()
         if self.zoomIn:
             # self.configure("geometry",f"{w*2}x{h*2}+{x}+{y}")
             self.updateZoomIcon("in")

@@ -25,6 +25,7 @@ class Item(Frame):
         selection_handler=None,
         drag_handler=None,
         drop_handler=None,
+        freeze=False,
         **kwargs
     ):
 
@@ -43,6 +44,7 @@ class Item(Frame):
         self._selection_handler = selection_handler
         self._drag_handler = drag_handler
         self._drop_handler = drop_handler
+        self.freeze = freeze
 
     @property
     def x(self):
@@ -90,7 +92,7 @@ class Item(Frame):
             widget.bindtags((self._tag,) + bindtags)
 
     def _on_selection(self, event):
-        if not self.ddlist.locked:
+        if not self.ddlist.locked and not self.freeze:
             self.tkraise()
 
             self._move_lastx = event.x_root
@@ -100,7 +102,7 @@ class Item(Frame):
                 self._selection_handler(self)
 
     def _on_drag(self, event):
-        if not self.ddlist.locked:
+        if not self.ddlist.locked and not self.freeze:
             self.master.update_idletasks()
 
             cursor_x = self._x + event.x
@@ -118,7 +120,7 @@ class Item(Frame):
                 self._drag_handler(cursor_x, cursor_y)
 
     def _on_drop(self, event):
-        if not self.ddlist.locked and self._drop_handler:
+        if not self.ddlist.locked and not self.freeze and self._drop_handler:
             self._drop_handler()
 
     def set_position(self, x, y):
@@ -178,14 +180,11 @@ class DDList(Frame):
     def setLock(self, lock):
         self.locked = lock
 
-    def create_item(self, value=None, **kwargs):
-
+    def create_item(self, value=None, freeze=False, **kwargs):
         if self._item_relief is not None:
             kwargs.setdefault("relief", self._item_relief)
-
         if self._item_borderwidth is not None:
             kwargs.setdefault("borderwidth", self._item_borderwidth)
-
         if self._item_background is not None:
             kwargs.setdefault("background", self._item_background)
 
@@ -198,6 +197,7 @@ class DDList(Frame):
             self._on_item_selected,
             self._on_item_dragged,
             self._on_item_dropped,
+            freeze,
             **kwargs
         )
         return item

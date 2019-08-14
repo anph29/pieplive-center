@@ -1,5 +1,5 @@
-STATUS = "status"
-ELEMENTS = "elements"
-SUCCESS = "success"
-ERROR = "error"
+STATUS =    "status"
+ELEMENTS =  "elements"
+SUCCESS =   "success"
+ERROR =     "error"
 

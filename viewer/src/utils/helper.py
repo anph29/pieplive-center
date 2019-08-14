@@ -21,6 +21,7 @@ _PATH_AUDIO = f"{_BASE_PATH}cfg/audio.json"
 _PATH_CAMERA = f"{_BASE_PATH}cfg/camera.json"
 _PATH_SCHEDULE = f"{_BASE_PATH}cfg/schedule.json"
 _PATH_SETTING = f"{_BASE_PATH}cfg/setting.json"
+_PATH_I18N_DIR = f"{_BASE_PATH}i18n/"
 _PATH_PRESENTER = f"{_BASE_PATH}cfg/presenter.json"
 _PATH_KEY_STREAM = f"{_BASE_PATH}cfg/keystream.json"
 _PATH_SCHEDULE_DIR = f"{_BASE_PATH}cfg/schedules/"
@@ -65,19 +66,19 @@ def calc_schedule_runtime(index, schedule=[], startTime=-1):
     for i, sch in enumerate(schedule):
         if i == index:
             flagStart = True
-        # 
+        #
         if flagStart:
             sch["timepoint"] = currentPoint
             currentPoint += sch["duration"]
-            # 
-            secIn1Day = 24 * 60 * 60                               
+            #
+            secIn1Day = 24 * 60 * 60
             if currentPoint >= secIn1Day:
                 currentPoint -= secIn1Day
         else:
             sch["timepoint"] = 0
-        # 
+        #
         newSchedule.append(sch)
-    # 
+    #
     if isWriteToFile:
         _write_schedule(newSchedule)
     else:
@@ -467,10 +468,10 @@ def getMTypeFromUrl(url):
     URL = url.upper()
     if "RTSP" in URL:
         return "RTSP"
-    elif "MP4" in URL:
-        return "MP4"
     elif "M3U8" in URL:
         return "M3U8"
+    elif "MP4" in URL or "MOV" in URL:
+        return "VIDEO"
     elif "JPG" in URL or "PNG" in URL:
         return "IMG"
     else:
@@ -488,5 +489,5 @@ def getVideoDuration(fpath):
             dura = int(total / fps)
         _cap.release()
         return dura
-    except expression:
+    except:
         return 0

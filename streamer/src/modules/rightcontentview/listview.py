@@ -320,22 +320,6 @@ class ListPresenter(RecycleView):
 
     def __init__(self, **kwargs):
         super(ListPresenter, self).__init__(**kwargs)
-        Clock.schedule_once(self.turnOnObserver,1)
-
-    def turnOnObserver(self,dt):
-        if bool(store._get('FO100')):
-            self.listenerStream = firebase.startObserverActivedBu(self.firebaseCallback)
-
-    def firebaseCallback(self, message):
-        path, data, event = message.values()
-        if data is not None:
-            if path == '/':
-                self.onChangeLN510(data['LIST'])
-                Clock.schedule_once(lambda x: self.onChangePresenter(data['PRESENTER']),0.5)
-            elif 'PRESENTER' in path:
-                self.onChangePresenter(data)
-            elif 'LIST' in path:
-                self.onChangeLN510(data)
 
     def onChangePresenter(self, presenter):
         #choice status
@@ -393,11 +377,6 @@ class ListPresenter(RecycleView):
                     kivyhelper.getApRoot().deletePresenting(m['id'])
                     m['playable'] = False
         self.refresh_view()
-
-
-    def stopListenerStream(self):
-        if bool(self.listenerStream):
-            self.listenerStream.close()
 
     def choice_play(self, index):
         if self.data[index]['id'] == self.item_choice:

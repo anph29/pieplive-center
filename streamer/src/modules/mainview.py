@@ -6,8 +6,9 @@ from src.modules.bottomleft.bottomleft import ImageDialog
 from src.modules.custom.addschedule import AddSchedule
 from src.modules.kvsetting import KVSetting
 from src.modules.mainstream import MainStream
-from src.utils import helper, scryto
+from src.utils import helper, scryto, firebase, store
 from kivy.lang import Builder
+from kivy.clock import Clock
 import sounddevice as sd
 
 Builder.load_file('src/ui/main.kv')
@@ -32,6 +33,7 @@ class MainView(Widget):
     miniDisplayStt = BooleanProperty(False)
     streamServer = StringProperty('')
     streamKey = StringProperty('')
+    p300 = None
 
     def __init__(self, **kwargs):
         super(MainView, self).__init__(**kwargs)
@@ -68,6 +70,7 @@ class MainView(Widget):
         self.init_right_content_cam()
         self.init_right_content_presenter()
         self.init_right_content_schedule()
+        Clock.schedule_once(self.turnOnObserver,1)
 
     def init_right_content_media(self):
         self.right_content.tab_media.ls_media.set_data()
@@ -122,6 +125,21 @@ class MainView(Widget):
 
         self.bottom_left.list_source.set_source(self.lsSource)
 
+    def turnOnObserver(self,dt):
+        if bool(store._get('FO100')):
+            self.listenerStream = firebase.startObserverActivedBu(self.firebaseCallback)
+    
+    def firebaseCallback(self, message):
+        path, data, event = message.values()
+        if data is not None:
+            if path == '/':
+                self.right_content.tab_presenter.ls_presenter.onChangeLN510(data['LIST'])
+                Clock.schedule_once(lambda x: self.right_content.tab_presenter.ls_presenter.onChangePresenter(data['PRESENTER']),0.5)
+            elif 'PRESENTER' in path:
+                self.right_content.tab_presenter.ls_presenter.onChangePresenter(data)
+            elif 'LIST' in path:
+                self.right_content.tab_presenter.ls_presenter.onChangeLN510(data)
+
     def add_mixer(self, index, name, src, volume):
         if index == -1:
             audio = {
@@ -169,13 +187,13 @@ class MainView(Widget):
 
     def main_display_status(self, val):
         self.mainDisplayStt = val
-        if self.mainStream.isStream is True:
+        if self.mainStream.isStream is True and self.autoStop is True:
             if self.mainDisplayStt is False and self.miniDisplayStt is False and self.right_content.tab_presenter.ls_presenter.get_number_active() == 0 :
                 self.triggerStop()
 
     def mini_display_status(self, val):
         self.miniDisplayStt = val
-        if self.mainStream.isStream is True:
+        if self.mainStream.isStream is True and self.autoStop is True:
             if self.mainDisplayStt is False and self.miniDisplayStt is False and self.right_content.tab_presenter.ls_presenter.get_number_active() == 0 :
                 self.triggerStop()
 
@@ -193,6 +211,10 @@ class MainView(Widget):
             self.mainStream.stopStream()
             self.btn_start.text = "Start"
             self.btn_start.background_color = .29, .41, .55, 1
+
+    def send_info_to_app(self):
+        if self.p300 is not None:
+            firebase.setP300AfterStartStream(self.p300)
 
     def save_setting(self, stream_server, stream_key):
         if self.setting['stream_server'] is not None:
@@ -332,8 +354,8 @@ class MainView(Widget):
     def on_stop(self):
         if self.mainStream is not None:
             self.mainStream.release()
-        if self.right_content is not None:
-            self.right_content.tab_presenter.ls_presenter.stopListenerStream()
+        if bool(self.listenerStream):
+            self.listenerStream.close()
 
     def on_change_position(self, _id, pos_x, pos_y):
         for _s in self.lsSource:

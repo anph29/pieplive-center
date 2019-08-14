@@ -155,6 +155,7 @@ class MainStream(RelativeLayout):
 
     def _process(self):
         self.event = Clock.schedule_interval(self.stream, 1/25)
+        self.f_parent.send_info_to_app()
 
     def stream(self, fps):
         try:
@@ -163,10 +164,10 @@ class MainStream(RelativeLayout):
                 #     self.canvas_parent_index = self.parent.canvas.indexof(self.canvas)
                 #     if self.canvas_parent_index > -1:
                 #         self.parent.canvas.remove(self.canvas)
-                # self.fbo.add(self.canvas)
+                self.fbo.add(self.canvas)
                 self.fbo.draw()
                 self.pipe.stdin.write(self.fbo.pixels)
-                # self.fbo.remove(self.canvas)
+                self.fbo.remove(self.canvas)
                 # if self.parent is not None and self.canvas_parent_index > -1:
                 #     self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
                 self.reconnect = 0
@@ -174,7 +175,7 @@ class MainStream(RelativeLayout):
             self.stopStream()
             self.reconnect += 2
             normal = Normal_model()
-            key = self.f_parent.bottom_left.stream_key.text.split("?")[0]
+            key = self.f_parent.streamKey.split("?")[0]
             normal.reset_link_stream(key)
             Clock.schedule_once(self.reconnecting,self.reconnect)
             

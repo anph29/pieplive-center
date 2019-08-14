@@ -16,7 +16,6 @@ class ItemAudio(RecycleDataViewBehavior, FloatLayout):
     audio = StringProperty('')
     selected = BooleanProperty(False)
     selectable = BooleanProperty(True)
-    kvcam = ObjectProperty()
     isCheckItem = ObjectProperty()
     active = BooleanProperty(False)
 
@@ -24,10 +23,6 @@ class ItemAudio(RecycleDataViewBehavior, FloatLayout):
         """ Catch and handle the view changes """
         self.index = index
         self.name = data['name']
-        self.duration = data['duration']
-        self.timepoint = data['timepoint']
-        self.audio = data['audio']
-        self.kvcam.set_data_source(data)
         self.active = data['active']
         self.isCheckItem.active = False
         return super(ItemAudio, self).refresh_view_attrs(rv, index, data)
@@ -53,19 +48,8 @@ class ItemAudio(RecycleDataViewBehavior, FloatLayout):
 
     def play(self):
         self.isCheckItem.active = False
-        self.parent.parent.setPlayed(self.index)
-        kivyhelper.getApRoot().changeSrc(self.kvcam.get_data_source(),'SCHEDULE')
-        self.parent.parent.makeTimePoint(self.index)
-
-    def up(self):
-        self.parent.parent.up_list(self.index)
-
-    def down(self):
-        self.parent.parent.down_list(self.index)
-
-    def viewTimePoint(self,_second):
-        h,m,s = helper.convertSecNoToHMS(_second, toObj=True).values()
-        return f'{h}h {m}:{s}'
-
-    def link_audio(self, obj):
-        self.parent.parent.link_audio(obj, self.index,self.audio)
+        if self.active is True:
+            self.active = False
+        else:
+            self.active = True
+        self.parent.parent.setActive(self.index,self.active)

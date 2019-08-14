@@ -3,14 +3,10 @@ from kivy.lang import Builder
 
 from kivy.uix.dropdown import DropDown
 from kivy.uix.popup import Popup
-from kivy.uix.relativelayout import RelativeLayout
-from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
-from kivy.base import runTouchApp
-from kivy.graphics import Color, Line, Rectangle
 from kivy.uix.filechooser import FileChooserListView, FileChooserIconView
 from kivy.uix.filechooser import FileSystemLocal
-from kivy.properties import ObjectProperty, NumericProperty, ObjectProperty, BooleanProperty, StringProperty
+from kivy.properties import ObjectProperty, NumericProperty, BooleanProperty, StringProperty
 
 from src.modules.bottomleft.dropdownsource import DropDownSource
 from src.modules.custom.mylabel import MyLabel
@@ -112,43 +108,43 @@ class ImageDialog(Popup):
         self.directory = path
         self.dismiss_popup()
 
-class AudioDialog(Popup):
-    directory = ''
-    def __init__(self, parent, data = None, index = -1, *args):
-        super(AudioDialog, self).__init__(*args)
-        self.index = index
-        self.volume = 100
-        if data is not None:
-            self.inp_name.text = data['name']
-            self.inp_source.text = data['src']
-            self.volume = data['volume']
+# class AudioDialog(Popup):
+#     directory = ''
+#     def __init__(self, parent, data = None, index = -1, *args):
+#         super(AudioDialog, self).__init__(*args)
+#         self.index = index
+#         self.volume = 100
+#         if data is not None:
+#             self.inp_name.text = data['name']
+#             self.inp_source.text = data['src']
+#             self.volume = data['volume']
 
-    def _enter(self):
-        kv_helper.getApRoot().add_audio(self.index, self.inp_name.text, self.inp_source.text, self.volume)
-        self.dismiss()
+#     def _enter(self):
+#         kv_helper.getApRoot().add_audio(self.index, self.inp_name.text, self.inp_source.text, self.volume)
+#         self.dismiss()
 
-    def _cancel(self):
-        self.dismiss()
+#     def _cancel(self):
+#         self.dismiss()
 
-    def choosed_file(self, selection):
-        if len(selection) == 1:
-            if ftype.isAudio(selection[0]):
-                self.local_file(selection[0], 'AUDIO')
-            else:
-                self.error = True
+#     def choosed_file(self, selection):
+#         if len(selection) == 1:
+#             if ftype.isAudio(selection[0]):
+#                 self.local_file(selection[0], 'AUDIO')
+#             else:
+#                 self.error = True
 
-    def local_file(self, fpath, ftype):
-        self.inp_source.text = fpath.replace('\\', '/')
+#     def local_file(self, fpath, ftype):
+#         self.inp_source.text = fpath.replace('\\', '/')
 
-    def _choose_audio(self):
-        self.file_browser = FileChooser(self, self.choosed_file)
-        self.file_browser.open()
-        self.error = False
+#     def _choose_audio(self):
+#         self.file_browser = FileChooser(self, self.choosed_file)
+#         self.file_browser.open()
+#         self.error = False
     
-    def dismiss_popup(self):
-        self._popup.dismiss()
+#     def dismiss_popup(self):
+#         self._popup.dismiss()
 
-    def select(self, path):
-        self.directory = path
-        self.dismiss_popup()
+#     def select(self, path):
+#         self.directory = path
+#         self.dismiss_popup()
     

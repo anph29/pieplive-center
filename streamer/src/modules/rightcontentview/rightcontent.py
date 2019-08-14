@@ -5,8 +5,10 @@ from kivy.properties import ObjectProperty, StringProperty
 from src.modules.rightcontentview.addcamera import AddCamera
 from src.modules.rightcontentview.addmedia import AddMedia
 from src.modules.rightcontentview.addimage import AddImage
+from src.modules.rightcontentview.addaudio import AddAudio
 from src.modules.rightcontentview.itemlabel import ItemLabel
 from src.modules.rightcontentview.itemschedule import ItemSchedule
+from src.modules.rightcontentview.itemaudio import ItemAudio
 from src.utils import helper
 
 Builder.load_file('src/ui/rightcontent.kv')
@@ -14,6 +16,7 @@ Builder.load_file('src/ui/rightcontent.kv')
 class RightContent(TabbedPanel):
     tab_media = ObjectProperty()
     tab_image = ObjectProperty()
+    tab_audio = ObjectProperty()
     tab_camera = ObjectProperty()
     tab_presenter = ObjectProperty()
     tab_schedule = ObjectProperty()
@@ -50,6 +53,14 @@ class TabImage(BoxLayout):
     def open_add_image(self):
         self.add_image_pop = AddImage(self)
         self.add_image_pop.open()
+
+class TabAudio(BoxLayout):
+    add_audio_pop = ObjectProperty()
+    ls_audio = ObjectProperty()
+
+    def open_add_audio(self):
+        self.add_audio_pop = AddAudio(self)
+        self.add_audio_pop.open()
 
 class TabCamera(BoxLayout):
     add_cam_pop = ObjectProperty()

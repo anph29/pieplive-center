@@ -21,9 +21,9 @@ kv = '''
 
 Builder.load_string(kv)
 class PiepLabel(DragBehavior, Label):
-    def __init__(self, id, parentName,**kwargs):
+    def __init__(self, _id, parentName,**kwargs):
         super(PiepLabel, self).__init__(**kwargs)
-        self._id = id
+        self._id = _id
         self.parentName = parentName
 
     def on_touch_up(self, touch):

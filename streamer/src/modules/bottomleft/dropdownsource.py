@@ -30,15 +30,6 @@ kv = '''
         on_release: app.root.add_source('TEXT')
         halign:"justify"
         valign:"middle"
-    MyLabel:
-        text: 'Audio'
-        size_hint_y: None
-        font_size: sp(13)
-        height: 26
-        text_size:self.size
-        on_release: app.root.add_source('AUDIO')
-        halign:"justify"
-        valign:"middle"
 '''
 
 Builder.load_string(kv)

@@ -35,7 +35,6 @@ class MainStream(RelativeLayout):
         self.isRecord = False
         self.pipe = None
         self.pipe2 = None
-        self.lsSource = []
         self.command = []
         self.event = None
         self.canvas_parent_index = 0
@@ -122,9 +121,6 @@ class MainStream(RelativeLayout):
             self.prepare()
             self.camera.remove_file_flv()
             self.cameraMini.remove_file_flv()
-
-    def _set_source(self,lsSource):
-        self.lsSource = lsSource
 
     def is_streaming(self):
         return self.isStream
@@ -238,21 +234,21 @@ class MainStream(RelativeLayout):
                 txt += f"[{numau}:a]volume=2[a{numau}];"
                 _map += f'[a{numau}]'
 
-        if 'audio' in self.camera.data_src:
-            if self.camera.data_src['audio'] != '':
-                inp.extend(['-stream_loop','-1',"-i", self.camera.data_src['audio']])
-                numau += 1
-                txt += f'[{numau}:a]volume=1[a{numau}];'
-                _map += f'[a{numau}]'
+        if 'audio' in self.camera.data_src and self.camera.data_src['audio'] != '':
+            inp.extend(['-stream_loop','-1',"-i", self.camera.data_src['audio']])
+            numau += 1
+            txt += f'[{numau}:a]volume=1[a{numau}];'
+            _map += f'[a{numau}]'
 
-        if len(self.lsSource) > 0:
-            for value in self.lsSource:
-                if value['active'] == 1:
-                    if value['type'] == 'audio' and os.path.exists(value['src']) is True:
-                        inp.extend(['-stream_loop','-1',"-i", value['src']])
-                        numau += 1
-                        txt += f'[{numau}:a]volume={str(value["volume"]/100)}[a{numau}];'
-                        _map += f'[a{numau}]'
+        
+        lstAudio = self.f_parent.right_content.tab_audio.ls_audio.get_data() #helper._load_ls_audio()
+        if len(lstAudio) > 0:
+            for value in lstAudio:
+                if value['active'] is True and os.path.exists(value['url']) is True:
+                    inp.extend(['-stream_loop','-1',"-i", value['url']])
+                    numau += 1
+                    txt += f'[{numau}:a]volume={str(value["volume"]/100)}[a{numau}];'
+                    _map += f'[a{numau}]'
         if self.devAudio is not None:
             inp.extend(['-f', 'dshow', '-i', 'audio={}'.format(self.devAudio)])
             numau += 1
@@ -318,11 +314,12 @@ class MainStream(RelativeLayout):
     def on_change_Volume(self, id, value):
         if id is not None and value is not None:
             if id != -1:
-                for _s in self.lsSource:
-                    if _s['id'] == id:
-                        _s['volume'] = value
-                        helper._write_lsStaticSource(self.lsSource)
-                        break
+                pass
+                # for _s in self.lsSource:
+                #     if _s['id'] == id:
+                #         _s['volume'] = value
+                #         helper._write_lsStaticSource(self.lsSource)
+                #         break
             else:
                 self.deviceVolume = value
 
@@ -333,7 +330,7 @@ class MainStream(RelativeLayout):
     def on_change_position(self, id, pos_x, pos_y, parentName):
         self.f_parent.on_change_position(id, pos_x, pos_y)
 
-    def show_text(self, id, text, font, size, color, pos_x, pos_y, active, new):
+    def show_text(self, _id, text, font, size, color, pos_x, pos_y, active, new):
         if new:
             pText = PiepLabel(text='[color=' + str(color) + ']' + text + '[/color]',
                             font_size=size,
@@ -342,12 +339,12 @@ class MainStream(RelativeLayout):
                             y=pos_y,
                             markup=True,
                             opacity=active,
-                            id=id,
+                            _id=_id,
                             parentName='main')
             self.add_widget(pText)
         else:
             for child in self.children:
-                if child.id != None and child.id == id:
+                if child._id != None and child._id == _id:
                     child.text = '[color=' + str(color) + ']' + text + '[/color]'
                     child.font_size = str(size)
                     child.font_name = font
@@ -359,7 +356,7 @@ class MainStream(RelativeLayout):
                     break
 
 
-    def show_image(self, id, src, pos_x, pos_y, w, h, active, new):
+    def show_image(self, _id, src, pos_x, pos_y, w, h, active, new):
         if new:
             pimage = PiepImage(source=src,
                             size_hint=(None,None),
@@ -368,19 +365,19 @@ class MainStream(RelativeLayout):
                             x=pos_x,
                             y=pos_y,
                             opacity=active,
-                            id=id,
+                            _id=_id,
                             parentName='main')
             self.add_widget(pimage)
         else:
             for child in self.children:
-                if child.id != None and child.id == id:
+                if child._id != None and child._id == _id:
                     child.source = src
                     child.size = (w, h)
                     break
 
-    def on_off_source(self, id, value):
+    def on_off_source(self, _id, value):
         for child in self.children:
-            if child.id != None and child.id == id:
+            if child._id != None and child._id == _id:
                 if value:
                     child.opacity = 1
                 else:

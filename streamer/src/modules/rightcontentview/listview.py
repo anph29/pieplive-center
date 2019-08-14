@@ -168,6 +168,69 @@ class ListImage(RecycleView):
         except:
             pass
 
+class ListAudios(RecycleView):
+
+    def __init__(self, **kwargs):
+        super(ListAudios, self).__init__(**kwargs)
+
+    def set_data(self):
+        self.data = list(
+            map(
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'],
+                'volume':cam['volume'],
+                'active': cam['active'] if 'active' in cam else False,
+                'list':'AUDIO'},
+                helper._load_ls_audio()
+            )
+        )
+
+    def get_data(self):
+        return self.data
+
+    def remove(self, index):
+        if self.data:
+            self.data.pop(index)
+            helper._write_lsaudio(self.clean_data_to_save_json())
+
+    def clean_data_to_save_json(self):
+        return list(
+            map(
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'volume':cam['volume'],'active': cam['active']},
+                list(self.data)
+            )
+        )
+
+    def refresh_list(self):
+        self.set_data()
+        self.refresh_view()
+    
+    def remove_selected(self):
+        PiepMeConfirmPopup(message='Are you sure to delete the selected source?',
+                            callback_ok=self.process_del_selected,
+                            callback_cancel=lambda: True)
+                            
+    def process_del_selected(self):
+        temp = 0
+        for child in self.children[0].children:
+            if child.isCheckItem.active and child.selected == False:
+                temp = 1
+                if self.data:
+                    self.data.pop(child.index)
+        if temp == 1:
+            helper._write_lsaudio(self.clean_data_to_save_json())
+
+    def setActive(self,index,val):
+        self.data[index]['active'] = val
+        helper._write_lsaudio(self.clean_data_to_save_json())
+        kivyhelper.getApRoot().mainStream.refresh_stream()
+
+    def refresh_view(self):
+        try:
+            for child in self.children[0].children:
+                child.refresh_view_attrs(self,child.index, self.data[child.index])
+        except:
+            pass
+
 class ListCamera(RecycleView):
     item_playing = ""
     item_playing_mini = ""

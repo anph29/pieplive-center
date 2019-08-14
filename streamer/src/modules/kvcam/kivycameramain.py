@@ -141,12 +141,12 @@ class KivyCameraMain(Image):
 
             if self.capture is not None and self.capture.isOpened():
                 kivyhelper.getApRoot().loading = False
+                kivyhelper.getApRoot().main_display_status(True)
                 self.reconnect = 0
                 self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
                 self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
                 # if self.resource_type != 'VIDEO' and self.resource_type != "M3U8":
                 #     self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
-                print(">>CAPTURE FINED:", self.duration_fps)
                 self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
                 if self.f_parent is not None:
                     if self.category == "SCHEDULE":
@@ -207,6 +207,7 @@ class KivyCameraMain(Image):
             if self.capture.isOpened():
                 # check is get next
                 if not self.capture.grab():
+                    kivyhelper.getApRoot().main_display_status(False)
                     if self.category == 'SCHEDULE':
                         if 'duration' in self.data_src and  self.data_src['duration'] is not None:
                             if (self.data_src['duration'] == 0 or int(self.duration_current) >= self.data_src['duration']) and self.schedule_type == 'end':

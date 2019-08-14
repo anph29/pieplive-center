@@ -496,6 +496,13 @@ class ListPresenter(RecycleView):
     
     def change_presenter_auto(self, _val):
         kivyhelper.getApRoot().presenterAuto = _val
+
+    def get_number_active(self):
+        num = 0
+        for m in self.data:
+            if m['playable'] is True:
+                num = num + 1
+        return num
         
 class ListSchedule(RecycleView):
     item_playing = ""

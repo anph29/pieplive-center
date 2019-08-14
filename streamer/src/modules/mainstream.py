@@ -135,7 +135,7 @@ class MainStream(RelativeLayout):
         try:
             if self.event is not None:
                 self.event.cancel()
-            self.fbo = Fbo(size=(self.f_width, self.f_height),with_stencilbuffer=True)
+            self.fbo = Fbo(size=(self.f_width, self.f_height))
             with self.fbo:
                 ClearColor(0, 0, 0, 1)
                 ClearBuffers()
@@ -164,10 +164,10 @@ class MainStream(RelativeLayout):
                 #     self.canvas_parent_index = self.parent.canvas.indexof(self.canvas)
                 #     if self.canvas_parent_index > -1:
                 #         self.parent.canvas.remove(self.canvas)
-                self.fbo.add(self.canvas)
+                # self.fbo.add(self.canvas)
                 self.fbo.draw()
                 self.pipe.stdin.write(self.fbo.pixels)
-                self.fbo.remove(self.canvas)
+                # self.fbo.remove(self.canvas)
                 # if self.parent is not None and self.canvas_parent_index > -1:
                 #     self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
                 self.reconnect = 0

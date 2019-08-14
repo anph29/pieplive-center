@@ -2,27 +2,27 @@ import tkinter as tk
 from src.utils import store
 from src.constants import WS
 from src.models.p300_model import P300_model
-from src.modules.custom import DynamicGrid
-from .p300box import P300Box
+from .p300 import P300
+from .comddlist import COMDDList
 
 
-class ListP300(DynamicGrid, tk.Frame):
+class ListP300(COMDDList):
     def __init__(self, parent, *args, **kwargs):
-        super(ListP300, self).__init__(parent, *args, **kwargs)
         self.parent = parent
-        self._LS_P300_DATA = []
-        self._LS_P300_UI = []
+        self.tbBgColor = "#E8DAEF"
+        self.wrapperWidth = 300
+        super(ListP300, self).__init__(parent, *args, **kwargs)
+        self.titleTxt = "Schedule List"
         self.initUI()
 
     def initUI(self):
-        self._LS_P300_DATA = self.loadListP300COM()
-        for p300 in self._LS_P300_DATA:
-            self.addPiepToList(p300)
+        super(ListP300, self).initUI()
+        self.showListSchedule()
 
-    def addPiepToList(self, p300):
-        ui = P300Box(self.context, p300, bg="#fff", relief=tk.FLAT, bd=3)
-        self._LS_P300_UI.append(ui)
-        self.after_effect(ui)
+    def showListSchedule(self):
+        self._LS_SCHEDULE_DATA = self.loadSchedule()
+        for media in self._LS_SCHEDULE_DATA:
+            self.addToScheduleGUI(media)
 
     def loadListP300COM(self):
         p300 = P300_model()
@@ -41,44 +41,8 @@ class ListP300(DynamicGrid, tk.Frame):
         )
         return rs[WS.ELEMENTS] if rs[WS.STATUS] == WS.SUCCESS else []
 
-    def clearData(self, clearView=False):
-        # self._LS_P300_DATA = []
-        self.writeLsMedia([])
-        if clearView:
-            self.clearView()
-
-    def clearView(self):
-        self._LS_P300_UI = []
-        self.context.config(state=tk.NORMAL)
-        self.context.delete(1.0, tk.END)
-        self.context.config(state=tk.DISABLED)
-
-
-class SortedList(ScheduleDDList):
-    def __init__(self, parent, *args, **kwargs):
-        self.parent = parent
-        self.tbBgColor = "#E8DAEF"
-        self.wrapperWidth = 300
-        super(SortedList, self).__init__(parent, *args, **kwargs)
-        self.titleTxt = "Schedule List"
-        self.initUI()
-
-    def initUI(self):
-        super(SortedList, self).initUI()
-        self.showListSchedule()
-
-    def showListSchedule(self):
-        # 1. default
-        self.addToScheduleGUI(
-            {"path": "", "id": "STORE_SCHEDULE", "name": "RUNNING SCHEDULE"}
-        )
-        # 2. list
-        self._LS_SCHEDULE_DATA = self.loadSchedule()
-        for media in self._LS_SCHEDULE_DATA:
-            self.addToScheduleGUI(media)
-
     def packRightToolbar(self):
-        super(SortedList, self).packRightToolbar()
+        super(ListP300, self).packRightToolbar()
         # add
         self.showAddCamBtn()
         self.showDupplicateBtn()

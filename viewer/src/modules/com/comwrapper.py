@@ -33,8 +33,8 @@ class COMWrapper(tk.Frame):
 
     def initUI(self):
         #
-        self.right = COMRight(self, bg="#f0f0f0")
-        self.right.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
-        #
         self.left = COMLeft(self, schedule=self.right.singleschedule, bg="#fff")
         self.left.pack(side=tk.LEFT, fill=tk.Y)
+        #
+        self.right = COMRight(self, bg="#f0f0f0")
+        self.right.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)

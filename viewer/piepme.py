@@ -1,5 +1,5 @@
 import tkinter as tk
-# from src.modules.mainview import MainView
+from src.modules.mainview import MainView
 from src.utils import helper, store, tk_helper, zip_helper, firebase
 
 class MainApplication(tk.Frame):
@@ -38,13 +38,10 @@ def run1():
             "FO100W": 4033,
             "FT300": 1,
             "PV301": "test%20count%20down",
-            "PV302": "OFF",
             "PN303": 9,
             "PV307": "",
             "PD308": "2019-08-14T09:45:00.000Z",
             "PN309": 0,
-            "PV314": "",
-            "PV319": "vi",
             "PO322": {
                 "live": {
                     "time": "2019-08-14T09:45:00.000Z",
@@ -65,15 +62,10 @@ def run1():
                 "PN323_CM": 1,
             },
             "PV325": "VWmgVqEMoWl",
-            "PL347": "2019-08-13T09:42:49.063Z",
-            "PL348": "2019-08-13T09:42:49.063Z",
             "PP300": 6641,
             "TYPE": "N100",
             "NV106": "Â  n",
             "NV126": "https://media.piepme.com/4033/images/avartaoohhay?t=1564930109622",
-            "KV102": "",
-            "FNC951": 0,
-            "CountTime": -21847,
             "NV106W": "Â  n",
             "NV126W": "https://media.piepme.com/4033/images/avartaoohhay?t=1564930109622",
         }
@@ -81,6 +73,6 @@ def run1():
 
 if __name__ == "__main__":
     helper.makeSureResourceFolderExisted()
-    run1()
+    run()
 
    

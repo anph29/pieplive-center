@@ -157,11 +157,9 @@ class PopupAddResource(object):
         )
         fname = os.fsdecode(path)
         if ftype.isImage(fname):
-            self.useLocal = True
-            self.mtype = "IMG"
+            self.localFile("IMG")
         elif ftype.isVideo(fname):
-            self.useLocal = True
-            self.mtype = "VIDEO"
+            self.localFile("VIDEO")
         else:
             self.fError.pack(side=tk.TOP, fill=tk.X)
         # fill data

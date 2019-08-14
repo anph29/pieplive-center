@@ -7,9 +7,9 @@ from PIL import Image, ImageTk
 from src.constants import UI
 
 
-class ScheduleDDList(tk.Frame):
+class COMDDList(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
-        super(ScheduleDDList, self).__init__(parent, *args, **kwargs)
+        super(COMDDList, self).__init__(parent, *args, **kwargs)
         self._LS_SCHEDULE_DATA = []
         self._LS_SCHEDULE_UI = []
         self.titleTxt = ""
@@ -166,17 +166,7 @@ class ScheduleDDList(tk.Frame):
         filtered = list(
             filter(lambda x: bool(x) and x["id"] != "STORE_SCHEDULE", sorted)
         )
-        # index, timepoint = self.get1stEvalueTimepoint(sorted)
         self.clearData()
         self.writeSchedule(filtered)
 
-    def showListSchedule(self):
-        pass
-    
-    def writeSchedule(self, data):
-        pass
 
-    # def get1stEvalueTimepoint(self, ls):
-    #     for i, m in enumerate(ls):
-    #         if 'timepoint' in m and int(m['timepoint']) > 0:
-    #             return i, m['timepoint']

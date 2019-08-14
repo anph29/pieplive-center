@@ -1,14 +1,13 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from src.utils import helper, store
-from src.modules.mediatab import MediaGridView
-from src.models import Q170_model, L500_model
-from src.enums import Q180
 from src.constants import WS
+from src.enums import Q180, MediaType
+from src.models import Q170_model, L500_model
+from src.modules.mediatab import MediaGridView
 from src.modules.custom import LabeledCombobox
 from src.modules.menu import MainMenu
 from src.modules.login import Login
-from src.enums import MediaType
 from src.modules.schedule import Schedule
 from src.modules.com import ListP300
 import PIL
@@ -93,20 +92,21 @@ class MainView(tk.Frame):
         )
 
     def initGUI(self):
+        self.setStyle()
+        self.updateMenu()
+        self.showBigTabWrapper()
         # if not login
         if not bool(store._get("FO100")):
             self.login = Login(self)
             self.login.open()
-        #
-        self.setStyle()
-        self.updateMenu()
-        self.showBigTabWrapper()
+        else:
+            self.afterLogin()
 
     def afterLogin(self):
         self.toolbar = tk.Frame(self, relief=tk.FLAT, bg="#fff")
         self.toolbar.pack(side=tk.TOP, fill=tk.X)
         self.packRightToolbar()
-        self.packCOMtab()
+        # self.packCOMtab()
 
     def afterLogout(self):
         self.updateMenu()
@@ -132,10 +132,7 @@ class MainView(tk.Frame):
         self.superWrapper.add(
             self.mediaList, text="Live View", image=icMedia, compound=tk.LEFT
         )
-        # C.O.M
-        if bool(store._get('FO100')):
-            self.packCOMtab()
-        
+
     def packCOMtab(self):
         icCom = tk.PhotoImage(file=helper._ICONS_PATH + "se-icon.png")
         self.tabCOM = ListP300(self)
@@ -182,7 +179,7 @@ class MainView(tk.Frame):
         self.parent.parent.config(menu=self.menubar)
 
     def makeMediaGrid(self, tType):
-        return MediaGridView(self, tabType=tType, borderwidth=0, bg="#fff")              
+        return MediaGridView(self, tabType=tType, borderwidth=0, bg="#fff")
 
     def packRightToolbar(self):
         rightToolbar = tk.Frame(self.toolbar, relief=tk.FLAT, bg="#fff")
@@ -203,8 +200,13 @@ class MainView(tk.Frame):
         lblCommandCheck.photo = imgCheck
         lblCommandCheck.pack(side=tk.RIGHT, fill=tk.Y, padx=(10, 5), pady=5)
         lblCommandCheck.bind("<Button-1>", self.onNewResource)
+        # 
+        lsQ170 = self.loadCbxQ170()
+        # set active bussiness
+        if None == store.getCurrentActiveBusiness():
+            store.setCurrentActiveBusiness(lsQ170[0]["FO100"] if bool(lsQ170) else 0)
         #
-        cbxData = {q170["NV106"]: q170["FO100"] for q170 in self.loadCbxQ170()}
+        cbxData = {q170["NV106"]: q170["FO100"] for q170 in lsQ170}
         cbxQ170 = LabeledCombobox(
             rightToolbar,
             cbxData,
@@ -261,7 +263,7 @@ class MainView(tk.Frame):
                 "SORT": 1,  # 1: Cũ nhất, -1: Mới nhất
                 "OFFSET": 0,
                 "LIMIT": 200,
-                "LOGIN": "PiepLive Center",
+                "LOGIN": store._get("NV101"),
             }
         )
         return rs[WS.ELEMENTS] if rs[WS.STATUS] == WS.SUCCESS else []

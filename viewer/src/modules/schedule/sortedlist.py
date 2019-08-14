@@ -11,10 +11,10 @@ from datetime import datetime, timedelta
 
 class SortedList(ScheduleDDList):
     def __init__(self, parent, *args, **kwargs):
-        self.parent = parent
-        self.tbBgColor = "#E8DAEF"
-        self.wrapperWidth = 300
         super(SortedList, self).__init__(parent, *args, **kwargs)
+        self.parent = parent
+        self.wrapperWidth = 300
+        self.tbBgColor = "#E8DAEF"
         self.titleTxt = "Schedule List"
         self.initUI()
 
@@ -39,7 +39,7 @@ class SortedList(ScheduleDDList):
         self.showDupplicateBtn()
 
     def addToScheduleGUI(self, data):
-        item = self.ddlist.create_item(value=data)
+        item = self.ddlist.create_item(value=data, freeze=data['id'] == 'STORE_SCHEDULE')
         ui = ScheduleHeadItem(item, parentTab=self, media=data)
         self._LS_SCHEDULE_UI.append(ui)
         ui.pack(expand=True)

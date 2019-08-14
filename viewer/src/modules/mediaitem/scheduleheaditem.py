@@ -44,6 +44,9 @@ class ScheduleHeadItem(tk.Frame):
             self.destroy()
             self.parentTab.f5(None)
 
+    def packDate(self):
+        pass
+
     def initUIEdit(self, edit=False):
         # var
         self.eName = tk.StringVar()

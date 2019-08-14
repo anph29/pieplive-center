@@ -7,19 +7,17 @@ class P300_model(HTTP_MODEL):
 
     # GET
     #  Lấy danh sách pieper COM
-    #  {
-    #       PP300
-    #       FO100: ,// ID doanh nghiep hoac nguoi dai dien
-    #       FO100W: ,// ID nguoi viet
-    #       FC100: ,// ID chi nhánh (Trường)
-    #       FC150: ,// ID nhóm (Lớp)
-    #       FC150: ,// ID nhóm (Lớp)
-    #       PO323: ,// Filter Setting     <=== TH có tham số này thì nên POST để không lỗi dữ liệu đẩy lên
-    #       SEARCH: ,
-    #       OFFSET: ,
-    #       LIMIT: ,
-    #       LOGIN
-    #  }
+    # {
+    #   ACTION: ___,
+    #   PP300: ___,
+    #   FO100: ___, // chủ doanh nghiệp
+    #   FO100W: ___, // người viết
+    #   SEARCH: ___,
+    #   OFFSET: ___,
+    #   LIMIT: ___,
+    #   LOGIN: ___,
+    #   FILTER: ['LIVE', 'COUNTDOWN' ] <<< Chỉ dành cho App Pieplivecenter
+    # }
     def listoftabP300EByOwner(self, param):
         return self._get("/v2/service/p300e/p2019_listoftabP300EByOwner", param)
 

@@ -103,6 +103,33 @@
                     text:'Link Stream'
                     font_size: sp(12)
                     on_press: root.openSetting()
+
+                CheckBox:
+                    size_hint:None,1
+                    width: 20
+                    active:False
+                    on_active: root.change_auto_stop(self.active)
+                    canvas.before:
+                        Color:
+                            rgb: 1,1,1
+                        Rectangle:
+                            pos:self.center_x-8, self.center_y-8
+                            size:[16,16]
+                        Color:
+                            rgb: 0,0,0
+                        Rectangle:
+                            pos:self.center_x-7, self.center_y-7
+                            size:[14,14]
+                Label:
+                    size_hint:None,1
+                    color: 1.0,1.0,1.0,1
+                    font_size: 12
+                    padding: 0,20
+                    text: 'Auto stop'
+                    width: 30
+                    valign: 'center'
+                    halign: 'left'
+                    markup: True
                 Widget:
                 
             BottomLeft:

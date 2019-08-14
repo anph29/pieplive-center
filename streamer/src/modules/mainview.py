@@ -27,6 +27,9 @@ class MainView(Widget):
     loading = BooleanProperty(False)
     loadingMini = BooleanProperty(False)
     presenterAuto = BooleanProperty(True)
+    autoStop = BooleanProperty(False)
+    mainDisplayStt = BooleanProperty(False)
+    miniDisplayStt = BooleanProperty(False)
     streamServer = StringProperty('')
     streamKey = StringProperty('')
 
@@ -160,6 +163,19 @@ class MainView(Widget):
 
     def deletePresenting(self, _id):
         self.bottom_left.list_presenting.del_source(_id)
+
+    def change_auto_stop(self, val):
+        self.autoStop = val
+
+    def main_display_status(self, val):
+        self.mainDisplayStt = val
+        if self.mainDisplayStt is False and self.miniDisplayStt is False and self.mainStream.isStream is True:
+            self.triggerStop()
+
+    def mini_display_status(self, val):
+        self.miniDisplayStt = val
+        if self.mainDisplayStt is False and self.miniDisplayStt is False and self.mainStream.isStream is True:
+            self.triggerStop()
 
     def start_stream(self):
         if self.mainStream.isStream is False:

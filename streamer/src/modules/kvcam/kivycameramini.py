@@ -153,6 +153,7 @@ class KivyCameraMini(DragBehavior, Image):
 
             if self.capture is not None and self.capture.isOpened():
                 kivyhelper.getApRoot().loadingMini = False
+                kivyhelper.getApRoot().mini_display_status(True)
                 self.reconnect = 0
                 self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
                 self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
@@ -203,6 +204,7 @@ class KivyCameraMini(DragBehavior, Image):
         try:
             if self.capture.isOpened():
                 if not self.capture.grab():
+                    kivyhelper.getApRoot().mini_display_status(False)
                     pass
                 else:
                     ret, frame = self.capture.retrieve()

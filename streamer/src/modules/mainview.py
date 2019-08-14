@@ -170,6 +170,7 @@ class MainView(Widget):
     def main_display_status(self, val):
         self.mainDisplayStt = val
         if self.mainDisplayStt is False and self.miniDisplayStt is False and self.mainStream.isStream is True:
+            # get_number_active
             self.triggerStop()
 
     def mini_display_status(self, val):

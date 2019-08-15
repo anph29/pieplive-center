@@ -33,7 +33,7 @@ class MainView(Widget):
     miniDisplayStt = BooleanProperty(False)
     streamServer = StringProperty('')
     streamKey = StringProperty('')
-    p300 = None
+    p300 = {}
 
     def __init__(self, **kwargs):
         super(MainView, self).__init__(**kwargs)
@@ -49,18 +49,7 @@ class MainView(Widget):
         self.mainStream.f_parent = self
         self.bottom_left.f_parent = self
         self.right_content.f_parent = self
-        self.setting = helper._load_setting()
-        if self.setting['ouput_resolution'] is not None:
-            self.f_width = self.mainStream.f_width = self.setting['ouput_resolution'][0]
-            self.f_height = self.mainStream.f_height = self.setting['ouput_resolution'][1]
-        if self.setting['vbitrate'] is not None:
-            self.v_bitrate = self.mainStream.v_bitrate = self.setting['vbitrate']
-        if self.setting['stream_server'] is not None:
-            self.streamServer = self.setting['stream_server']
-        if self.setting['stream_key'] is not None:
-            self.streamKey = self.setting['stream_key']
-
-        self.mainStream.urlStream = self.streamServer + self.streamKey
+        self.get_setting()
         self.initAudio()
         self.initSource()
         self.bottom_left.list_mixer.set_source(self.lsAudio)
@@ -71,6 +60,21 @@ class MainView(Widget):
         self.init_right_content_presenter()
         self.init_right_content_schedule()
         Clock.schedule_once(self.turnOnObserver,1)
+    
+    def get_setting(self):
+        self.setting = helper._load_setting()
+        if self.setting['ouput_resolution'] is not None:
+            self.f_width = self.mainStream.f_width = self.setting['ouput_resolution'][0]
+            self.f_height = self.mainStream.f_height = self.setting['ouput_resolution'][1]
+        if self.setting['vbitrate'] is not None:
+            self.v_bitrate = self.mainStream.v_bitrate = self.setting['vbitrate']
+        if self.setting['stream_server'] is not None:
+            self.streamServer = self.setting['stream_server']
+        if self.setting['stream_key'] is not None:
+            self.streamKey = self.setting['stream_key']
+        if self.setting['p300'] is not None:
+            self.p300 = self.setting['p300']
+        self.mainStream.urlStream = self.streamServer + self.streamKey
 
     def init_right_content_media(self):
         self.right_content.tab_media.ls_media.set_data()
@@ -216,11 +220,11 @@ class MainView(Widget):
         if self.p300 is not None:
             firebase.setP300AfterStartStream(self.p300)
 
-    def save_setting(self, stream_server, stream_key):
-        if self.setting['stream_server'] is not None:
-            self.streamServer = self.setting['stream_server'] = stream_server
-        if self.setting['stream_key'] is not None:
-            self.streamKey = self.setting['stream_key'] = stream_key
+    def save_setting(self, stream_server, stream_key, play, p300):
+        self.streamServer = self.setting['stream_server'] = stream_server
+        self.streamKey = self.setting['stream_key'] = stream_key
+        self.linkPlay = self.setting['play'] = play
+        self.p300 = self.setting['p300'] = p300
         self.mainStream.urlStream = self.streamServer + self.streamKey
         helper._write_setting(self.setting)
 

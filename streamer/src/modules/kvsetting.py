@@ -16,6 +16,7 @@ class KVSetting(Popup):
     stream_server = ObjectProperty()
     stream_key = ObjectProperty()
     callback = ObjectProperty()
+    index_choice = NumericProperty(-1)
 
     def __init__(self, parent):
         super(KVSetting, self).__init__()
@@ -28,8 +29,11 @@ class KVSetting(Popup):
 
     def on_ok(self):
         try:
-            if len(self.stream_server.text) > 0 and len(self.stream_key.text) > 0:
-                self.f_parent.save_setting(self.stream_server.text,self.stream_key.text)
+            if self.index_choice != -1 and len(self.stream_server.text) > 0 and len(self.stream_key.text) > 0:
+                _data = self.rcv_stream.get_data_index(self.index_choice)
+                play = _data['PLAY']
+                p300 = _data['P300']
+                self.f_parent.save_setting(self.stream_server.text,self.stream_key.text, play, p300)
                 self.dismiss()
         except:
             pass
@@ -40,7 +44,8 @@ class KVSetting(Popup):
     def on_cancel(self):
         self.dismiss()
 
-    def getLink(self,data):
+    def getLink(self, index, data):
+        self.index_choice = index
         self.stream_server.text = data['key_a']
         self.stream_key.text = data['key_b']
 
@@ -59,11 +64,14 @@ class ListStream(RecycleView):
     def set_data(self):
         self.data = list(
             map(
-                lambda item: {'id': item['id'],'label': item['label'], 'key_a': item['key_a'], 'key_b': item['key_b'],
+                lambda item: {'id': item['id'],'label': item['label'], 'key_a': item['key_a'], 'key_b': item['key_b'], 'PLAY': item['PLAY'], 'P300': item['P300'],
                 'active': (False,True) [item['id'] == self.item_playing]},
                 helper._load_ls_key()
             )
         )
+
+    def get_data_index(self,index):
+        return self.data[index]
         
     def set_source(self,sources):
         self.data = sources
@@ -85,7 +93,7 @@ class ListStream(RecycleView):
             else:
                 child.active = False
         if self.f_parent is not None:
-            self.f_parent.getLink(self.data[index])
+            self.f_parent.getLink(index, self.data[index])
         
 
 class BoxAudio(SelectableBox):

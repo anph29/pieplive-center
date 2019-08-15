@@ -462,6 +462,8 @@ def getSettingJSONContent():
         "vbitrate": "4M",
         "stream_server": "",
         "stream_key": "",
+        "play": "",
+        "p300": {},
     }
 
 

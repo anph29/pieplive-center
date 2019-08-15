@@ -68,4 +68,4 @@ class P300_model(HTTP_MODEL):
     # @returns -2;// Bài này không tồn tại hoặc đã bị xóa
     #
     def updatetabP300_prov(self, param):
-        return self.v3_post("/v3/service/p300/p2018_v2_updatetabP300_prov", param)
+        return self.v3_post("/v3/service/p300/p2018_v3_updatetabP300_prov", param)

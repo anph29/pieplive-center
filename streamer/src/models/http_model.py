@@ -1,9 +1,10 @@
 from urllib.request import Request, urlopen
+from urllib.request import HTTPError
 from urllib import parse
 import json
 import sys
 from src.utils import scryto
-
+from collections import OrderedDict
 
 """-------------------------------------------------------------------------------------------------------------------------
                                                         HTTP MODEL
@@ -73,15 +74,15 @@ class HTTP_MODEL:
     def v3_patch(self, path, param):
         return self.http_request(path, param, "PATCH")
 
-    """-------------------------------------------------------------------------------------------------------------------------
-                                                    HTTP_REQUEST
-    -------------------------------------------------------------------------------------------------------------------------"""
-
     def querystring(self, param):
         """ mk query string for GET method """
         sorted_key = sorted(param)
         maped_ls = map(lambda v: f"{v}={parse.quote(str(param[v]))}", sorted_key)
         return "&".join(list(maped_ls))
+
+    """-------------------------------------------------------------------------------------------------------------------------
+                                                    HTTP_REQUEST
+    -------------------------------------------------------------------------------------------------------------------------"""
 
     def http_request(self, path, param, method, tokenMethod=scryto.createTokenV3):
         """ ROOT request method """
@@ -98,17 +99,109 @@ class HTTP_MODEL:
         if method is "GET":
             url += "?" + self.querystring(param)
         # 6. calc post data
-        data = parse.urlencode({} if method is "GET" else param).encode("utf-8")
+        data = self.uber_urlencode({} if method is "GET" else param).encode("utf-8")
         # 7. mk request
         req = Request(url, data=data, method=method)
         req.add_header("Accept", "application/json")
         print(f">>>>>>>>>> {method} {url} data={data}")
         # 8. receive RESPONSE
-        with urlopen(req) as response:
-            json_str = response.read().decode("utf-8")
-            data_json = json.loads(json_str)
-            print(
-                f'>>>>>>>>>> RESPONSE -> status={data_json["status"]}, len={len(json_str)}'
-            )
-            return data_json
+        try:
+            with urlopen(req) as response:
+                json_str = response.read().decode("utf-8")
+                data_json = json.loads(json_str)
+                print(
+                    f'>>>>>>>>>> RESPONSE -> status={data_json["status"]}, len={len(json_str)}'
+                )
+                return data_json
+        except HTTPError as e:
+            print("http_request error", e, e.code)
 
+        """-------------------------------------------------------------------------------------------------------------------------
+                                                        HTTP_REQUEST_STATIC
+        -------------------------------------------------------------------------------------------------------------------------"""
+
+    def http_request_static(self, path, method):
+        """ ROOT request method """
+        # 1. calc url from path
+        url = path
+        # 6. calc post data
+        data = parse.urlencode({}).encode("utf-8")
+        # 7. mk request
+        req = Request(url, data=data, method=method)
+        req.add_header("Accept", "application/json")
+        # 8. receive RESPONSE
+        try:
+            with urlopen(req) as response:
+                json_str = response.read().decode("utf-8")
+                # data_json = json.loads(json_str)
+                return json_str
+        except Exception as e:
+            print("Exception:", e)
+            return None
+    """-------------------------------------------------------------------------------------------------------------------------
+                                                        UBER URL ENCODE
+    -------------------------------------------------------------------------------------------------------------------------"""
+
+    def uber_urlencode(self, params):
+        """Urlencode a multidimensional dict."""
+
+        # Not doing duck typing here. Will make debugging easier.
+        if not isinstance(params, dict):
+            raise TypeError("Only dicts are supported.")
+
+        params = self.flatten(params)
+
+        url_params = OrderedDict()
+        for param in params:
+            value = param.pop()
+
+            name = self.parametrize(param)
+            if isinstance(value, (list, tuple)):
+                name += "[]"
+
+            url_params[name] = value
+
+        return parse.urlencode(url_params, doseq=True)
+
+    def flatten(self, d):
+        """Return a dict as a list of lists.
+        >>> flatten({"a": "b"})
+        [['a', 'b']]
+        >>> flatten({"a": [1, 2, 3]})
+        [['a', [1, 2, 3]]]
+        >>> flatten({"a": {"b": "c"}})
+        [['a', 'b', 'c']]
+        >>> flatten({"a": {"b": {"c": "e"}}})
+        [['a', 'b', 'c', 'e']]
+        >>> flatten({"a": {"b": "c", "d": "e"}})
+        [['a', 'b', 'c'], ['a', 'd', 'e']]
+        >>> flatten({"a": {"b": "c", "d": "e"}, "b": {"c": "d"}})
+        [['a', 'b', 'c'], ['a', 'd', 'e'], ['b', 'c', 'd']]
+        """
+
+        if not isinstance(d, dict):
+            return [[d]]
+
+        returned = []
+        for key, value in sorted(d.items()):
+            # Each key, value is treated as a row.
+            nested = self.flatten(value)
+            for nest in nested:
+                current_row = [key]
+                current_row.extend(nest)
+                returned.append(current_row)
+
+        return returned
+
+    def parametrize(self, params):
+        """Return list of params as params.
+        >>> parametrize(['a'])
+        'a'
+        >>> parametrize(['a', 'b'])
+        'a[b]'
+        >>> parametrize(['a', 'b', 'c'])
+        'a[b][c]'
+        """
+        returned = str(params[0])
+        returned += "".join("[" + str(p) + "]" for p in params[1:])
+        return returned

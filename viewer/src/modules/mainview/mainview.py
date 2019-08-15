@@ -233,7 +233,9 @@ class MainView(tk.Frame):
         if messagebox.askyesno(
             "PiepMe", "Are you sure to renew your bussiness resource?"
         ):
+            # 1 reset avtive business
             store.setCurrentActiveBusiness(self.FO100BU)
+            # 2 renew media 
             lsL500 = self.loadLsL500(self.FO100BU)
             if len(lsL500) > 0:
                 # presenter
@@ -244,6 +246,8 @@ class MainView(tk.Frame):
                 camera = list(filter(lambda l500: l500["LN508"] == 0, lsL500))
                 self.tab_camera.renewData(camera)
                 self.schedule.right.tab_camera.f5(None)
+            # 3 reload C.O.M
+            self.tabCOM.f5Left()
 
     def loadCbxQ170(self):
         q170 = Q170_model()

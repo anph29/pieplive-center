@@ -10,6 +10,10 @@ from src.utils import helper, scryto, firebase, store
 from kivy.lang import Builder
 from kivy.clock import Clock
 import sounddevice as sd
+from src.models.normal_model import Normal_model
+from src.models import P300_model
+from src.models import Socket_model
+import json
 
 Builder.load_file('src/ui/main.kv')
 
@@ -33,7 +37,8 @@ class MainView(Widget):
     miniDisplayStt = BooleanProperty(False)
     streamServer = StringProperty('')
     streamKey = StringProperty('')
-    p300 = {}
+    linkPlay = StringProperty('')
+    p300 = None
 
     def __init__(self, **kwargs):
         super(MainView, self).__init__(**kwargs)
@@ -72,6 +77,8 @@ class MainView(Widget):
             self.streamServer = self.setting['stream_server']
         if self.setting['stream_key'] is not None:
             self.streamKey = self.setting['stream_key']
+        if self.setting['play'] is not None:
+            self.linkPlay = self.setting['play']
         if self.setting['p300'] is not None:
             self.p300 = self.setting['p300']
         self.mainStream.urlStream = self.streamServer + self.streamKey
@@ -210,6 +217,7 @@ class MainView(Widget):
                 self.mainStream.startStream()
                 self.btn_start.text = "Stop"
                 self.btn_start.background_color = .29, .41, .15, 0.9
+            # self.update_piep()
 
         elif self.mainStream.isStream is True:
             self.mainStream.stopStream()
@@ -219,6 +227,34 @@ class MainView(Widget):
     def send_info_to_app(self):
         if self.p300 is not None:
             firebase.setP300AfterStartStream(self.p300)
+            self.process_update_piep(5)
+
+    def send_notify_piep(self):
+        pass
+
+    def process_update_piep(self,dt):
+        try:
+            if len(self.linkPlay) > 0:
+                normal_md = Normal_model()
+                reponse = normal_md.get_request_link(self.linkPlay)
+                if reponse is not None:
+                    self.update_piep()
+                else:
+                    Clock.schedule_once(self.process_update_piep, 5)
+        except:
+            pass
+
+    def update_piep(self):
+        try:
+            if self.p300 is not None:
+                PO322 = self.p300['PO322']
+                PO322['live']['src'] = self.linkPlay
+                dt = {'FO100':self.p300['FO100'],'PP300':self.p300['PP300'],'FT300':self.p300['FT300'],'PO322': PO322}
+                p300_md = P300_model()
+                respone = p300_md.updatetabP300_prov(dt)
+                print('respone',respone)
+        except:
+            pass
 
     def save_setting(self, stream_server, stream_key, play, p300):
         self.streamServer = self.setting['stream_server'] = stream_server

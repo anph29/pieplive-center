@@ -64,7 +64,7 @@ def createTokenV3(input, isRecursive=False):
 
         # improve non-charater from v2
         def lambdaX(v):
-            if type(input[v]) is "dict":
+            if type(input[v]) is dict:
                 return f"[{createTokenV3(input[v], True)}]"
             else:
                 after_regex = re.sub(r"[^a-zA-Z0-9]", "", str(input[v]))

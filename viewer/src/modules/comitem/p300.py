@@ -34,12 +34,12 @@ class P300(tk.Frame):
         }
 
     def set_data(self, p300):
-        self.PV325 = p300["PV325"] or ""
         self.PP300 = p300["PP300"] or 0
-        self.PV301 = p300["PV301"] or ""
         self.PN303 = p300["PN303"] or 0
         self.FO100 = p300["FO100"] or 0
         self.FT300 = p300["FT300"] or 0
+        self.PV325 = p300["PV325"] or ""
+        self.PV301 = p300["PV301"] or ""
         self.PV307 = p300["PV307"] or ""
         self.PO322 = p300["PO322"] or {}
         self.PO323 = p300["PO323"] or {}
@@ -129,6 +129,7 @@ class P300(tk.Frame):
                 "label": self.PV301,
                 "key_a": URL,
                 "key_b": STREAMKEY,
+                "PLAY": l300["PLAY"],
                 "P300": self.get_data(),
             }
         )

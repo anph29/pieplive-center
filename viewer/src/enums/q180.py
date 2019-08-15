@@ -3,6 +3,9 @@ from enum import Enum
 
 class Q180(Enum):
 
+    def __str__(self):
+        return str(self.value)
+
     # "_id" : 1.0,
     # "QV181" : "Quyền viết bài",
     # "QV182" : "CRE_NEW_PIE",
@@ -81,6 +84,3 @@ class Q180(Enum):
     # "QL186" : ISODate("2018-11-02T02:52:58.637+0000"),
     # "QL188" : "TUNGNS"
     CHA_LIV_CEN = 13
-
-    def __str__(self):
-        return str(self.value)

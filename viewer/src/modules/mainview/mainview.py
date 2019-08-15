@@ -252,7 +252,7 @@ class MainView(tk.Frame):
     def loadCbxQ170(self):
         q170 = Q170_model()
         rs = q170.getListProviderWithRole(
-            {"FO100": store._get("FO100") or 0, "FQ180": Q180.CHA_LIV_CEN}
+            {"FO100": store._get("FO100") or 0, "FQ180": Q180.CHA_LIV_CEN.value}
         )
         return rs[WS.ELEMENTS] if rs[WS.STATUS] == WS.SUCCESS else []
 

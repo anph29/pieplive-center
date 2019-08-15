@@ -135,7 +135,7 @@ class MainStream(RelativeLayout):
         try:
             if self.event is not None:
                 self.event.cancel()
-            self.fbo = Fbo(size=(self.f_width, self.f_height),with_stencilbuffer=True)
+            self.fbo = Fbo(size=(self.f_width, self.f_height))
             with self.fbo:
                 ClearColor(0, 0, 0, 1)
                 ClearBuffers()
@@ -155,6 +155,7 @@ class MainStream(RelativeLayout):
 
     def _process(self):
         self.event = Clock.schedule_interval(self.stream, 1/25)
+        self.f_parent.send_info_to_app()
 
     def stream(self, fps):
         try:
@@ -174,7 +175,7 @@ class MainStream(RelativeLayout):
             self.stopStream()
             self.reconnect += 2
             normal = Normal_model()
-            key = self.f_parent.bottom_left.stream_key.text.split("?")[0]
+            key = self.f_parent.streamKey.split("?")[0]
             normal.reset_link_stream(key)
             Clock.schedule_once(self.reconnecting,self.reconnect)
             

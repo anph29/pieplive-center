@@ -113,9 +113,9 @@ class HTTP_MODEL:
             print(f">> {method} {url} data={payload}")
             response = requests.request(method, url, data=payload, headers=headers)
             # 8. receive RESPONSE
-            json_str = response.text
-            data_json = json.loads(json_str)
-            print(f'>> RESPONSE -> status={data_json["status"]}, len={len(json_str)}')
+            # data_json = json.loads(j`son_str)
+            data_json = response.json()
+            print(f'>> RESPONSE -> status={data_json["status"]}')
             return data_json
         except Exception as e:
             print(">>ERROR: http_request:", e) 
@@ -156,9 +156,9 @@ class HTTP_MODEL:
     #     except HTTPError as e:
     #         print("http_request error", e, e.code)
 
-        """-------------------------------------------------------------------------------------------------------------------------
-                                                        HTTP_REQUEST_STATIC
-        -------------------------------------------------------------------------------------------------------------------------"""
+    """-------------------------------------------------------------------------------------------------------------------------
+                                                    HTTP_REQUEST_STATIC
+    -------------------------------------------------------------------------------------------------------------------------"""
 
     def http_request_static(self, path, method):
         """ ROOT request method """

@@ -93,65 +93,68 @@ class HTTP_MODEL:
     -------------------------------------------------------------------------------------------------------------------------"""
 
     def http_request(self, path, param, method, tokenMethod=scryto.createTokenV3):
-        # 1. calc url from path
-        url = self.PIEPME_HOST + path
-        # 2. add some param
-        param["SRC"] = param["SRC"] if "SRC" in param else "PiepLiveCenter"
-        # 3. add token
-        param["token"] = tokenMethod(param)
-        # 4. del secret param
-        del param["keyToken"]
-        del param["v"]
-        # 5. buid query string
-        if method is "GET":
-            url += "?" + self.querystring(param)
-        # 6. calc post data
-        payload = json.dumps(param)
-        headers = {"Content-Type": "application/json", "cache-control": "no-cache"}
-        # 7. mk request
-        print(f">> {method} {url} data={payload}")
-        response = requests.request(method, url, data=payload, headers=headers)
-        # 8. receive RESPONSE
-        json_str = response.text
-        data_json = json.loads(json_str)
-        print(f'>> RESPONSE -> status={data_json["status"]}, len={len(json_str)}')
-        return data_json
+        try:
+            # 1. calc url from path
+            url = self.PIEPME_HOST + path
+            # 2. add some param
+            param["SRC"] = param["SRC"] if "SRC" in param else "PiepLiveCenter"
+            # 3. add token
+            param["token"] = tokenMethod(param)
+            # 4. del secret param
+            del param["keyToken"]
+            del param["v"]
+            # 5. buid query string
+            if method is "GET":
+                url += "?" + self.querystring(param)
+            # 6. calc post data
+            payload = json.dumps(param)
+            headers = {"Content-Type": "application/json", "cache-control": "no-cache"}
+            # 7. mk request
+            print(f">> {method} {url} data={payload}")
+            response = requests.request(method, url, data=payload, headers=headers)
+            # 8. receive RESPONSE
+            json_str = response.text
+            data_json = json.loads(json_str)
+            print(f'>> RESPONSE -> status={data_json["status"]}, len={len(json_str)}')
+            return data_json
+        except Exception as e:
+            print(">>ERROR: http_request:", e) 
 
     """-------------------------------------------------------------------------------------------------------------------------
                                                     HTTP_REQUEST
     -------------------------------------------------------------------------------------------------------------------------"""
 
-    def http_request_old(self, path, param, method, tokenMethod=scryto.createTokenV3):
-        """ ROOT request method """
-        # 1. calc url from path
-        url = self.PIEPME_HOST + path
-        # 2. add some param
-        param["SRC"] = param["SRC"] if "SRC" in param else "PiepLiveCenter"
-        # 3. add token
-        param["token"] = tokenMethod(param)
-        # 4. del secret param
-        del param["keyToken"]
-        del param["v"]
-        # 5. buid query string
-        if method is "GET":
-            url += "?" + self.querystring(param)
-        # 6. calc post data
-        data = self.uber_urlencode({} if method is "GET" else param).encode("utf-8")
-        # 7. mk request
-        req = Request(url, data=data, method=method)
-        req.add_header("Accept", "application/json")
-        print(f">> {method} {url} data={data}")
-        # 8. receive RESPONSE
-        try:
-            with urlopen(req) as response:
-                json_str = response.read().decode("utf-8")
-                data_json = json.loads(json_str)
-                print(
-                    f'>> RESPONSE -> status={data_json["status"]}, len={len(json_str)}'
-                )
-                return data_json
-        except HTTPError as e:
-            print("http_request error", e, e.code)
+    # def http_request_old(self, path, param, method, tokenMethod=scryto.createTokenV3):
+    #     """ ROOT request method """
+    #     # 1. calc url from path
+    #     url = self.PIEPME_HOST + path
+    #     # 2. add some param
+    #     param["SRC"] = param["SRC"] if "SRC" in param else "PiepLiveCenter"
+    #     # 3. add token
+    #     param["token"] = tokenMethod(param)
+    #     # 4. del secret param
+    #     del param["keyToken"]
+    #     del param["v"]
+    #     # 5. buid query string
+    #     if method is "GET":
+    #         url += "?" + self.querystring(param)
+    #     # 6. calc post data
+    #     data = self.uber_urlencode({} if method is "GET" else param).encode("utf-8")
+    #     # 7. mk request
+    #     req = Request(url, data=data, method=method)
+    #     req.add_header("Accept", "application/json")
+    #     print(f">> {method} {url} data={data}")
+    #     # 8. receive RESPONSE
+    #     try:
+    #         with urlopen(req) as response:
+    #             json_str = response.read().decode("utf-8")
+    #             data_json = json.loads(json_str)
+    #             print(
+    #                 f'>> RESPONSE -> status={data_json["status"]}, len={len(json_str)}'
+    #             )
+    #             return data_json
+    #     except HTTPError as e:
+    #         print("http_request error", e, e.code)
 
         """-------------------------------------------------------------------------------------------------------------------------
                                                         HTTP_REQUEST_STATIC

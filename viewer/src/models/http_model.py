@@ -1,4 +1,5 @@
 from urllib.request import Request, urlopen
+from urllib.request import HTTPError
 from urllib import parse
 import json
 import sys
@@ -104,11 +105,14 @@ class HTTP_MODEL:
         req.add_header("Accept", "application/json")
         print(f">>>>>>>>>> {method} {url} data={data}")
         # 8. receive RESPONSE
-        with urlopen(req) as response:
-            json_str = response.read().decode("utf-8")
-            data_json = json.loads(json_str)
-            print(
-                f'>>>>>>>>>> RESPONSE -> status={data_json["status"]}, len={len(json_str)}'
-            )
-            return data_json
+        try:
+            with urlopen(req) as response:
+                json_str = response.read().decode("utf-8")
+                data_json = json.loads(json_str)
+                print(
+                    f'>>>>>>>>>> RESPONSE -> status={data_json["status"]}, len={len(json_str)}'
+                )
+                return data_json
+        except HTTPError as e:
+            print("http_request error", e, e.code)
 

@@ -12,6 +12,7 @@ from src.modules.custom import ToolTip
 class KeyManager(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         super(KeyManager, self).__init__(parent, *args, **kwargs)
+        self.parent = parent        
         self._LS_KEY_DATA = []
         self._LS_KEY_UI = []
         self.tbBgColor = "#D4EFDF"
@@ -35,12 +36,6 @@ class KeyManager(tk.Frame):
             for key in self._LS_KEY_DATA:
                 self.addToKeyGUI(key)
 
-    def setData(self, sch):
-        self.schName = sch["name"] if bool(sch) else ""
-        self.lblTitle.config(text=f"{self.schName}")
-        self.schId = sch["id"] if bool(sch) else ""
-        self.schPath = sch["path"] if bool(sch) else ""
-        self.clearView()
 
     def showTitle(self):
         self.title = tk.Frame(self, height=50, relief=tk.FLAT, bg=self.tbBgColor)
@@ -115,11 +110,11 @@ class KeyManager(tk.Frame):
         self.cmdDelAll.pack(side=tk.RIGHT, padx=(0, 15), pady=5)
         ToolTip(self.cmdDelAll, "Delete all selected")
         # refresh
-        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}f5-b24.png"))
+        imF5 = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}f5-b24.png"))
         self.cmdF5 = tk.Label(
-            self.tbright, image=imageBin, cursor="hand2", bg=self.tbBgColor
+            self.tbright, image=imF5, cursor="hand2", bg=self.tbBgColor
         )
-        self.cmdF5.image = imageBin
+        self.cmdF5.image = imF5
         self.cmdF5.bind("<Button-1>", self.f5)
         self.cmdF5.pack(side=tk.RIGHT, padx=(0, 5), pady=5)
         ToolTip(self.cmdF5, "Refresh")
@@ -173,6 +168,7 @@ class KeyManager(tk.Frame):
         filtered = list(filter(lambda x: x["id"] not in lsId, ls))
         self.clearData()
         helper._write_lskey(filtered)
+        self.after(50, self.parent.parent.f5Left)
 
     def saveSortedList(self):
         sorted = list(map(lambda x: x.value, self.ddlist._list_of_items))

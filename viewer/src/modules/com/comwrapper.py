@@ -6,6 +6,7 @@ from .listp300 import ListP300
 class COMLeft(tk.Frame):
     def __init__(self, parent, keyManager=None, *args, **kwargs):
         super(COMLeft, self).__init__(parent, *args, **kwargs)
+        self.parent = parent
         self.keyManager = keyManager
         self.initUI()
 
@@ -17,6 +18,7 @@ class COMLeft(tk.Frame):
 class COMRight(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         super(COMRight, self).__init__(parent, *args, **kwargs)
+        self.parent = parent
         self.initUI()
 
     def initUI(self):
@@ -39,3 +41,6 @@ class COMWrapper(tk.Frame):
         #
         self.left = COMLeft(self, keyManager=self.right.keyManager, bg="#fff")
         self.left.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+    def f5Left(self):
+        self.left.listP300.f5(None)

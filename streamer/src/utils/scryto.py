@@ -65,16 +65,15 @@ def createTokenV3(input, isRecursive=False):
         # improve non-charater from v2
         def lambdaX(v):
             if type(input[v]) is dict:
-                return f"[{createTokenV3(input[v], True)}]"
+                return f"{v}=[{createTokenV3(input[v], True)}]"
             else:
                 after_regex = re.sub(r"[^a-zA-Z0-9]", "", str(input[v]))
                 return f"{v}={after_regex}"
 
         maped_ls = map(lambdaX, sorted_key)
         paramStr = "&".join(list(maped_ls))
-        #
-        if not isRecursive:
-            print(paramStr, "paramStr")
+        # if not isRecursive:
+        #     print(paramStr, "paramStr")
         return paramStr if isRecursive else hash_md5(paramStr)
     except:
         print(sys.exc_info())

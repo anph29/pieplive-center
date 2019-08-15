@@ -1,7 +1,7 @@
 from src.utils import helper, kivyhelper
 from threading import Thread, Event
 from kivy.clock import Clock
-from kivy.graphics import Fbo, ClearColor, ClearBuffers, Scale, Translate
+from kivy.graphics import Fbo, ClearColor, ClearBuffers, Scale, Translate, Canvas, Color, Rectangle
 from kivy.uix.relativelayout import RelativeLayout
 from src.modules.kvcam.kivycameramain import KivyCameraMain
 from src.modules.kvcam.kivycameramini import KivyCameraMini
@@ -20,11 +20,26 @@ class MainStream(RelativeLayout):
     f_parent= ObjectProperty(None)
     typeSwitch = NumericProperty(0)
     _thread = None
+    texture = ObjectProperty(None, allownone=True)
 
     def __init__(self, **kwargs):
         super(MainStream, self).__init__(**kwargs)
         self.f_width = 1280
         self.f_height = 720
+
+        # self.canvas = Canvas()
+        # with self.canvas:
+        #     self.fbo = Fbo(size=(self.f_width, self.f_height))
+        #     self.fbo_color = Color(1, 1, 1, 1)
+        #     self.fbo_rect = Rectangle()
+
+        # with self.fbo:
+        #     ClearColor(0, 0, 0, 0)
+        #     ClearBuffers()
+        #     # Scale(1, -1, 1)
+        #     # Translate(-self.x, -self.y - self.f_height, 0)
+        # self.texture = self.fbo.texture
+
         self.capture = None
         self.fps = 25
         self.v_bitrate = "3M"
@@ -47,6 +62,30 @@ class MainStream(RelativeLayout):
 
     def _load(self):
         pass
+    
+    # def add_widget(self, *largs):
+    #     canvas = self.canvas
+    #     self.canvas = self.fbo
+    #     ret = super(MainStream, self).add_widget(*largs)
+    #     self.canvas = canvas
+    #     return ret
+
+    # def remove_widget(self, *largs):
+    #     canvas = self.canvas
+    #     self.canvas = self.fbo
+    #     super(MainStream, self).remove_widget(*largs)
+    #     self.canvas = canvas
+
+    # def on_size(self, instance, value):
+    #     self.fbo.size = value
+    #     self.texture = self.fbo.texture
+    #     self.fbo_rect.size = value
+
+    # def on_pos(self, instance, value):
+    #     self.fbo_rect.pos = value
+
+    # def on_texture(self, instance, value):
+    #     self.fbo_rect.texture = value
 
     def show_camera_mini(self):
         self.cameraMini.opacity = 1
@@ -135,6 +174,7 @@ class MainStream(RelativeLayout):
         try:
             if self.event is not None:
                 self.event.cancel()
+
             self.fbo = Fbo(size=(self.f_width, self.f_height))
             with self.fbo:
                 ClearColor(0, 0, 0, 1)
@@ -144,11 +184,6 @@ class MainStream(RelativeLayout):
             self.fbo.add(self.canvas)
     
             self.isStream = True
-            
-            # if self._thread is not None:
-            #     self._thread._stop()
-            # self._thread = Thread(target=self._process)
-            # self._thread.start()
             self._process()
         except IOError:
             kivyhelper.getApRoot().triggerStop()

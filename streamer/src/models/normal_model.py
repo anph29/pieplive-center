@@ -1,9 +1,6 @@
-from src.models.http_request import HTTP_REQUEST
-# from http_request import HTTP_REQUEST
-from src.utils import helper
+from . import HTTP_MODEL
 
-
-class Normal_model(HTTP_REQUEST):
+class Normal_model(HTTP_MODEL):
     def __init__(self):
         super(Normal_model, self).__init__()
 

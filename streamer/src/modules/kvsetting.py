@@ -29,10 +29,14 @@ class KVSetting(Popup):
 
     def on_ok(self):
         try:
-            if self.index_choice != -1 and len(self.stream_server.text) > 0 and len(self.stream_key.text) > 0:
-                _data = self.rcv_stream.get_data_index(self.index_choice)
-                play = _data['PLAY']
-                p300 = _data['P300']
+            if len(self.stream_server.text) > 0 and len(self.stream_key.text) > 0:
+                play = ''
+                p300 = {}
+                if self.index_choice != -1:
+                    _data = self.rcv_stream.get_data_index(self.index_choice)
+                    if _data is not None:
+                        play = _data['PLAY']
+                        p300 = _data['P300']
                 self.f_parent.save_setting(self.stream_server.text,self.stream_key.text, play, p300)
                 self.dismiss()
         except:
@@ -52,7 +56,7 @@ class KVSetting(Popup):
 
 class ListStream(RecycleView):
     list_source = ObjectProperty()
-    item_playing = ''
+    item_playing = NumericProperty(-1)
 
     def __init__(self, **kwargs):
         super(ListStream, self).__init__(**kwargs)
@@ -64,7 +68,7 @@ class ListStream(RecycleView):
     def set_data(self):
         self.data = list(
             map(
-                lambda item: {'id': item['id'],'label': item['label'], 'key_a': item['key_a'], 'key_b': item['key_b'], 'PLAY': item['PLAY'], 'P300': item['P300'],
+                lambda item: {'_id': item['id'],'label': item['label'], 'key_a': item['key_a'], 'key_b': item['key_b'], 'PLAY': item['PLAY'], 'P300': item['P300'],
                 'active': (False,True) [item['id'] == self.item_playing]},
                 helper._load_ls_key()
             )
@@ -83,7 +87,7 @@ class ListStream(RecycleView):
         return -1
     
     def set_active(self,index):
-        self.item_playing = self.data[index]['id']
+        self.item_playing = self.data[index]['_id']
         for obj in self.data:
             obj['active'] = False
         self.data[index]['active'] = True

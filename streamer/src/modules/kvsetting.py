@@ -25,6 +25,7 @@ class KVSetting(Popup):
         self.stream_server.text = parent.streamServer
         self.stream_key.text = parent.streamKey
         self.rcv_stream.set_parent(self)
+        self.rcv_stream.set_link(parent.streamServer, parent.streamKey)
         self.rcv_stream.set_data()
 
     def on_ok(self):
@@ -57,6 +58,8 @@ class KVSetting(Popup):
 class ListStream(RecycleView):
     list_source = ObjectProperty()
     item_playing = NumericProperty(-1)
+    link_server = StringProperty('')
+    link_key = StringProperty('')
 
     def __init__(self, **kwargs):
         super(ListStream, self).__init__(**kwargs)
@@ -65,11 +68,15 @@ class ListStream(RecycleView):
     def set_parent(self,_parent):
         self.f_parent = _parent
 
+    def set_link(self, _server, _key):
+        self.link_server = _server
+        self.link_key = _key
+
     def set_data(self):
         self.data = list(
             map(
                 lambda item: {'_id': item['id'],'label': item['label'], 'key_a': item['key_a'], 'key_b': item['key_b'], 'PLAY': item['PLAY'], 'P300': item['P300'],
-                'active': (False,True) [item['id'] == self.item_playing]},
+                'active': (False,True) [self.link_server == item['key_a'] and self.link_key == item['key_b']]},
                 helper._load_ls_key()
             )
         )

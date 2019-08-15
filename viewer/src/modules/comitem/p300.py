@@ -25,8 +25,9 @@ class P300(tk.Frame):
 
     def get_data(self):
         return {
-            "PV325": self.PV325,
             "PP300": self.PP300,
+            "PV325": self.PV325,
+            "PN303": self.PN303,
             "FO100": self.FO100,
             "FT300": self.FT300,
             "PO323": self.PO323,

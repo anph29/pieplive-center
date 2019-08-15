@@ -87,7 +87,8 @@ class HTTP_REQUEST():
         try:
             with urlopen(req) as response:
                 json_str = response.read().decode("utf-8")
-                data_json = json.loads(json_str)
-                return data_json
+                # data_json = json.loads(json_str)
+                return json_str
         except Exception as e:
             print("Exception:", e)
+            return None

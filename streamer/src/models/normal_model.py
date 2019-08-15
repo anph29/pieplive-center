@@ -9,3 +9,6 @@ class Normal_model(HTTP_REQUEST):
 
     def reset_link_stream(self, key):
         return self._get_static('https://livevn.piepme.com/control/drop/client?name='+ key)
+
+    def get_request_link(self, link):
+        return self._get_static(link)

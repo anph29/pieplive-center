@@ -9,6 +9,7 @@ from src.modules.custom import PLabel, ToolTip
 from uuid import getnode
 from PIL import ImageTk, Image
 from src.utils import scryto
+import urllib
 
 
 class P300(tk.Frame):
@@ -36,14 +37,14 @@ class P300(tk.Frame):
 
     def set_data(self, p300):
         self.PP300 = p300["PP300"] or 0
+        self.PV301 = urllib.parse.unquote(p300["PV301"]) if "PV301" in p300 else ""
         self.PN303 = p300["PN303"] or 0
-        self.FO100 = p300["FO100"] or 0
-        self.FT300 = p300["FT300"] or 0
-        self.PV325 = p300["PV325"] or ""
-        self.PV301 = p300["PV301"] or ""
         self.PV307 = p300["PV307"] or ""
         self.PO322 = p300["PO322"] or {}
         self.PO323 = p300["PO323"] or {}
+        self.PV325 = p300["PV325"] or ""
+        self.FO100 = p300["FO100"] or 0
+        self.FT300 = p300["FT300"] or 0
 
     def initGUI(self):
         ww = self.cell_width + 5
@@ -92,7 +93,6 @@ class P300(tk.Frame):
             height=self.bot_height,
         )
         self.bottom.pack(side=tk.BOTTOM, fill=tk.X)
-
         # label
         lbl_name = PLabel(
             self.bottom,
@@ -125,7 +125,7 @@ class P300(tk.Frame):
             fg="#fff",
         )
         self.btnGetKey.configure(width=7)
-        self.btnGetKey.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
+        self.btnGetKey.pack(side=tk.RIGHT, padx=5, pady=5)
 
     def packCheckExisted(self):
         # already
@@ -134,7 +134,7 @@ class P300(tk.Frame):
             self.bottom, image=imChk, cursor="hand2", bg=self.botBg
         )
         self.lblExisted.image = imChk
-        self.lblExisted.pack(side=tk.RIGHT)
+        self.lblExisted.pack(side=tk.RIGHT, padx=5, pady=5)
         ToolTip(self.lblExisted, "Already key")
 
     def genarateKeyAndSave(self):

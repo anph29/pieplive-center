@@ -5,7 +5,6 @@ from src.modules.custom import ToolTip
 from src.utils import helper
 from src.modules.custom import PLabel
 from src.constants import UI
-import urllib
 
 
 class Key(tk.Frame):
@@ -33,7 +32,7 @@ class Key(tk.Frame):
 
     def set_data(self, key):
         self.id = key["id"]
-        self.label = urllib.parse.unquote(key["label"])
+        self.label = key["label"]
         self.key_a = key["key_a"]
         self.key_b = key["key_b"]
         self.P300 = key["P300"]

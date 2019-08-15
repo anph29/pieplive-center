@@ -72,7 +72,9 @@ def createTokenV3(input, isRecursive=False):
 
         maped_ls = map(lambdaX, sorted_key)
         paramStr = "&".join(list(maped_ls))
-
+        #
+        if not isRecursive:
+            print(paramStr, "paramStr")
         return paramStr if isRecursive else hash_md5(paramStr)
     except:
         print(sys.exc_info())

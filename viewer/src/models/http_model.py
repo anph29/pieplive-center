@@ -84,12 +84,12 @@ class HTTP_MODEL:
     """-------------------------------------------------------------------------------------------------------------------------
                                                     no
     -------------------------------------------------------------------------------------------------------------------------"""
-    
+
     def _get_static(self, path):
-        return self.http_request_static(path, 'GET')
+        return self.http_request_static(path, "GET")
 
     """-------------------------------------------------------------------------------------------------------------------------
-                                                    HTTP_REQUEST
+                                                    HTTP_REQUEST_V2
     -------------------------------------------------------------------------------------------------------------------------"""
 
     def http_request(self, path, param, method, tokenMethod=scryto.createTokenV3):
@@ -114,16 +114,14 @@ class HTTP_MODEL:
         # 8. receive RESPONSE
         json_str = response.text
         data_json = json.loads(json_str)
-        print(
-            f'>> RESPONSE -> status={data_json["status"]}, len={len(json_str)}'
-        )
+        print(f'>> RESPONSE -> status={data_json["status"]}, len={len(json_str)}')
         return data_json
 
     """-------------------------------------------------------------------------------------------------------------------------
                                                     HTTP_REQUEST
     -------------------------------------------------------------------------------------------------------------------------"""
 
-    def http_request_(self, path, param, method, tokenMethod=scryto.createTokenV3):
+    def http_request_old(self, path, param, method, tokenMethod=scryto.createTokenV3):
         """ ROOT request method """
         # 1. calc url from path
         url = self.PIEPME_HOST + path

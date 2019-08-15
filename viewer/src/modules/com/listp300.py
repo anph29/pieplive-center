@@ -59,7 +59,7 @@ class ListP300(DynamicGrid, tk.Frame):
                 "ACTION": "SENT",
                 "PP300": 0,
                 "FO100": store.getCurrentActiveBusiness(),  # chủ doanh nghiệp
-                "FO100W": store._get("FO100"),  # người viết
+                "FO100W": 0,  # store._get("FO100"),  # người viết
                 "SEARCH": "",
                 "OFFSET": 0,
                 "LIMIT": 30,

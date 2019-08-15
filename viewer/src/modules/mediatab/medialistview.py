@@ -64,6 +64,7 @@ class MediaListView(MediaTab):
         self.cmdLock.image = imgLock
         self.cmdLock.bind("<Button-1>", self.toggleLock)
         self.cmdLock.pack(side=tk.RIGHT, padx=(0, 5))
+
         if self.tabType != MediaType.SCHEDULE:
             self.showBtnPushAllToSchedule()
         ToolTip(self.cmdLock, "Lock")

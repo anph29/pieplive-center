@@ -1,163 +1,189 @@
 import tkinter as tk
 from tkinter import messagebox
-from .scheduleddlist import ScheduleDDList
-from src.modules.custom import DDList
+from src.modules.custom import DDList, VerticalScrolledFrame
 from src.utils import helper
-from src.modules.mediaitem import MediaItemSchedule
+from src.modules.comitem import Key
 from functools import reduce
-from src.modules.popup import PopupAddSchedule
 from src.constants import UI
 from PIL import Image, ImageTk
 from src.modules.custom import ToolTip
 
 
-class SingleSchedule(ScheduleDDList):
+class KeyManager(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
-        super(SingleSchedule, self).__init__(parent, *args, **kwargs)
+        super(KeyManager, self).__init__(parent, *args, **kwargs)
+        self._LS_KEY_DATA = []
+        self._LS_KEY_UI = []
         self.tbBgColor = "#D4EFDF"
-        self.wrapperWidth = 500
-        self.totalDuration = 0
-        self.titleTxt = "Schedule Detail"
+        self.wrapperWidth = 360
+        self.titleTxt = "Key manager"
         self.initUI()
         self.lblChk = None
 
-    def showListSchedule(self):
-        self._LS_SCHEDULE_DATA = self.loadSchedule()
-        self.totalDuration = 0
-        if bool(self._LS_SCHEDULE_DATA):
-            for sch in self._LS_SCHEDULE_DATA:
-                self.addToScheduleGUI(sch)
-                self.totalDuration += int(sch["duration"])
-        #
-        self.lblDura.config(
-            text=f"total duration: {helper.convertSecNoToHMS(self.totalDuration)}"
-        )
+    def initUI(self):
+        self.showTitle()
+        self.showToolBar()
+        self.scrollZ = VerticalScrolledFrame(self)
+        self.scrollZ.pack(fill=tk.BOTH, expand=True)
+        self.ddlist = self.makeDDList(self.scrollZ.interior)
+        self.ddlist.pack(fill=tk.BOTH, expand=True)
+        self.showListKey()
+
+    def showListKey(self):
+        self._LS_KEY_DATA = helper._load_ls_key()
+        if bool(self._LS_KEY_DATA):
+            for key in self._LS_KEY_DATA:
+                self.addToKeyGUI(key)
 
     def setData(self, sch):
         self.schName = sch["name"] if bool(sch) else ""
         self.lblTitle.config(text=f"{self.schName}")
         self.schId = sch["id"] if bool(sch) else ""
         self.schPath = sch["path"] if bool(sch) else ""
-        self.showTitleWidthSave()
         self.clearView()
 
-    def showTitleWidthSave(self):
-        if self.schId == "STORE_SCHEDULE":
-            self.lblTitle.pack_forget()
-            self.lblTitle.pack(pady=5)
-            if bool(self.lblChk):
-                self.lblChk.pack_forget()
-                self.lblChk = None
+    def showTitle(self):
+        self.title = tk.Frame(self, height=50, relief=tk.FLAT, bg=self.tbBgColor)
+        self.title.pack(fil=tk.X, side=tk.TOP)
+        #
+        self.lblTitle = tk.Label(
+            self.title,
+            text=self.titleTxt.upper(),
+            bg=self.tbBgColor,
+            font=UI.TITLE_FONT,
+        )
+        self.lblTitle.pack(pady=5)
 
-        elif not bool(self.lblChk):
-            self.lblTitle.pack_forget()
-            self.lblTitle.pack(side=tk.LEFT, padx=20, pady=5)
-            imageChk = ImageTk.PhotoImage(
-                Image.open(f"{helper._ICONS_PATH}check-green-s.png")
-            )
-            self.lblChk = tk.Label(
-                self.title,
-                image=imageChk,
-                font=UI.TXT_FONT,
-                cursor="hand2",
-                bg=self.tbBgColor,
-            )
-            self.lblChk.image = imageChk
-            self.lblChk.bind("<Button-1>", self.saveAsRunningSchedule)
-            self.lblChk.pack(padx=20, pady=5, side=tk.RIGHT)
-            ToolTip(self.lblChk, "Save as Running Schedule")
+    def makeDDList(self, ref):
+        return DDList(
+            ref,
+            self.wrapperWidth,
+            42,
+            offset_x=5,
+            offset_y=5,
+            gap=5,
+            item_borderwidth=1,
+            item_relief=tk.FLAT,
+            borderwidth=0,
+            bg="#fff",
+            droppedCallback=self.saveSortedList,
+        )
 
-    def saveAsRunningSchedule(self, evt):
-        if messagebox.askyesno("PiepMe", "Are you sure overwrite `RUNNING SCHEDULE`?"):
-            helper._write_schedule(self._LS_SCHEDULE_DATA)
-
-    def addToScheduleGUI(self, media):
-        item = self.ddlist.create_item(value=media, bg="#ddd")
-        ui = MediaItemSchedule(item, parentTab=self, media=media, elipsis=20)
-        self._LS_SCHEDULE_UI.append(ui)
+    def addToKeyGUI(self, key):
+        item = self.ddlist.create_item(value=key)
+        ui = Key(item, parentTab=self, key=key)
+        self._LS_KEY_UI.append(ui)
         ui.pack(expand=True)
         self.ddlist.add_item(item)
 
-    def loadSchedule(self):
-        if self.schId == "STORE_SCHEDULE":
-            return helper._load_schedule()
-        else:
-            return helper._load_schedule_width_fname(self.schPath)
+    def showToolBar(self):
+        self.checkall = tk.BooleanVar()
+        self.toolbar = tk.Frame(self, height=50, relief=tk.FLAT, bg=self.tbBgColor)
+        self.toolbar.pack(fil=tk.X, side=tk.BOTTOM)
+        self.packLeftToolbar()
+        self.packRightToolbar()
 
-    def addSchedule(self, data):
-        if self.schId == "STORE_SCHEDULE":
-            helper._add_to_schedule(data)
-        else:
-            helper._add_to_schedule_width_fname(self.schPath, data)
+    def packLeftToolbar(self):
+        self.tbleft = tk.Frame(self.toolbar, relief=tk.FLAT, bg=self.tbBgColor)
+        self.tbleft.pack(fil=tk.Y, side=tk.LEFT)
+        self.showSelectAll()
 
-    def writeSchedule(self, data):
-        if self.schId == "STORE_SCHEDULE":
-            helper._write_schedule(data)
-        else:
-            helper._write_schedule_width_fname(self.schPath, data)
+    def showSelectAll(self):
+        # select all
+        self.checkbox = tk.Checkbutton(
+            self.tbleft,
+            variable=self.checkall,
+            onvalue=True,
+            offvalue=False,
+            height=2,
+            width=2,
+            bg=self.tbBgColor,
+            bd=0,
+            cursor="hand2",
+            command=self.tabSelectAll,
+        )
+        self.checkbox.pack(side=tk.LEFT, fill=tk.Y)
+        ToolTip(self.checkbox, "Select all media")
 
     def packRightToolbar(self):
-        super(SingleSchedule, self).packRightToolbar()
-        # label
-        self.lblDura = tk.Label(
-            self.tbright,
-            text=f"total duration: {helper.convertSecNoToHMS(self.totalDuration)}",
-            justify=tk.LEFT,
-            bg=self.tbBgColor,
-            font=UI.TXT_FONT_HEAD,
-            fg="#ff2d55",
+        self.tbright = tk.Frame(self.toolbar, relief=tk.FLAT, bg=self.tbBgColor)
+        self.tbright.pack(fil=tk.Y, side=tk.RIGHT)
+        # delete all
+        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}trash-b24.png"))
+        self.cmdDelAll = tk.Label(
+            self.tbright, image=imageBin, cursor="hand2", bg=self.tbBgColor
         )
-        self.lblDura.pack(side=tk.RIGHT, padx=10)
+        self.cmdDelAll.image = imageBin
+        self.cmdDelAll.bind("<Button-1>", self.tabDeleteAll)
+        self.cmdDelAll.pack(side=tk.RIGHT, padx=(0, 15), pady=5)
+        ToolTip(self.cmdDelAll, "Delete all selected")
+        # refresh
+        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}f5-b24.png"))
+        self.cmdF5 = tk.Label(
+            self.tbright, image=imageBin, cursor="hand2", bg=self.tbBgColor
+        )
+        self.cmdF5.image = imageBin
+        self.cmdF5.bind("<Button-1>", self.f5)
+        self.cmdF5.pack(side=tk.RIGHT, padx=(0, 5), pady=5)
+        ToolTip(self.cmdF5, "Refresh")
+        # lock
+        imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}unlock-24.png"))
+        self.cmdLock = tk.Label(
+            self.tbright, image=imgLock, cursor="hand2", bg=self.tbBgColor
+        )
+        self.cmdLock.image = imgLock
+        self.cmdLock.bind("<Button-1>", self.toggleLock)
+        self.cmdLock.pack(side=tk.RIGHT, padx=(0, 5))
+        ToolTip(self.cmdLock, "unlocked")
 
-    def addMediaToList(self, media):
-        item = self.ddlist.create_item(value=media, bg="#ddd")
-        ui = MediaItemSchedule(item, parentTab=self, media=media)
-        self._LS_SCHEDULE_UI.append(ui)
-        ui.pack(padx=(4, 0), pady=(4, 0), expand=True)
-        self.ddlist.add_item(item)
-
-    def showAddToSchedulePopup(self, data, edit=False):
-        addresource = PopupAddSchedule(self, data)
-        addresource.initGUI(edit=edit)
-
-    def editRuntime(self, data):
-        addresource = PopupAddSchedule(self, data)
-        addresource.showChangeRuntimeUI()
-
-    def saveToSchedule(self, data):
-        ls = self.loadSchedule()
-        # check edit
-        filtered = list(filter(lambda x: x["id"] == data["id"], ls))
-        if len(filtered) > 0:
-            self.saveEdit(ls, data)
-        else:
-            self.addMediaToList(data)
-            self.addSchedule(data)
-        self.f5(None)
+    def toggleLock(self, evt):
+        un = "un" if self.ddlist.getLock() else ""
+        imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}{un}lock-24.png"))
+        self.cmdLock.configure(image=imgLock)
+        self.cmdLock.image = imgLock
+        ToolTip(self.cmdLock, f"{un}locked")
+        self.ddlist.setLock(not self.ddlist.getLock())
 
     def f5(self, evt):
-        super(SingleSchedule, self).f5(evt)
-        ls = self.loadSchedule()
-        self.totalDuration = reduce(lambda sum, x: sum + x["duration"], ls, 0)
-        self.lblDura.config(
-            text=f"total duration: {helper.convertSecNoToHMS(self.totalDuration)}"
-        )
+        self.clearView()
+        self.showListKey()
+        self.checkall.set(False)
 
-    def saveEdit(self, ls, media):
-        newLs = list(map(lambda x: media if x["id"] == media["id"] else x, ls))
-        self.clearData()
-        self.writeSchedule(newLs)
+    def tabDeleteAll(self, evt):
+        filtered = list(filter(lambda x: x.checked.get(), self._LS_KEY_UI))
+        lsId = list(map(lambda x: x.id, filtered))
+        if len(lsId) > 0:
+            if messagebox.askyesno("PiepMe", "Are you sure delete all selected keys?"):
+                self.rmvKey(lsId)
+                self.f5(evt)
 
-    def calcRuntime(self, media):
-        ls = self.loadSchedule()
-        newLs = list(map(lambda x: media if x["id"] == media["id"] else x, ls))
-        index = newLs.index(media)
+    def tabSelectAll(self):
+        for medi in self._LS_KEY_UI:
+            medi.checked.set(self.checkall.get())
+
+    def clearData(self, clearView=False):
+        # self._LS_KEY_DATA = []
+        helper._write_lskey([])
+        if clearView:
+            self.clearView()
+
+    def clearView(self):
+        self._LS_KEY_UI = []
+        self.ddlist._clear_all()
+
+    def rmvKey(self, lsId):
+        ls = helper._load_ls_key()
+        filtered = list(filter(lambda x: x["id"] not in lsId, ls))
         self.clearData()
-        schedule = helper.calc_schedule_runtime(
-            index, schedule=newLs, startTime=media["timepoint"]
-        )
-        self.writeSchedule(schedule)
+        helper._write_lskey(filtered)
+
+    def saveSortedList(self):
+        sorted = list(map(lambda x: x.value, self.ddlist._list_of_items))
+        filtered = list(filter(lambda x: bool(x), sorted))
+        self.clearData()
+        helper._write_lskey(filtered)
+
+    def addKey(self, keyObj):
+        helper._add_to_lskey(keyObj)
         self.f5(None)
 
-    def deleteMediaItem(self, lsId):
-        self.rmvSchedule(lsId)

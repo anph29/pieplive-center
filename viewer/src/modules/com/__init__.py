@@ -1,1 +1,1 @@
-from .listp300 import ListP300
+from .comwrapper import COMWrapper

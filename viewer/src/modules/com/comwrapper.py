@@ -4,13 +4,14 @@ from .listp300 import ListP300
 
 
 class COMLeft(tk.Frame):
-    def __init__(self, parent, *args, **kwargs):
+    def __init__(self, parent, keyManager=None, *args, **kwargs):
         super(COMLeft, self).__init__(parent, *args, **kwargs)
+        self.keyManager = keyManager
         self.initUI()
 
     def initUI(self):
-        self.sortedlist = KeyManager(self, bg="#fff")
-        self.sortedlist.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        self.listP300 = ListP300(self, keyManager=self.keyManager, bg="#fff")
+        self.listP300.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
 
 class COMRight(tk.Frame):
@@ -19,8 +20,8 @@ class COMRight(tk.Frame):
         self.initUI()
 
     def initUI(self):
-        self.singleschedule = ListP300(self, bg="#fff")
-        self.singleschedule.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        self.keyManager = KeyManager(self, bg="#fff")
+        self.keyManager.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
 
 class COMWrapper(tk.Frame):
@@ -33,8 +34,8 @@ class COMWrapper(tk.Frame):
 
     def initUI(self):
         #
-        self.left = COMLeft(self, schedule=self.right.singleschedule, bg="#fff")
-        self.left.pack(side=tk.LEFT, fill=tk.Y)
-        #
         self.right = COMRight(self, bg="#f0f0f0")
-        self.right.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+        self.right.pack(side=tk.RIGHT, fill=tk.Y)
+        #
+        self.left = COMLeft(self, keyManager=self.right.keyManager, bg="#fff")
+        self.left.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)

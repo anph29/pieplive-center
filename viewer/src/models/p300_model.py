@@ -5,7 +5,7 @@ class P300_model(HTTP_MODEL):
     def __init__(self):
         super(P300_model, self).__init__()
 
-    # GET
+    # POST
     #  Lấy danh sách pieper COM
     # {
     #   ACTION: ___,

@@ -9,7 +9,7 @@ from src.modules.custom import LabeledCombobox
 from src.modules.menu import MainMenu
 from src.modules.login import Login
 from src.modules.schedule import Schedule
-from src.modules.com import ListP300
+from src.modules.com import COMWrapper
 import PIL
 from PIL import Image, ImageTk
 
@@ -106,7 +106,7 @@ class MainView(tk.Frame):
         self.toolbar = tk.Frame(self, relief=tk.FLAT, bg="#fff")
         self.toolbar.pack(side=tk.TOP, fill=tk.X)
         self.packRightToolbar()
-        # self.packCOMtab()
+        self.packCOMtab()
 
     def afterLogout(self):
         self.updateMenu()
@@ -135,11 +135,11 @@ class MainView(tk.Frame):
 
     def packCOMtab(self):
         icCom = tk.PhotoImage(file=helper._ICONS_PATH + "se-icon.png")
-        self.tabCOM = ListP300(self)
+        self.tabCOM = COMWrapper(self)
         self.tabCOM.image = icCom
         self.superWrapper.add(self.tabCOM, text="C.O.M", image=icCom, compound=tk.LEFT)
         #
-        self.superWrapper.select(self.schedule)
+        self.superWrapper.select(self.tabCOM)
         self.superWrapper.enable_traversal()
 
     def makeMediaListTab(self):

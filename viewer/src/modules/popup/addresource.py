@@ -142,7 +142,6 @@ class PopupAddResource(object):
         return fFile
 
     def getTypeAllowedFromMediaType(self):
-        """"""
         if self.parent.tabType == MediaType.IMAGE:
             return (("image files", "*.png *.jpg"), ("all files", "*.*"))
         elif self.parent.tabType == MediaType.VIDEO:

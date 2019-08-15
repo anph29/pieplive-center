@@ -7,6 +7,7 @@ from . import zip_helper
 import datetime
 import cv2
 import shutil
+from urllib.request import Request, urlopen
 
 """
 VARIABLE
@@ -491,3 +492,13 @@ def getVideoDuration(fpath):
         return dura
     except:
         return 0
+
+
+def getMyIP():
+    req = Request("https://piepme.com/ip", data={}, method="GET")
+    req.add_header("Accept", "application/json")
+    with urlopen(req) as response:
+        json_str = response.read().decode("utf-8")
+        data_json = json.loads(json_str)
+        return data_json["ip"]
+

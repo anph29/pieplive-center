@@ -31,46 +31,6 @@ def run():
     root.protocol("WM_DELETE_WINDOW", onStop)
     root.mainloop()
 
-def run1():
-    firebase.setP300AfterStartStream(
-        {
-            "FO100": 1932,
-            "FO100W": 4033,
-            "FT300": 1,
-            "PV301": "test%20count%20down",
-            "PN303": 9,
-            "PV307": "",
-            "PD308": "2019-08-14T09:45:00.000Z",
-            "PN309": 0,
-            "PO322": {
-                "live": {
-                    "time": "2019-08-14T09:45:00.000Z",
-                    "description": "",
-                    "title": "test count down",
-                    "FL300": 8923,
-                    "src": "",
-                    "NV124": "vn",
-                }
-            },
-            "PO323": {
-                "PN323_CMAP": 0,
-                "PN323_RULE": 0,
-                "PA323_SRE": ["OTH", "PME"],
-                "PN323_FEE": 0,
-                "PN323_DONA": 0,
-                "PN323_NRC": 0,
-                "PN323_CM": 1,
-            },
-            "PV325": "VWmgVqEMoWl",
-            "PP300": 6641,
-            "TYPE": "N100",
-            "NV106": "Â  n",
-            "NV126": "https://media.piepme.com/4033/images/avartaoohhay?t=1564930109622",
-            "NV106W": "Â  n",
-            "NV126W": "https://media.piepme.com/4033/images/avartaoohhay?t=1564930109622",
-        }
-    )
-
 if __name__ == "__main__":
     helper.makeSureResourceFolderExisted()
     run()

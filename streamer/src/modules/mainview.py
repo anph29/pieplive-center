@@ -12,6 +12,7 @@ from kivy.clock import Clock
 import sounddevice as sd
 from src.models.normal_model import Normal_model
 from src.models import P300_model
+from src.models import Socket_model
 import json
 
 Builder.load_file('src/ui/main.kv')

@@ -47,7 +47,9 @@ class HTTP_MODEL:
         return self.http_request(path, param, "PUT", tokenMethod=scryto.createTokenV2)
 
     def v2_delete(self, path, param):
-        return self.http_request(path, param, "DELETE", tokenMethod=scryto.createTokenV2)
+        return self.http_request(
+            path, param, "DELETE", tokenMethod=scryto.createTokenV2
+        )
 
     def v2_patch(self, path, param):
         return self.http_request(path, param, "PATCH", tokenMethod=scryto.createTokenV2)
@@ -86,7 +88,7 @@ class HTTP_MODEL:
         # 1. calc url from path
         url = self.PIEPME_HOST + path
         # 2. add some param
-        param["SRC"] = "PiepLiveCenter"
+        param["SRC"] = param["SRC"] if "SRC" in param else "PiepLiveCenter"
         # 3. add token
         param["token"] = tokenMethod(param)
         # 4. del secret param

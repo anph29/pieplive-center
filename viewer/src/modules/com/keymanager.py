@@ -86,9 +86,6 @@ class KeyManager(tk.Frame):
     def packLeftToolbar(self):
         self.tbleft = tk.Frame(self.toolbar, relief=tk.FLAT, bg=self.tbBgColor)
         self.tbleft.pack(fil=tk.Y, side=tk.LEFT)
-        self.showSelectAll()
-
-    def showSelectAll(self):
         # select all
         self.checkbox = tk.Checkbutton(
             self.tbleft,
@@ -183,7 +180,13 @@ class KeyManager(tk.Frame):
         self.clearData()
         helper._write_lskey(filtered)
 
+    def notkExistedKey(self, PP300):
+        filtered = list(
+            filter(lambda k: k["P300"]["PP300"] == PP300, self._LS_KEY_DATA)
+        )
+        return len(filtered) == 0
+
     def addKey(self, keyObj):
-        helper._add_to_lskey(keyObj)
-        self.f5(None)
+            helper._add_to_lskey(keyObj)
+            self.f5(None)
 

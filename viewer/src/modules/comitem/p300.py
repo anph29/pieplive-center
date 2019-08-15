@@ -5,7 +5,7 @@ from io import BytesIO
 from src.utils import helper, store
 from src.constants import UI, WS
 from src.models import L300_model
-from src.modules.custom import PLabel
+from src.modules.custom import PLabel, ToolTip
 from uuid import getnode
 from PIL import ImageTk, Image
 from src.utils import scryto
@@ -30,6 +30,7 @@ class P300(tk.Frame):
             "PN303": self.PN303,
             "FO100": self.FO100,
             "FT300": self.FT300,
+            "PO322": self.PO322,
             "PO323": self.PO323,
         }
 
@@ -103,9 +104,15 @@ class P300(tk.Frame):
             fg="#000",
         )
         lbl_name.pack(side=tk.LEFT)
-        # get key
 
-        btnChoose = tk.Button(
+        if self.parentTab.canInsertL300(self.PP300):
+            self.packBtnGetKey()
+        else:
+            self.packCheckExisted()
+
+    def packBtnGetKey(self):
+        # get key
+        self.btnGetKey = tk.Button(
             self.bottom,
             text="Get Key",
             relief=tk.FLAT,
@@ -117,39 +124,57 @@ class P300(tk.Frame):
             bg="#ff2d55",
             fg="#fff",
         )
-        btnChoose.configure(width=7)
-        btnChoose.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
+        self.btnGetKey.configure(width=7)
+        self.btnGetKey.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
+
+    def packCheckExisted(self):
+        # already
+        imChk = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}check-green-s.png"))
+        self.lblExisted = tk.Label(
+            self.bottom, image=imChk, cursor="hand2", bg=self.botBg
+        )
+        self.lblExisted.image = imChk
+        self.lblExisted.pack(side=tk.RIGHT)
+        ToolTip(self.lblExisted, "Already key")
 
     def genarateKeyAndSave(self):
-        l300 = self.insertL300()
-        URL, STREAMKEY = self.makeRTMP(l300)
-        self.parentTab.saveKeyStream(
-            {
-                "id": scryto.hash_md5_with_time(self.PV301),
-                "label": self.PV301,
-                "key_a": URL,
-                "key_b": STREAMKEY,
-                "PLAY": l300["PLAY"],
-                "P300": self.get_data(),
-            }
-        )
+        if self.parentTab.canInsertL300(self.PP300):
+            l300 = self.insertL300()
+            URL, STREAMKEY = self.makeRTMP(l300)
+            self.parentTab.saveKeyStream(
+                {
+                    "id": l300["PL300"],
+                    "label": self.PV301,
+                    "key_a": URL,
+                    "key_b": STREAMKEY,
+                    "PLAY": l300["PLAY"],
+                    "P300": self.get_data(),
+                }
+            )
+        #
+        self.btnGetKey.pack_forget()
+        self.packCheckExisted()
 
     def insertL300(self):
         l300 = L300_model()
         ADDRESS, LAT, LONG = self.getLocObj()
-        rs = l300.updatetabP300_prov(
+        liveObj = self.PO322["live"] if "live" in self.PO322 else {}
+        fl300 = liveObj["FL300"] if "FL300" in liveObj else 0
+
+        rs = l300.live_inserttabL300(
             {
                 "FO100": store.getCurrentActiveBusiness(),  # fo100 doanh nghiep
                 "PN303": self.PN303,
                 "LV302": helper.getMyIP(),  # IP
                 "LV303": store._get("A100")["AV107"],  # phone
                 "FT300": self.FT300,
-                "PL300": 0,  # nếu đã có FL300 (đã lấy key) thì truyền lại FL300, (p300.PO322.live.FL300)
+                "PL300": fl300,  # nếu đã có FL300 (đã lấy key) thì truyền lại FL300, (p300.PO322.live.FL300)
                 "ADDRESS": ADDRESS,
                 "LAT": LAT,
                 "LONG": LONG,
                 "UUID": hex(getnode()),  # UUID của thiết bị mobile
                 "NV124": store._get("NV124"),  # Quốc Gia
+                "SRC": "WEB",
                 "pvLOGIN": store._get("NV101"),
             }
         )
@@ -160,7 +185,8 @@ class P300(tk.Frame):
         ADDRESS, LAT, LONG = self.getLocObj()
         URL = f'rtmp://{l300["EDGE"]}/{l300["APP"]}/'
         STREAMKEY = (
-            f'{FO100BU}.{l300["TOKEN"]}?token={l300["TOKEN"]}&SRC=WEB&FO100={FO100BU}&PL300={l300["PL300"]}&LN301={l300["LN301"]}&LV302={l300["LV302"]}&LV303={l300["LV303"]}&LL348={l300["LL348"]}&UUID={hex(getnode())}&NV124={store._get("NV124")}'
+            f'{FO100BU}.{l300["TOKEN"]}?token={l300["TOKEN"]}&SRC=WEB&FO100={FO100BU}&PL300={l300["PL300"]}&LN301={l300["LN301"]}&LV302={l300["LV302"]}'
+            + f'&LV303={l300["LV303"]}&LL348={l300["LL348"]}&UUID={hex(getnode())}&NV124={store._get("NV124")}'
             + (
                 f"&PN303={self.PN303}"
                 if self.PN303 == 15

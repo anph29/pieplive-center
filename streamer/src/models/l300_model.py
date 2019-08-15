@@ -20,7 +20,8 @@ class L300_model(HTTP_MODEL):
     #   UUID // UUID của thiết bị mobile
     #   NV124 // Quốc Gia
     #   pvLOGIN
+    #   SRC: WEB
     # }
 
-    def updatetabP300_prov(self, param):
+    def live_inserttabL300(self, param):
         return self._post("/v1/service/l300/l2018_live_inserttabL300_prov", param)

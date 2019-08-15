@@ -12,15 +12,14 @@ class ListP300(DynamicGrid, tk.Frame):
         self.parent = parent
         self.keyManager = keyManager
         self.tbBgColor = "#E8DAEF"
-        self.titleTxt = "Schedule List"
         self._LS_P300_DATA = []
         self._LS_P300_UI = []
         self.initUI()
 
     def initUI(self):
-        self.showListSchedule()
+        self.showListP300()
 
-    def showListSchedule(self):
+    def showListP300(self):
         self._LS_P300_DATA = self.loadListP300COM()
         for media in self._LS_P300_DATA:
             self.addItemToGUI(media)
@@ -35,17 +34,6 @@ class ListP300(DynamicGrid, tk.Frame):
         self.context.delete(1.0, tk.END)
         self.context.config(state=tk.DISABLED)
 
-    def showTitle(self):
-        self.title = tk.Frame(self, height=50, relief=tk.FLAT, bg=self.tbBgColor)
-        self.title.pack(fil=tk.X, side=tk.TOP)
-        #
-        self.lblTitle = tk.Label(
-            self.title,
-            text=self.titleTxt.upper(),
-            bg=self.tbBgColor,
-            font=UI.TITLE_FONT,
-        )
-        self.lblTitle.pack(pady=5)
 
     def loadListP300COM(self):
         p300 = P300_model()
@@ -64,5 +52,12 @@ class ListP300(DynamicGrid, tk.Frame):
         )
         return rs[WS.ELEMENTS] if rs[WS.STATUS] == WS.SUCCESS else []
 
+    def canInsertL300(self, PP300):
+        return self.keyManager.notkExistedKey(PP300)
+
     def saveKeyStream(self, keyObj):
         self.keyManager.addKey(keyObj)
+
+    def f5(self, evt):
+        self.clearView()
+        self.showListP300()

@@ -118,7 +118,7 @@ class HTTP_MODEL:
             print(f'>> RESPONSE -> status={data_json["status"]}')
             return data_json
         except Exception as e:
-            print(">>ERROR: http_request:", e) 
+            print(">>ERROR: http_request:", e)
 
     """-------------------------------------------------------------------------------------------------------------------------
                                                     HTTP_REQUEST

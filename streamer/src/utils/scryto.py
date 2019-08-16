@@ -37,14 +37,14 @@ def createTokenV2(input, isRecursive=False):
 
         sorted_key = sorted(input)
 
-        maped_ls = map(
-            lambda v: (
-                f"{v}=[{createTokenV2(input[v], True)}]"
-                if type(input[v]) is dict
-                else f"{v}={input[v]}"
-            ),
-            sorted_key,
-        )
+        def lambdaX(v):
+            return (
+                f"{v}={input[v]}"
+                if type(input[v]) is not dict
+                else createTokenV2(input[v], True)
+            )
+
+        maped_ls = map(lambdaX, sorted_key)
         paramStr = "&".join(list(maped_ls))
 
         return paramStr if isRecursive else hash_md5(paramStr)
@@ -63,14 +63,14 @@ def createTokenV3(input, isRecursive=False):
         sorted_key = sorted(input)
 
         # improve non-charater from v2
-        maped_ls = map(
-            lambda v: (
-                f"{v}=[{createTokenV3(input[v], True)}]"
-                if type(input[v]) is dict
-                else f"{v}={re.sub(r'[^a-zA-Z0-9]', '', str(input[v]))}"
-            ),
-            sorted_key,
-        )
+        def lambdaX(v):
+            if type(input[v]) is dict:
+                return f"{v}=[{createTokenV3(input[v], True)}]"
+            else:
+                after_regex = re.sub(r"[^a-zA-Z0-9]", "", str(input[v]))
+                return f"{v}={after_regex}"
+
+        maped_ls = map(lambdaX, sorted_key)
         paramStr = "&".join(list(maped_ls))
         # if not isRecursive:
         #     print(paramStr, "paramStr")

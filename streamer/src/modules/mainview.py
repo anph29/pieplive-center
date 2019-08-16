@@ -11,9 +11,8 @@ from kivy.lang import Builder
 from kivy.clock import Clock
 import sounddevice as sd
 from src.models.normal_model import Normal_model
-from src.models import P300_model
-from src.models import Socket_model
-import json
+from src.models import P300_model, Socket_model
+
 
 Builder.load_file('src/ui/main.kv')
 
@@ -217,7 +216,7 @@ class MainView(Widget):
                 self.mainStream.startStream()
                 self.btn_start.text = "Stop"
                 self.btn_start.background_color = .29, .41, .15, 0.9
-            # self.update_piep()
+            # self.send_notify_piep()
 
         elif self.mainStream.isStream is True:
             self.mainStream.stopStream()
@@ -230,7 +229,27 @@ class MainView(Widget):
             self.process_update_piep(5)
 
     def send_notify_piep(self):
-        pass
+        socket_md = Socket_model()
+        data = {
+            "FO100": self.p300['FO100'],
+            "CHANNELTYPE": "FOLLOW",
+            "NICKNAME": self.p300['NV106'],
+            "AVATAR": self.p300['NV126'],
+            "TITLE": self.p300['PV301'],
+            "TYPE": 'K100',
+            "FC100": 0,#self.p300['FC100'],
+            "FC150": 0,#self.p300['FC150'],
+            "LIVE" : 'ON',#: đang live || OFF
+            "message": {
+                "p300": self.p300,
+                "typepieper": 9,
+                "pt300": self.p300['FT300'],
+                "fc100": 0,#self.p300['FC100'],
+                "fc150": 0#self.p300['FC150']
+            }
+        }
+        dt = {'event':'publishPieperToCustomerByProvider','data':data,'LOGIN':self.p300['NV106']}
+        socket_md.send_notify_piep(dt)
 
     def process_update_piep(self,dt):
         try:

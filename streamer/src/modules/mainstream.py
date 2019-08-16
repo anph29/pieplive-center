@@ -306,7 +306,7 @@ class MainStream(RelativeLayout):
             self.command.extend(self.draw_element())
 
             # encode
-            self.command.extend(['-vb', str(self.v_bitrate),'-r', '25', '-pix_fmt', 'yuv420p'])
+            self.command.extend(['-vb', str(self.v_bitrate),'-r', '25', '-pix_fmt', 'yuv420p','-sws_flags','bilinear'])
 
             self.command.extend(["-vf", "fps=25"])
             

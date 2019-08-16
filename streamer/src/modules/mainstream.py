@@ -102,8 +102,8 @@ class MainStream(RelativeLayout):
                 self.typeSwitch = 0
                 self.camera.width = 1280
                 self.camera.height = 720
-                self.cameraMini.width = 320
-                self.cameraMini.height = 180
+                self.cameraMini.width = 426#320
+                self.cameraMini.height = 246#180
                 self.cameraMini.pos = self.camera.pos
                 self.camera.pos = (0,0)
                 self.add_widget(self.cameraMini,0)
@@ -121,8 +121,8 @@ class MainStream(RelativeLayout):
             self.remove_widget(self.cameraMini)
             if self.typeSwitch == 0:
                 self.typeSwitch =1
-                self.camera.width = 320
-                self.camera.height = 180
+                self.camera.width = 426#320
+                self.camera.height = 246#180
                 self.cameraMini.width = 1280
                 self.cameraMini.height = 720
                 self.camera.pos = self.cameraMini.pos
@@ -133,8 +133,8 @@ class MainStream(RelativeLayout):
                 self.typeSwitch = 0
                 self.camera.width = 1280
                 self.camera.height = 720
-                self.cameraMini.width = 320
-                self.cameraMini.height = 180
+                self.cameraMini.width = 426#320
+                self.cameraMini.height = 246#180
                 self.cameraMini.pos = self.camera.pos
                 self.camera.pos = (0,0)
                 self.add_widget(self.cameraMini,0)
@@ -306,7 +306,7 @@ class MainStream(RelativeLayout):
             self.command.extend(self.draw_element())
 
             # encode
-            self.command.extend(['-vb', str(self.v_bitrate),'-r', '25', '-pix_fmt', 'yuv420p','-sws_flags','bilinear'])
+            self.command.extend(['-vb', str(self.v_bitrate),'-r', '25', '-pix_fmt', 'yuv420p'])
 
             self.command.extend(["-vf", "fps=25"])
             

@@ -31,7 +31,7 @@ class MainView(Widget):
     idSoundDevice = StringProperty('')
     loading = BooleanProperty(False)
     loadingMini = BooleanProperty(False)
-    presenterAuto = BooleanProperty(True)
+    presenterAuto = BooleanProperty(False)
     autoStop = BooleanProperty(False)
     mainDisplayStt = BooleanProperty(False)
     miniDisplayStt = BooleanProperty(False)
@@ -221,11 +221,12 @@ class MainView(Widget):
                 self.mainStream.startStream()
                 self.btn_start.text = "Stop"
                 self.btn_start.background_color = .29, .41, .15, 0.9
-            # self.update_piep()
         elif self.mainStream.isStream is True:
             self.mainStream.stopStream()
             self.btn_start.text = "Start"
             self.btn_start.background_color = .29, .41, .55, 1
+            if bool(self.p300):
+                firebase.setP300AfterStartStream({"PP300":0})
 
     def send_info_to_app(self):
         try:

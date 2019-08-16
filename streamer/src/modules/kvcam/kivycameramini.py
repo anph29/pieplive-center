@@ -106,20 +106,20 @@ class KivyCameraMini(DragBehavior, Image):
                     print("Exception:", e)
 
                 timeout = 1
-                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 if self.category == "PRESENTER":
                     self.url = self.data_src['rtmp']
                     timeout=2
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000","-preset","medium",'-sws_flags','bilinear',"-ar","44100","-ab","160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000","-preset","medium","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "M3U8":
                     timeout=1
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-ar","44100", "-ab", "160k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-ar","44100", "-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "RTSP":
                     timeout=1
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1","-acodec", "copy", "-vcodec", "copy","-r","25",output]
                 else:
                     if fps < 25:
-                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "160k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
                     
                 si = subprocess.STARTUPINFO()
                 si.dwFlags |= subprocess.STARTF_USESHOWWINDOW

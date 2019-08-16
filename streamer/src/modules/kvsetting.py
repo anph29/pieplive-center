@@ -33,6 +33,7 @@ class KVSetting(Popup):
             if len(self.stream_server.text) > 0 and len(self.stream_key.text) > 0:
                 play = ''
                 p300 = {}
+                
                 if self.index_choice != -1:
                     _data = self.rcv_stream.get_data_index(self.index_choice)
                     if _data is not None:
@@ -94,17 +95,24 @@ class ListStream(RecycleView):
         return -1
     
     def set_active(self,index):
-        self.item_playing = self.data[index]['_id']
-        for obj in self.data:
-            obj['active'] = False
-        self.data[index]['active'] = True
-        for child in self.children[0].children:
-            if child.index == index:
-                child.active = True
-            else:
-                child.active = False
-        if self.f_parent is not None:
-            self.f_parent.getLink(index, self.data[index])
+        if self.item_playing == self.data[index]['_id']:
+            self.item_playing = self.f_parent.index_choice = -1 
+            self.data[index]['active'] = False
+            for child in self.children[0].children:
+                if child.index == index:
+                    child.active = False
+        else:
+            self.item_playing = self.data[index]['_id']
+            for obj in self.data:
+                obj['active'] = False
+            self.data[index]['active'] = True
+            for child in self.children[0].children:
+                if child.index == index:
+                    child.active = True
+                else:
+                    child.active = False
+            if self.f_parent is not None:
+                self.f_parent.getLink(index, self.data[index])
         
 
 class BoxAudio(SelectableBox):

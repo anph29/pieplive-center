@@ -10,6 +10,7 @@ from uuid import getnode
 from PIL import ImageTk, Image
 from src.utils import scryto
 import urllib
+import sys
 
 
 class P300(tk.Frame):

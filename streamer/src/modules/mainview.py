@@ -1,5 +1,5 @@
 from kivy.uix.widget import Widget
-from kivy.properties import ObjectProperty, BooleanProperty, StringProperty
+from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
 from src.modules.bottomleft.bottomleft import TextDialog
 from src.modules.bottomleft.bottomleft import ImageDialog
 # from src.modules.bottomleft.bottomleft import AudioDialog
@@ -40,6 +40,7 @@ class MainView(Widget):
     linkPlay = StringProperty('')
     p300 = None
     notifyAble = BooleanProperty(False)
+    delaySwitchDisplay = NumericProperty(10)
 
     def __init__(self, **kwargs):
         super(MainView, self).__init__(**kwargs)
@@ -216,6 +217,7 @@ class MainView(Widget):
             self.mainStream.set_url_stream(self.streamServer + self.streamKey)
             if bool(self.mainStream.prepare()):
                 self.notifyAble = True
+                self.delaySwitchDisplay = 10
                 self.mainStream.startStream()
                 self.btn_start.text = "Stop"
                 self.btn_start.background_color = .29, .41, .15, 0.9

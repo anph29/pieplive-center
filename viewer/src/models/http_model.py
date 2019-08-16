@@ -110,7 +110,7 @@ class HTTP_MODEL:
             payload = json.dumps(param)
             headers = {"Content-Type": "application/json", "cache-control": "no-cache"}
             # 7. mk request
-            print(f">> {method} {url} data={payload}")
+            print(f">> {method} {url} data={payload if method is 'POST' else None}")
             response = requests.request(method, url, data=payload, headers=headers)
             # 8. receive RESPONSE
             # data_json = json.loads(j`son_str)
@@ -118,7 +118,7 @@ class HTTP_MODEL:
             print(f'>> RESPONSE -> status={data_json["status"]}')
             return data_json
         except Exception as e:
-            print(">>ERROR: http_request:", e) 
+            print(">>ERROR: http_request:", e)
 
     """-------------------------------------------------------------------------------------------------------------------------
                                                     HTTP_REQUEST

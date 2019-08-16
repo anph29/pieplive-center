@@ -12,7 +12,7 @@ def createToken(input, keysIgnor=[]):
         input["v"] = "v1"
         input["keyToken"] = "Piepme2017"  #
         #
-        sorted_key = sorted(input)
+        sorted_key = sorted(input) if type(input) is dict else range(0, len(input))
 
         def lambdaX(v):
             return f"{v}={input[v]}" if v not in keysIgnor else ""
@@ -35,12 +35,12 @@ def createTokenV2(input, isRecursive=False):
             input["v"] = "v1"
             input["keyToken"] = "Piepme2017"  #
 
-        sorted_key = sorted(input)
+        sorted_key = sorted(input) if type(input) is dict else range(0, len(input))
 
         maped_ls = map(
             lambda v: (
                 f"{v}=[{createTokenV2(input[v], True)}]"
-                if type(input[v]) is dict or type(input[v]) is list
+                if type(input[v]) in (dict, list, tuple)
                 else f"{v}={input[v]}"
             ),
             sorted_key,
@@ -60,13 +60,14 @@ def createTokenV3(input, isRecursive=False):
         if isRecursive is False:
             input["v"] = "v1"
             input["keyToken"] = "Piepme2017"
-        sorted_key = sorted(input)
+
+        sorted_key = sorted(input) if type(input) is dict else range(0, len(input))
 
         # improve non-charater from v2
         maped_ls = map(
             lambda v: (
                 f"{v}=[{createTokenV3(input[v], True)}]"
-                if type(input[v]) is dict or type(input[v]) is list
+                if type(input[v]) in (dict, list, tuple)
                 else f"{v}={re.sub(r'[^a-zA-Z0-9]', '', str(input[v]))}"
             ),
             sorted_key,

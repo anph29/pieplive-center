@@ -40,7 +40,7 @@ def createTokenV2(input, isRecursive=False):
         maped_ls = map(
             lambda v: (
                 f"{v}=[{createTokenV2(input[v], True)}]"
-                if type(input[v]) is dict
+                if type(input[v]) is dict or type(input[v]) is list
                 else f"{v}={input[v]}"
             ),
             sorted_key,
@@ -66,7 +66,7 @@ def createTokenV3(input, isRecursive=False):
         maped_ls = map(
             lambda v: (
                 f"{v}=[{createTokenV3(input[v], True)}]"
-                if type(input[v]) is dict
+                if type(input[v]) is dict or type(input[v]) is list
                 else f"{v}={re.sub(r'[^a-zA-Z0-9]', '', str(input[v]))}"
             ),
             sorted_key,

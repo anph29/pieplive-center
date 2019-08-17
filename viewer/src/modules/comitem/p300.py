@@ -21,7 +21,7 @@ class P300(tk.Frame):
         self.cell_width = 360
         self.top_height = 203
         self.bot_height = 25
-        self.botBg = "#f2f2f2"
+        self.botBg = "#F4ECF7"
         self.p300 = p300
         self.setData(p300)
 

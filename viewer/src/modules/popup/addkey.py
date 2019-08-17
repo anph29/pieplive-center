@@ -125,4 +125,3 @@ class PopupAddKey(object):
             "PLAY": self.play,
             "P300": self.p300,
         }
-

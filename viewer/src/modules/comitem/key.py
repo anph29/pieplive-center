@@ -17,7 +17,7 @@ class Key(tk.Frame):
         self.path = ""
         self.actived = False
         self.isRunningSch = False
-        self.itemBg = "#F4ECF7"
+        self.itemBg = "#F2F2F2"
         self.set_data(key)
         self.initUI()
 
@@ -69,13 +69,13 @@ class Key(tk.Frame):
             self.fView,
             text=self.label,
             justify=tk.LEFT,
-            elipsis=25,
+            elipsis=35,
             font=UI.TITLE_FONT if self.isRunningSch else UI.TXT_FONT,
             fg="#ff2d55" if self.isRunningSch else "#000",
             cursor="hand2",
             bg=self.itemBg,
         )
-        self.lbl_name.pack(side=tk.LEFT, padx=27 if self.isRunningSch else 0)
+        self.lbl_name.pack(side=tk.LEFT)
         ToolTip(self.lbl_name, self.name)
 
         # bin

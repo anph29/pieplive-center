@@ -133,7 +133,7 @@ class P300(tk.Frame):
             self.parentTab.saveKeyStream(
                 {
                     "id": l300["PL300"],
-                    "label": self.PV301,
+                    "label": urllib.parse.unquote(self.PV301),
                     "key_a": URL,
                     "key_b": STREAMKEY,
                     "PLAY": l300["PLAY"],
@@ -149,7 +149,8 @@ class P300(tk.Frame):
         ADDRESS, LAT, LONG = self.getLocObj()
         liveObj = self.PO322["live"] if "live" in self.PO322 else {}
         fl300 = liveObj["FL300"] if "FL300" in liveObj else 0
-        AV107 = store._get("A100")["AV107"] if None != store._get("A100") else ""
+        AV107 = store._get("NO133")["NV133_P"] if None != store._get("NO133") else ""
+
         rs = l300.live_inserttabL300(
             {
                 "FO100": store.getCurrentActiveBusiness(),  # fo100 doanh nghiep

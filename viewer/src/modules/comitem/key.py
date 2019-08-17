@@ -5,7 +5,6 @@ from src.modules.custom import ToolTip
 from src.utils import helper
 from src.modules.custom import PLabel
 from src.constants import UI
-import urllib
 
 
 class Key(tk.Frame):
@@ -28,20 +27,22 @@ class Key(tk.Frame):
             "label": self.label,
             "key_a": self.key_a,
             "key_b": self.key_b,
-            "PLAY":self.PLAY,
+            "PLAY": self.PLAY,
             "P300": self.P300,
         }
 
     def set_data(self, key):
         self.id = key["id"]
-        self.label = urllib.parse.unquote(key["label"])
+        self.label = key["label"]
         self.key_a = key["key_a"]
         self.key_b = key["key_b"]
         self.PLAY = key["PLAY"]
         self.P300 = key["P300"]
 
     def deleteKey(self, evt):
-        if messagebox.askyesno("PiepMe", f"Are you sure to delete key: `{self.label}`?"):
+        if messagebox.askyesno(
+            "PiepMe", f"Are you sure to delete key: `{self.label}`?"
+        ):
             self.parentTab.rmvKey([self.id])
             self.destroy()
             self.parentTab.f5(None)
@@ -86,7 +87,7 @@ class Key(tk.Frame):
         self.lbl_trash.bind("<Button-1>", self.deleteKey)
         self.lbl_trash.pack(side=tk.RIGHT)
         ToolTip(self.lbl_trash, "Delete")
-         # edit
+        # edit
         imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}pen-b.png"))
         lblPen = tk.Label(self.fView, image=imageBin, cursor="hand2", bg=self.itemBg)
         lblPen.image = imageBin

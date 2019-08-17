@@ -36,7 +36,7 @@ class PopupAddKey(object):
         if bool(self.popup):
             self.popup.destroy()
         self.popup = tk_helper.makePiepMePopup(
-            "Add to Schedule", w=400, h=200, padx=0, pady=0
+            "Key Stream", w=400, h=200, padx=0, pady=0
         )
         # var
         self.setupData(edit=edit)

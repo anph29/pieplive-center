@@ -386,13 +386,16 @@ class ListPresenter(RecycleView):
             self.data[index]['choice'] = False
             for child in self.children[0].children:
                 child.choice = False
+                child.listType='PRESENTER'
         else:
             firebase.makeChangePresenter(int(self.data[index]['id']))
             self.item_choice = self.data[index]['id']
             for obj in self.data:
                 obj['choice'] = False
+                obj['list'] = 'PRESENTER'
             self.data[index]['choice'] = True
             for child in self.children[0].children:
+                child.listType='PRESENTER'
                 if child.index == index:
                     child.choice = True
                 else:

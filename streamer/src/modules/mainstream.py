@@ -256,7 +256,7 @@ class MainStream(RelativeLayout):
                     inp.extend(["-i", url])
                 else:
                     inp.extend(["-ss", helper.convertSecNoToHMS(self.camera.duration_current),"-i", url,"-flags","+global_header"])
-                txt += f"[{numau}:a]volume=1[a{numau}];"
+                txt += f"[{numau}:a]volume=2[a{numau}];"
                 _map += f'[a{numau}]'
 
         if self.f_parent.showMiniD is True and (self.cameraMini.resource_type == "M3U8" or self.cameraMini.resource_type == "VIDEO" or self.cameraMini.resource_type == "MP4"):
@@ -267,7 +267,7 @@ class MainStream(RelativeLayout):
                     inp.extend(["-i", _url])
                 else:
                     inp.extend(["-ss", helper.convertSecNoToHMS(self.cameraMini.duration_current),"-i", _url,"-flags","+global_header"])
-                txt += f"[{numau}:a]volume=1[a{numau}];"
+                txt += f"[{numau}:a]volume=2[a{numau}];"
                 _map += f'[a{numau}]'
 
         if 'audio' in self.camera.data_src and self.camera.data_src['audio'] != '':

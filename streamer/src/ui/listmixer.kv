@@ -1,11 +1,11 @@
 #:import helper src.utils.helper
 <RCVItemMixer>:
-    audio_status : audio_status
-    audio_volume : audio_volume
+    audio_status: audio_status
+    audio_volume: audio_volume
     spacing:3
     padding:5,3,5,3
     canvas.before:
-        Color: 
+        Color:
             rgb:(.15,.15,.15)
         Rectangle:
             size:self.size
@@ -35,7 +35,6 @@
             size_hint: None, 1
             width: 16
             source: helper._ICONS_PATH + 'icon-volume.png'
-
         Slider:
             id: audio_volume
             min: 0

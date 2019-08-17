@@ -89,12 +89,13 @@ class Login(object):
         )
         btnVerify.config(width=7, font=UI.TXT_FONT)
         btnVerify.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
-        #
+        # message
+        self.fMessage = tk.Frame(loginMainFrame, pady=5)
         lblCommand = tk.Label(
-            self.fToken, text="Check your PiepMe message to get verify token!"
+            self.fMessage, text="Check your PiepMe message to get verify token!"
         )
-        btnVerify.config(font=UI.TXT_FONT)
-        btnVerify.pack()
+        lblCommand.config(font=UI.TXT_FONT)
+        lblCommand.pack(side=tk.LEFT, fill=tk.BOTH, padx=5, pady=5)
         # nv117 invalid
         self.fInvalid = tk.Frame(loginMainFrame, pady=5)
         lblError = tk.Label(self.fInvalid, text="PiepMe ID invalid!", fg="#f00")
@@ -118,11 +119,14 @@ class Login(object):
             res = self.getOtpViaNV117(nv117)
             if res[WS.STATUS] == WS.SUCCESS:
                 self.fPid.pack_forget()
-                self.fToken.pack(side=tk.LEFT, fill=tk.X)
+                self.fToken.pack()
+                self.fMessage.pack()
             else:
-                self.fInvalid.pack(side=tk.LEFT, fill=tk.Y)
+                self.fMessage.pack_forget()
+                self.fInvalid.pack()
         else:
-            self.fInvalid.pack(side=tk.LEFT, fill=tk.Y)
+            self.fMessage.pack_forget()
+            self.fInvalid.pack()
 
     def onVerify(self):
         self.fTokenInvalid.pack_forget()
@@ -137,11 +141,12 @@ class Login(object):
                 #
                 self.loginPopup.destroy()
                 self.parent.afterLogin()
-                
             else:
-                self.fTokenInvalid.pack(side=tk.LEFT, fill=tk.Y)
+                self.fMessage.pack_forget()
+                self.fTokenInvalid.pack()
         else:
-            self.fTokenInvalid.pack(side=tk.LEFT, fill=tk.Y)
+            self.fMessage.pack_forget()
+            self.fTokenInvalid.pack()
 
     def getOtpViaNV117(self, nv117):
         n100 = N100_model()

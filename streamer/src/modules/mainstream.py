@@ -277,7 +277,7 @@ class MainStream(RelativeLayout):
             _map += f'[a{numau}]'
 
         
-        lstAudio = self.f_parent.right_content.tab_audio.ls_audio.get_data() #helper._load_ls_audio()
+        lstAudio = self.f_parent.right_content.tab_audio.ls_audio.get_data()
         if len(lstAudio) > 0:
             for value in lstAudio:
                 if value['active'] is True and os.path.exists(value['url']) is True:

@@ -34,7 +34,7 @@
         ImageButton:
             size_hint:None,1
             width: (0,12)[root.listType == "PRESENTER"]
-            # pos_hint:{'top':1, 'right':1}
+            pos_hint:{'top':1, 'right':1}
             source: (helper._ICONS_PATH+'ic_circle_white.png',helper._ICONS_PATH+'live-green.png')[root.choice]
             on_release:root.choice_play()
             opacity: (0.2,1)[root.playable]

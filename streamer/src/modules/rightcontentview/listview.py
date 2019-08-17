@@ -340,7 +340,7 @@ class ListPresenter(RecycleView):
                             presenter = int(child.id)
                             firebase.makeChangePresenter(presenter)
                             self.switch_proc = Clock.schedule_once(lambda x: kivyhelper.getApRoot().switch_display_auto(),kivyhelper.getApRoot().delaySwitchDisplay)
-                            kivyhelper.getApRoot().delaySwitchDisplay += 10
+                            kivyhelper.getApRoot().delaySwitchDisplay += 2
                             break
             self.item_choice = str(presenter)
 

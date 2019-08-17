@@ -143,14 +143,14 @@ class MediaItemBox(MediaItem):
         lbl_trash.pack(side=tk.RIGHT)
         self.bottom.pack(side=tk.BOTTOM, fill=tk.X)
         # zoom
-        imgZom = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}zoom-in.png"))
-        self.lblZoom = tk.Label(
-            self.bottom, image=imgZom, bg=self.botBg, cursor="hand2"
-        )
-        self.lblZoom.image = imgZom
-        self.lblZoom.bind("<Button-1>", self.toggleZoom)
-        self.lblZoom.pack(side=tk.RIGHT)
-        ToolTip(self.lblZoom, "Zoom in")
+        # imgZom = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}zoom-in.png"))
+        # self.lblZoom = tk.Label(
+        #     self.bottom, image=imgZom, bg=self.botBg, cursor="hand2"
+        # )
+        # self.lblZoom.image = imgZom
+        # self.lblZoom.bind("<Button-1>", self.toggleZoom)
+        # self.lblZoom.pack(side=tk.RIGHT)
+        # ToolTip(self.lblZoom, "Zoom in")
         if self.parentTab.tabType != MediaType.IMAGE:
             # volume
             imgVolume = ImageTk.PhotoImage(
@@ -162,7 +162,7 @@ class MediaItemBox(MediaItem):
             self.lblVolume.image = imgVolume
             self.lblVolume.bind("<Button-1>", self.toggleMute)
             self.lblVolume.pack(side=tk.RIGHT)
-            ToolTip(self.lblZoom, "Zoom in")
+            ToolTip(self.lblVolume, "Turn on")
         # traffic light
         if self.parentTab.tabType == MediaType.PRESENTER:
             frame = tk.PhotoImage(file=f"{helper._ICONS_PATH}live-red.png")
@@ -217,12 +217,12 @@ class MediaItemBox(MediaItem):
         if self.vlcInited:
             if self.volume:
                 self.updateVolumeIcon("mute")
-                ToolTip(self.lblZoom, "Turn on")
+                ToolTip(self.lblVolume, "Turn on")
                 self.player.audio_set_volume(0)
                 self.volume = False
             else:
                 self.updateVolumeIcon("on")
-                ToolTip(self.lblZoom, "Mute")
+                ToolTip(self.lblVolume, "Mute")
                 self.player.audio_set_volume(75)
                 self.volume = True
 

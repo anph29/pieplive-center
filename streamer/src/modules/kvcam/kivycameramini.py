@@ -68,7 +68,8 @@ class KivyCameraMini(DragBehavior, Image):
         return self._get_uid() in touch.ud
 
     def set_data_source(self, input, category):
-        self.url_remove = self.url
+        if helper._BASE_PATH+'temp' in self.url:
+            self.url_remove = self.url
         self.data_src = input
         self.url = input['url']
         self.resource_type = input['type']

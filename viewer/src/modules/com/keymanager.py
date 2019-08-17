@@ -7,12 +7,13 @@ from functools import reduce
 from src.constants import UI
 from PIL import Image, ImageTk
 from src.modules.custom import ToolTip
+from src.modules.popup import PopupAddKey
 
 
 class KeyManager(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         super(KeyManager, self).__init__(parent, *args, **kwargs)
-        self.parent = parent        
+        self.parent = parent
         self._LS_KEY_DATA = []
         self._LS_KEY_UI = []
         self.tbBgColor = "#D4EFDF"
@@ -35,7 +36,6 @@ class KeyManager(tk.Frame):
         if bool(self._LS_KEY_DATA):
             for key in self._LS_KEY_DATA:
                 self.addToKeyGUI(key)
-
 
     def showTitle(self):
         self.title = tk.Frame(self, height=50, relief=tk.FLAT, bg=self.tbBgColor)
@@ -127,6 +127,23 @@ class KeyManager(tk.Frame):
         self.cmdLock.bind("<Button-1>", self.toggleLock)
         self.cmdLock.pack(side=tk.RIGHT, padx=(0, 5))
         ToolTip(self.cmdLock, "unlocked")
+        # ADD
+        imAdd = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}add-rgb24.png"))
+        self.cmdAdd = tk.Label(
+            self.tbright, image=imAdd, cursor="hand2", bg=self.tbBgColor
+        )
+        self.cmdAdd.image = imAdd
+        self.cmdAdd.bind("<Button-1>", self.showAddKey)
+        self.cmdAdd.pack(side=tk.LEFT, padx=5, pady=5)
+        ToolTip(self.cmdAdd, "Add new key")
+
+    def showAddKey(self, evt):
+        popupAddKey = PopupAddKey(self)
+        popupAddKey.initGUI()
+
+    def showEditKey(self, key):
+        popupAddKey = PopupAddKey(self, data=key)
+        popupAddKey.initGUI(edit=True)
 
     def toggleLock(self, evt):
         un = "un" if self.ddlist.getLock() else ""
@@ -178,11 +195,23 @@ class KeyManager(tk.Frame):
 
     def notkExistedKey(self, PP300):
         filtered = list(
-            filter(lambda k: k["P300"]["PP300"] == PP300, self._LS_KEY_DATA)
+            filter(
+                lambda k: "PP300" in k["P300"] and k["P300"]["PP300"] == PP300,
+                self._LS_KEY_DATA,
+            )
         )
         return len(filtered) == 0
 
     def addKey(self, keyObj):
-            helper._add_to_lskey(keyObj)
-            self.f5(None)
+        helper._add_to_lskey(keyObj)
+        self.f5(None)
 
+    def saveEditKey(self, keyObj):
+        ls = helper._load_ls_key()
+        filtered = list(filter(lambda x: x["id"] == keyObj["id"], ls))
+        if len(filtered) > 0:
+            newLs = list(map(lambda x: keyObj if x["id"] == keyObj["id"] else x, ls))
+            self.clearData()
+            helper._write_lskey(newLs)
+
+        self.f5(None)

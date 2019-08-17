@@ -3,25 +3,33 @@ from tkinter import ttk
 from src.utils import tk_helper, helper, scryto
 from src.constants import UI
 import re
+import urllib
 
 
 class PopupAddKey(object):
-    def __init__(self, parent, data):
+    def __init__(self, parent, data=None):
         self.popup = None
         self.parent = parent
-        self.media = data
+        self.key = data
 
     def setupData(self, edit=False):
-        self.url = self.media["url"] if "url" in self.media else ""
-        self.id = self.media["id"] if edit else scryto.hash_md5_with_time(self.url)
-            self.eName = self.media["name"] if "name" in self.media else ""
-            self.mtype = self.media["type"] if "type" in self.media else ""
-            self.duration = int(self.media["duration"]) if "duration" in self.media else 0
-            self.timepoint = (
-                int(self.media["timepoint"]) if "timepoint" in self.media else 0
-            )
-            self.audio = self.media["audio"] if "audio" in self.media else ""
-            #
+        if edit:
+            self.label = self.key["label"]
+            self.id = self.key["id"]
+            self.keyA = self.key["key_a"]
+            self.keyB = self.key["key_b"]
+            self.P300 = self.key["P300"]
+            self.play = self.key["PLAY"]
+            self.p300 = self.key["P300"]
+        else:
+            self.id = scryto.hash_md5_with_time("new key")
+            self.label = ""
+            self.keyA = ""
+            self.keyB = ""
+            self.P300 = ""
+            self.play = ""
+            self.p300 = {}
+        #
 
     def initGUI(self, edit=False):
         # first destroy
@@ -31,73 +39,46 @@ class PopupAddKey(object):
             "Add to Schedule", w=400, h=200, padx=0, pady=0
         )
         # var
-        self.hh = tk.StringVar()
-        self.mm = tk.StringVar()
-        self.ss = tk.StringVar()
         self.setupData(edit=edit)
-        self.name = tk.StringVar()
-        self.name.set(self.eName)
-        h, m, s = helper.convertSecNoToHMS(self.duration, toObj=True).values()
+        self.eLabel = tk.StringVar()
+        self.eLabel.set(self.label)
+        self.eKeyA = tk.StringVar()
+        self.eKeyA.set(self.keyA)
+        self.eKeyB = tk.StringVar()
+        self.eKeyB.set(self.keyB)
         #
         wrapper = tk.Frame(self.popup)
         wrapper.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        # 1. Name
-        fName = tk.Frame(wrapper, pady=10, padx=20)
-        lName = tk.Label(fName, text="Name:", width=6, anchor=tk.W, font=UI.TXT_FONT)
-        lName.pack(side=tk.LEFT, fill=tk.Y)
-        name = tk.Entry(
-            fName, textvariable=self.name, width=100, borderwidth=5, relief=tk.FLAT
+        # 1. Label
+        fLabel = tk.Frame(wrapper, pady=10, padx=20)
+        fLabel.pack(side=tk.TOP, fill=tk.X)
+        lLabel = tk.Label(fLabel, text="Label:", width=6, anchor=tk.W, font=UI.TXT_FONT)
+        lLabel.pack(side=tk.LEFT, fill=tk.Y)
+        label = tk.Entry(
+            fLabel, textvariable=self.eLabel, width=100, borderwidth=5, relief=tk.FLAT
         )
-        name.bind("<FocusIn>", lambda args: name.select_range("0", tk.END))
-        name.pack(side=tk.LEFT, fill=tk.X, padx=(10, 0))
-        fName.pack(side=tk.TOP, fill=tk.X)
-        # 2. Duration
-        fDura = tk.Frame(wrapper, pady=10, padx=20)
-        fDura.pack(side=tk.TOP, fill=tk.X)
-        #
-        lDura = tk.Label(
-            fDura, text="Duration:", width=7, anchor=tk.W, font=UI.TXT_FONT
+        label.bind("<FocusIn>", lambda args: label.select_range("0", tk.END))
+        label.pack(side=tk.LEFT, fill=tk.X, padx=(10, 0))
+        # 2. Key A
+        fKeyA = tk.Frame(wrapper, pady=10, padx=20)
+        fKeyA.pack(side=tk.TOP, fill=tk.X)
+        lKeyA = tk.Label(fKeyA, text="KeyA:", width=6, anchor=tk.W, font=UI.TXT_FONT)
+        lKeyA.pack(side=tk.LEFT, fill=tk.Y)
+        keyA = tk.Entry(
+            fKeyA, textvariable=self.eKeyA, width=100, borderwidth=5, relief=tk.FLAT
         )
-        lDura.pack(side=tk.LEFT, fill=tk.Y)
-        ##
-        hh = ttk.Combobox(
-            fDura,
-            values=tk_helper.getComboboxValueRange(end=100),
-            width=4,
-            textvariable=self.hh,
-            justify="right",
+        keyA.bind("<FocusIn>", lambda args: keyA.select_range("0", tk.END))
+        keyA.pack(side=tk.LEFT, fill=tk.X, padx=(10, 0))
+        # 2. Key B
+        fKeyB = tk.Frame(wrapper, pady=10, padx=20)
+        fKeyB.pack(side=tk.TOP, fill=tk.X)
+        lKeyB = tk.Label(fKeyB, text="KeyB:", width=6, anchor=tk.W, font=UI.TXT_FONT)
+        lKeyB.pack(side=tk.LEFT, fill=tk.Y)
+        keyB = tk.Entry(
+            fKeyB, textvariable=self.eKeyB, width=100, borderwidth=5, relief=tk.FLAT
         )
-        hh.bind("<FocusIn>", lambda args: hh.select_range("0", tk.END))
-        hh.current(int(h))
-        hh.pack(side=tk.LEFT, fill=tk.X, padx=5)
-        ##
-        separator = tk.Label(fDura, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
-        separator.pack(side=tk.LEFT, padx=3)
-        ##
-        mm = ttk.Combobox(
-            fDura,
-            values=tk_helper.getComboboxValueRange(),
-            width=4,
-            textvariable=self.mm,
-            justify="right",
-        )
-        mm.bind("<FocusIn>", lambda args: hh.select_range("0", tk.END))
-        mm.current(int(m))
-        mm.pack(side=tk.LEFT, fill=tk.X, padx=5)
-        ##
-        separator = tk.Label(fDura, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
-        separator.pack(side=tk.LEFT, padx=3)
-        ##
-        ss = ttk.Combobox(
-            fDura,
-            values=tk_helper.getComboboxValueRange(),
-            width=4,
-            textvariable=self.ss,
-            justify="right",
-        )
-        ss.bind("<FocusIn>", lambda args: ss.select_range("0", tk.END))
-        ss.current(int(s))
-        ss.pack(side=tk.LEFT, fill=tk.X, padx=5)
+        keyB.bind("<FocusIn>", lambda args: keyB.select_range("0", tk.END))
+        keyB.pack(side=tk.LEFT, fill=tk.X, padx=(10, 0))
         # 4. Button
         fBtn = tk.Frame(wrapper, pady=10, padx=20)
         btnCancel = tk.Button(
@@ -112,29 +93,36 @@ class PopupAddKey(object):
             bg="#ff2d55",
             fg="#fff",
             relief=tk.RAISED,
-            command=self.onSave,
+            command=self.onSaveEdit if edit else self.onSaveNew,
         )
         btnOk.configure(width=7)
         btnOk.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
         fBtn.pack(side=tk.BOTTOM, fill=tk.X)
 
-    def onSave(self):
-        self.parent.saveToSchedule(
-            {
-                "id": self.id,
-                "name": self.name.get(),
-                "url": self.url,
-                "type": self.mtype,
-                "duration": helper.convertHMSNoToSec(
-                    {
-                        "h": int(self.hh.get()),
-                        "m": int(self.mm.get()),
-                        "s": int(self.ss.get()),
-                    }
-                ),
-                "timepoint": self.timepoint,
-                "audio": self.audio,
-            }
+    def onSaveNew(self):
+        if self.canSave():
+            self.parent.addKey(self.getDataToSave())
+            self.popup.destroy()
+
+    def onSaveEdit(self):
+        if self.canSave():
+            self.parent.saveEditKey(self.getDataToSave())
+            self.popup.destroy()
+
+    def canSave(self):
+        return (
+            0 < len(self.eLabel.get())
+            and 0 < len(self.eKeyA.get())
+            and 0 < len(self.eKeyB.get())
         )
-        self.popup.destroy()
+
+    def getDataToSave(self):
+        return {
+            "id": self.id,
+            "label": self.eLabel.get(),
+            "key_a": self.eKeyA.get(),
+            "key_b": self.eKeyB.get(),
+            "PLAY": self.play,
+            "P300": self.p300,
+        }
 

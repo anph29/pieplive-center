@@ -332,9 +332,9 @@ def writeJSON(path, data):
 
 
 def appendJSON(path, data, auto_increment=False):
-    jcam = loadJSON(path)
-    jcam.append(data)
-    writeJSON(path, jcam)
+    jdata = loadJSON(path)
+    jdata.append(data)
+    writeJSON(path, jdata)
 
 
 """

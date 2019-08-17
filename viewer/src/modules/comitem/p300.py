@@ -23,7 +23,17 @@ class P300(tk.Frame):
         self.bot_height = 25
         self.botBg = "#f2f2f2"
         self.p300 = p300
+        self.setData(p300)
+
         self.initGUI()
+
+    def setData(self, p300):
+        self.PP300 = self.p300["PP300"] if "PP300" in p300 else 0
+        self.PV301 = self.p300["PV301"] if "PV301" in p300 else ""
+        self.PN303 = self.p300["PN303"] if "PN303" in p300 else 0
+        self.PV307 = self.p300["PV307"] if "PV307" in p300 else ""
+        self.PO322 = self.p300["PO322"] if "PO322" in p300 else {}
+        self.FT300 = self.p300["FT300"] if "FT300" in p300 else 0
 
     def initGUI(self):
         ww = self.cell_width + 5
@@ -46,7 +56,7 @@ class P300(tk.Frame):
         )
         self.top.pack(side=tk.TOP)
         try:
-            response = requests.get(self.p300["PV307"])
+            response = requests.get(self.PV307)
             im = Image.open(BytesIO(response.content))
         except requests.exceptions.MissingSchema:
             im = Image.open(helper._IMAGES_PATH + "splash2.png")
@@ -75,7 +85,7 @@ class P300(tk.Frame):
         # label
         lbl_name = PLabel(
             self.bottom,
-            text=urllib.parse.unquote(self.p300["PV301"]),
+            text=urllib.parse.unquote(self.PV301),
             justify=tk.LEFT,
             elipsis=22,
             bg=self.botBg,
@@ -84,7 +94,7 @@ class P300(tk.Frame):
         )
         lbl_name.pack(side=tk.LEFT)
 
-        if self.parentTab.canInsertL300(self.p300["PP300"]):
+        if self.parentTab.canInsertL300(self.PP300):
             self.packBtnGetKey()
         else:
             self.packCheckExisted()
@@ -117,13 +127,13 @@ class P300(tk.Frame):
         ToolTip(self.lblExisted, "Already key")
 
     def genarateKeyAndSave(self):
-        if self.parentTab.canInsertL300(self.p300["PP300"]):
+        if self.parentTab.canInsertL300(self.PP300):
             l300 = self.insertL300()
             URL, STREAMKEY = self.makeRTMP(l300)
             self.parentTab.saveKeyStream(
                 {
                     "id": l300["PL300"],
-                    "label": self.p300["PV301"],
+                    "label": self.PV301,
                     "key_a": URL,
                     "key_b": STREAMKEY,
                     "PLAY": l300["PLAY"],
@@ -137,16 +147,16 @@ class P300(tk.Frame):
     def insertL300(self):
         l300 = L300_model()
         ADDRESS, LAT, LONG = self.getLocObj()
-        liveObj = self.p300["PO322"]["live"] if "live" in self.p300["PO322"] else {}
+        liveObj = self.PO322["live"] if "live" in self.PO322 else {}
         fl300 = liveObj["FL300"] if "FL300" in liveObj else 0
-
+        AV107 = store._get("A100")["AV107"] if None != store._get("A100") else ""
         rs = l300.live_inserttabL300(
             {
                 "FO100": store.getCurrentActiveBusiness(),  # fo100 doanh nghiep
-                "PN303": self.p300["PN303"],
+                "PN303": self.PN303,
                 "LV302": helper.getMyIP(),  # IP
-                "LV303": store._get("A100")["AV107"],  # phone
-                "FT300": self.p300["FT300"],
+                "LV303": AV107,  # phone
+                "FT300": self.FT300,
                 "PL300": fl300,  # nếu đã có FL300 (đã lấy key) thì truyền lại FL300, (p300.PO322.live.FL300)
                 "ADDRESS": ADDRESS,
                 "LAT": LAT,
@@ -168,7 +178,7 @@ class P300(tk.Frame):
             + f'&LV303={l300["LV303"]}&LL348={l300["LL348"]}&UUID={hex(getnode())}&NV124={store._get("NV124")}'
             + (
                 f"&PN303={self.p300['PN303']}"
-                if self.p300["PN303"] == 15
+                if self.PN303 == 15
                 else f"&LAT={LAT}&LONG={LONG}"
             )
         )

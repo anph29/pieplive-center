@@ -33,9 +33,10 @@ def createTokenV2(input, isRecursive=False):
 
         if isRecursive is False:
             input["v"] = "v1"
-            input["keyToken"] = "Piepme2017"  #
+            input["keyToken"] = "Piepme2017"
 
-        sorted_key = sorted(input) if type(input) is dict else range(0, len(input))
+        # sorted key for dict, rang index for else
+        sorted_key = (range(0, len(input)), sorted(input))[type(input) is dict]
 
         maped_ls = map(
             lambda v: (
@@ -61,7 +62,8 @@ def createTokenV3(input, isRecursive=False):
             input["v"] = "v1"
             input["keyToken"] = "Piepme2017"
 
-        sorted_key = sorted(input) if type(input) is dict else range(0, len(input))
+        # sorted key for dict, rang index for else
+        sorted_key = (range(0, len(input)), sorted(input))[type(input) is dict]
 
         # improve non-charater from v2
         maped_ls = map(

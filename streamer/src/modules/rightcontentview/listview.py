@@ -326,7 +326,7 @@ class ListPresenter(RecycleView):
         if int(self.item_choice) == presenter:
             pass
         else:
-            if presenter == 0 and kivyhelper.getApRoot().presenterAuto:
+            if presenter == 0 and kivyhelper.getApRoot().presenterAuto is True and kivyhelper.getApRoot().mainStream.isStream is True:
                 if self.switch_proc is not None:
                     self.switch_proc.cancel()
                 
@@ -339,7 +339,8 @@ class ListPresenter(RecycleView):
                         if child.index != idx and child.playable:
                             presenter = int(child.id)
                             firebase.makeChangePresenter(presenter)
-                            self.switch_proc = Clock.schedule_once(lambda x: kivyhelper.getApRoot().switch_display_auto(),10)
+                            self.switch_proc = Clock.schedule_once(lambda x: kivyhelper.getApRoot().switch_display_auto(),kivyhelper.getApRoot().delaySwitchDisplay)
+                            kivyhelper.getApRoot().delaySwitchDisplay += 10
                             break
             self.item_choice = str(presenter)
 
@@ -426,8 +427,7 @@ class ListPresenter(RecycleView):
 
     def refresh_list(self):
         self.set_data()
-        self.stopListenerStream()
-        self.turnOnObserver(1)
+        kivyhelper.getApRoot().turnOnObserver(1)
 
     def remove_selected(self):
         PiepMeConfirmPopup(message='Are you sure to delete the selected source?',

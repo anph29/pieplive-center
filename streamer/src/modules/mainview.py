@@ -1,5 +1,5 @@
 from kivy.uix.widget import Widget
-from kivy.properties import ObjectProperty, BooleanProperty, StringProperty
+from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
 from src.modules.bottomleft.bottomleft import TextDialog
 from src.modules.bottomleft.bottomleft import ImageDialog
 # from src.modules.bottomleft.bottomleft import AudioDialog
@@ -12,6 +12,7 @@ from kivy.clock import Clock
 import sounddevice as sd
 from src.models.normal_model import Normal_model
 from src.models import P300_model, Socket_model
+import json
 
 
 Builder.load_file('src/ui/main.kv')
@@ -30,7 +31,7 @@ class MainView(Widget):
     idSoundDevice = StringProperty('')
     loading = BooleanProperty(False)
     loadingMini = BooleanProperty(False)
-    presenterAuto = BooleanProperty(True)
+    presenterAuto = BooleanProperty(False)
     autoStop = BooleanProperty(False)
     mainDisplayStt = BooleanProperty(False)
     miniDisplayStt = BooleanProperty(False)
@@ -38,6 +39,8 @@ class MainView(Widget):
     streamKey = StringProperty('')
     linkPlay = StringProperty('')
     p300 = None
+    notifyAble = BooleanProperty(False)
+    delaySwitchDisplay = NumericProperty(10)
 
     def __init__(self, **kwargs):
         super(MainView, self).__init__(**kwargs)
@@ -213,43 +216,25 @@ class MainView(Widget):
                 return False
             self.mainStream.set_url_stream(self.streamServer + self.streamKey)
             if bool(self.mainStream.prepare()):
+                self.notifyAble = True
+                self.delaySwitchDisplay = 10
                 self.mainStream.startStream()
                 self.btn_start.text = "Stop"
                 self.btn_start.background_color = .29, .41, .15, 0.9
-            # self.send_notify_piep()
-
         elif self.mainStream.isStream is True:
             self.mainStream.stopStream()
             self.btn_start.text = "Start"
             self.btn_start.background_color = .29, .41, .55, 1
+            if bool(self.p300):
+                firebase.setP300AfterStartStream({"PP300":0})
 
     def send_info_to_app(self):
-        if self.p300 is not None:
-            firebase.setP300AfterStartStream(self.p300)
-            self.process_update_piep(5)
-
-    def send_notify_piep(self):
-        socket_md = Socket_model()
-        data = {
-            "FO100": self.p300['FO100'],
-            "CHANNELTYPE": "FOLLOW",
-            "NICKNAME": self.p300['NV106'],
-            "AVATAR": self.p300['NV126'],
-            "TITLE": self.p300['PV301'],
-            "TYPE": 'K100',
-            "FC100": 0,#self.p300['FC100'],
-            "FC150": 0,#self.p300['FC150'],
-            "LIVE" : 'ON',#: đang live || OFF
-            "message": {
-                "p300": self.p300,
-                "typepieper": 9,
-                "pt300": self.p300['FT300'],
-                "fc100": 0,#self.p300['FC100'],
-                "fc150": 0#self.p300['FC150']
-            }
-        }
-        dt = {'event':'publishPieperToCustomerByProvider','data':data,'LOGIN':self.p300['NV106']}
-        socket_md.send_notify_piep(dt)
+        try:
+            if bool(self.p300) and self.notifyAble is True:
+                firebase.setP300AfterStartStream(self.p300)
+                self.process_update_piep(5)
+        except:
+            pass
 
     def process_update_piep(self,dt):
         try:
@@ -258,20 +243,50 @@ class MainView(Widget):
                 reponse = normal_md.get_request_link(self.linkPlay)
                 if reponse is not None:
                     self.update_piep()
-                else:
+                elif self.mainStream.isStream is True:
                     Clock.schedule_once(self.process_update_piep, 5)
         except:
             pass
 
     def update_piep(self):
         try:
-            if self.p300 is not None:
+            if bool(self.p300):
                 PO322 = self.p300['PO322']
                 PO322['live']['src'] = self.linkPlay
                 dt = {'FO100':self.p300['FO100'],'PP300':self.p300['PP300'],'FT300':self.p300['FT300'],'PO322': PO322}
+                # print('dt-------',dt)
                 p300_md = P300_model()
                 respone = p300_md.updatetabP300_prov(dt)
+                if respone['status'] == 'success' and self.notifyAble is True:
+                    self.notifyAble = False
+                    self.send_notify_piep()
                 print('respone',respone)
+        except:
+            pass
+
+    def send_notify_piep(self):
+        try:
+            socket_md = Socket_model()
+            data = {
+                "FO100": self.p300['FO100'],
+                "CHANNELTYPE": "FOLLOW",
+                "NICKNAME": self.p300['NV106'],
+                "AVATAR": self.p300['NV126'],
+                "TITLE": self.p300['PV301'],
+                "TYPE": 'K100',
+                "FC100": 0,#self.p300['FC100'],
+                "FC150": 0,#self.p300['FC150'],
+                "LIVE" : 'ON',#: đang live || OFF
+                "message":  {
+                    "p300": self.p300,
+                    "typepieper": 9,
+                    "pt300": self.p300['FT300'],
+                    "fc100": 0,#self.p300['FC100'],
+                    "fc150": 0#self.p300['FC150']
+                }
+            }
+            dt = {'event':'publishPieperToCustomerByProvider','data':json.dumps(data),'LOGIN':self.p300['NV106W']}
+            socket_md.send_notify_piep(dt)
         except:
             pass
 

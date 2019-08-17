@@ -16,7 +16,6 @@ class KVSetting(Popup):
     stream_server = ObjectProperty()
     stream_key = ObjectProperty()
     callback = ObjectProperty()
-    index_choice = NumericProperty(-1)
 
     def __init__(self, parent):
         super(KVSetting, self).__init__()
@@ -25,20 +24,24 @@ class KVSetting(Popup):
         self.stream_server.text = parent.streamServer
         self.stream_key.text = parent.streamKey
         self.rcv_stream.set_parent(self)
-        self.rcv_stream.set_link(parent.streamServer, parent.streamKey)
+        if bool(parent.p300) and len(parent.linkPlay) >0:
+            self.rcv_stream.set_link(parent.streamServer, parent.streamKey)
         self.rcv_stream.set_data()
 
     def on_ok(self):
         try:
             if len(self.stream_server.text) > 0 and len(self.stream_key.text) > 0:
+                link_server = self.stream_server.text
+                link_key = self.stream_key.text
                 play = ''
                 p300 = {}
-                if self.index_choice != -1:
-                    _data = self.rcv_stream.get_data_index(self.index_choice)
-                    if _data is not None:
-                        play = _data['PLAY']
-                        p300 = _data['P300']
-                self.f_parent.save_setting(self.stream_server.text,self.stream_key.text, play, p300)
+                _data = self.rcv_stream.get_data_active()
+                if _data is not None:
+                    link_server = _data['key_a']
+                    link_key = _data['key_b']
+                    play = _data['PLAY']
+                    p300 = _data['P300']
+                self.f_parent.save_setting(link_server,link_key, play, p300)
                 self.dismiss()
         except:
             pass
@@ -49,15 +52,13 @@ class KVSetting(Popup):
     def on_cancel(self):
         self.dismiss()
 
-    def getLink(self, index, data):
-        self.index_choice = index
+    def getLink(self, data):
         self.stream_server.text = data['key_a']
         self.stream_key.text = data['key_b']
 
 
 class ListStream(RecycleView):
     list_source = ObjectProperty()
-    item_playing = NumericProperty(-1)
     link_server = StringProperty('')
     link_key = StringProperty('')
 
@@ -94,17 +95,30 @@ class ListStream(RecycleView):
         return -1
     
     def set_active(self,index):
-        self.item_playing = self.data[index]['_id']
+        if self.data[index]['active'] is True:
+            self.data[index]['active'] = False
+            for child in self.children[0].children:
+                if child.index == index:
+                    child.active = False
+        else:
+            for obj in self.data:
+                obj['active'] = False
+            self.data[index]['active'] = True
+            for child in self.children[0].children:
+                if child.index == index:
+                    child.active = True
+                else:
+                    child.active = False
+            if self.f_parent is not None:
+                self.f_parent.getLink(self.data[index])
+
+    def get_data_active(self):
+        _dt = None
         for obj in self.data:
-            obj['active'] = False
-        self.data[index]['active'] = True
-        for child in self.children[0].children:
-            if child.index == index:
-                child.active = True
-            else:
-                child.active = False
-        if self.f_parent is not None:
-            self.f_parent.getLink(index, self.data[index])
+            if obj['active'] == True:
+                _dt = obj
+                break
+        return _dt
         
 
 class BoxAudio(SelectableBox):

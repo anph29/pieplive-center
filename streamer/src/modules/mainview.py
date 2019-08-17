@@ -328,11 +328,9 @@ class MainView(Widget):
             if self.switchDisplay is False:
                 self.switchDisplay = True
                 self.btn_switch.background_color = .29, .41, .15, 0.9
-                self.mainStream.show_camera_mini()
             else:
                 self.switchDisplay = False
                 self.btn_switch.background_color = .29, .41, .55, 1
-                self.mainStream.hide_camera_mini()
             self.mainStream.switch_display_auto()
 
     def triggerStop(self):

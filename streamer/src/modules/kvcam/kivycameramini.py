@@ -206,7 +206,7 @@ class KivyCameraMini(DragBehavior, Image):
             if self.capture.isOpened():
                 if not self.capture.grab():
                     kivyhelper.getApRoot().mini_display_status(False)
-                    pass
+                    # self.f_parent.hide_camera_mini()
                 else:
                     ret, frame = self.capture.retrieve()
                     if ret:

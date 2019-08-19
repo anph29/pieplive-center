@@ -11,6 +11,8 @@ from PIL import ImageTk, Image
 from src.utils import scryto
 import urllib
 import sys
+from datetime import datetime, timedelta
+import time
 
 
 class P300(tk.Frame):
@@ -34,6 +36,10 @@ class P300(tk.Frame):
         self.PV307 = self.p300["PV307"] if "PV307" in p300 else ""
         self.PO322 = self.p300["PO322"] if "PO322" in p300 else {}
         self.FT300 = self.p300["FT300"] if "FT300" in p300 else 0
+        if "live" in self.PO322:
+            self.liveTime = datetime.strptime(
+                self.PO322["live"]["time"], "%Y-%m-%dT%H:%M:%S.%fZ"
+            )
 
     def initGUI(self):
         ww = self.cell_width + 5
@@ -94,10 +100,19 @@ class P300(tk.Frame):
         )
         lbl_name.pack(side=tk.LEFT)
 
-        if self.parentTab.canInsertL300(self.PP300):
-            self.packBtnGetKey()
-        else:
+        if self.parentTab.keyManager.existedKey(self.PP300):
             self.packCheckExisted()
+        else:  # not existed check least of 3 hrs
+            threeHrs = 3 * 60 * 60
+            if self.getDifferenceTimeFromNowToLive() <= threeHrs:
+                self.packBtnGetKey()
+            else:
+                self.packWaitTimeGetKey()
+
+    def getDifferenceTimeFromNowToLive(self):
+        now = datetime.utcnow().timestamp()
+        live = self.liveTime.timestamp()
+        return live - now
 
     def packBtnGetKey(self):
         # get key
@@ -126,8 +141,21 @@ class P300(tk.Frame):
         self.lblExisted.pack(side=tk.RIGHT, padx=5, pady=5)
         ToolTip(self.lblExisted, "Already key")
 
+    def packWaitTimeGetKey(self):
+        offset = datetime.now() - datetime.utcnow()
+        timeTooltip = self.liveTime - timedelta(hours=3) + offset
+        timeTooltipStr = datetime.strftime(timeTooltip, "%d/%m/%Y %H:%M")
+        # already
+        imChk = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}ic-wait.png"))
+        self.lblExisted = tk.Label(
+            self.bottom, image=imChk, cursor="hand2", bg=self.botBg, text="Waiting"
+        )
+        self.lblExisted.image = imChk
+        self.lblExisted.pack(side=tk.RIGHT, padx=5, pady=5)
+        ToolTip(self.lblExisted, "Can get key at: " + timeTooltipStr)
+
     def genarateKeyAndSave(self):
-        if self.parentTab.canInsertL300(self.PP300):
+        if not self.parentTab.keyManager.existedKey(self.PP300):
             l300 = self.insertL300()
             URL, STREAMKEY = self.makeRTMP(l300)
             self.parentTab.saveKeyStream(

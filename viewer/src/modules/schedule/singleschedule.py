@@ -38,11 +38,12 @@ class SingleSchedule(ScheduleDDList):
         self.lblTitle.config(text=f"{self.schName}")
         self.schId = sch["id"] if bool(sch) else ""
         self.schPath = sch["path"] if bool(sch) else ""
+        self.isRunningSch = self.schId == "STORE_SCHEDULE"
         self.showTitleWidthSave()
         self.clearView()
 
     def showTitleWidthSave(self):
-        if self.schId == "STORE_SCHEDULE":
+        if self.isRunningSch:
             self.lblTitle.pack_forget()
             self.lblTitle.pack(pady=5)
             if bool(self.lblChk):
@@ -79,19 +80,19 @@ class SingleSchedule(ScheduleDDList):
         self.ddlist.add_item(item)
 
     def loadSchedule(self):
-        if self.schId == "STORE_SCHEDULE":
+        if self.isRunningSch:
             return helper._load_schedule()
         else:
             return helper._load_schedule_width_fname(self.schPath)
 
     def addSchedule(self, data):
-        if self.schId == "STORE_SCHEDULE":
+        if self.isRunningSch:
             helper._add_to_schedule(data)
         else:
             helper._add_to_schedule_width_fname(self.schPath, data)
 
     def writeSchedule(self, data):
-        if self.schId == "STORE_SCHEDULE":
+        if self.isRunningSch:
             helper._write_schedule(data)
         else:
             helper._write_schedule_width_fname(self.schPath, data)

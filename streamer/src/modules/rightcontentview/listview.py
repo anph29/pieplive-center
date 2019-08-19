@@ -326,7 +326,7 @@ class ListPresenter(RecycleView):
         if int(self.item_choice) == presenter:
             pass
         else:
-            if presenter == 0 and kivyhelper.getApRoot().presenterAuto is True and kivyhelper.getApRoot().mainStream.isStream is True:
+            if presenter == 0 and kivyhelper.getApRoot().presenterAuto is True and kivyhelper.getApRoot().mainStream.isStream is True and kivyhelper.getApRoot().modeStream == 'NORMAL':
                 if self.switch_proc is not None:
                     self.switch_proc.cancel()
                 
@@ -339,7 +339,7 @@ class ListPresenter(RecycleView):
                         if child.index != idx and child.playable:
                             presenter = int(child.id)
                             firebase.makeChangePresenter(presenter)
-                            self.switch_proc = Clock.schedule_once(lambda x: kivyhelper.getApRoot().switch_display_auto(),kivyhelper.getApRoot().delaySwitchDisplay)
+                            self.switch_proc = Clock.schedule_once(lambda x: kivyhelper.getApRoot().switch_display_auto(0),kivyhelper.getApRoot().delaySwitchDisplay)
                             kivyhelper.getApRoot().delaySwitchDisplay += 2
                             break
             self.item_choice = str(presenter)
@@ -477,7 +477,7 @@ class ListPresenter(RecycleView):
             pass
     
     def change_presenter_auto(self, _val):
-        kivyhelper.getApRoot().presenterAuto = _val
+        kivyhelper.getApRoot().change_presenter_auto(_val)
 
     def get_number_active(self):
         num = 0

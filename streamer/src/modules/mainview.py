@@ -2,7 +2,6 @@ from kivy.uix.widget import Widget
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
 from src.modules.bottomleft.bottomleft import TextDialog
 from src.modules.bottomleft.bottomleft import ImageDialog
-# from src.modules.bottomleft.bottomleft import AudioDialog
 from src.modules.custom.addschedule import AddSchedule
 from src.modules.kvsetting import KVSetting
 from src.modules.mainstream import MainStream
@@ -23,6 +22,7 @@ class MainView(Widget):
     btn_start = ObjectProperty()
     btn_display_mini = ObjectProperty()
     btn_switch = ObjectProperty()
+    btn_mode = ObjectProperty()
     login_popup = ObjectProperty()
     right_content = ObjectProperty()
     videoBuffer = ObjectProperty()
@@ -41,6 +41,7 @@ class MainView(Widget):
     p300 = None
     notifyAble = BooleanProperty(False)
     delaySwitchDisplay = NumericProperty(15)
+    modeStream = StringProperty('NORMAL')
 
     def __init__(self, **kwargs):
         super(MainView, self).__init__(**kwargs)
@@ -50,6 +51,7 @@ class MainView(Widget):
         self.f_height = 720
         self.setting = None
         self.src_selecting = ''# dang chay source cua list nao
+        self.switchDisplayAuto = None
 
     def on_start(self):
         self.mainStream._load()
@@ -198,6 +200,20 @@ class MainView(Widget):
     def change_auto_stop(self, val):
         self.autoStop = val
 
+    def change_mode(self, val):
+        if val in ['NORMAL','ONLYMAIN']:
+            self.modeStream = val
+            if val == 'NORMAL':
+                self.btn_mode.text = 'Normal'
+                self.mainStream.change_displaymini_size('NORMAL')
+            elif val == 'ONLYMAIN':
+                self.btn_mode.text = 'Only main audio'
+                self.mainStream.change_displaymini_size('ONLYMAIN')
+
+    def change_presenter_auto(self, val):
+        self.presenterAuto = val
+        self._interval_switch_display()
+
     def main_display_status(self, val):
         self.mainDisplayStt = val
         if self.mainStream.isStream is True and self.autoStop is True:
@@ -221,6 +237,8 @@ class MainView(Widget):
                 self.mainStream.startStream()
                 self.btn_start.text = "Stop"
                 self.btn_start.background_color = .29, .41, .15, 0.9
+                self.send_info_to_app()
+                self._interval_switch_display()
         elif self.mainStream.isStream is True:
             self.mainStream.stopStream()
             self.btn_start.text = "Start"
@@ -290,6 +308,12 @@ class MainView(Widget):
         except:
             pass
 
+    def _interval_switch_display(self):
+        if self.switchDisplayAuto is not None:
+            self.switchDisplayAuto.cancel()
+        if self.mainStream.isStream is True and self.modeStream == 'ONLYMAIN' and self.presenterAuto is True:
+            self.switchDisplayAuto = Clock.schedule_interval(self.f_parent.switch_display_auto, 30)
+
     def save_setting(self, stream_server, stream_key, play, p300):
         self.streamServer = self.setting['stream_server'] = stream_server
         self.streamKey = self.setting['stream_key'] = stream_key
@@ -323,7 +347,7 @@ class MainView(Widget):
                 self.btn_switch.background_color = .29, .41, .55, 1
             self.mainStream.switch_display()
 
-    def switch_display_auto(self):
+    def switch_display_auto(self, dt):
         if self.showMiniD is True:
             if self.switchDisplay is False:
                 self.switchDisplay = True

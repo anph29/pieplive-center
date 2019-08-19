@@ -7,8 +7,7 @@
     btn_start:btn_start
     btn_display_mini:btn_display_mini
     btn_switch:btn_switch
-    # btn_record:btn_record
-    # btn_setting:btn_setting
+    btn_mode:btn_mode
     videoBuffer:videoBuffer
     canvas.before:
         Color:
@@ -103,6 +102,14 @@
                     text:'Link Stream'
                     font_size: sp(12)
                     on_press: root.openSetting()
+
+                Spinner:
+                    id:btn_mode
+                    size_hint:None,None
+                    width:120
+                    text: 'Normal'
+                    values: 'NORMAL', 'ONLYMAIN'
+                    on_text: root.change_mode(self.text)    
 
                 CheckBox:
                     size_hint:None,1

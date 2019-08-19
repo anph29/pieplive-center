@@ -312,7 +312,7 @@ class MainView(Widget):
         if self.switchDisplayAuto is not None:
             self.switchDisplayAuto.cancel()
         if self.mainStream.isStream is True and self.modeStream == 'ONLYMAIN' and self.presenterAuto is True:
-            self.switchDisplayAuto = Clock.schedule_interval(self.f_parent.switch_display_auto, 30)
+            self.switchDisplayAuto = Clock.schedule_interval(self.switch_display_auto, 30)
 
     def save_setting(self, stream_server, stream_key, play, p300):
         self.streamServer = self.setting['stream_server'] = stream_server

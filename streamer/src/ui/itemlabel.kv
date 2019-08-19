@@ -15,13 +15,6 @@
         pos_hint:{'x':0, 'y':0}
         spacing: 5
         padding: 5
-        Label:
-            size_hint:None,1
-            width: (0,48)[root.listType == "VIDEO"]
-            opacity: (0,1)[root.listType == "VIDEO"]
-            text:helper.convertSecNoToHMS(root.duration)
-            font_size: 12
-            color:1,1,1,1
         LabelCamera:
             id:kvcam
             size_hint: 1, 1
@@ -31,6 +24,13 @@
             halign: 'left'
             valign: 'middle'
             shorten: True
+        Label:
+            size_hint:None,1
+            width: (0,48)[root.listType == "VIDEO"]
+            opacity: (0,1)[root.listType == "VIDEO"]
+            text:helper.convertSecNoToHMS(root.duration)
+            font_size: 12
+            color:1,1,1,1
         ImageButton:
             size_hint:None,1
             width: (0,12)[root.listType == "PRESENTER"]

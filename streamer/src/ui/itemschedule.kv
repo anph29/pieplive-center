@@ -19,6 +19,15 @@
         pos_hint:{'x':0, 'y':0}
         padding: 5
         spacing: 5
+        LabelCamera:
+            id:kvcam
+            size_hint: 1, 1
+            font_size:13
+            color:1,1,1,1
+            text_size: self.size
+            halign: 'left'
+            valign: 'middle'
+            shorten: True
         Label:
             size_hint:None,1
             width: 54
@@ -31,15 +40,6 @@
             text:helper.convertSecNoToHMS(root.duration)
             font_size: 12
             color:1,1,1,1
-        LabelCamera:
-            id:kvcam
-            size_hint: 1, 1
-            font_size:13
-            color:1,1,1,1
-            text_size: self.size
-            halign: 'left'
-            valign: 'middle'
-            shorten: True
         ImageButton:
             size_hint:None,1
             width: 12

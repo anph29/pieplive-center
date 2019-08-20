@@ -133,10 +133,10 @@ class MainView(Widget):
             if 'id' not in _s:
                 _s['id'] = scryto.hash_md5_with_time('')
                 self.lsSource[idx]['id'] = _s['id']
-            if _s['type'] == 'text':
+            if _s['type'] == constants.SOURCE_STATIC_TEXT:
                 self.mainStream.show_text( _s['id'], _s['label'], _s['font'], _s['size'],
                                         _s['color'], _s['pos_x'], _s['pos_y'], _s['active'], True)
-            elif _s['type'] == 'image':
+            elif _s['type'] == constants.SOURCE_STATIC_IMAGE:
                 self.mainStream.show_image( _s['id'], _s['src'], _s['pos_x'], _s['pos_y'], _s['width'], _s['height'], _s['active'], True)
 
         self.bottom_left.list_source.set_source(self.lsSource)
@@ -388,7 +388,7 @@ class MainView(Widget):
         if index == -1:
             text = {
                 "id": scryto.hash_md5_with_time(label.replace('\\', '/')),
-                "type": "text",
+                "type": constants.SOURCE_STATIC_TEXT,
                 "active": 1,
                 "name": name,
                 "label": label,
@@ -421,7 +421,7 @@ class MainView(Widget):
         if index == -1:
             image = {
                 "id": scryto.hash_md5_with_time(src.replace('\\', '/')),
-                "type": "image",
+                "type": constants.SOURCE_STATIC_IMAGE,
                 "active": 1,
                 "name": name,
                 "src": src,
@@ -467,10 +467,10 @@ class MainView(Widget):
 
     def on_edit_source(self,index):
         ite = self.lsSource[index]
-        if ite['type'] == 'image':
+        if ite['type'] == constants.SOURCE_STATIC_IMAGE:
             obj = ImageDialog(self, ite, index)
             obj.open()
-        elif ite['type'] == 'text':
+        elif ite['type'] == constants.SOURCE_STATIC_TEXT:
             obj = TextDialog(self, ite, index)
             obj.open()
     
@@ -480,19 +480,19 @@ class MainView(Widget):
 
     def refresh_select_source(self, type):
         if self.src_selecting != '' and self.src_selecting != type:
-            if self.src_selecting == 'VIDEO':
+            if self.src_selecting == constants.LIST_TYPE_VIDEO:
                 self.right_content.tab_media.ls_media.item_playing = ''
                 self.right_content.tab_media.ls_media.set_data()
-            elif self.src_selecting == 'IMAGE':
+            elif self.src_selecting == constants.LIST_TYPE_IMAGE:
                 self.right_content.tab_image.ls_image.item_playing = ''
                 self.right_content.tab_image.ls_image.set_data()
-            elif self.src_selecting == 'CAMERA':
+            elif self.src_selecting == constants.LIST_TYPE_CAMERA:
                 self.right_content.tab_camera.ls_camera.item_playing = ''
                 self.right_content.tab_camera.ls_camera.set_data()
-            elif self.src_selecting == 'PRESENTER':
+            elif self.src_selecting == constants.LIST_TYPE_PRESENTER:
                 self.right_content.tab_presenter.ls_presenter.item_playing = ''
                 self.right_content.tab_presenter.ls_presenter.set_data()
-            elif self.src_selecting == 'SCHEDULE':
+            elif self.src_selecting == constants.LIST_TYPE_SCHEDULE:
                 self.right_content.tab_schedule.ls_schedule.item_playing = ''
                 self.right_content.tab_schedule.ls_schedule.set_data()
         self.src_selecting = type

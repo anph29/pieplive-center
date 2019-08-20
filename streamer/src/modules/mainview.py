@@ -333,7 +333,7 @@ class MainView(Widget):
             self.showMiniD = False
             self.btn_display_mini.text = "Show Display mini"
             self.btn_display_mini.background_color = .29, .41, .55, 1
-            self.mainStream.hide_camera_mini()
+            self.mainStream.hide_camera_mini(True)
 
         self.switchDisplay = False
         self.btn_switch.background_color = .29, .41, .55, 1

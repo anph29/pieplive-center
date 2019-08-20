@@ -487,6 +487,13 @@ class ListPresenter(RecycleView):
             if m['playable'] is True:
                 num = num + 1
         return num
+
+    def check_is_online(self, _id):
+        for obj in self.data:
+            if str(obj['id']) == str(_id) and obj['playable'] is True:
+                return True
+        return False
+
         
 class ListSchedule(RecycleView):
     item_playing = ""

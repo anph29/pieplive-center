@@ -74,12 +74,12 @@ class KivyCameraMini(DragBehavior, Image):
         self.url = input['url']
         self.resource_type = input['type']
         self.category = category
+        self.reconnect = 0
         self.buffer_rate = 0
         self.duration_total = 0
         self.duration_current = 0
         self.duration_total_n = 1
         self.duration_fps = 25
-        
         if self.pipe is not None:
             self.pipe.kill()
         if self.capture is not None:
@@ -206,7 +206,9 @@ class KivyCameraMini(DragBehavior, Image):
             if self.capture.isOpened():
                 if not self.capture.grab():
                     kivyhelper.getApRoot().mini_display_status(False)
-                    # self.f_parent.hide_camera_mini()
+                    if 'list' in self.data_src and self.data_src['list'] == 'PRESENTER' and kivyhelper.getApRoot().showMiniD is True and kivyhelper.getApRoot().right_content.tab_presenter.ls_presenter.check_is_online(self.data_src['id']) is False:
+                        self.f_parent.hide_camera_mini(False)
+
                 else:
                     ret, frame = self.capture.retrieve()
                     if ret:

@@ -54,9 +54,10 @@ class MainStream(RelativeLayout):
         if self.f_parent.modeStream == 'NORMAL':
             self.cameraMini.opacity = 1
 
-    def hide_camera_mini(self):
-        if self.cameraMini.capture is not None:
-            self.refresh_stream()
+    def hide_camera_mini(self, is_refresh):
+        if is_refresh is True:
+            if self.cameraMini.capture is not None:
+                self.refresh_stream()
         self.cameraMini.opacity = 0
         self.cameraMini.release()
         try:

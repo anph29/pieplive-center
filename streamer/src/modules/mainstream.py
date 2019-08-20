@@ -80,7 +80,7 @@ class MainStream(RelativeLayout):
             self.switch_display()
 
     def change_displaymini_size(self, type):
-        if self.f_parent.showMiniD is True:
+        if self.f_parent is not None and self.f_parent.showMiniD is True:
             if type == 'NORMAL':
                 # self.sizeMini = [426,246]
                 self.camera.opacity = 1

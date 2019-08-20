@@ -80,6 +80,7 @@
                     text:'Start'
                     font_size: sp(12)
                     on_press: root.start_stream()
+
                 Button:
                     id:btn_display_mini
                     size_hint:None,None
@@ -87,6 +88,7 @@
                     text:'Show Display Mini'
                     font_size: sp(12)
                     on_press: root.show_mini_display()
+
                 Button:
                     id:btn_switch
                     size_hint:None,None
@@ -95,6 +97,7 @@
                     font_size: sp(12)
                     on_press: root.switch_display()
                     opacity: (0,1)[root.showMiniD]
+
                 Button:
                     id:btn_link_stream
                     size_hint:None,None
@@ -109,7 +112,7 @@
                     width:120
                     text: 'Normal'
                     values: 'NORMAL', 'ONLYMAIN'
-                    on_text: root.change_mode(self.text)    
+                    on_text: root.change_mode(self.text)
 
                 CheckBox:
                     size_hint:None,1

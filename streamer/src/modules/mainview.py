@@ -7,7 +7,7 @@ from src.modules.kvsetting import KVSetting
 from src.modules.mainstream import MainStream
 from src.utils import helper, scryto, firebase, store
 from kivy.lang import Builder
-from kivy.clock import Clock
+from kivy.clock import Clock, mainthread
 import sounddevice as sd
 from src.models.normal_model import Normal_model
 from src.models import P300_model, Socket_model
@@ -226,6 +226,7 @@ class MainView(Widget):
             if self.mainDisplayStt is False and self.miniDisplayStt is False and self.right_content.tab_presenter.ls_presenter.get_number_active() == 0 :
                 self.triggerStop()
 
+    @mainthread
     def start_stream(self):
         if self.mainStream.isStream is False:
             if len(self.streamServer) == 0 or len(self.streamKey) == 0:

@@ -7,6 +7,7 @@ from threading import Thread, Event
 import subprocess as sp
 from src.utils import helper, kivyhelper
 from pathlib import Path
+from src.modules import constants
 # from pydub import AudioSegment
 # from pydub.playback import play
 
@@ -57,7 +58,7 @@ class KivyCameraMain(Image):
         self.duration_total_n = 1
         self.duration_fps = 25
         self.schedule_type = ''# '' / duration / end
-        if self.category == "SCHEDULE":
+        if self.category == constants.LIST_TYPE_SCHEDULE:
             self.schedule_type = 'duration'
             if self.data_src['duration'] == 0:
                 self.schedule_type = 'end'
@@ -91,12 +92,12 @@ class KivyCameraMain(Image):
                 except Exception as e:
                     print("Exception:", e)
                         
-                if self.category == "SCHEDULE" and dura == self.data_src['duration']:
+                if self.category == constants.LIST_TYPE_SCHEDULE and dura == self.data_src['duration']:
                     self.schedule_type = 'end'
 
                 timeout = 1
                 command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25","-threads","2",output]
-                if self.category == "PRESENTER":
+                if self.category == constants.LIST_TYPE_PRESENTER:
                     self.url = self.data_src['rtmp']
                     timeout=2
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000","-preset","medium","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",'-framerate','25','-g','25',"-threads","2",output]
@@ -150,7 +151,7 @@ class KivyCameraMain(Image):
                 self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
                 self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
                 if self.f_parent is not None:
-                    if self.category == "SCHEDULE":
+                    if self.category == constants.LIST_TYPE_SCHEDULE:
                         self.f_parent.refresh_stream()
                     elif self.resource_type == "M3U8" or self.resource_type == "VIDEO":
                         self.f_parent.refresh_stream()
@@ -209,7 +210,7 @@ class KivyCameraMain(Image):
                 # check is get next
                 if not self.capture.grab():
                     kivyhelper.getApRoot().main_display_status(False)
-                    if self.category == 'SCHEDULE':
+                    if self.category == constants.LIST_TYPE_SCHEDULE:
                         if 'duration' in self.data_src and  self.data_src['duration'] is not None:
                             if (self.data_src['duration'] == 0 or int(self.duration_current) >= self.data_src['duration']) and self.schedule_type == 'end':
                                 self.f_parent.process_schedule(1)

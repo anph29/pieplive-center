@@ -9,6 +9,7 @@ from threading import Thread, Event
 from kivy.lang import Builder
 from functools import partial
 from src.utils import helper, kivyhelper
+from src.modules import constants
 
 kv = '''
 <KivyCameraMini>:
@@ -108,7 +109,7 @@ class KivyCameraMini(DragBehavior, Image):
 
                 timeout = 1
                 command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25","-threads","2",output]
-                if self.category == "PRESENTER":
+                if self.category == constants.LIST_TYPE_PRESENTER:
                     self.url = self.data_src['rtmp']
                     timeout=2
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000","-preset","medium","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25","-threads","2",output]
@@ -206,9 +207,8 @@ class KivyCameraMini(DragBehavior, Image):
             if self.capture.isOpened():
                 if not self.capture.grab():
                     kivyhelper.getApRoot().mini_display_status(False)
-                    if 'list' in self.data_src and self.data_src['list'] == 'PRESENTER' and kivyhelper.getApRoot().showMiniD is True and kivyhelper.getApRoot().right_content.tab_presenter.ls_presenter.check_is_online(self.data_src['id']) is False:
+                    if 'list' in self.data_src and self.data_src['list'] == constants.LIST_TYPE_PRESENTER and kivyhelper.getApRoot().showMiniD is True and kivyhelper.getApRoot().right_content.tab_presenter.ls_presenter.check_is_online(self.data_src['id']) is False:
                         self.f_parent.hide_camera_mini(False)
-
                 else:
                     ret, frame = self.capture.retrieve()
                     if ret:

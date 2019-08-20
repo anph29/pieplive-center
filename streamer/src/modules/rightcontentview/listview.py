@@ -1,11 +1,11 @@
 from kivy.uix.recycleview import RecycleView
-from src.utils import helper, firebase, store
 from kivy.properties import StringProperty, BooleanProperty
 from kivy.clock import Clock
-from src.modules.custom.popup import PiepMeConfirmPopup
 import datetime
+from src.modules.custom.popup import PiepMeConfirmPopup
+from src.utils import helper, firebase, store, kivyhelper
 from src.modules.custom.linkaudio import LinkAudio
-from src.utils import kivyhelper
+from src.modules import constants
 
 class ListMedia(RecycleView):
     item_playing = ''
@@ -19,7 +19,7 @@ class ListMedia(RecycleView):
             map(
                 lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 
                 'duration': cam['duration'] if 'duration' in cam else 0,
-                'list':'VIDEO',
+                'list': constants.LIST_TYPE_VIDEO,
                 'active': (False,True) [cam['id'] == self.item_playing],
                 'activeMini': (False,True) [cam['id'] == self.item_playing_mini],
                 'choice':False},
@@ -99,7 +99,7 @@ class ListImage(RecycleView):
         self.data = list(
             map(
                 lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 
-                'list':'IMAGE',
+                'list':constants.LIST_TYPE_IMAGE,
                 'active': (False,True) [cam['id'] == self.item_playing],
                 'activeMini': (False,True) [cam['id'] == self.item_playing_mini],
                 'choice':False},
@@ -241,7 +241,7 @@ class ListCamera(RecycleView):
         self.data = list(
             map(
                 lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 
-                'list':'CAMERA',
+                'list':constants.LIST_TYPE_CAMERA,
                 'active': (False,True) [cam['id'] == self.item_playing],
                 'activeMini': (False,True) [cam['id'] == self.item_playing_mini],
                 'choice':False},
@@ -345,14 +345,14 @@ class ListPresenter(RecycleView):
             self.item_choice = str(presenter)
 
             for obj in self.data:
-                obj['list']='PRESENTER'
+                obj['list'] = constants.LIST_TYPE_PRESENTER
                 if int(obj['id']) == int(presenter):
                     obj['choice'] = True
                 else:
                     obj['choice'] = False
             
             for child in self.children[0].children:
-                child.listType='PRESENTER'
+                child.listType = constants.LIST_TYPE_PRESENTER
                 if int(child.id) == int(presenter):
                     child.choice = True
                 else:
@@ -388,16 +388,16 @@ class ListPresenter(RecycleView):
             self.data[index]['choice'] = False
             for child in self.children[0].children:
                 child.choice = False
-                child.listType='PRESENTER'
+                child.listType=constants.LIST_TYPE_PRESENTER
         else:
             firebase.makeChangePresenter(int(self.data[index]['id']))
             self.item_choice = self.data[index]['id']
             for obj in self.data:
                 obj['choice'] = False
-                obj['list'] = 'PRESENTER'
+                obj['list'] = constants.LIST_TYPE_PRESENTER
             self.data[index]['choice'] = True
             for child in self.children[0].children:
-                child.listType='PRESENTER'
+                child.listType=constants.LIST_TYPE_PRESENTER
                 if child.index == index:
                     child.choice = True
                 else:
@@ -408,7 +408,7 @@ class ListPresenter(RecycleView):
             map(
                 lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 
                 'rtmp': cam['rtmp'] if 'rtmp' in cam else cam['url'],
-                'list':'PRESENTER',
+                'list':constants.LIST_TYPE_PRESENTER,
                 'active': (False,True) [cam['id'] == self.item_playing],
                 'activeMini': (False,True) [cam['id'] == self.item_playing_mini],
                 'choice': (False,True) [cam['id'] == self.item_choice],
@@ -508,7 +508,7 @@ class ListSchedule(RecycleView):
                 lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'duration': cam['duration'], 
                 'timepoint': cam['timepoint'] if 'timepoint' in cam else 0,
                 'audio': cam['audio'] if 'audio' in cam else '',
-                'list':'SCHEDULE',
+                'list':constants.LIST_TYPE_SCHEDULE,
                 'active': (False,True) [cam['id'] == self.item_playing]},
                 helper._load_schedule()
             )

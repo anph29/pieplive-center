@@ -10,6 +10,7 @@ from src.modules.custom.piepimage import PiepImage
 from kivy.properties import ObjectProperty,NumericProperty
 from kivy.lang import Builder
 from src.models.normal_model import Normal_model
+from src.modules import constants
 import subprocess, cv2, time, array, os, datetime
 import numpy as np
 
@@ -51,7 +52,7 @@ class MainStream(RelativeLayout):
         pass
 
     def show_camera_mini(self):
-        if self.f_parent.modeStream == 'NORMAL':
+        if self.f_parent.modeStream == constants.MODES_NORMAL:
             self.cameraMini.opacity = 1
 
     def hide_camera_mini(self, is_refresh):
@@ -82,12 +83,10 @@ class MainStream(RelativeLayout):
 
     def change_displaymini_size(self, type):
         if self.f_parent is not None and self.f_parent.showMiniD is True:
-            if type == 'NORMAL':
-                # self.sizeMini = [426,246]
+            if type == constants.MODES_NORMAL:
                 self.camera.opacity = 1
                 self.cameraMini.opacity = 1
-            elif type == 'ONLYMAIN':
-                # self.sizeMini = [1280,720]
+            elif type == constants.MODES_ONLYMAIN:
                 if self.typeSwitch == 1:
                     self.camera.opacity = 0
                     self.cameraMini.opacity = 1
@@ -109,7 +108,7 @@ class MainStream(RelativeLayout):
                 self.cameraMini.pos = (0,0)
                 self.add_widget(self.camera,0)
                 self.add_widget(self.cameraMini,1)
-                if self.f_parent.modeStream == 'ONLYMAIN':
+                if self.f_parent.modeStream == constants.MODES_ONLYMAIN:
                     self.camera.opacity = 0
                     self.cameraMini.opacity = 1
                 else:
@@ -125,7 +124,7 @@ class MainStream(RelativeLayout):
                 self.camera.pos = (0,0)
                 self.add_widget(self.cameraMini,0)
                 self.add_widget(self.camera,1)
-                if self.f_parent.modeStream == 'ONLYMAIN':
+                if self.f_parent.modeStream == constants.MODES_ONLYMAIN:
                     self.camera.opacity = 1
                     self.cameraMini.opacity = 0
                 else:

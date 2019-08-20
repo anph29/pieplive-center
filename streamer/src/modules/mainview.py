@@ -11,6 +11,7 @@ from kivy.clock import Clock, mainthread
 import sounddevice as sd
 from src.models.normal_model import Normal_model
 from src.models import P300_model, Socket_model
+from src.modules import constants
 import json
 
 
@@ -41,7 +42,7 @@ class MainView(Widget):
     p300 = None
     notifyAble = BooleanProperty(False)
     delaySwitchDisplay = NumericProperty(15)
-    modeStream = StringProperty('NORMAL')
+    modeStream = StringProperty(constants.MODES_NORMAL)
 
     def __init__(self, **kwargs):
         super(MainView, self).__init__(**kwargs)
@@ -201,14 +202,14 @@ class MainView(Widget):
         self.autoStop = val
 
     def change_mode(self, val):
-        if val in ['NORMAL','ONLYMAIN']:
+        if val in constants.MODES:
             self.modeStream = val
-            if val == 'NORMAL':
+            if val == constants.MODES_NORMAL:
                 self.btn_mode.text = 'Normal'
-                self.mainStream.change_displaymini_size('NORMAL')
-            elif val == 'ONLYMAIN':
+                self.mainStream.change_displaymini_size(constants.MODES_NORMAL)
+            elif val == constants.MODES_ONLYMAIN:
                 self.btn_mode.text = 'Only main audio'
-                self.mainStream.change_displaymini_size('ONLYMAIN')
+                self.mainStream.change_displaymini_size(constants.MODES_ONLYMAIN)
 
     def change_presenter_auto(self, val):
         self.presenterAuto = val
@@ -312,7 +313,7 @@ class MainView(Widget):
     def _interval_switch_display(self):
         if self.switchDisplayAuto is not None:
             self.switchDisplayAuto.cancel()
-        if self.mainStream.isStream is True and self.modeStream == 'ONLYMAIN' and self.presenterAuto is True:
+        if self.mainStream.isStream is True and self.modeStream == constants.MODES_ONLYMAIN and self.presenterAuto is True:
             self.switchDisplayAuto = Clock.schedule_interval(self.switch_display_auto, 30)
 
     def save_setting(self, stream_server, stream_key, play, p300):

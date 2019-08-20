@@ -1,4 +1,5 @@
 #:import helper src.utils.helper
+#:import constants src.modules.constants
 <MainView>:
     mainStream: mainStream
     right_content: right_content
@@ -111,7 +112,7 @@
                     size_hint:None,None
                     width:120
                     text: 'Normal'
-                    values: 'NORMAL', 'ONLYMAIN'
+                    values: constants.MODES
                     on_text: root.change_mode(self.text)
 
                 CheckBox:

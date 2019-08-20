@@ -72,7 +72,8 @@ class KivyCameraMain(Image):
         dura = 0
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.resource_type == 'MP4':# or self.resource_type == "RTSP":
-                timenow = datetime.datetime.now().strftime("%d%m%y%H%M%S")
+                # timenow = datetime.datetime.now().strftime("%d%m%y%H%M%S")
+                timenow = datetime.datetime.timestamp(datetime.datetime.now())
                 output = helper._BASE_PATH+'temp/{}.flv'.format(timenow)
                 try:
                     _cap = cv2.VideoCapture(self.url)

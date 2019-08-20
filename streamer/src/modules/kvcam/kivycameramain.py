@@ -95,20 +95,20 @@ class KivyCameraMain(Image):
                     self.schedule_type = 'end'
 
                 timeout = 1
-                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25","-threads","2","-g","120",output]
+                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25","-threads","2",output]
                 if self.category == "PRESENTER":
                     self.url = self.data_src['rtmp']
                     timeout=2
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000","-preset","medium","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",'-framerate','25','-g','25',"-threads","2","-g","120",output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000","-preset","medium","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",'-framerate','25','-g','25',"-threads","2",output]
                 elif self.resource_type == "M3U8":
                     timeout=1
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync", "1","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-ar","44100", "-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25","-threads","2","-g","120",output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync", "1","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-ar","44100", "-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25","-threads","2",output]
                 elif self.resource_type == "RTSP":
                     timeout=2
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i", self.url,"-pix_fmt", "yuv420p", "-flags","+global_header", "-vsync","1","-af","aresample=async=1","-ar","44100", "-ab", "128k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25","-threads","2","-g","120",output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i", self.url,"-pix_fmt", "yuv420p", "-flags","+global_header", "-vsync","1","-af","aresample=async=1","-ar","44100", "-ab", "128k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25","-threads","2",output]
                 else:
                     if fps < 25:
-                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25","-threads","2","-g","120",output]
+                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25","-threads","2",output]
                     
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
@@ -168,7 +168,7 @@ class KivyCameraMain(Image):
                 print("cv2.error:")
                 if self.capture is not None:
                     self.capture.release()
-                if self.reconnect >= 10:
+                if self.reconnect >= 20:
                     self.show_captured_img(self.default_frame)
                     kivyhelper.getApRoot().loading = False
                 else:
@@ -229,7 +229,7 @@ class KivyCameraMain(Image):
 
     def update_texture_from_frame(self, frame):
         try:
-            # frame = self.resizeFrame(frame)
+            frame = self.resizeFrame(frame)
             texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
             texture.flip_vertical()
             # buf = cv2.flip(frame, 0).tostring()

@@ -362,6 +362,8 @@ class MainView(Widget):
         self.mainStream.stopStream()
         self.btn_start.text = "Start"
         self.btn_start.background_color = .29, .41, .55, 1
+        if bool(self.p300):
+            firebase.setP300AfterStartStream({"PP300":0})
 
     def on_off_source(self, index, value):
         ite = self.lsSource[index]

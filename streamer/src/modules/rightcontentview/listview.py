@@ -324,6 +324,7 @@ class ListPresenter(RecycleView):
     def onChangePresenter(self, presenter):
         #choice status
         if int(self.item_choice) == presenter:
+            print('------',"+++++++++++")
             pass
         else:
             if presenter == 0 and kivyhelper.getApRoot().presenterAuto is True and kivyhelper.getApRoot().mainStream.isStream is True and kivyhelper.getApRoot().modeStream == 'NORMAL':

@@ -172,7 +172,7 @@ class KivyCameraMini(DragBehavior, Image):
             else:
                 if self.capture is not None:
                     self.capture.release()
-                if self.reconnect >= 10:
+                if self.reconnect >= 20:
                     self.show_captured_img(self.default_frame)
                     kivyhelper.getApRoot().loadingMini = False
                 else:
@@ -220,7 +220,7 @@ class KivyCameraMini(DragBehavior, Image):
 
     def update_texture_from_frame(self, frame):
         try:
-            # frame = self.resizeFrame(frame)
+            frame = self.resizeFrame(frame)
             texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
             texture.flip_vertical()
             # buf = cv2.flip(frame, 0).tostring()

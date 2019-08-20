@@ -1,6 +1,6 @@
 from src.utils import helper, kivyhelper
 from threading import Thread, Event
-from kivy.clock import Clock
+from kivy.clock import Clock, mainthread
 from kivy.graphics import Fbo, ClearColor, ClearBuffers, Scale, Translate, Canvas, Color, Rectangle
 from kivy.uix.relativelayout import RelativeLayout
 from src.modules.kvcam.kivycameramain import KivyCameraMain
@@ -210,6 +210,7 @@ class MainStream(RelativeLayout):
             if bool(self.prepare()):
                 self.startStream()
     
+    @mainthread
     def stopStream(self):
         self.isStream = False
         if self.event is not None:
@@ -299,7 +300,7 @@ class MainStream(RelativeLayout):
             # encode
             self.command.extend(['-vb', str(self.v_bitrate),'-r', '25', '-pix_fmt', 'yuv420p'])
 
-            self.command.extend(["-vf", "fps=25"])
+            self.command.extend(["-vf", "fps=25","-strict","-2"])
             
             # tream
             self.command.extend(['-f', 'flv', self.urlStream])

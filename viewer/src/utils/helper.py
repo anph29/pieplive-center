@@ -4,7 +4,8 @@ import json
 import math
 import base64
 from . import zip_helper
-import datetime
+from datetime import datetime
+import time
 import cv2
 import shutil
 from urllib.request import Request, urlopen
@@ -51,7 +52,7 @@ def _add_to_schedule(data):
 
 
 def calcCurentSeccondInDay():
-    dt = datetime.datetime.now()
+    dt = datetime.now()
     return dt.hour * 3600 + dt.minute * 60 + dt.second
 
 
@@ -124,8 +125,8 @@ def delete_schedule_container(fname):
         os.remove(path)
 
 
-def duplicate_schedule_container(frName, toName):
-    src = makeSureScheduleFile(frName)
+def duplicate_schedule_container(frName, toName, fromRunning=False):
+    src = frName if fromRunning else makeSureScheduleFile(frName)
     dst = makeSureScheduleFile(toName)
     shutil.copyfile(src, dst)
     return toName
@@ -503,4 +504,3 @@ def getMyIP():
         json_str = response.read().decode("utf-8")
         data_json = json.loads(json_str)
         return data_json["ip"]
-

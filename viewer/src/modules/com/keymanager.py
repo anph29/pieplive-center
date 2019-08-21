@@ -193,14 +193,14 @@ class KeyManager(tk.Frame):
         self.clearData()
         helper._write_lskey(filtered)
 
-    def notkExistedKey(self, PP300):
+    def existedKey(self, PP300):
         filtered = list(
             filter(
                 lambda k: "PP300" in k["P300"] and k["P300"]["PP300"] == PP300,
                 self._LS_KEY_DATA,
             )
         )
-        return len(filtered) == 0
+        return len(filtered) > 0
 
     def addKey(self, keyObj):
         helper._add_to_lskey(keyObj)

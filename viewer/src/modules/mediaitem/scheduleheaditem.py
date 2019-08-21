@@ -44,7 +44,7 @@ class ScheduleHeadItem(tk.Frame):
             self.destroy()
             self.parentTab.f5(None)
 
-    def packDate(self):
+    def packDate():
         pass
 
     def initUIEdit(self, edit=False):
@@ -111,7 +111,7 @@ class ScheduleHeadItem(tk.Frame):
             self.fView,
             text=self.name,
             justify=tk.LEFT,
-            elipsis=25,
+            elipsis=20,
             font=UI.TITLE_FONT if self.isRunningSch else UI.TXT_FONT,
             fg="#ff2d55" if self.isRunningSch else "#000",
             cursor="hand2",
@@ -156,6 +156,14 @@ class ScheduleHeadItem(tk.Frame):
         #
         self.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
+        # dupplicate
+        imDup = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}duplicate-24.png"))
+        self.cmdDup = tk.Label(self.fView, image=imDup, cursor="hand2", bg=self.itemBg)
+        self.cmdDup.image = imDup
+        self.cmdDup.bind("<Button-1>", self.duplicate)
+        self.cmdDup.pack(side=tk.RIGHT)
+        ToolTip(self.cmdDup, "Duplicate schedule")
+
     def loadScheduleDE(self, evt):
         self.parentTab.loadScheduleDE(self.get_data())
         self.changeBgFollowActivation(True)
@@ -166,6 +174,7 @@ class ScheduleHeadItem(tk.Frame):
         self.fView.config(bg=self.itemBg)
         self.lbl_name.config(bg=self.itemBg)
         self.lblPush.config(bg=self.itemBg)
+        self.cmdDup.config(bg=self.itemBg)
         #
         if not self.isRunningSch:
             self.checkbox.config(bg=self.itemBg)
@@ -187,6 +196,10 @@ class ScheduleHeadItem(tk.Frame):
         self.parentTab.saveSchedule(
             {"path": self.path, "id": self.id, "name": self.eName.get()}
         )
+
+    def duplicate(self, evt):
+        self.parentTab.duplicateSingleSchedule(self)
+        self.parentTab.f5(None)
 
 
 class ScheduleHeadItemEdit(ScheduleHeadItem):

@@ -39,21 +39,23 @@ class SortedList(ScheduleDDList):
         self.showDupplicateBtn()
 
     def addToScheduleGUI(self, data):
-        item = self.ddlist.create_item(value=data, freeze=data['id'] == 'STORE_SCHEDULE')
+        item = self.ddlist.create_item(
+            value=data, freeze=data["id"] == "STORE_SCHEDULE"
+        )
         ui = ScheduleHeadItem(item, parentTab=self, media=data)
         self._LS_SCHEDULE_UI.append(ui)
         ui.pack(expand=True)
         self.ddlist.add_item(item)
 
     def showDupplicateBtn(self):
-        imAdd = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}duplicate-24.png"))
-        self.cmdAdd = tk.Label(
-            self.tbright, image=imAdd, cursor="hand2", bg=self.tbBgColor
+        imDup = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}duplicate-24.png"))
+        self.cmdDup = tk.Label(
+            self.tbright, image=imDup, cursor="hand2", bg=self.tbBgColor
         )
-        self.cmdAdd.image = imAdd
-        self.cmdAdd.bind("<Button-1>", self.duplicateSchedule)
-        self.cmdAdd.pack(side=tk.RIGHT, padx=5, pady=5)
-        ToolTip(self.cmdAdd, "Duplicate schedule")
+        self.cmdDup.image = imDup
+        self.cmdDup.bind("<Button-1>", self.duplicateSchedule)
+        self.cmdDup.pack(side=tk.RIGHT, padx=5, pady=5)
+        ToolTip(self.cmdDup, "Duplicate schedule")
 
     def showAddCamBtn(self):
         imAdd = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}add-rgb24.png"))
@@ -87,19 +89,23 @@ class SortedList(ScheduleDDList):
                 "PiepMe", "Are you sure duplicate all selected schedule?"
             ):
                 for sch in filtered:
-                    schDate = self.findLastDateInSchedule()
-                    toPath = datetime.strftime(schDate, "%d%m%Y")
-                    # 1. file
-                    copied = helper.duplicate_schedule_container(sch.path, toPath)
-                    # 2. sorted
-                    self.addSchedule(
-                        {
-                            "path": copied,
-                            "id": scryto.hash_md5_with_time(copied),
-                            "name": sch.name + " (copy)",
-                        }
-                    )
+                    self.duplicateSingleSchedule(sch)
                 self.f5(evt)
+
+    def duplicateSingleSchedule(self, sch):
+        dstPath = helper._PATH_SCHEDULE if sch.isRunningSch else sch.path
+        schDate = self.findLastDateInSchedule()
+        toPath = datetime.strftime(schDate, "%d%m%Y")
+        # 1. add file
+        copied = helper.duplicate_schedule_container(dstPath, toPath, sch.isRunningSch)
+        # 2. add to sorted
+        self.addSchedule(
+            {
+                "path": copied,
+                "id": scryto.hash_md5_with_time(copied),
+                "name": sch.name + " (copy)",
+            }
+        )
 
     def loadScheduleDE(self, sch):
         self.clearScheduleActived()
@@ -142,6 +148,7 @@ class SortedList(ScheduleDDList):
         self.writeSchedule(newLs)
 
     def findLastDateInSchedule(self):
+        self._LS_SCHEDULE_DATA = self.loadSchedule()
         if not bool(self._LS_SCHEDULE_DATA):
             return datetime.today()
         else:

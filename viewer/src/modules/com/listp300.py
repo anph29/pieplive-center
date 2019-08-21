@@ -69,9 +69,6 @@ class ListP300(DynamicGrid, tk.Frame):
         )
         return rs[WS.ELEMENTS] if rs[WS.STATUS] == WS.SUCCESS else []
 
-    def canInsertL300(self, PP300):
-        return self.keyManager.notkExistedKey(PP300)
-
     def saveKeyStream(self, keyObj):
         self.keyManager.addKey(keyObj)
 

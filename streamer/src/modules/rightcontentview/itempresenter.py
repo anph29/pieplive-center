@@ -7,8 +7,8 @@ from kivy.lang import Builder
 from src.utils import kivyhelper
 from src.modules.custom.addschedule import AddSchedule
 
-Builder.load_file('src/ui/itemlabel.kv')
-class ItemLabel(RecycleDataViewBehavior, FloatLayout):
+Builder.load_file('src/ui/itempresenter.kv')
+class ItemPresenter(RecycleDataViewBehavior, FloatLayout):
     index = NumericProperty(0)
     dt_capture = ObjectProperty()
     name = StringProperty('')
@@ -19,8 +19,8 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
     active = BooleanProperty(False)
     activeMini = BooleanProperty(False)
     choice = BooleanProperty(False)
-    # playable = BooleanProperty(False)
-    duration = NumericProperty(0)
+    playable = BooleanProperty(False)
+    # duration = NumericProperty(0)
     listType = StringProperty('')
     _id = StringProperty('')
     showMiniD = BooleanProperty(False)
@@ -32,19 +32,19 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
         self.name = data['name']
         self._id = data['id']
         self.kvcam.set_data_source(data)
-        self.duration = data['duration'] if 'duration' in data else 0
+        # self.duration = data['duration'] if 'duration' in data else 0
         self.listType = data['list']
         self.data = data
         self.active = data['active']
         self.activeMini = data['activeMini']
         self.choice = data['choice']
-        # self.playable = data['playable'] if 'playable' in data else True
+        self.playable = data['playable'] if 'playable' in data else True
         self.isCheckItem.active = False
-        return super(ItemLabel, self).refresh_view_attrs(rv, index, data)
+        return super(ItemPresenter, self).refresh_view_attrs(rv, index, data)
 
     def on_touch_down(self, touch):
         """ Add selection on touch down """
-        if super(ItemLabel, self).on_touch_down(touch):
+        if super(ItemPresenter, self).on_touch_down(touch):
             return True
         if self.collide_point(*touch.pos) and self.selectable:
             return self.parent.select_with_touch(self.index, touch)
@@ -61,17 +61,24 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
     def rmv_capture(self):
         self.parent.parent.remove(self.index)
 
-    def add_to_schedule(self):
-        kivyhelper.getApRoot().open_add_schedule(self.data)
+    # def add_to_schedule(self):
+    #     kivyhelper.getApRoot().open_add_schedule(self.data)
     
     def play(self):
-        kivyhelper.getApRoot().loading = True
-        self.isCheckItem.active = False
-        self.parent.parent.setPlayed(self.index)
-        kivyhelper.getApRoot().changeSrc(self.kvcam.get_data_source(),self.listType)
+        if self.playable:
+            kivyhelper.getApRoot().loading = True
+            self.isCheckItem.active = False
+            self.parent.parent.setPlayed(self.index)
+            kivyhelper.getApRoot().changeSrc(self.kvcam.get_data_source(),self.listType)
+            if kivyhelper.getApRoot().presenterAuto:
+                self.parent.parent.choice_play(self.index)
 
     def playMini(self, isPlay):
-        if isPlay:
+        if self.playable and isPlay:
             kivyhelper.getApRoot().loadingMini = True
             self.parent.parent.setPlayedMini(self.index)
             kivyhelper.getApRoot().changeSrcMini(self.kvcam.get_data_source(),self.listType)
+
+    def choice_play(self):
+        if self.playable:
+            self.parent.parent.choice_play(self.index)

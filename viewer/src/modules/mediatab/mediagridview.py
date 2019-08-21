@@ -14,7 +14,11 @@ class MediaGridView(DynamicGrid, MediaTab):
 
     def initUI(self):
         super(MediaGridView, self).initUI()
-        if self.tabType == MediaType.IMAGE or self.tabType == MediaType.VIDEO:
+        if self.tabType not in (
+            MediaType.CAMERA,
+            MediaType.PRESENTER,
+            MediaType.SCHEDULE,
+        ):
             self.showAddCamBtn()
 
     def addMediaToList(self, media):

@@ -306,7 +306,19 @@ setting
 
 def _read_setting(key=None):
     setting = loadJSON(_PATH_SETTING)
-    return setting[key] if key is not None else setting
+    if key is not None:
+        try:
+            return setting[key]
+        except KeyError:
+            return None
+    else:
+        return setting
+
+
+def _set_setting(key, value):
+    setting = loadJSON(_PATH_SETTING)
+    setting[key] = value
+    writeJSON(_PATH_SETTING, setting)
 
 
 def _write_setting(data):

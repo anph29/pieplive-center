@@ -60,7 +60,7 @@ class MediaItemBox(MediaItem):
             self.wrapper,
             bd=0,
             relief=tk.FLAT,
-            bg="#f2f2f2",
+            bg="#999",
             width=self.cell_width,
             height=self.top_height,
         )
@@ -74,11 +74,8 @@ class MediaItemBox(MediaItem):
                 im = Image.open(helper._IMAGES_PATH + "splash2.png")
         else:
             im = Image.open(helper._IMAGES_PATH + "splash-video2.png")
-        w, h = im.size
-        r = w / h
-        nH = self.top_height
-        nW = int(nH * r)
-        #
+
+        nW, nH, pdx, pdy = self.calcSizeAndPad(im.size)
         resized = im.resize((nW, nH), Image.ANTIALIAS)
         imgMedia = ImageTk.PhotoImage(resized)
         self.topImage = tk.Label(self.top, image=imgMedia, bg="#f2f2f2", cursor="hand2")
@@ -86,7 +83,41 @@ class MediaItemBox(MediaItem):
         #
         if self.mtype != "IMG":
             self.topImage.bind("<Button-1>", self.initVLC)
-        self.topImage.pack()
+        self.topImage.pack(padx=pdx, pady=pdy)
+
+    def calcSizeAndPad(self, size):
+        """
+        if showFrame is `vertical`:
+            if ratio(h) > :9:
+                `calcByH`
+            else:
+                `calcByW`
+        elif showFrame is `horizontal`:
+            if ratio(w) > :16:
+                `calcByW`
+            else:
+                `calcByH`
+        """
+        w, h = size
+        r = w / h
+        if w > h and r >= 16 / 9:
+            return self.calcSizeByWidth(r)
+        else:
+            return self.calcSizeByHeight(r)
+
+    def calcSizeByWidth(self, r):
+        nW = self.cell_width
+        nH = int(nW / r)
+        pdx = 0
+        pdy = int((self.top_height - nH) / 2)
+        return nW, nH, pdx, pdy
+
+    def calcSizeByHeight(self, r):
+        nH = self.top_height
+        nW = int(nH * r)
+        pdx = int((self.cell_width - nW) / 2)
+        pdy = 0
+        return nW, nH, pdx, pdy
 
     def initBOTTOM(self):
         self.bottom = tk.Frame(

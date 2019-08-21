@@ -5,7 +5,7 @@ from .mediatab import MediaTab
 from src.modules.mediaitem import MediaItemDnD
 import PIL
 from PIL import ImageTk, Image
-from src.utils import helper, scryto
+from src.utils import helper, scryto, store
 from src.modules.custom import VerticalScrolledFrame, ToolTip
 from src.enums import MediaType
 from src.modules.popup import PopupEditResource
@@ -14,6 +14,7 @@ from src.modules.popup import PopupEditResource
 class MediaListView(MediaTab):
     def __init__(self, parent, *args, **kwargs):
         self.tabType = kwargs["tabType"]
+        self.keyLock = f"media_lock_{self.tabType.value}"
         del kwargs["tabType"]
         if "schedule" in (kwargs):
             self.schedule = kwargs["schedule"]
@@ -24,6 +25,7 @@ class MediaListView(MediaTab):
         self.parent = parent
         self.scrollZ = VerticalScrolledFrame(self, style="scroll.TFrame")
         self.ddlist = self.makeDDList(self.scrollZ.interior)
+        self.ddlist.setLock(self.getLock())
         self.initUI()
 
     def makeDDList(self, ref):
@@ -43,7 +45,7 @@ class MediaListView(MediaTab):
 
     def initUI(self):
         super(MediaListView, self).initUI()
-        if self.tabType == MediaType.IMAGE or self.tabType == MediaType.VIDEO:
+        if self.tabType not in (MediaType.CAMERA, MediaType.PRESENTER, MediaType.SCHEDULE):
             self.showAddCamBtn()
         #
         self.scrollZ.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
@@ -57,7 +59,8 @@ class MediaListView(MediaTab):
     def packRightToolbar(self):
         super(MediaListView, self).packRightToolbar()
         # lock
-        imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}unlock-24.png"))
+        un = "un" if self.getLock() else ""
+        imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}{un}lock-24.png"))
         self.cmdLock = tk.Label(
             self.tbright, image=imgLock, cursor="hand2", bg=self.tbBgColor
         )
@@ -70,12 +73,21 @@ class MediaListView(MediaTab):
         ToolTip(self.cmdLock, "Lock")
 
     def toggleLock(self, evt):
-        un = "un" if self.ddlist.getLock() else ""
+        un = "un" if self.getLock() else ""
         imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}{un}lock-24.png"))
         self.cmdLock.configure(image=imgLock)
         self.cmdLock.image = imgLock
         ToolTip(self.cmdLock, f"{un}locked")
-        self.ddlist.setLock(not self.ddlist.getLock())
+        #
+        locked = not self.ddlist.getLock()
+        self.ddlist.setLock(locked)
+        self.setLock(locked)
+
+    def setLock(self, locked):
+        return store._set(self.keyLock, locked)
+
+    def getLock(self):
+        return bool(store._get(self.keyLock))
 
     def addMediaToList(self, media):
         item = self.ddlist.create_item(value=media)

@@ -27,6 +27,7 @@ class MediaTab(tk.Frame):
 
     def turnOnObserver(self):
         if bool(store._get("FO100")) and self.tabType == MediaType.PRESENTER:
+            print('>>>turnOnObserver<<<')
             self.listenerStream = firebase.startObserverActivedBu(self.firebaseCallback)
 
     def firebaseCallback(self, message):
@@ -183,7 +184,7 @@ class MediaTab(tk.Frame):
             )
         )
         self.writeLsMedia(lsMedia)
-        self.showLsMedia()
+        self.f5(None)
 
     def addMedia(self, data):
         if self.tabType == MediaType.CAMERA:
@@ -196,6 +197,9 @@ class MediaTab(tk.Frame):
             helper._add_to_lspresenter(data)
         elif self.tabType == MediaType.SCHEDULE:
             helper._add_to_schedule(data)
+        elif self.tabType == MediaType.AUDIO:
+            helper._add_to_lsaudio(data)
+
 
     def loadLsMedia(self):
         if self.tabType == MediaType.CAMERA:
@@ -208,6 +212,8 @@ class MediaTab(tk.Frame):
             return helper._load_ls_presenter()
         elif self.tabType == MediaType.SCHEDULE:
             return helper._load_schedule()
+        elif self.tabType == MediaType.AUDIO:
+            return helper._load_ls_audio()
 
     def writeLsMedia(self, data):
         if self.tabType == MediaType.CAMERA:
@@ -220,6 +226,8 @@ class MediaTab(tk.Frame):
             helper._write_lspresenter(data)
         elif self.tabType == MediaType.SCHEDULE:
             helper._write_schedule(data)
+        elif self.tabType == MediaType.AUDIO:
+            helper._write_lsaudio(data)
 
     def deleteMediaItem(self, lsId):
         ls = self.loadLsMedia()

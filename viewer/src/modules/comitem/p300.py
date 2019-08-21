@@ -56,7 +56,7 @@ class P300(tk.Frame):
             self.wrapper,
             bd=0,
             relief=tk.FLAT,
-            bg="#f2f2f2",
+            bg="#999",
             width=self.cell_width,
             height=self.top_height,
         )
@@ -66,17 +66,48 @@ class P300(tk.Frame):
             im = Image.open(BytesIO(response.content))
         except requests.exceptions.MissingSchema:
             im = Image.open(helper._IMAGES_PATH + "splash2.png")
-        w, h = im.size
-        r = w / h
-        nH = self.top_height
-        nW = int(nH * r)
         #
+        nW, nH, pdx, pdy = self.calcSizeAndPad(im.size)
         resized = im.resize((nW, nH), Image.ANTIALIAS)
         imgMedia = ImageTk.PhotoImage(resized)
         self.topImage = tk.Label(self.top, image=imgMedia, bg="#f2f2f2", cursor="hand2")
         self.topImage.photo = imgMedia
         #
-        self.topImage.pack()
+        self.topImage.pack(padx=pdx, pady=pdy)
+
+    def calcSizeAndPad(self, size):
+        """
+        if showFrame is `vertical`:
+            if ratio(h) > :9:
+                `calcByH`
+            else:
+                `calcByW`
+        elif showFrame is `horizontal`:
+            if ratio(w) > :16:
+                `calcByW`
+            else:
+                `calcByH`
+        """
+        w, h = size
+        r = w / h
+        if w > h and r >= 16 / 9:
+            return self.calcSizeByWidth(r)
+        else:
+            return self.calcSizeByHeight(r)
+
+    def calcSizeByWidth(self, r):
+        nW = self.cell_width
+        nH = int(nW / r)
+        pdx = 0
+        pdy = int((self.top_height - nH) / 2)
+        return nW, nH, pdx, pdy
+
+    def calcSizeByHeight(self, r):
+        nH = self.top_height
+        nW = int(nH * r)
+        pdx = int((self.cell_width - nW) / 2)
+        pdy = 0
+        return nW, nH, pdx, pdy
 
     def initBOTTOM(self):
         self.bottom = tk.Frame(
@@ -89,7 +120,7 @@ class P300(tk.Frame):
         )
         self.bottom.pack(side=tk.BOTTOM, fill=tk.X)
         # label
-        lbl_name = PLabel(
+        self.lbl_name = PLabel(
             self.bottom,
             text=urllib.parse.unquote(self.PV301),
             justify=tk.LEFT,
@@ -98,7 +129,8 @@ class P300(tk.Frame):
             font=UI.TXT_FONT,
             fg="#000",
         )
-        lbl_name.pack(side=tk.LEFT)
+        ToolTip(self.lbl_name, urllib.parse.unquote(self.PV301))
+        self.lbl_name.pack(side=tk.LEFT)
 
         if self.parentTab.keyManager.existedKey(self.PP300):
             self.packCheckExisted()
@@ -120,8 +152,6 @@ class P300(tk.Frame):
             self.bottom,
             text="Get Key",
             relief=tk.FLAT,
-            padx=5,
-            pady=5,
             command=self.genarateKeyAndSave,
             font=UI.TXT_FONT,
             cursor="hand2",
@@ -129,7 +159,7 @@ class P300(tk.Frame):
             fg="#fff",
         )
         self.btnGetKey.configure(width=7)
-        self.btnGetKey.pack(side=tk.RIGHT, padx=5, pady=5)
+        self.btnGetKey.pack(side=tk.RIGHT, padx=1, pady=1)
 
     def packCheckExisted(self):
         # already
@@ -152,7 +182,7 @@ class P300(tk.Frame):
         )
         self.lblExisted.image = imChk
         self.lblExisted.pack(side=tk.RIGHT, padx=5, pady=5)
-        ToolTip(self.lblExisted, "Can get key at: " + timeTooltipStr)
+        ToolTip(self.lblExisted, "Can get key from: " + timeTooltipStr)
 
     def genarateKeyAndSave(self):
         if not self.parentTab.keyManager.existedKey(self.PP300):
@@ -174,7 +204,7 @@ class P300(tk.Frame):
 
     def insertL300(self):
         l300 = L300_model()
-        ADDRESS, LAT, LONG = self.getLocObj()
+        ADDRESS, LAT, LONG = self.getLocation()
         liveObj = self.PO322["live"] if "live" in self.PO322 else {}
         fl300 = liveObj["FL300"] if "FL300" in liveObj else 0
         AV107 = store._get("NO133")["NV133_P"] if None != store._get("NO133") else ""
@@ -200,7 +230,7 @@ class P300(tk.Frame):
 
     def makeRTMP(self, l300):
         FO100BU = store.getCurrentActiveBusiness()
-        ADDRESS, LAT, LONG = self.getLocObj()
+        ADDRESS, LAT, LONG = self.getLocation()
         URL = f'rtmp://{l300["EDGE"]}/{l300["APP"]}/'
         STREAMKEY = (
             f'{FO100BU}.{l300["TOKEN"]}?token={l300["TOKEN"]}&SRC=WEB&FO100={FO100BU}&PL300={l300["PL300"]}&LN301={l300["LN301"]}&LV302={l300["LV302"]}'
@@ -214,7 +244,7 @@ class P300(tk.Frame):
 
         return URL, STREAMKEY
 
-    def getLocObj(self):
+    def getLocation(self):
         locObj = (
             store._get("NO123")
             if store._get("NO123")

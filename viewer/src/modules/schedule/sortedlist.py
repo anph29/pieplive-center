@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from .scheduleddlist import ScheduleDDList
 from src.modules.custom import DDList
-from src.utils import helper, scryto
+from src.utils import helper, scryto, store
 from src.modules.custom import ToolTip
 from PIL import Image, ImageTk
 from src.modules.mediaitem import ScheduleHeadItem, ScheduleHeadItemEdit
@@ -16,6 +16,7 @@ class SortedList(ScheduleDDList):
         self.wrapperWidth = 300
         self.tbBgColor = "#E8DAEF"
         self.titleTxt = "Schedule List"
+        self.keyLock = "schedule_sorted_lock"
         self.initUI()
 
     def initUI(self):
@@ -25,7 +26,11 @@ class SortedList(ScheduleDDList):
     def showListSchedule(self):
         # 1. default
         self.addToScheduleGUI(
-            {"path": "", "id": "STORE_SCHEDULE", "name": "RUNNING SCHEDULE"}
+            {
+                "path": "",
+                "id": "STORE_SCHEDULE",
+                "name": f"{store._get('RUNNING_SCHEDULE')}",
+            }
         )
         # 2. list
         self._LS_SCHEDULE_DATA = self.loadSchedule()

@@ -6,6 +6,7 @@ class MediaType(Enum):
     VIDEO       = 3
     PRESENTER   = 4
     SCHEDULE    = 5
+    AUDIO       = 6
     
 class MediaProp(Enum):
     ID          = 'id'

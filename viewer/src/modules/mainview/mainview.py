@@ -57,7 +57,7 @@ class MainView(tk.Frame):
                 },
                 "sub.TNotebook": {"configure": {"background": "#F4ECF7"}},  # big zone
                 "sub.TNotebook.Tab": {  # tab head
-                    "configure": {"padding": [15, 7, 15, 7], "background": "#F4E6F9"}
+                    "configure": {"padding": [10, 7, 10, 7], "background": "#F4E6F9"}
                 }
                 #
             },
@@ -132,15 +132,15 @@ class MainView(tk.Frame):
         self.superWrapper.add(
             self.mediaList, text="Live View", image=icMedia, compound=tk.LEFT
         )
+        #
+        self.superWrapper.select(self.schedule)
+        self.superWrapper.enable_traversal()
 
     def packCOMtab(self):
         icCom = tk.PhotoImage(file=helper._ICONS_PATH + "se-icon.png")
         self.tabCOM = COMWrapper(self)
         self.tabCOM.image = icCom
         self.superWrapper.add(self.tabCOM, text="C.O.M", image=icCom, compound=tk.LEFT)
-        #
-        self.superWrapper.select(self.tabCOM)
-        self.superWrapper.enable_traversal()
 
     def makeMediaListTab(self):
         # 0
@@ -157,11 +157,16 @@ class MainView(tk.Frame):
         self.tab_video.image = icVid
         mediaListTab.add(self.tab_video, text="Videos", image=icVid, compound=tk.LEFT)
         # 3
+        icVid = tk.PhotoImage(file=helper._ICONS_PATH + "ic_audio.png")
+        self.tab_video = self.makeMediaGrid(MediaType.AUDIO)
+        self.tab_video.image = icVid
+        mediaListTab.add(self.tab_video, text="Audios", image=icVid, compound=tk.LEFT)
+        # 4
         icCam = tk.PhotoImage(file=helper._ICONS_PATH + "ic_camera.png")
         self.tab_camera = self.makeMediaGrid(MediaType.CAMERA)
         self.tab_camera.image = icCam
         mediaListTab.add(self.tab_camera, text="Cameras", image=icCam, compound=tk.LEFT)
-        # 4
+        # 5
         icPres = tk.PhotoImage(file=helper._ICONS_PATH + "ic_presenter.png")
         self.tab_presenter = self.makeMediaGrid(MediaType.PRESENTER)
         self.tab_presenter.image = icPres

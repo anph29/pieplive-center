@@ -9,6 +9,7 @@ from threading import Thread, Event
 from kivy.lang import Builder
 from functools import partial
 from src.utils import helper, kivyhelper
+from src.modules import constants
 
 kv = '''
 <KivyCameraMini>:
@@ -74,12 +75,12 @@ class KivyCameraMini(DragBehavior, Image):
         self.url = input['url']
         self.resource_type = input['type']
         self.category = category
+        self.reconnect = 0
         self.buffer_rate = 0
         self.duration_total = 0
         self.duration_current = 0
         self.duration_total_n = 1
         self.duration_fps = 25
-        
         if self.pipe is not None:
             self.pipe.kill()
         if self.capture is not None:
@@ -89,7 +90,8 @@ class KivyCameraMini(DragBehavior, Image):
         fps = 25
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.resource_type == 'MP4':
-                timenow = datetime.datetime.now().strftime("%d%m%y%H%M%S")
+                # timenow = datetime.datetime.now().strftime("%d%m%y%H%M%S")
+                timenow = datetime.datetime.timestamp(datetime.datetime.now())
                 output = helper._BASE_PATH+'temp/{}.flv'.format(timenow)
                 try:
                     _cap = cv2.VideoCapture(self.url)
@@ -107,20 +109,20 @@ class KivyCameraMini(DragBehavior, Image):
                     print("Exception:", e)
 
                 timeout = 1
-                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
-                if self.category == "PRESENTER":
+                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25","-threads","2",output]
+                if self.category == constants.LIST_TYPE_PRESENTER:
                     self.url = self.data_src['rtmp']
                     timeout=2
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000","-preset","medium","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000","-preset","medium","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25","-threads","2",output]
                 elif self.resource_type == "M3U8":
                     timeout=1
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-ar","44100", "-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-ar","44100", "-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25","-threads","2",output]
                 elif self.resource_type == "RTSP":
                     timeout=1
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1","-acodec", "copy", "-vcodec", "copy","-r","25",output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1","-acodec", "copy", "-vcodec", "copy","-r","25","-threads","2",output]
                 else:
                     if fps < 25:
-                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25","-threads","2",output]
                     
                 si = subprocess.STARTUPINFO()
                 si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
@@ -172,7 +174,7 @@ class KivyCameraMini(DragBehavior, Image):
             else:
                 if self.capture is not None:
                     self.capture.release()
-                if self.reconnect >= 10:
+                if self.reconnect >= 20:
                     self.show_captured_img(self.default_frame)
                     kivyhelper.getApRoot().loadingMini = False
                 else:
@@ -206,7 +208,8 @@ class KivyCameraMini(DragBehavior, Image):
             if self.capture.isOpened():
                 if not self.capture.grab():
                     kivyhelper.getApRoot().mini_display_status(False)
-                    # self.f_parent.hide_camera_mini()
+                    if 'list' in self.data_src and self.data_src['list'] == constants.LIST_TYPE_PRESENTER and kivyhelper.getApRoot().showMiniD is True and kivyhelper.getApRoot().right_content.tab_presenter.ls_presenter.check_is_online(self.data_src['id']) is False:
+                        self.f_parent.hide_camera_mini(False)
                 else:
                     ret, frame = self.capture.retrieve()
                     if ret:
@@ -220,7 +223,7 @@ class KivyCameraMini(DragBehavior, Image):
 
     def update_texture_from_frame(self, frame):
         try:
-            # frame = self.resizeFrame(frame)
+            frame = self.resizeFrame(frame)
             texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
             texture.flip_vertical()
             # buf = cv2.flip(frame, 0).tostring()

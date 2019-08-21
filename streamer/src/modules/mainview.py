@@ -2,16 +2,16 @@ from kivy.uix.widget import Widget
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
 from src.modules.bottomleft.bottomleft import TextDialog
 from src.modules.bottomleft.bottomleft import ImageDialog
-# from src.modules.bottomleft.bottomleft import AudioDialog
 from src.modules.custom.addschedule import AddSchedule
 from src.modules.kvsetting import KVSetting
 from src.modules.mainstream import MainStream
 from src.utils import helper, scryto, firebase, store
 from kivy.lang import Builder
-from kivy.clock import Clock
+from kivy.clock import Clock, mainthread
 import sounddevice as sd
 from src.models.normal_model import Normal_model
 from src.models import P300_model, Socket_model
+from src.modules import constants
 import json
 
 
@@ -23,6 +23,7 @@ class MainView(Widget):
     btn_start = ObjectProperty()
     btn_display_mini = ObjectProperty()
     btn_switch = ObjectProperty()
+    btn_mode = ObjectProperty()
     login_popup = ObjectProperty()
     right_content = ObjectProperty()
     videoBuffer = ObjectProperty()
@@ -41,6 +42,7 @@ class MainView(Widget):
     p300 = None
     notifyAble = BooleanProperty(False)
     delaySwitchDisplay = NumericProperty(15)
+    modeStream = StringProperty(constants.MODES_NORMAL)
 
     def __init__(self, **kwargs):
         super(MainView, self).__init__(**kwargs)
@@ -50,6 +52,7 @@ class MainView(Widget):
         self.f_height = 720
         self.setting = None
         self.src_selecting = ''# dang chay source cua list nao
+        self.switchDisplayAuto = None
 
     def on_start(self):
         self.mainStream._load()
@@ -130,10 +133,10 @@ class MainView(Widget):
             if 'id' not in _s:
                 _s['id'] = scryto.hash_md5_with_time('')
                 self.lsSource[idx]['id'] = _s['id']
-            if _s['type'] == 'text':
+            if _s['type'] == constants.SOURCE_STATIC_TEXT:
                 self.mainStream.show_text( _s['id'], _s['label'], _s['font'], _s['size'],
                                         _s['color'], _s['pos_x'], _s['pos_y'], _s['active'], True)
-            elif _s['type'] == 'image':
+            elif _s['type'] == constants.SOURCE_STATIC_IMAGE:
                 self.mainStream.show_image( _s['id'], _s['src'], _s['pos_x'], _s['pos_y'], _s['width'], _s['height'], _s['active'], True)
 
         self.bottom_left.list_source.set_source(self.lsSource)
@@ -198,6 +201,20 @@ class MainView(Widget):
     def change_auto_stop(self, val):
         self.autoStop = val
 
+    def change_mode(self, val):
+        if val in constants.MODES:
+            self.modeStream = val
+            if val == constants.MODES_NORMAL:
+                self.btn_mode.text = 'Normal'
+                self.mainStream.change_displaymini_size(constants.MODES_NORMAL)
+            elif val == constants.MODES_ONLYMAIN:
+                self.btn_mode.text = 'Only main audio'
+                self.mainStream.change_displaymini_size(constants.MODES_ONLYMAIN)
+
+    def change_presenter_auto(self, val):
+        self.presenterAuto = val
+        self._interval_switch_display()
+
     def main_display_status(self, val):
         self.mainDisplayStt = val
         if self.mainStream.isStream is True and self.autoStop is True:
@@ -210,6 +227,7 @@ class MainView(Widget):
             if self.mainDisplayStt is False and self.miniDisplayStt is False and self.right_content.tab_presenter.ls_presenter.get_number_active() == 0 :
                 self.triggerStop()
 
+    @mainthread
     def start_stream(self):
         if self.mainStream.isStream is False:
             if len(self.streamServer) == 0 or len(self.streamKey) == 0:
@@ -221,6 +239,8 @@ class MainView(Widget):
                 self.mainStream.startStream()
                 self.btn_start.text = "Stop"
                 self.btn_start.background_color = .29, .41, .15, 0.9
+                self.send_info_to_app()
+                self._interval_switch_display()
         elif self.mainStream.isStream is True:
             self.mainStream.stopStream()
             self.btn_start.text = "Start"
@@ -290,6 +310,12 @@ class MainView(Widget):
         except:
             pass
 
+    def _interval_switch_display(self):
+        if self.switchDisplayAuto is not None:
+            self.switchDisplayAuto.cancel()
+        if self.mainStream.isStream is True and self.modeStream == constants.MODES_ONLYMAIN and self.presenterAuto is True:
+            self.switchDisplayAuto = Clock.schedule_interval(self.switch_display_auto, 30)
+
     def save_setting(self, stream_server, stream_key, play, p300):
         self.streamServer = self.setting['stream_server'] = stream_server
         self.streamKey = self.setting['stream_key'] = stream_key
@@ -308,7 +334,7 @@ class MainView(Widget):
             self.showMiniD = False
             self.btn_display_mini.text = "Show Display mini"
             self.btn_display_mini.background_color = .29, .41, .55, 1
-            self.mainStream.hide_camera_mini()
+            self.mainStream.hide_camera_mini(True)
 
         self.switchDisplay = False
         self.btn_switch.background_color = .29, .41, .55, 1
@@ -323,7 +349,7 @@ class MainView(Widget):
                 self.btn_switch.background_color = .29, .41, .55, 1
             self.mainStream.switch_display()
 
-    def switch_display_auto(self):
+    def switch_display_auto(self, dt):
         if self.showMiniD is True:
             if self.switchDisplay is False:
                 self.switchDisplay = True
@@ -337,6 +363,8 @@ class MainView(Widget):
         self.mainStream.stopStream()
         self.btn_start.text = "Start"
         self.btn_start.background_color = .29, .41, .55, 1
+        if bool(self.p300):
+            firebase.setP300AfterStartStream({"PP300":0})
 
     def on_off_source(self, index, value):
         ite = self.lsSource[index]
@@ -360,7 +388,7 @@ class MainView(Widget):
         if index == -1:
             text = {
                 "id": scryto.hash_md5_with_time(label.replace('\\', '/')),
-                "type": "text",
+                "type": constants.SOURCE_STATIC_TEXT,
                 "active": 1,
                 "name": name,
                 "label": label,
@@ -393,7 +421,7 @@ class MainView(Widget):
         if index == -1:
             image = {
                 "id": scryto.hash_md5_with_time(src.replace('\\', '/')),
-                "type": "image",
+                "type": constants.SOURCE_STATIC_IMAGE,
                 "active": 1,
                 "name": name,
                 "src": src,
@@ -439,10 +467,10 @@ class MainView(Widget):
 
     def on_edit_source(self,index):
         ite = self.lsSource[index]
-        if ite['type'] == 'image':
+        if ite['type'] == constants.SOURCE_STATIC_IMAGE:
             obj = ImageDialog(self, ite, index)
             obj.open()
-        elif ite['type'] == 'text':
+        elif ite['type'] == constants.SOURCE_STATIC_TEXT:
             obj = TextDialog(self, ite, index)
             obj.open()
     
@@ -452,19 +480,19 @@ class MainView(Widget):
 
     def refresh_select_source(self, type):
         if self.src_selecting != '' and self.src_selecting != type:
-            if self.src_selecting == 'VIDEO':
+            if self.src_selecting == constants.LIST_TYPE_VIDEO:
                 self.right_content.tab_media.ls_media.item_playing = ''
                 self.right_content.tab_media.ls_media.set_data()
-            elif self.src_selecting == 'IMAGE':
+            elif self.src_selecting == constants.LIST_TYPE_IMAGE:
                 self.right_content.tab_image.ls_image.item_playing = ''
                 self.right_content.tab_image.ls_image.set_data()
-            elif self.src_selecting == 'CAMERA':
+            elif self.src_selecting == constants.LIST_TYPE_CAMERA:
                 self.right_content.tab_camera.ls_camera.item_playing = ''
                 self.right_content.tab_camera.ls_camera.set_data()
-            elif self.src_selecting == 'PRESENTER':
+            elif self.src_selecting == constants.LIST_TYPE_PRESENTER:
                 self.right_content.tab_presenter.ls_presenter.item_playing = ''
                 self.right_content.tab_presenter.ls_presenter.set_data()
-            elif self.src_selecting == 'SCHEDULE':
+            elif self.src_selecting == constants.LIST_TYPE_SCHEDULE:
                 self.right_content.tab_schedule.ls_schedule.item_playing = ''
                 self.right_content.tab_schedule.ls_schedule.set_data()
         self.src_selecting = type

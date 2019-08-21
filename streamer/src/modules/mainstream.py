@@ -1,6 +1,6 @@
 from src.utils import helper, kivyhelper
 from threading import Thread, Event
-from kivy.clock import Clock
+from kivy.clock import Clock, mainthread
 from kivy.graphics import Fbo, ClearColor, ClearBuffers, Scale, Translate, Canvas, Color, Rectangle
 from kivy.uix.relativelayout import RelativeLayout
 from src.modules.kvcam.kivycameramain import KivyCameraMain
@@ -10,6 +10,7 @@ from src.modules.custom.piepimage import PiepImage
 from kivy.properties import ObjectProperty,NumericProperty
 from kivy.lang import Builder
 from src.models.normal_model import Normal_model
+from src.modules import constants
 import subprocess, cv2, time, array, os, datetime
 import numpy as np
 
@@ -20,26 +21,12 @@ class MainStream(RelativeLayout):
     f_parent= ObjectProperty(None)
     typeSwitch = NumericProperty(0)
     _thread = None
-    texture = ObjectProperty(None, allownone=True)
+    sizeMini = [426,246]
 
     def __init__(self, **kwargs):
         super(MainStream, self).__init__(**kwargs)
         self.f_width = 1280
         self.f_height = 720
-
-        # self.canvas = Canvas()
-        # with self.canvas:
-        #     self.fbo = Fbo(size=(self.f_width, self.f_height))
-        #     self.fbo_color = Color(1, 1, 1, 1)
-        #     self.fbo_rect = Rectangle()
-
-        # with self.fbo:
-        #     ClearColor(0, 0, 0, 0)
-        #     ClearBuffers()
-        #     # Scale(1, -1, 1)
-        #     # Translate(-self.x, -self.y - self.f_height, 0)
-        # self.texture = self.fbo.texture
-
         self.capture = None
         self.fps = 25
         self.v_bitrate = "4M"
@@ -52,6 +39,7 @@ class MainStream(RelativeLayout):
         self.pipe2 = None
         self.command = []
         self.event = None
+        self.switchDisplayAuto = None
         self.canvas_parent_index = 0
         self.reconnect = 0
         self.streamType = ''
@@ -62,37 +50,15 @@ class MainStream(RelativeLayout):
 
     def _load(self):
         pass
-    
-    # def add_widget(self, *largs):
-    #     canvas = self.canvas
-    #     self.canvas = self.fbo
-    #     ret = super(MainStream, self).add_widget(*largs)
-    #     self.canvas = canvas
-    #     return ret
-
-    # def remove_widget(self, *largs):
-    #     canvas = self.canvas
-    #     self.canvas = self.fbo
-    #     super(MainStream, self).remove_widget(*largs)
-    #     self.canvas = canvas
-
-    # def on_size(self, instance, value):
-    #     self.fbo.size = value
-    #     self.texture = self.fbo.texture
-    #     self.fbo_rect.size = value
-
-    # def on_pos(self, instance, value):
-    #     self.fbo_rect.pos = value
-
-    # def on_texture(self, instance, value):
-    #     self.fbo_rect.texture = value
 
     def show_camera_mini(self):
-        self.cameraMini.opacity = 1
+        if self.f_parent.modeStream == constants.MODES_NORMAL:
+            self.cameraMini.opacity = 1
 
-    def hide_camera_mini(self):
-        if self.cameraMini.capture is not None:
-            self.refresh_stream()
+    def hide_camera_mini(self, is_refresh):
+        if is_refresh is True:
+            if self.cameraMini.capture is not None:
+                self.refresh_stream()
         self.cameraMini.opacity = 0
         self.cameraMini.release()
         try:
@@ -102,8 +68,8 @@ class MainStream(RelativeLayout):
                 self.typeSwitch = 0
                 self.camera.width = 1280
                 self.camera.height = 720
-                self.cameraMini.width = 426#320
-                self.cameraMini.height = 246#180
+                self.cameraMini.width = self.sizeMini[0]
+                self.cameraMini.height = self.sizeMini[1]
                 self.cameraMini.pos = self.camera.pos
                 self.camera.pos = (0,0)
                 self.add_widget(self.cameraMini,0)
@@ -112,8 +78,21 @@ class MainStream(RelativeLayout):
             pass
 
     def switch_display_auto(self):
-        if self.cameraMini.opacity != 0:
+        if self.f_parent.showMiniD is True:
             self.switch_display()
+
+    def change_displaymini_size(self, type):
+        if self.f_parent is not None and self.f_parent.showMiniD is True:
+            if type == constants.MODES_NORMAL:
+                self.camera.opacity = 1
+                self.cameraMini.opacity = 1
+            elif type == constants.MODES_ONLYMAIN:
+                if self.typeSwitch == 1:
+                    self.camera.opacity = 0
+                    self.cameraMini.opacity = 1
+                else:
+                    self.cameraMini.opacity = 0
+                    self.camera.opacity = 1
 
     def switch_display(self):
         try:
@@ -121,24 +100,36 @@ class MainStream(RelativeLayout):
             self.remove_widget(self.cameraMini)
             if self.typeSwitch == 0:
                 self.typeSwitch =1
-                self.camera.width = 426#320
-                self.camera.height = 246#180
+                self.camera.width = self.sizeMini[0]
+                self.camera.height = self.sizeMini[1]
                 self.cameraMini.width = 1280
                 self.cameraMini.height = 720
                 self.camera.pos = self.cameraMini.pos
                 self.cameraMini.pos = (0,0)
                 self.add_widget(self.camera,0)
                 self.add_widget(self.cameraMini,1)
+                if self.f_parent.modeStream == constants.MODES_ONLYMAIN:
+                    self.camera.opacity = 0
+                    self.cameraMini.opacity = 1
+                else:
+                    self.camera.opacity = 1
+                    self.cameraMini.opacity = 1
             elif self.typeSwitch == 1:
                 self.typeSwitch = 0
                 self.camera.width = 1280
                 self.camera.height = 720
-                self.cameraMini.width = 426#320
-                self.cameraMini.height = 246#180
+                self.cameraMini.width = self.sizeMini[0]
+                self.cameraMini.height = self.sizeMini[1]
                 self.cameraMini.pos = self.camera.pos
                 self.camera.pos = (0,0)
                 self.add_widget(self.cameraMini,0)
                 self.add_widget(self.camera,1)
+                if self.f_parent.modeStream == constants.MODES_ONLYMAIN:
+                    self.camera.opacity = 1
+                    self.cameraMini.opacity = 0
+                else:
+                    self.camera.opacity = 1
+                    self.cameraMini.opacity = 1
         except:
             pass
     
@@ -174,6 +165,8 @@ class MainStream(RelativeLayout):
         try:
             if self.event is not None:
                 self.event.cancel()
+            if self.switchDisplayAuto is not None:
+                self.switchDisplayAuto.cancel()
 
             self.fbo = Fbo(size=(self.f_width, self.f_height))
             with self.fbo:
@@ -184,27 +177,23 @@ class MainStream(RelativeLayout):
             self.fbo.add(self.canvas)
     
             self.isStream = True
-            self._process()
+            self.event = Clock.schedule_interval(self.stream, 1/25)
         except IOError:
             kivyhelper.getApRoot().triggerStop()
-
-    def _process(self):
-        self.event = Clock.schedule_interval(self.stream, 1/25)
-        self.f_parent.send_info_to_app()
 
     def stream(self, fps):
         try:
             if self.isStream:
-                # if self.parent is not None:
-                #     self.canvas_parent_index = self.parent.canvas.indexof(self.canvas)
-                #     if self.canvas_parent_index > -1:
-                #         self.parent.canvas.remove(self.canvas)
-                # self.fbo.add(self.canvas)
+                if self.parent is not None:
+                    self.canvas_parent_index = self.parent.canvas.indexof(self.canvas)
+                    if self.canvas_parent_index > -1:
+                        self.parent.canvas.remove(self.canvas)
+                self.fbo.add(self.canvas)
                 self.fbo.draw()
                 self.pipe.stdin.write(self.fbo.pixels)
-                # self.fbo.remove(self.canvas)
-                # if self.parent is not None and self.canvas_parent_index > -1:
-                #     self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
+                self.fbo.remove(self.canvas)
+                if self.parent is not None and self.canvas_parent_index > -1:
+                    self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
                 self.reconnect = 0
         except:
             self.stopStream()
@@ -221,15 +210,18 @@ class MainStream(RelativeLayout):
             if bool(self.prepare()):
                 self.startStream()
     
+    @mainthread
     def stopStream(self):
         self.isStream = False
         if self.event is not None:
             self.event.cancel()
         if self.pipe is not None:
             self.pipe.kill()
+        if self.switchDisplayAuto is not None:
+            self.switchDisplayAuto.cancel()
         self.fbo.remove(self.canvas)
-        # if self.parent is not None and self.canvas_parent_index > -1:
-        #     self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
+        if self.parent is not None and self.canvas_parent_index > -1:
+            self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
         print("--- STOP ---")
         
     def set_url_stream(self, urlStream):
@@ -259,7 +251,7 @@ class MainStream(RelativeLayout):
                 txt += f"[{numau}:a]volume=2[a{numau}];"
                 _map += f'[a{numau}]'
 
-        if self.f_parent.showMiniD is True and (self.cameraMini.resource_type == "M3U8" or self.cameraMini.resource_type == "VIDEO" or self.cameraMini.resource_type == "MP4"):
+        if self.f_parent.showMiniD is True and (self.cameraMini.resource_type == "M3U8" or self.cameraMini.resource_type == "VIDEO" or self.cameraMini.resource_type == "MP4") and self.f_parent.modeStream == 'NORMAL':
             _url = self.cameraMini.url
             if os.path.exists(_url):
                 numau += 1
@@ -301,14 +293,14 @@ class MainStream(RelativeLayout):
 
     def prepare(self):
         try:
-            self.command = ['ffmpeg/ffmpeg.exe','-y','-framerate', '25','-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', '{}x{}'.format(self.f_width, self.f_height), '-i', '-']
+            self.command = ['ffmpeg/ffmpeg.exe','-y',"-re",'-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', '{}x{}'.format(self.f_width, self.f_height), '-i', '-']
             
             self.command.extend(self.draw_element())
 
             # encode
             self.command.extend(['-vb', str(self.v_bitrate),'-r', '25', '-pix_fmt', 'yuv420p'])
 
-            self.command.extend(["-vf", "fps=25"])
+            self.command.extend(["-vf", "fps=25","-strict","-2"])
             
             # tream
             self.command.extend(['-f', 'flv', self.urlStream])
@@ -340,6 +332,8 @@ class MainStream(RelativeLayout):
                 self.pipe2.kill()
             if self.mgrSchedule is not None:
                 self.mgrSchedule.cancel()
+            if self.switchDisplayAuto is not None:
+                self.switchDisplayAuto.cancel()
 
             self.deleteAllFile()
             

@@ -75,19 +75,19 @@ class KivyCameraMain(Image):
                 timenow = datetime.datetime.timestamp(datetime.datetime.now())
                 output = helper._BASE_PATH+'temp/{}.flv'.format(timenow)
                 try:
-                    _cap = cv2.VideoCapture(self.url)
-                    if _cap.isOpened():
-                        fps = _cap.get(cv2.CAP_PROP_FPS)
-                        print('============',fps,'==========')
-                        if self.resource_type == 'VIDEO' or self.resource_type == 'MP4':
-                            if fps >= 25:
-                                self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
-                                self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)
-                                dura = int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS))
-                            else:
-                                self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
-                                self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/25
-                                dura = int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/25)
+                    if self.resource_type == 'VIDEO' or self.resource_type == 'MP4' or self.resource_type == "M3U8":
+                        _cap = cv2.VideoCapture(self.url)
+                        if _cap.isOpened():
+                            fps = _cap.get(cv2.CAP_PROP_FPS)
+                            if self.resource_type == 'VIDEO' or self.resource_type == 'MP4':
+                                if fps >= 25:
+                                    self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
+                                    self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)
+                                    dura = int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS))
+                                else:
+                                    self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
+                                    self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/25
+                                    dura = int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/25)
                     del _cap
                 except Exception as e:
                     print("Exception:", e)

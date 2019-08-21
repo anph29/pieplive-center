@@ -89,14 +89,14 @@ class KivyCameraMini(DragBehavior, Image):
 
         fps = 25
         try:
-            if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.resource_type == 'MP4':
+            if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.resource_type == 'MP4' or self.resource_type == "RTSP":
                 timenow = datetime.datetime.timestamp(datetime.datetime.now())
                 output = helper._BASE_PATH+'temp/{}.flv'.format(timenow)
                 try:
-                    _cap = cv2.VideoCapture(self.url)
+                    if self.resource_type == 'VIDEO' or self.resource_type == 'MP4':
+                        _cap = cv2.VideoCapture(self.url)
                     if _cap.isOpened():
                         fps = _cap.get(cv2.CAP_PROP_FPS)
-                        if self.resource_type == 'VIDEO' or self.resource_type == 'MP4':
                             if fps >= 25:
                                 self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
                                 self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)

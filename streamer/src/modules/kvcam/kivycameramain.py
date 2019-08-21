@@ -71,7 +71,7 @@ class KivyCameraMain(Image):
         fps = 25
         dura = 0
         try:
-            if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.resource_type == 'MP4':# or self.resource_type == "RTSP":
+            if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.resource_type == 'MP4' or self.resource_type == "RTSP":# or self.resource_type == "IMG":
                 timenow = datetime.datetime.timestamp(datetime.datetime.now())
                 output = helper._BASE_PATH+'temp/{}.flv'.format(timenow)
                 try:
@@ -223,7 +223,7 @@ class KivyCameraMain(Image):
                 else:
                     ret, frame = self.capture.retrieve()
                     if ret:
-                        if self.resource_type == 'VIDEO' or self.resource_type == 'MP4' or self.resource_type == 'M3U8':
+                        if self.resource_type == 'VIDEO' or self.resource_type == 'MP4' or self.resource_type == 'M3U8' or self.resource_type == 'RTSP':
                             if self.resource_type == 'VIDEO' or self.resource_type == 'MP4':
                                 self.buffer_rate = self.capture.get(cv2.CAP_PROP_POS_FRAMES) / self.duration_total_n
                             self.duration_current = self.capture.get(cv2.CAP_PROP_POS_FRAMES)/self.capture.get(cv2.CAP_PROP_FPS)

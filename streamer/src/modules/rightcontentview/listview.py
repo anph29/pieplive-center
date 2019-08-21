@@ -612,6 +612,8 @@ class ListSchedule(RecycleView):
                     self.data[i]['timepoint'] = 0
                 if i > idx:
                     s += self.data[i-1]['duration']
+                    if s > 86400:
+                        s = s - 86400
                     self.data[i]['timepoint'] = s
         else:
             self.data = helper.calc_schedule_runtime(0,self.data)

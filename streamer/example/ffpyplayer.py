@@ -7,8 +7,7 @@ from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, Num
 from kivy.uix.image import Image
 from kivy.uix.boxlayout import BoxLayout
 
-from ffpyplayer import MediaPlayer
-import time
+import time, os
 import subprocess
 import numpy as np
 
@@ -38,13 +37,7 @@ class MyWidget(BoxLayout):
 
     def playff(self):
         video_path="C:/Users/Thong/Desktop/piep-source/videos/anh-thuong-em-nhat-ma-30.mp4"
-
-        player = MediaPlayer(video_path)
-        val = ''
-        while val != 'eof':
-            frame, val = player.get_frame()
-            if val != 'eof' and frame is not None:
-                img, t = frame
+        os.system("/ffmpeg/ffplay.exe " + video_path)
 
 class TestApp(App):
     

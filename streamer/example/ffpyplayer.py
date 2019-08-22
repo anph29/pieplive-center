@@ -1,6 +1,3 @@
-import cv2, subprocess
-import numpy as np
-
 import kivy
 
 from kivy.app import App
@@ -9,9 +6,11 @@ from kivy.lang import Builder
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
 from kivy.uix.image import Image
 from kivy.uix.boxlayout import BoxLayout
-import ffpyplayer
-from ffpyplayer.player import MediaPlayer
+
+from ffpyplayer import MediaPlayer
 import time
+import subprocess
+import numpy as np
 
 
 

@@ -93,7 +93,7 @@ class KivyCameraMini(DragBehavior, Image):
                 timenow = datetime.datetime.timestamp(datetime.datetime.now())
                 output = helper._BASE_PATH+'temp/{}.flv'.format(timenow)
                 try:
-                    if self.resource_type == 'VIDEO' or self.resource_type == 'MP4' or self.resource_type == "M3U8":
+                    if self.resource_type == 'VIDEO' or self.resource_type == 'MP4' or (self.resource_type == "M3U8" and self.category != constants.LIST_TYPE_PRESENTER):
                         _cap = cv2.VideoCapture(self.url)
                         if _cap.isOpened():
                             fps = _cap.get(cv2.CAP_PROP_FPS)
@@ -158,10 +158,6 @@ class KivyCameraMini(DragBehavior, Image):
                 kivyhelper.getApRoot().loadingMini = False
                 kivyhelper.getApRoot().mini_display_status(True)
                 self.reconnect = 0
-                self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-                self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-                # if self.resource_type != 'VIDEO' and self.resource_type != "M3U8":
-                # self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
                 self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
                 if self.f_parent is not None:
                     if self.resource_type == "M3U8" or self.resource_type == "VIDEO":
@@ -223,10 +219,11 @@ class KivyCameraMini(DragBehavior, Image):
 
     def update_texture_from_frame(self, frame):
         try:
+            if self.resource_type in ["IMG","GIF"]:
+                frame = self.resizeFrame(frame)
             frame = self.resizeFrame(frame)
             texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
             texture.flip_vertical()
-            # buf = cv2.flip(frame, 0).tostring()
             texture.blit_buffer(frame.tostring(), colorfmt='bgr', bufferfmt='ubyte')
             self.texture = texture
             del frame, texture
@@ -243,7 +240,7 @@ class KivyCameraMini(DragBehavior, Image):
     def resizeFrame(self, frame):
         if frame is None:
             return frame
-        if frame.shape[1] >= 1280:
+        if frame.shape[0] >= 720:
             return frame
             
         h, w, c = frame.shape

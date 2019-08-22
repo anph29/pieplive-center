@@ -56,7 +56,7 @@ class MainStream(RelativeLayout):
             self.cameraMini.opacity = 1
 
     def hide_camera_mini(self, is_refresh):
-        if is_refresh is True:
+        if is_refresh is True and self.f_parent.modeStream == constants.MODES_NORMAL:
             if self.cameraMini.capture is not None:
                 self.refresh_stream()
         self.cameraMini.opacity = 0
@@ -251,7 +251,7 @@ class MainStream(RelativeLayout):
                 txt += f"[{numau}:a]volume=2[a{numau}];"
                 _map += f'[a{numau}]'
 
-        if self.f_parent.showMiniD is True and (self.cameraMini.resource_type == "M3U8" or self.cameraMini.resource_type == "VIDEO" or self.cameraMini.resource_type == "MP4") and self.f_parent.modeStream == 'NORMAL':
+        if self.f_parent.showMiniD is True and (self.cameraMini.resource_type == "M3U8" or self.cameraMini.resource_type == "VIDEO" or self.cameraMini.resource_type == "MP4") and self.f_parent.modeStream == constants.MODES_NORMAL:
             _url = self.cameraMini.url
             if os.path.exists(_url):
                 numau += 1

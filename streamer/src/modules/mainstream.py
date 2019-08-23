@@ -42,6 +42,7 @@ class MainStream(RelativeLayout):
         self.command = []
         self.event = None
         self.switchDisplayAuto = None
+        self.typeSwitch = 0
         self.canvas_parent_index = 0
         self.reconnect = 0
         self.streamType = ''
@@ -98,10 +99,8 @@ class MainStream(RelativeLayout):
 
     def switch_display(self):
         try:
-            self.remove_widget(self.camera)
-            self.remove_widget(self.cameraMini)
-            self.camera._id = -1
-            self.cameraMini._id = -1
+            self.rl_main.remove_widget(self.camera)
+            self.rl_main.remove_widget(self.cameraMini)
             if self.typeSwitch == 0:
                 self.typeSwitch =1
                 self.camera.width = self.sizeMini[0]
@@ -110,8 +109,8 @@ class MainStream(RelativeLayout):
                 self.cameraMini.height = 720
                 self.camera.pos = self.cameraMini.pos
                 self.cameraMini.pos = (0,0)
-                self.add_widget(self.camera,0)
-                self.add_widget(self.cameraMini,1)
+                self.rl_main.add_widget(self.camera,0)
+                self.rl_main.add_widget(self.cameraMini,1)
                 if self.f_parent.modeStream == constants.MODES_ONLYMAIN:
                     self.camera.opacity = 0
                     self.cameraMini.opacity = 1
@@ -126,8 +125,8 @@ class MainStream(RelativeLayout):
                 self.cameraMini.height = self.sizeMini[1]
                 self.cameraMini.pos = self.camera.pos
                 self.camera.pos = (0,0)
-                self.add_widget(self.cameraMini,0)
-                self.add_widget(self.camera,1)
+                self.rl_main.add_widget(self.cameraMini,0)
+                self.rl_main.add_widget(self.camera,1)
                 if self.f_parent.modeStream == constants.MODES_ONLYMAIN:
                     self.camera.opacity = 1
                     self.cameraMini.opacity = 0

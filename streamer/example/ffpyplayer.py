@@ -25,6 +25,12 @@ kv ='''
         text:'Start'
         font_size: sp(12)
         on_press: root.playff()
+    VideoPlayer:
+        size_hint:None,None
+        width:460
+        height:340
+        source:'C:/Users/Thong/Desktop/piep-source/videos/anh-thuong-em-nhat-ma-30.mp4'
+        state:'play'
 
 '''
 Builder.load_string(kv)

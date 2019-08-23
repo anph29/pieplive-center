@@ -36,7 +36,8 @@ class MyWidget(BoxLayout):
         video_path="C:/Users/Thong/Desktop/piep-source/videos/anh-thuong-em-nhat-ma-30.mp4"
 
         cm = ["ffmpeg/ffplay.exe" , video_path]
-        subprocess.Popen(cm, shell=True)
+        cm = ["ffmpeg/ffmpeg.exe","-y","-i",video_path,"-filter_complex","scale=-1:720","-ar","44100","-ab", "128k","-vb",'4M',"-r","25","-"]
+        out = subprocess.Popen(cm, stdout=subprocess.PIPE).communicate()
 
 class TestApp(App):
     

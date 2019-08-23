@@ -508,6 +508,7 @@ class ListSchedule(RecycleView):
                 lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'duration': cam['duration'], 
                 'timepoint': cam['timepoint'] if 'timepoint' in cam else 0,
                 'audio': cam['audio'] if 'audio' in cam else '',
+                'audio_name': cam['audio_name'] if 'audio_name' in cam else '',
                 'list':constants.LIST_TYPE_SCHEDULE,
                 'active': (False,True) [cam['id'] == self.item_playing]},
                 helper._load_schedule()
@@ -527,7 +528,7 @@ class ListSchedule(RecycleView):
     def clean_data_to_save_json(self):
         return list(
             map(
-                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'duration': cam['duration'], 'timepoint': cam['timepoint'],'audio': cam['audio']},
+                lambda cam: {'id': cam['id'],'name': cam['name'], 'url': cam['url'], 'type': cam['type'], 'duration': cam['duration'], 'timepoint': cam['timepoint'],'audio': cam['audio'],'audio_name': cam['audio_name']},
                 list(self.data)
             )
         )
@@ -631,7 +632,8 @@ class ListSchedule(RecycleView):
         _audio = LinkAudio(_parent,idx, src, self.link_audio_result)
         _audio.open()
 
-    def link_audio_result(self,src, idx):
+    def link_audio_result(self, name, src, idx):
+        self.data[idx]['audio_name'] = name
         self.data[idx]['audio'] = src
         helper._write_schedule(self.clean_data_to_save_json())
         self.refresh_view()

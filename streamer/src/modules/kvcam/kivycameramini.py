@@ -113,7 +113,7 @@ class KivyCameraMini(DragBehavior, Image):
                 if self.category == constants.LIST_TYPE_PRESENTER:
                     self.url = self.data_src['rtmp']
                     timeout=2
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000","-preset","medium","-filter_complex","scale=-1:720,setsar=1","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-preset","medium","-filter_complex","scale=-1:720,setsar=1","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "M3U8":
                     timeout=1
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync", "1","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-filter_complex:0","scale=-1:720,setsar=1","-ar","44100", "-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",output]

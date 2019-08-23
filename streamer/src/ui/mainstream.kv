@@ -1,20 +1,28 @@
 
 <MainStream>:
+    rl_main:rl_main
+    rl_overlay:rl_overlay
     camera:camera
     cameraMini:cameraMini
-    KivyCameraMain:
-        id:camera
-        size_hint: None,None
-        width: 1280
-        height:720
-        idx:-1
+    RelativeLayout:
+        id:rl_main
+        size_hint: 1,1
         pos:0, 0
-    KivyCameraMini:
-        id:cameraMini
-        size_hint: None,None
-        width:426
-        height:240
-        idx:-1
-        y:10
-        x: root.width - 436
-        opacity:0
+        KivyCameraMain:
+            id:camera
+            size_hint: None,None
+            width: 1280
+            height:720
+            pos:0, 0
+        KivyCameraMini:
+            id:cameraMini
+            size_hint: None,None
+            width:426
+            height:240
+            y:10
+            x: root.width - 436
+            opacity:0
+    RelativeLayout:
+        id:rl_overlay
+        size_hint: 1,1
+        pos:0, 0

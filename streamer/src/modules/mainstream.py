@@ -16,6 +16,8 @@ import numpy as np
 
 Builder.load_file('src/ui/mainstream.kv')
 class MainStream(RelativeLayout):
+    rl_main= ObjectProperty()
+    rl_overlay= ObjectProperty()
     camera= ObjectProperty()
     cameraMini= ObjectProperty()
     f_parent= ObjectProperty(None)
@@ -98,6 +100,8 @@ class MainStream(RelativeLayout):
         try:
             self.remove_widget(self.camera)
             self.remove_widget(self.cameraMini)
+            self.camera._id = -1
+            self.cameraMini._id = -1
             if self.typeSwitch == 0:
                 self.typeSwitch =1
                 self.camera.width = self.sizeMini[0]
@@ -342,77 +346,88 @@ class MainStream(RelativeLayout):
             return False
 
     def on_change_Volume(self, id, value):
-        if id is not None and value is not None:
-            if id != -1:
-                pass
-                # for _s in self.lsSource:
-                #     if _s['id'] == id:
-                #         _s['volume'] = value
-                #         helper._write_lsStaticSource(self.lsSource)
-                #         break
-            else:
-                self.deviceVolume = value
+        try:
+            if id is not None and value is not None:
+                if id != -1:
+                    pass
+                    # for _s in self.lsSource:
+                    #     if _s['id'] == id:
+                    #         _s['volume'] = value
+                    #         helper._write_lsStaticSource(self.lsSource)
+                    #         break
+                else:
+                    self.deviceVolume = value
 
-            if self.isStream is True:
-                self.pipe.kill()
-                self.prepare()
+                if self.isStream is True:
+                    self.pipe.kill()
+                    self.prepare()
+        except:
+            pass
 
     def on_change_position(self, id, pos_x, pos_y, parentName):
         self.f_parent.on_change_position(id, pos_x, pos_y)
 
     def show_text(self, _id, text, font, size, color, pos_x, pos_y, active, new):
-        if new:
-            pText = PiepLabel(text='[color=' + str(color) + ']' + text + '[/color]',
-                            font_size=size,
-                            font_name=font,
-                            x=pos_x,
-                            y=pos_y,
-                            markup=True,
-                            opacity=active,
-                            _id=_id,
-                            parentName='main')
-            self.add_widget(pText)
-        else:
-            for child in self.children:
-                if child._id != None and child._id == _id:
-                    child.text = '[color=' + str(color) + ']' + text + '[/color]'
-                    child.font_size = str(size)
-                    child.font_name = font
-                    #child.x = pos_x
-                    #child.y = pos_y
-                    #child.markup = True
-                    #child.opacity = active
-                    #child.idx = idx
-                    break
-
+        try:
+            if new:
+                pText = PiepLabel(text='[color=' + str(color) + ']' + text + '[/color]',
+                                font_size=size,
+                                font_name=font,
+                                x=pos_x,
+                                y=pos_y,
+                                markup=True,
+                                opacity=active,
+                                _id=_id,
+                                parentName='main')
+                self.rl_overlay.add_widget(pText)
+            else:
+                for child in self.rl_overlay.children:
+                    if child._id != None and child._id == _id:
+                        child.text = '[color=' + str(color) + ']' + text + '[/color]'
+                        child.font_size = str(size)
+                        child.font_name = font
+                        #child.x = pos_x
+                        #child.y = pos_y
+                        #child.markup = True
+                        #child.opacity = active
+                        #child.idx = idx
+                        break
+        except:
+            pass
 
     def show_image(self, _id, src, pos_x, pos_y, w, h, active, new):
-        if new:
-            pimage = PiepImage(source=src,
-                            size_hint=(None,None),
-                            width=w,
-                            height=h,
-                            x=pos_x,
-                            y=pos_y,
-                            opacity=active,
-                            _id=_id,
-                            parentName='main')
-            self.add_widget(pimage)
-        else:
-            for child in self.children:
-                if child._id != None and child._id == _id:
-                    child.source = src
-                    child.size = (w, h)
-                    break
+        try:
+            if new:
+                pimage = PiepImage(source=src,
+                                size_hint=(None,None),
+                                width=w,
+                                height=h,
+                                x=pos_x,
+                                y=pos_y,
+                                opacity=active,
+                                _id=_id,
+                                parentName='main')
+                self.rl_overlay.add_widget(pimage)
+            else:
+                for child in self.rl_overlay.children:
+                    if child._id != None and child._id == _id:
+                        child.source = src
+                        child.size = (w, h)
+                        break
+        except:
+            pass
 
     def on_off_source(self, _id, value):
-        for child in self.children:
-            if child._id != None and child._id == _id:
-                if value:
-                    child.opacity = 1
-                else:
-                    child.opacity = 0
-                break
+        try:
+            for child in self.rl_overlay.children:
+                if child._id != None and child._id == _id:
+                    if value:
+                        child.opacity = 1
+                    else:
+                        child.opacity = 0
+                    break
+        except:
+            pass
 
     def on_change_audio(self):
         if self.isStream is True:
@@ -429,18 +444,21 @@ class MainStream(RelativeLayout):
             self.mgrSchedule = Clock.schedule_once(self.process_schedule , self.ls_schedule[index]['duration']+3)
     
     def process_schedule(self, fps):
-        self.ls_schedule = self.f_parent.right_content.tab_schedule.ls_schedule.get_data()
-        if self.mgrSchedule is not None:
-            self.mgrSchedule.cancel()
-        self.current_schedule = self.f_parent.right_content.tab_schedule.ls_schedule.getCurrentIndex() + 1
-        if self.current_schedule >= len(self.ls_schedule):
-            if self.is_loop:
-                self.current_schedule = 0
-            else:
-                return False
-        data_src = self.ls_schedule[self.current_schedule]
-        self.f_parent.right_content.tab_schedule.ls_schedule.setPlayed(self.current_schedule)
-        self._set_capture(data_src, 'SCHEDULE', True)
+        try:
+            self.ls_schedule = self.f_parent.right_content.tab_schedule.ls_schedule.get_data()
+            if self.mgrSchedule is not None:
+                self.mgrSchedule.cancel()
+            self.current_schedule = self.f_parent.right_content.tab_schedule.ls_schedule.getCurrentIndex() + 1
+            if self.current_schedule >= len(self.ls_schedule):
+                if self.is_loop:
+                    self.current_schedule = 0
+                else:
+                    return False
+            data_src = self.ls_schedule[self.current_schedule]
+            self.f_parent.right_content.tab_schedule.ls_schedule.setPlayed(self.current_schedule)
+            self._set_capture(data_src, 'SCHEDULE', True)
+        except:
+            pass
 
     def loop_schedule(self,_val):
         self.is_loop = _val

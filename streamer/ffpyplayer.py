@@ -31,18 +31,31 @@ class MyWidget(BoxLayout):
 
     def __init__(self, *args, **kwargs):
         super(MyWidget, self).__init__(*args, **kwargs)
+        self.pipe = None
 
     def playff(self):
         video_path="C:/Users/Thong/Desktop/piep-source/videos/anh-thuong-em-nhat-ma-30.mp4"
 
         cm = ["ffmpeg/ffplay.exe" , video_path]
-        cm = ["ffmpeg/ffmpeg.exe","-y","-i",video_path,"-filter_complex","scale=-1:720","-ar","44100","-ab", "128k","-vb",'4M',"-r","25","-"]
-        out = subprocess.Popen(cm, stdout=subprocess.PIPE).communicate()
+        cm = ["ffmpeg/ffmpeg.exe","-y","-i",video_path,"-filter_complex","scale=-1:720","-ar","44100","-ab", "128k","-vb",'4M',"-r","25","aa.flv"]
+        self.pipe = subprocess.Popen(cm, stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        out,err = self.pipe.communicate()
+        while out:
+            print(out,err)
+    
+    def on_stop(self):
+        if self.pipe is not None:
+            self.pipe.kill()
 
 class TestApp(App):
+    # mainView = ObjectProperty()
     
     def build(self):
-        return MyWidget()
+        self.my = MyWidget()
+        return self.my
+
+    def on_stop(self):
+        self.my.on_stop()
 
 if __name__ == '__main__':
     TestApp().run()

@@ -536,8 +536,8 @@ class ListSchedule(RecycleView):
     def refresh_list(self):
         self.set_data()
         self.refresh_view()
-        self.makeTimePointChange()
-        self.refresh_view()
+        #self.makeTimePointChange()
+        #self.refresh_view()
 
     def getCurrentIndex(self):
         for child in self.children[0].children:

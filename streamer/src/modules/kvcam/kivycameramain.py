@@ -148,15 +148,11 @@ class KivyCameraMain(Image):
                 self.reconnect = 0
                 self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
                 if self.f_parent is not None:
-                    if self.category == constants.LIST_TYPE_SCHEDULE:
-                        self.f_parent.refresh_stream()
-                    elif self.resource_type == "M3U8" or self.resource_type == "VIDEO":
-                        self.f_parent.refresh_stream()
-                    elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
-                        self.f_parent.refresh_stream()
+                    if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.category == constants.LIST_TYPE_SCHEDULE or self.typeOld == "M3U8" or self.typeOld == "VIDEO":
+                        # Clock.schedule_once(lambda x:self.f_parent.refresh_stream(),1)
+                        self.f_parent.refresh_stream()              
                     if self.schedule_type == 'duration':
                         self.f_parent.start_schedule(True)
-                    
                     if self.f_parent.isStream is False:
                         self.remove_file_flv()
 

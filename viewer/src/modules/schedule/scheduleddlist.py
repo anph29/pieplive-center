@@ -112,7 +112,7 @@ class ScheduleDDList(tk.Frame):
         self.cmdF5.pack(side=tk.RIGHT, padx=(0, 5), pady=5)
         ToolTip(self.cmdF5, "Refresh")
         # lock
-        un = "un" if self.getLock() else ""
+        un = "" if self.getLock() else "un"
         imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}{un}lock-24.png"))
         self.cmdLock = tk.Label(
             self.tbright, image=imgLock, cursor="hand2", bg=self.tbBgColor

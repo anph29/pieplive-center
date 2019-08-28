@@ -302,11 +302,6 @@ class MediaItemBox(MediaItem):
                 self.updatePlayIcon("pause")
                 self.topImage.config(cursor="none")
 
-    def updatePlayIcon(self, ico):
-        image = Image.open(f"{helper._ICONS_PATH}{ico}-b.png")
-        imagetk = ImageTk.PhotoImage(image)
-        self.lblPlay.configure(image=imagetk)
-        self.lblPlay.image = imagetk
 
     def updateZoomIcon(self, ico):
         image = Image.open(f"{helper._ICONS_PATH}zoom-{ico}.png")

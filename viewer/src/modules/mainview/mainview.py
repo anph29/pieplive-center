@@ -58,8 +58,19 @@ class MainView(tk.Frame):
                 "sub.TNotebook": {"configure": {"background": "#F4ECF7"}},  # big zone
                 "sub.TNotebook.Tab": {  # tab head
                     "configure": {"padding": [10, 7, 10, 7], "background": "#F4E6F9"}
-                }
-                #
+                },
+                # combobox
+                "TCombobox": {
+                    "configure": {
+                        "background": "#fff",
+                        "bordercolor": "#fff",
+                        "focusfill": "#fff",
+                        "fieldbackground": "#fff",
+                        "padding": 3,
+                        "selectbackground ": "#fff",
+                        "selectforeground": "#000",
+                    }
+                },
             },
         )
         style.theme_use("TabStyle")
@@ -205,7 +216,7 @@ class MainView(tk.Frame):
         lblCommandCheck.photo = imgCheck
         lblCommandCheck.pack(side=tk.RIGHT, fill=tk.Y, padx=(10, 5), pady=5)
         lblCommandCheck.bind("<Button-1>", self.onNewResource)
-        # 
+        # combobox
         lsQ170 = self.loadCbxQ170()
         # set active bussiness
         if None == store.getCurrentActiveBusiness():
@@ -240,7 +251,7 @@ class MainView(tk.Frame):
         ):
             # 1 reset avtive business
             store.setCurrentActiveBusiness(self.FO100BU)
-            # 2 renew media 
+            # 2 renew media
             lsL500 = self.loadLsL500(self.FO100BU)
             if len(lsL500) > 0:
                 # presenter

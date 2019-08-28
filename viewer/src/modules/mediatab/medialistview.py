@@ -45,7 +45,11 @@ class MediaListView(MediaTab):
 
     def initUI(self):
         super(MediaListView, self).initUI()
-        if self.tabType not in (MediaType.CAMERA, MediaType.PRESENTER, MediaType.SCHEDULE):
+        if self.tabType not in (
+            MediaType.CAMERA,
+            MediaType.PRESENTER,
+            MediaType.SCHEDULE,
+        ):
             self.showAddCamBtn()
         #
         self.scrollZ.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
@@ -59,7 +63,7 @@ class MediaListView(MediaTab):
     def packRightToolbar(self):
         super(MediaListView, self).packRightToolbar()
         # lock
-        un = "un" if self.getLock() else ""
+        un = "" if self.getLock() else "un"
         imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}{un}lock-24.png"))
         self.cmdLock = tk.Label(
             self.tbright, image=imgLock, cursor="hand2", bg=self.tbBgColor
@@ -68,7 +72,7 @@ class MediaListView(MediaTab):
         self.cmdLock.bind("<Button-1>", self.toggleLock)
         self.cmdLock.pack(side=tk.RIGHT, padx=(0, 5))
 
-        if self.tabType != MediaType.SCHEDULE:
+        if self.tabType not in [MediaType.SCHEDULE, MediaType.AUDIO]:
             self.showBtnPushAllToSchedule()
         ToolTip(self.cmdLock, "Lock")
 
@@ -119,8 +123,11 @@ class MediaListView(MediaTab):
         self.clearData()
         self.writeLsMedia(filtered)
 
-    def callShowPopup(self, data):
+    def showPopupAddSchedule(self, data):
         self.schedule.showAddToSchedulePopup(data)
+
+    def mergeAudioToSchedule(self, data):
+        self.schedule.mergeAudioToSchedule(data)
 
     def pushAllToSchedule(self, evt):
         filtered = list(filter(lambda x: x.checked.get(), self._LS_MEDIA_UI))
@@ -146,3 +153,8 @@ class MediaListView(MediaTab):
             self.clearData()
             self.writeLsMedia(newLs)
         self.f5(None)
+
+    def stopAllAudio(self):
+        for medi in self._LS_MEDIA_UI:
+            if medi.playing_audio:
+                medi.triggerStop()

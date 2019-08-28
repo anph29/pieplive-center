@@ -68,7 +68,7 @@ class SingleSchedule(ScheduleDDList):
             )
             self.lblChk.image = imageChk
             self.lblChk.bind("<Button-1>", self.saveAsRunningSchedule)
-            self.lblChk.pack(padx=20, pady=5, side=tk.RIGHT)
+            self.lblChk.pack(padx=35, pady=5, side=tk.RIGHT)
             ToolTip(self.lblChk, "Save as Running Schedule")
 
     def saveAsRunningSchedule(self, evt):
@@ -78,7 +78,7 @@ class SingleSchedule(ScheduleDDList):
 
     def addToScheduleGUI(self, media):
         item = self.ddlist.create_item(value=media, bg="#ddd")
-        ui = MediaItemSchedule(item, parentTab=self, media=media, elipsis=20)
+        ui = MediaItemSchedule(item, parentTab=self, media=media, elipsis=50)
         self._LS_SCHEDULE_UI.append(ui)
         ui.pack(expand=True)
         self.ddlist.add_item(item)
@@ -166,3 +166,33 @@ class SingleSchedule(ScheduleDDList):
 
     def deleteMediaItem(self, lsId):
         self.rmvSchedule(lsId)
+
+    def mergeAudioToSchedule(self, data):
+        filtered = list(filter(lambda sch: sch.checked.get(), self._LS_SCHEDULE_UI))
+        if len(filtered):
+            if messagebox.askyesno(
+                "PiepMe",
+                "Are you sure merge this `audio` to all `selected schedule` items?",
+            ):
+                mapped = list(map(lambda sch: sch.id, filtered))
+                self.updateScheduleAudioWithID(mapped, data or {})
+
+    def updateScheduleAudioWithID(self, lsId, audio):
+        def lambdaInjectAudio(sch):
+            if sch["id"] in lsId:
+                sch["audio"] = audio["url"] or ""
+                sch["audio_name"] = audio["name"] or ""
+            return sch
+
+        #
+        ls = self.loadSchedule()
+        newLs = list(map(lambdaInjectAudio, ls))
+        self.clearData()
+        self.writeSchedule(newLs)
+        self.f5(None)
+
+    def stopAllAudio(self):
+        for sch in self._LS_SCHEDULE_UI:
+            if sch.playing_audio:
+                sch.triggerStop()
+

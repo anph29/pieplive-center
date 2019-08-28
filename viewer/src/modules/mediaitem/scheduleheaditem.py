@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
 from tkinter import messagebox
-from src.utils import helper, scryto
+from src.utils import helper, scryto, store
 from src.constants import UI
 from src.modules.custom import ToolTip, PLabel
 from tkcalendar import DateEntry
@@ -27,7 +27,11 @@ class ScheduleHeadItem(tk.Frame):
             self.loadScheduleDE(None)
 
     def get_data(self):
-        return {"path": self.path, "id": self.id, "name": self.name}
+        return {
+            "path": self.path,
+            "id": self.id,
+            "name": store._get("RUNNING_SCHEDULE") if self.isRunningSch else self.name,
+        }
 
     def set_data(self, media):
         self.id = media["id"] if bool(media) else ""
@@ -143,7 +147,7 @@ class ScheduleHeadItem(tk.Frame):
             self.lblPen.pack(side=tk.RIGHT)
             ToolTip(self.lblPen, "Edit")
 
-        # push to schedule
+        # load schedule detail
         imgPush = ImageTk.PhotoImage(
             Image.open(f"{helper._ICONS_PATH}push-right-b.png")
         )

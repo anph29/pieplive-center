@@ -1,4 +1,3 @@
-import vlc
 import tkinter as tk
 from src.modules.custom import PLabel
 import PIL
@@ -21,6 +20,7 @@ class MediaItemDnD(MediaItem):
     def set_data(self, media):
         super(MediaItemDnD, self).set_data(media)
         self.itemBg = "#F2F2F2"
+        self.audioSrc = self.url
 
     def initGUI(self):
         #
@@ -52,7 +52,6 @@ class MediaItemDnD(MediaItem):
         )
         lbl_name.pack(side=tk.LEFT)
         lbl_name.bind("<Double-Button-1>", self.callParentAddSchedule)
-
         ToolTip(lbl_name, self.name)
         # bin
         imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}trash-b.png"))
@@ -71,12 +70,32 @@ class MediaItemDnD(MediaItem):
         lblPen.pack(side=tk.RIGHT)
         self.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         # push to schedule
-        imgPush = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}add-to-sch.png"))
+        imgPush = ImageTk.PhotoImage(
+            Image.open(
+                f"{helper._ICONS_PATH}{'ic_audio' if self.parentTab.tabType == MediaType.AUDIO else 'add-to-sch'}.png"
+            )
+        )
         lblPush = tk.Label(wrapper, image=imgPush, cursor="hand2", bg=self.itemBg)
         lblPush.image = imgPush
-        lblPush.bind("<Button-1>", self.callParentAddSchedule)
+        lblPush.bind(
+            "<Button-1>",
+            self.mergeAudio
+            if self.parentTab.tabType == MediaType.AUDIO
+            else self.callParentAddSchedule,
+        )
         lblPush.pack(side=tk.RIGHT, padx=5, pady=5)
-        # traffic lignt
+        # play
+        if self.parentTab.tabType == MediaType.AUDIO:
+            imagePlay = ImageTk.PhotoImage(
+                Image.open(f"{helper._ICONS_PATH}play-mp3-b.png")
+            )
+            self.lblPlay = tk.Label(
+                wrapper, image=imagePlay, bg=self.itemBg, cursor="hand2"
+            )
+            self.lblPlay.image = imagePlay
+            self.lblPlay.bind("<Button-1>", self.playAudio)
+            self.lblPlay.pack(side=tk.RIGHT)
+        # traffic light
         if self.parentTab.tabType == MediaType.PRESENTER:
             frame = tk.PhotoImage(file=f"{helper._ICONS_PATH}live-red.png")
             self.light = tk.Label(
@@ -100,4 +119,9 @@ class MediaItemDnD(MediaItem):
         self.parentTab.f5(None)
 
     def callParentAddSchedule(self, evt):
-        self.parentTab.callShowPopup(self.get_data())
+        self.parentTab.showPopupAddSchedule(self.get_data())
+
+    def mergeAudio(self, evt):
+        self.parentTab.mergeAudioToSchedule(self.get_data())
+
+    

@@ -17,7 +17,7 @@ class LabeledCombobox(tk.Frame):
 
         if bool(self.dictionary):
             allValue = list(self.dictionary.values())
-            idx = 0 if selected is None else allValue.index(self.selected)
+            idx = 0 if not bool(selected) else allValue.index(self.selected)
             self.combo.current(idx)
             self.onSelection(self.dictionary[list(dictionary.keys())[idx]])
 

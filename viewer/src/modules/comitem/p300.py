@@ -37,9 +37,12 @@ class P300(tk.Frame):
         self.PO322 = self.p300["PO322"] if "PO322" in p300 else {}
         self.FT300 = self.p300["FT300"] if "FT300" in p300 else 0
         if "live" in self.PO322:
-            self.liveTime = datetime.strptime(
-                self.PO322["live"]["time"], "%Y-%m-%dT%H:%M:%S.%fZ"
+            patern = (
+                "%Y-%m-%dT%H:%M:%S.%fZ"
+                if "." in self.PO322["live"]["time"]
+                else "%Y-%m-%dT%H:%M:%SZ"
             )
+            self.liveTime = datetime.strptime(self.PO322["live"]["time"], patern)
 
     def initGUI(self):
         ww = self.cell_width + 5

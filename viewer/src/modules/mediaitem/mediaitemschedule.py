@@ -32,14 +32,15 @@ class MediaItemSchedule(MediaItem):
         self.duration = int(media["duration"]) if "duration" in media else 0
         self.timepoint = int(media["timepoint"]) if "timepoint" in media else 0
         self.itemBg = "#E8F6F3"
+        self.audioSrc = self.audio
 
     def initGUI(self):
         #
-        wrapper = tk.Frame(self, bd=10, relief=tk.FLAT, height=30, bg=self.itemBg)
-        wrapper.pack(side=tk.BOTTOM, fill=tk.X)
+        self.wrapper = tk.Frame(self, bd=10, relief=tk.FLAT, height=30, bg=self.itemBg)
+        self.wrapper.pack(side=tk.BOTTOM, fill=tk.X)
         # chkbx
         self.checkbox = tk.Checkbutton(
-            wrapper,
+            self.wrapper,
             variable=self.checked,
             onvalue=True,
             offvalue=False,
@@ -52,7 +53,7 @@ class MediaItemSchedule(MediaItem):
         self.checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)
         # label
         lbl_name = PLabel(
-            wrapper,
+            self.wrapper,
             text=self.name,
             justify=tk.LEFT,
             elipsis=self.nameElipsis,
@@ -64,34 +65,49 @@ class MediaItemSchedule(MediaItem):
         lbl_name.pack(side=tk.LEFT)
         # bin
         imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}trash-b.png"))
-        lbl_trash = tk.Label(wrapper, image=imageBin, cursor="hand2", bg=self.itemBg)
+        lbl_trash = tk.Label(
+            self.wrapper, image=imageBin, cursor="hand2", bg=self.itemBg
+        )
         lbl_trash.image = imageBin
         lbl_trash.bind("<Button-1>", self.deleteMedia)
         ToolTip(lbl_trash, "Delete")
         lbl_trash.pack(side=tk.RIGHT)
         self.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         # edit
-        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}pen-b.png"))
-        lblPen = tk.Label(wrapper, image=imageBin, cursor="hand2", bg=self.itemBg)
-        lblPen.image = imageBin
+        imPen = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}pen-b.png"))
+        lblPen = tk.Label(self.wrapper, image=imPen, cursor="hand2", bg=self.itemBg)
+        lblPen.image = imPen
         lblPen.bind("<Button-1>", self.editMedia)
         ToolTip(lblPen, "Edit")
         lblPen.pack(side=tk.RIGHT)
         self.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        # audio
+        if bool(self.audio):
+            # play
+            imagePlay = ImageTk.PhotoImage(
+                Image.open(f"{helper._ICONS_PATH}play-mp3-b.png")
+            )
+            self.lblPlay = tk.Label(
+                self.wrapper, image=imagePlay, bg=self.itemBg, cursor="hand2"
+            )
+            self.lblPlay.image = imagePlay
+            self.lblPlay.bind("<Button-1>", self.playAudio)
+            self.lblPlay.pack(side=tk.RIGHT)
+            ToolTip(self.lblPlay, self.audio_name)
         # duration
         hms = helper.convertSecNoToHMS(self.duration)
         dura = PLabel(
-            wrapper,
+            self.wrapper,
             text=f"duration: {hms}",
             fg="#008000",
             font=UI.TXT_FONT,
             bg=self.itemBg,
         )
-        dura.pack(side=tk.RIGHT, padx=5)
+        dura.pack(side=tk.RIGHT, padx=(5, 5 if bool(self.audio) else 30))
         # timepoint
         HMS = helper.convertSecNoToHMS(self.timepoint)
         runtime = PLabel(
-            wrapper,
+            self.wrapper,
             text=f"runtime: {HMS}",
             fg="#00F",
             font=UI.TXT_FONT,

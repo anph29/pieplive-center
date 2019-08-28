@@ -146,6 +146,11 @@ class PopupAddResource(object):
             return (("image files", "*.png *.jpg"), ("all files", "*.*"))
         elif self.parent.tabType == MediaType.VIDEO:
             return (("video files", "*.mov *.mp4 *.mkv *.flv"), ("all files", "*.*"))
+        elif self.parent.tabType == MediaType.AUDIO:
+            return (
+                ("audio files", "*.mid *.mp3 *.m4a *.ogg *.flac *.wav *.amr"),
+                ("all files", "*.*"),
+            )
 
     def askFileName(self):
         self.fError.pack_forget()
@@ -159,6 +164,8 @@ class PopupAddResource(object):
             self.localFile("IMG")
         elif ftype.isVideo(fname):
             self.localFile("VIDEO")
+        elif ftype.isAudio(fname):
+            self.localFile("AUDIO")
         else:
             self.fError.pack(side=tk.TOP, fill=tk.X)
         # fill data
@@ -186,25 +193,34 @@ class PopupAddResource(object):
                 fname = os.fsdecode(file)
                 fpath = os.path.join(self.directory, fname).replace("\\", "/")
                 if os.path.isfile(fpath):
-                    isImg = ftype.isImage(fpath)
-                    isVideo = ftype.isVideo(fpath)
-                    if isImg or isVideo:
+                    if (
+                        ftype.isImage(fpath)
+                        or ftype.isVideo(fpath)
+                        or ftype.isAudio(fpath)
+                    ):
                         dt = {
+                            "url": fpath,
                             "id": scryto.hash_md5_with_time(fpath),
                             "name": self.getNameFromPath(fpath),
-                            "url": fpath,
+                            "type": self.getMTypeByPath(fpath),
                         }
-                        if self.parent.tabType == MediaType.IMAGE and isImg:
-                            dt["type"] = "IMG"
-                            self.parent.addMediaToList(dt)
-                            self.parent.addMedia(dt)
-                        elif self.parent.tabType == MediaType.VIDEO and isVideo:
-                            dt["type"] = "VIDEO"
-                            dt["duration"] = helper.getVideoDuration(fpath)
-                            self.parent.addMediaToList(dt)
-                            self.parent.addMedia(dt)
+                        self.addMediaByType(dt)
             #
         self.popup.destroy()
+
+    def getMTypeByPath(self, fpath):
+        if self.parent.tabType is MediaType.IMAGE and ftype.isImage(fpath):
+            return "IMG"
+        elif self.parent.tabType is MediaType.VIDEO and ftype.isVideo(fpath):
+            return "VIDEO"
+        elif self.parent.tabType is MediaType.AUDIO and ftype.isAudio(fpath):
+            return "AUDIO"
+
+    def addMediaByType(self, dt):
+        if dt["type"] == "VIDEO":
+            dt["duration"] = helper.getVideoDuration(dt["url"])
+        self.parent.addMediaToList(dt)
+        self.parent.addMedia(dt)
 
     def onOkFile(self):
         if self.useLocal:
@@ -226,6 +242,7 @@ class PopupAddResource(object):
             "type": self.mtype,
             "id": scryto.hash_md5_with_time(url),
         }
+        print(dt, "aaaaaaaaaaaaa")
         # add duration
         if (
             self.useLocal

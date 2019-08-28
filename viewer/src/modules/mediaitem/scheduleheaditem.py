@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
 from tkinter import messagebox
-from src.utils import helper, scryto
+from src.utils import helper, scryto, store
 from src.constants import UI
 from src.modules.custom import ToolTip, PLabel
 from tkcalendar import DateEntry
@@ -27,7 +27,11 @@ class ScheduleHeadItem(tk.Frame):
             self.loadScheduleDE(None)
 
     def get_data(self):
-        return {"path": self.path, "id": self.id, "name": self.name}
+        return {
+            "path": self.path,
+            "id": self.id,
+            "name": store._get("RUNNING_SCHEDULE") if self.isRunningSch else self.name,
+        }
 
     def set_data(self, media):
         self.id = media["id"] if bool(media) else ""
@@ -44,7 +48,7 @@ class ScheduleHeadItem(tk.Frame):
             self.destroy()
             self.parentTab.f5(None)
 
-    def packDate():
+    def packDate(self):
         pass
 
     def initUIEdit(self, edit=False):
@@ -109,7 +113,7 @@ class ScheduleHeadItem(tk.Frame):
         # label
         self.lbl_name = PLabel(
             self.fView,
-            text=self.name,
+            text="RUNNING SCHEDULE" if self.isRunningSch else self.name,
             justify=tk.LEFT,
             elipsis=20,
             font=UI.TITLE_FONT if self.isRunningSch else UI.TXT_FONT,
@@ -143,7 +147,7 @@ class ScheduleHeadItem(tk.Frame):
             self.lblPen.pack(side=tk.RIGHT)
             ToolTip(self.lblPen, "Edit")
 
-        # push to schedule
+        # load schedule detail
         imgPush = ImageTk.PhotoImage(
             Image.open(f"{helper._ICONS_PATH}push-right-b.png")
         )
@@ -152,7 +156,9 @@ class ScheduleHeadItem(tk.Frame):
         )
         self.lblPush.image = imgPush
         self.lblPush.bind("<Button-1>", self.loadScheduleDE)
-        self.lblPush.pack(side=tk.RIGHT, padx=5, pady=5)
+        self.lblPush.pack(
+            side=tk.RIGHT, padx=(5, 45 if self.isRunningSch else 5), pady=5
+        )
         #
         self.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 

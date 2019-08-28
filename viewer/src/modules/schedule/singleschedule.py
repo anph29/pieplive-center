@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from .scheduleddlist import ScheduleDDList
 from src.modules.custom import DDList
-from src.utils import helper
+from src.utils import helper, store
 from src.modules.mediaitem import MediaItemSchedule
 from functools import reduce
 from src.modules.popup import PopupAddSchedule
@@ -15,9 +15,10 @@ class SingleSchedule(ScheduleDDList):
     def __init__(self, parent, *args, **kwargs):
         super(SingleSchedule, self).__init__(parent, *args, **kwargs)
         self.tbBgColor = "#D4EFDF"
-        self.wrapperWidth = 500
+        self.wrapperWidth = 745
         self.totalDuration = 0
         self.titleTxt = "Schedule Detail"
+        self.keyLock = "single_schedule_lock"
         self.initUI()
         self.lblChk = None
 
@@ -34,25 +35,27 @@ class SingleSchedule(ScheduleDDList):
         )
 
     def setData(self, sch):
-        self.schName = sch["name"] if bool(sch) else ""
-        self.lblTitle.config(text=f"{self.schName}")
         self.schId = sch["id"] if bool(sch) else ""
-        self.schPath = sch["path"] if bool(sch) else ""
         self.isRunningSch = self.schId == "STORE_SCHEDULE"
+        self.schPath = sch["path"] if bool(sch) else ""
+        self.schName = sch["name"] if bool(sch) else ""
+        #
+        title = f"{'RUNNING SCHEDULE: ' if self.isRunningSch else ''}{self.schName}"
+        self.lblTitle.config(text=title)
+        self.lblTitle.pack_forget()
+        self.lblTitle.pack(side=tk.LEFT, padx=20, pady=5)
+
+        #
         self.showTitleWidthSave()
         self.clearView()
 
     def showTitleWidthSave(self):
-        if self.isRunningSch:
-            self.lblTitle.pack_forget()
-            self.lblTitle.pack(pady=5)
+        if self.isRunningSch:  # RUNNING
             if bool(self.lblChk):
                 self.lblChk.pack_forget()
                 self.lblChk = None
 
-        elif not bool(self.lblChk):
-            self.lblTitle.pack_forget()
-            self.lblTitle.pack(side=tk.LEFT, padx=20, pady=5)
+        elif not bool(self.lblChk):  # NORMAL
             imageChk = ImageTk.PhotoImage(
                 Image.open(f"{helper._ICONS_PATH}check-green-s.png")
             )
@@ -65,16 +68,17 @@ class SingleSchedule(ScheduleDDList):
             )
             self.lblChk.image = imageChk
             self.lblChk.bind("<Button-1>", self.saveAsRunningSchedule)
-            self.lblChk.pack(padx=20, pady=5, side=tk.RIGHT)
+            self.lblChk.pack(padx=35, pady=5, side=tk.RIGHT)
             ToolTip(self.lblChk, "Save as Running Schedule")
 
     def saveAsRunningSchedule(self, evt):
         if messagebox.askyesno("PiepMe", "Are you sure overwrite `RUNNING SCHEDULE`?"):
             helper._write_schedule(self._LS_SCHEDULE_DATA)
+            store._set("RUNNING_SCHEDULE", self.schName)
 
     def addToScheduleGUI(self, media):
         item = self.ddlist.create_item(value=media, bg="#ddd")
-        ui = MediaItemSchedule(item, parentTab=self, media=media, elipsis=20)
+        ui = MediaItemSchedule(item, parentTab=self, media=media, elipsis=50)
         self._LS_SCHEDULE_UI.append(ui)
         ui.pack(expand=True)
         self.ddlist.add_item(item)
@@ -162,3 +166,33 @@ class SingleSchedule(ScheduleDDList):
 
     def deleteMediaItem(self, lsId):
         self.rmvSchedule(lsId)
+
+    def mergeAudioToSchedule(self, data):
+        filtered = list(filter(lambda sch: sch.checked.get(), self._LS_SCHEDULE_UI))
+        if len(filtered):
+            if messagebox.askyesno(
+                "PiepMe",
+                "Are you sure merge this `audio` to all `selected schedule` items?",
+            ):
+                mapped = list(map(lambda sch: sch.id, filtered))
+                self.updateScheduleAudioWithID(mapped, data or {})
+
+    def updateScheduleAudioWithID(self, lsId, audio):
+        def lambdaInjectAudio(sch):
+            if sch["id"] in lsId:
+                sch["audio"] = audio["url"] or ""
+                sch["audio_name"] = audio["name"] or ""
+            return sch
+
+        #
+        ls = self.loadSchedule()
+        newLs = list(map(lambdaInjectAudio, ls))
+        self.clearData()
+        self.writeSchedule(newLs)
+        self.f5(None)
+
+    def stopAllAudio(self):
+        for sch in self._LS_SCHEDULE_UI:
+            if sch.playing_audio:
+                sch.triggerStop()
+

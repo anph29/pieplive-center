@@ -1,8 +1,10 @@
 import tkinter as tk
+import vlc
 from tkinter import messagebox
 from src.utils import helper
-from PIL import Image
+from PIL import Image, ImageTk
 from src.constants import UI
+from src.enums import MediaType
 
 
 class MediaItem(tk.Frame):
@@ -16,8 +18,11 @@ class MediaItem(tk.Frame):
         self.name = None
         self.mtype = None
         self.audio = None
+        self.audio_name = None
         self.duration = None
         self.timepoint = None
+        self.audioPlayer = None
+        self.playing_audio = False
 
     def get_data(self):
         return {
@@ -28,6 +33,7 @@ class MediaItem(tk.Frame):
             "duration": self.duration,
             "timepoint": self.timepoint,
             "audio": self.audio,
+            "audio_name": self.audio_name,
             "rtpm": self.rtpm,
         }
 
@@ -39,6 +45,7 @@ class MediaItem(tk.Frame):
         self.duration = int(media["duration"]) if "duration" in media else 0
         self.timepoint = int(media["timepoint"]) if "timepoint" in media else 0
         self.audio = media["audio"] if "audio" in media else ""
+        self.audio_name = media["audio_name"] if "audio_name" in media else ""
         self.rtmp = media["rtmp"] if "rtmp" in media else ""
 
     def deleteMedia(self, evt):
@@ -111,3 +118,26 @@ class MediaItem(tk.Frame):
 
     def deactivePresenter(self):
         self.stopGIF = True
+
+    def updatePlayIcon(self, ico):
+        image = Image.open(f"{helper._ICONS_PATH}{ico}-b.png")
+        imagetk = ImageTk.PhotoImage(image)
+        self.lblPlay.configure(image=imagetk)
+        self.lblPlay.image = imagetk
+
+    def triggerStop(self):
+        self.playing_audio = False
+        self.audioPlayer.stop()
+        self.updatePlayIcon("play-mp3")
+
+    def playAudio(self, evt):
+        if self.playing_audio:
+            self.playing_audio = False
+            self.audioPlayer.stop()
+            self.updatePlayIcon("play-mp3")
+        else:
+            self.parentTab.stopAllAudio()
+            self.audioPlayer = self.audioPlayer or vlc.MediaPlayer(self.audioSrc)
+            self.playing_audio = True
+            self.audioPlayer.play()
+            self.updatePlayIcon("pause-mp3")

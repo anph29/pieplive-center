@@ -15,7 +15,7 @@ class MainApplication(tk.Frame):
 
 def run():
     root = tk.Tk()
-    w = 1280
+    w = 1525 # 1280
     x = tk_helper.getCenterX(w)
     root.geometry(f"{w}x900+{x}+20")
     root.title("PiepLive Center Setting")

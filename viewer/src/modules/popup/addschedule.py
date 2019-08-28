@@ -3,6 +3,7 @@ from tkinter import ttk
 from src.utils import tk_helper, helper, scryto
 from src.constants import UI
 import re
+from src.modules.custom import LabeledCombobox
 
 
 class PopupAddSchedule(object):
@@ -21,7 +22,7 @@ class PopupAddSchedule(object):
         self.timepoint = (
             int(self.media["timepoint"]) if "timepoint" in self.media else 0
         )
-        self.audio = self.media["audio"] if "audio" in self.media else ""
+        self.eAudio = self.media["audio"] if "audio" in self.media else ""
         #
 
     def initGUI(self, edit=False):
@@ -41,12 +42,14 @@ class PopupAddSchedule(object):
         self.setupData(edit=edit)
         self.name = tk.StringVar()
         self.name.set(self.eName)
+        self.audio = tk.StringVar()
+        self.audio.set(self.eAudio)
         h, m, s = helper.convertSecNoToHMS(self.duration, toObj=True).values()
         #
-        wrapper = tk.Frame(self.popup)
-        wrapper.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        self.wrapper = tk.Frame(self.popup)
+        self.wrapper.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
         # 1. Name
-        fName = tk.Frame(wrapper, pady=10, padx=20)
+        fName = tk.Frame(self.wrapper, pady=10, padx=20)
         lName = tk.Label(fName, text="Name:", width=6, anchor=tk.W, font=UI.TXT_FONT)
         lName.pack(side=tk.LEFT, fill=tk.Y)
         name = tk.Entry(
@@ -55,8 +58,11 @@ class PopupAddSchedule(object):
         name.bind("<FocusIn>", lambda args: name.select_range("0", tk.END))
         name.pack(side=tk.LEFT, fill=tk.X, padx=(10, 0))
         fName.pack(side=tk.TOP, fill=tk.X)
+        # 1. Audio
+        self.packCbxAudio()
+
         # 2. Duration
-        fDura = tk.Frame(wrapper, pady=10, padx=20)
+        fDura = tk.Frame(self.wrapper, pady=10, padx=20)
         fDura.pack(side=tk.TOP, fill=tk.X)
         #
         lDura = tk.Label(
@@ -103,7 +109,7 @@ class PopupAddSchedule(object):
         ss.current(int(s))
         ss.pack(side=tk.LEFT, fill=tk.X, padx=5)
         # 4. Button
-        fBtn = tk.Frame(wrapper, pady=10, padx=20)
+        fBtn = tk.Frame(self.wrapper, pady=10, padx=20)
         btnCancel = tk.Button(
             fBtn, text="Cancel", bd=2, relief=tk.RAISED, command=self.popup.destroy
         )
@@ -122,6 +128,28 @@ class PopupAddSchedule(object):
         btnOk.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
         fBtn.pack(side=tk.BOTTOM, fill=tk.X)
 
+    def packCbxAudio(self):
+        fAudio = tk.Frame(self.wrapper, pady=10, padx=20)
+        fAudio.pack(side=tk.TOP, fill=tk.X)
+        lAudio = tk.Label(fAudio, text="Audio:", width=6, anchor=tk.W, font=UI.TXT_FONT)
+        lAudio.pack(side=tk.LEFT, fill=tk.Y)
+        #
+        lsAudio = helper._load_ls_audio()
+        lsAudio.insert(0, {"name": "None", "url": ""})
+        cbxData = {audio["name"]: audio["url"] for audio in lsAudio}
+        cbxAudio = LabeledCombobox(
+            fAudio,
+            cbxData,
+            callback=self.onSelectAudio,
+            selected=self.eAudio,
+            bd=1,
+            relief=tk.FLAT,
+        )
+        cbxAudio.pack(side=tk.LEFT, fill=tk.X, padx=(10, 0))
+
+    def onSelectAudio(self, url):
+        self.audio.set(url)
+
     def showChangeRuntimeUI(self):
         # first destroy
         if bool(self.popupRuntime):
@@ -139,10 +167,10 @@ class PopupAddSchedule(object):
         self.setupData(edit=True)
 
         H, M, S = helper.convertSecNoToHMS(self.timepoint, toObj=True).values()
-        wrapper = tk.Frame(self.popupRuntime)
-        wrapper.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        self.wrapper = tk.Frame(self.popupRuntime)
+        self.wrapper.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
         # #0. timepoint
-        fTime = tk.Frame(wrapper, pady=20, padx=20)
+        fTime = tk.Frame(self.wrapper, pady=20, padx=20)
         fTime.pack(side=tk.TOP, fill=tk.X)
         #
         lTime = tk.Label(fTime, text="Runtime:", width=7, anchor=tk.W, font=UI.TXT_FONT)
@@ -160,7 +188,7 @@ class PopupAddSchedule(object):
         HH.pack(side=tk.LEFT, fill=tk.X, padx=5)
         ##
         separator = tk.Label(fTime, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
-        separator.pack(side=tk.LEFT, padx=3)
+        separator.pack(side=tk.LEFT)
         ##
         MM = ttk.Combobox(
             fTime,
@@ -174,7 +202,7 @@ class PopupAddSchedule(object):
         MM.pack(side=tk.LEFT, fill=tk.X, padx=5)
         ##
         separator = tk.Label(fTime, text=":", width=1, anchor=tk.W, font=UI.TXT_FONT)
-        separator.pack(side=tk.LEFT, padx=3)
+        separator.pack(side=tk.LEFT)
         ##
         SS = ttk.Combobox(
             fTime,
@@ -187,7 +215,7 @@ class PopupAddSchedule(object):
         SS.current(int(S))
         SS.pack(side=tk.LEFT, fill=tk.X, padx=5)
         # 1. Button
-        fBtn = tk.Frame(wrapper, pady=10, padx=20)
+        fBtn = tk.Frame(self.wrapper, pady=10, padx=20)
         btnCancel = tk.Button(
             fBtn,
             text="Cancel",
@@ -243,7 +271,7 @@ class PopupAddSchedule(object):
                     }
                 ),
                 "timepoint": self.timepoint,
-                "audio": self.audio,
+                "audio": self.audio.get(),
             }
         )
         self.popup.destroy()
@@ -263,7 +291,7 @@ class PopupAddSchedule(object):
                         "s": int(self.SS.get()),
                     }
                 ),
-                "audio": self.audio,
+                "audio": self.eAudio,
             }
         )
         self.popupRuntime.destroy()

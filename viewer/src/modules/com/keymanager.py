@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from src.modules.custom import DDList, VerticalScrolledFrame
-from src.utils import helper
+from src.utils import helper, store
 from src.modules.comitem import Key
 from functools import reduce
 from src.constants import UI
@@ -19,16 +19,20 @@ class KeyManager(tk.Frame):
         self.tbBgColor = "#D4EFDF"
         self.wrapperWidth = 360
         self.titleTxt = "Key manager"
-        self.initUI()
+        self.keyLock = "keymanager_lock"
         self.lblChk = None
+        self.initUI()
 
     def initUI(self):
         self.showTitle()
         self.showToolBar()
         self.scrollZ = VerticalScrolledFrame(self)
         self.scrollZ.pack(fill=tk.BOTH, expand=True)
+        #
         self.ddlist = self.makeDDList(self.scrollZ.interior)
+        self.ddlist.setLock(self.getLock())
         self.ddlist.pack(fill=tk.BOTH, expand=True)
+        #
         self.showListKey()
 
     def showListKey(self):
@@ -119,7 +123,8 @@ class KeyManager(tk.Frame):
         self.cmdF5.pack(side=tk.RIGHT, padx=(0, 5), pady=5)
         ToolTip(self.cmdF5, "Refresh")
         # lock
-        imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}unlock-24.png"))
+        un = "un" if self.getLock() else ""
+        imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}{un}lock-24.png"))
         self.cmdLock = tk.Label(
             self.tbright, image=imgLock, cursor="hand2", bg=self.tbBgColor
         )
@@ -146,12 +151,21 @@ class KeyManager(tk.Frame):
         popupAddKey.initGUI(edit=True)
 
     def toggleLock(self, evt):
-        un = "un" if self.ddlist.getLock() else ""
+        un = "un" if self.getLock() else ""
         imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}{un}lock-24.png"))
         self.cmdLock.configure(image=imgLock)
         self.cmdLock.image = imgLock
         ToolTip(self.cmdLock, f"{un}locked")
-        self.ddlist.setLock(not self.ddlist.getLock())
+        #
+        locked = not self.ddlist.getLock()
+        self.ddlist.setLock(locked)
+        self.setLock(locked)
+
+    def setLock(self, locked):
+        return store._set(self.keyLock, locked)
+
+    def getLock(self):
+        return bool(store._get(self.keyLock))
 
     def f5(self, evt):
         self.clearView()

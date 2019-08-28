@@ -56,10 +56,6 @@ class PiepStream(App):
         kivy_helper.getApRoot().on_stop()
 
 if __name__ == '__main__':
-    # if not admin.isUserAdmin():
-    #     admin.runAsAdmin()
-    # from pathlib import Path
-    # home = str(Path.home())
     helper.makeSureResourceFolderExisted()
     KIVY_FONTS = helper._load_font()
     for font in KIVY_FONTS:

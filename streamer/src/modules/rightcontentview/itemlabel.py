@@ -19,7 +19,7 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
     active = BooleanProperty(False)
     activeMini = BooleanProperty(False)
     choice = BooleanProperty(False)
-    playable = BooleanProperty(False)
+    # playable = BooleanProperty(False)
     duration = NumericProperty(0)
     listType = StringProperty('')
     _id = StringProperty('')
@@ -38,7 +38,7 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
         self.active = data['active']
         self.activeMini = data['activeMini']
         self.choice = data['choice']
-        self.playable = data['playable'] if 'playable' in data else True
+        # self.playable = data['playable'] if 'playable' in data else True
         self.isCheckItem.active = False
         return super(ItemLabel, self).refresh_view_attrs(rv, index, data)
 
@@ -65,20 +65,13 @@ class ItemLabel(RecycleDataViewBehavior, FloatLayout):
         kivyhelper.getApRoot().open_add_schedule(self.data)
     
     def play(self):
-        if self.playable:
-            kivyhelper.getApRoot().loading = True
-            self.isCheckItem.active = False
-            self.parent.parent.setPlayed(self.index)
-            kivyhelper.getApRoot().changeSrc(self.kvcam.get_data_source(),self.listType)
-            if self.listType == 'PRESENTER' and kivyhelper.getApRoot().presenterAuto:
-                self.parent.parent.choice_play(self.index)
+        kivyhelper.getApRoot().loading = True
+        self.isCheckItem.active = False
+        self.parent.parent.setPlayed(self.index)
+        kivyhelper.getApRoot().changeSrc(self.kvcam.get_data_source(),self.listType)
 
     def playMini(self, isPlay):
-        if self.playable and isPlay:
+        if isPlay:
             kivyhelper.getApRoot().loadingMini = True
             self.parent.parent.setPlayedMini(self.index)
             kivyhelper.getApRoot().changeSrcMini(self.kvcam.get_data_source(),self.listType)
-
-    def choice_play(self):
-        if self.playable and self.listType == 'PRESENTER':
-            self.parent.parent.choice_play(self.index)

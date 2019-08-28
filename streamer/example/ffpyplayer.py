@@ -1,27 +1,47 @@
-import cv2, subprocess
+import kivy
+
+from kivy.app import App
+from kivy.uix.button import Button
+from kivy.lang import Builder
+from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
+from kivy.uix.image import Image
+from kivy.uix.boxlayout import BoxLayout
+
+import time, os
+import subprocess
 import numpy as np
-#ffpyplayer for playing audio
-from ffpyplayer.player import MediaPlayer
 
+kv ='''
+<MyWidget>:
+    id:mainView
+    size_hint:1,1
+    Button:
+        id:btn_start
+        size_hint:None,None
+        width:120
+        text:'Start'
+        font_size: sp(12)
+        on_press: root.playff()
 
-video_path="C:/Users/Thong/Desktop/piep-source/videos/anh-thuong-em-nhat-ma-30.mp4"
-def PlayVideo(video_path):
-    video=cv2.VideoCapture(video_path)
-    player = MediaPlayer(video_path)
-    while True:
-        grabbed, frame=video.read()
-        audio_frame, val = player.get_frame()
-        if not grabbed:
-            print("End of video")
-            break
-        if cv2.waitKey(28) & 0xFF == ord("q"):
-            break
-        cv2.imshow("Video", frame)
-        if val != 'eof' and audio_frame is not None:
-            #audio
-            img, t = audio_frame
+'''
+Builder.load_string(kv)
+
+class MyWidget(BoxLayout):
+    mainView = ObjectProperty()
+
+    def __init__(self, *args, **kwargs):
+        super(MyWidget, self).__init__(*args, **kwargs)
+
+    def playff(self):
+        video_path="C:/Users/Thong/Desktop/piep-source/videos/anh-thuong-em-nhat-ma-30.mp4"
+
+        cm = ["ffmpeg/ffplay.exe" , video_path]
+        subprocess.Popen(cm, shell=True)
+
+class TestApp(App):
     
-    video.release()
-    cv2.destroyAllWindows()
+    def build(self):
+        return MyWidget()
 
-subprocess.Popen(PlayVideo(video_path))
+if __name__ == '__main__':
+    TestApp().run()

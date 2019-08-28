@@ -1,6 +1,6 @@
 import sys, cv2, time, os, datetime
 from kivy.uix.image import Image
-from kivy.clock import Clock, mainthread
+from kivy.clock import Clock
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
 from kivy.graphics.texture import Texture
 from threading import Thread, Event
@@ -8,6 +8,7 @@ import subprocess as sp
 from src.utils import helper, kivyhelper
 from pathlib import Path
 from src.modules import constants
+import os
 # from pydub import AudioSegment
 # from pydub.playback import play
 
@@ -71,24 +72,23 @@ class KivyCameraMain(Image):
         fps = 25
         dura = 0
         try:
-            if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.resource_type == 'MP4':# or self.resource_type == "RTSP":
-                # timenow = datetime.datetime.now().strftime("%d%m%y%H%M%S")
+            if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.resource_type == 'MP4' or self.resource_type == "RTSP":
                 timenow = datetime.datetime.timestamp(datetime.datetime.now())
                 output = helper._BASE_PATH+'temp/{}.flv'.format(timenow)
                 try:
-                    _cap = cv2.VideoCapture(self.url)
-                    if _cap.isOpened():
-                        fps = _cap.get(cv2.CAP_PROP_FPS)
-                        print('============',fps,'==========')
-                        if self.resource_type == 'VIDEO' or self.resource_type == 'MP4':
-                            if fps >= 25:
-                                self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
-                                self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)
-                                dura = int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS))
-                            else:
-                                self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
-                                self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/25
-                                dura = int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/25)
+                    if self.resource_type == 'VIDEO' or self.resource_type == 'MP4' or (self.resource_type == "M3U8" and self.category != constants.LIST_TYPE_PRESENTER):
+                        _cap = cv2.VideoCapture(self.url)
+                        if _cap.isOpened():
+                            fps = _cap.get(cv2.CAP_PROP_FPS)
+                            if self.resource_type == 'VIDEO' or self.resource_type == 'MP4':
+                                if fps >= 25:
+                                    self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
+                                    self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)
+                                    dura = int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS))
+                                else:
+                                    self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
+                                    self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/25
+                                    dura = int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/25)
                     del _cap
                 except Exception as e:
                     print("Exception:", e)
@@ -97,20 +97,20 @@ class KivyCameraMain(Image):
                     self.schedule_type = 'end'
 
                 timeout = 1
-                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25","-threads","2",output]
+                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-filter_complex","scale=-1:720","-ar","44100","-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 if self.category == constants.LIST_TYPE_PRESENTER:
                     self.url = self.data_src['rtmp']
                     timeout=2
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000","-preset","medium","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",'-framerate','25','-g','25',"-threads","2",output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-filter_complex","scale=-1:720","-preset","medium","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "M3U8":
                     timeout=1
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync", "1","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-ar","44100", "-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25","-threads","2",output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync", "1","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-filter_complex","scale=-1:720","-ar","44100", "-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "RTSP":
                     timeout=2
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i", self.url,"-pix_fmt", "yuv420p", "-flags","+global_header", "-vsync","1","-af","aresample=async=1","-ar","44100", "-ab", "128k","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vb",self.f_parent.v_bitrate,"-r","25","-threads","2",output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i", self.url,"-pix_fmt", "yuv420p", "-flags","+global_header", "-vsync","1","-ar","44100", "-ab", "128k","-af", "aresample=async=1:min_hard_comp=0.100000","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 else:
                     if fps < 25:
-                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-af", f"atempo={25/fps}","-vf", f"setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25","-threads","2",output]
+                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-af", f"atempo={25/fps}","-vf", f"scale=-1:720,setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
                     
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
@@ -146,21 +146,13 @@ class KivyCameraMain(Image):
                 kivyhelper.getApRoot().loading = False
                 kivyhelper.getApRoot().main_display_status(True)
                 self.reconnect = 0
-                self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-                self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-                # if self.resource_type != 'VIDEO' and self.resource_type != "M3U8":
-                self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
                 self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
                 if self.f_parent is not None:
-                    if self.category == constants.LIST_TYPE_SCHEDULE:
-                        self.f_parent.refresh_stream()
-                    elif self.resource_type == "M3U8" or self.resource_type == "VIDEO":
-                        self.f_parent.refresh_stream()
-                    elif self.typeOld == "M3U8" or self.typeOld == "VIDEO":
-                        self.f_parent.refresh_stream()
+                    if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.category == constants.LIST_TYPE_SCHEDULE or self.typeOld == "M3U8" or self.typeOld == "VIDEO":
+                        # Clock.schedule_once(lambda x:self.f_parent.refresh_stream(),1)
+                        self.f_parent.refresh_stream()              
                     if self.schedule_type == 'duration':
                         self.f_parent.start_schedule(True)
-                    
                     if self.f_parent.isStream is False:
                         self.remove_file_flv()
 
@@ -221,7 +213,7 @@ class KivyCameraMain(Image):
                 else:
                     ret, frame = self.capture.retrieve()
                     if ret:
-                        if self.resource_type == 'VIDEO' or self.resource_type == 'MP4' or self.resource_type == 'M3U8':
+                        if self.resource_type == 'VIDEO' or self.resource_type == 'MP4' or self.resource_type == 'M3U8' or self.resource_type == 'RTSP':
                             if self.resource_type == 'VIDEO' or self.resource_type == 'MP4':
                                 self.buffer_rate = self.capture.get(cv2.CAP_PROP_POS_FRAMES) / self.duration_total_n
                             self.duration_current = self.capture.get(cv2.CAP_PROP_POS_FRAMES)/self.capture.get(cv2.CAP_PROP_FPS)
@@ -231,10 +223,10 @@ class KivyCameraMain(Image):
 
     def update_texture_from_frame(self, frame):
         try:
-            frame = self.resizeFrame(frame)
+            if self.resource_type in ["IMG","GIF"]:
+                frame = self.resizeFrame(frame)
             texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
             texture.flip_vertical()
-            # buf = cv2.flip(frame, 0).tostring()
             texture.blit_buffer(frame.tostring(), colorfmt='bgr', bufferfmt='ubyte')
             self.texture = texture
             del frame, texture
@@ -251,7 +243,7 @@ class KivyCameraMain(Image):
     def resizeFrame(self, frame):
         if frame is None:
             return frame
-        if frame.shape[1] >= 1280:
+        if frame.shape[0] >= 720:
             return frame
 
         h, w, c = frame.shape

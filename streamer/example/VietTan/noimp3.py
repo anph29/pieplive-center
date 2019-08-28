@@ -31,5 +31,5 @@ import subprocess as sp
 
 # combined.export("thong.mp3", format="mp3")
 
-cam = "../../ffmpeg-win/ffmpeg.exe -i concat:1.mp3|2.mp3|3.mp3|4.mp3|5.mp3 -acodec copy Nhac-Khong-Loi.mp3 -map_metadata 0:1"
+cam = "../../ffmpeg-win/ffmpeg.exe -i concat:1.mp3|2.mp3|3.mp3 -acodec copy Nhac-Viet-Tan.mp3 -map_metadata 0:1"
 self.pipe = sp.Popen(cam)

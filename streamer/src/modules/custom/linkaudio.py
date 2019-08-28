@@ -35,13 +35,14 @@ class LinkAudio(Popup):
             idx = self.rcv_audio.getIndexOfSeleced()
             if idx != -1:
                 src = self.lsAudio[idx]['url']
-                self.callback(src, self.idx)
+                name = self.lsAudio[idx]['name']
+                self.callback(name, src, self.idx)
                 self.dismiss()
         except:
             pass
             
     def on_remove(self):
-        self.callback('', self.idx)
+        self.callback('','', self.idx)
         self.dismiss()
 
     def on_cancel(self):

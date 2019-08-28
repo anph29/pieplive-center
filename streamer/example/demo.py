@@ -8,11 +8,10 @@ from kivy.lang import Builder
 from kivy.animation import Animation
 from kivy.graphics import Fbo, ClearColor, ClearBuffers, Scale, Translate
 from kivy.clock import Clock
-import subprocess, audioread
+import subprocess
 import sounddevice as sd
 import numpy as np
 import pyaudio
-import speech_recognition as s_r
 
 from kivy.properties import ObjectProperty
 
@@ -30,25 +29,25 @@ Builder.load_string('''
     btn:btn
     lbl:lbl
     kvcam:kvcam
-    FloatLayout:
-        id:kvcam
-        size_hint: 1, 1
-        pos_hint:{'x':0, 'y':0}
-    Button:
-        id:btn
-        size_hint: 0.4, 0.2
-        pos_hint: {'center_x' : 0.5, 'center_y' : 0.5}
-        on_press: root.click_me(args[0])
-    Label:
-        id:lbl
-        color: 0,1,0,1
-        font_size: 100
-        pos_hint: {'center_x' : 0.5, 'center_y' : 0.5}
-        text: '...'
+    BoxLayout:
+        id:mainView
+        size_hint:1,1
+        Image:
+            id:kvcam
+            size_hint: 1, 1
+        Button:
+            id:btn
+            size_hint: 0.4, 0.2
+            pos_hint: {'center_x' : 0.5, 'center_y' : 0.5}
+            on_press: root.click_me(args[0])
+        Label:
+            id:lbl
+            color: 0,1,0,1
+            font_size: 100
+            pos_hint: {'center_x' : 0.5, 'center_y' : 0.5}
+            text: '...'
 ''')
 
-#link play
-#https://livevn.piepme.com/camhls/7421.36d74d5063fda77f18871dbb6c0ce613.m3u8
 class MyWidget(FloatLayout):
 
     btn = ObjectProperty(None)
@@ -69,26 +68,23 @@ class MyWidget(FloatLayout):
         now = datetime.datetime.now()
         self.lbl.text = now.strftime('%H:%M:%S')
         
-    def click_me(self, button, *args):    
-        
-        if self.pipe is None:
-            self.i = 0
-            self.run_ffmpeg()
-            self.run_anim(button)
-    
-    def print_sound(self,indata, outdata, frames, time, status):
-        pass
-        # self.pipe.stdin.write(outdata)
-        # print(frames,outdata)
+    def click_me(self, button, *args):
+        # if self.pipe is None:
+        #     self.i = 0
+        #     self.run_ffmpeg()
+        #     self.run_anim(button)
+
+        video_path = "C:/Users/Thong/Desktop/piep-source/videos/anh-thuong-em-nhat-ma-30.mp4"
+        command = ["/ffmpeg/ffmpeg.exe","-y","-i",video_path,"-filter_complex","scale=-1:720","-ar","44100","-ab", "128k","-vb","500k","-r","25","aaab.flv"]
+        self.pipe = subprocess.Popen(command, shell=True)
 
     def run_ffmpeg(self, *args, **kwargs):
-        command = ['../ffmpeg-win/ffmpeg.exe',
+        command = ['../ffmpeg/ffmpeg.exe',
                 '-f', 'rawvideo', 
                 '-pix_fmt', 'rgba',
                 '-s', '1280x720',
                 '-i','-',
-                # '-f', 'pcm_s16le',
-                '-stream_loop','-1', '-i','../../resource/media/muted2.mp3',
+                
                 '-b:a', '128k',
                 '-b:v', '3072k',
                 '-g', '25', '-r', '25',
@@ -98,12 +94,6 @@ class MyWidget(FloatLayout):
         ]
         self.pipe = subprocess.Popen(command, stdin=subprocess.PIPE)
 
-        # try:
-        with sd.Stream(callback=self.print_sound):
-            sd.sleep(1 * 1000)
-        # except:
-        #     pass
-        
     def release(self):
         if self.pipe is not None:
             self.pipe.kill()

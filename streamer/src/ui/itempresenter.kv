@@ -1,0 +1,74 @@
+#:import helper src.utils.helper
+<ItemPresenter>:
+    kvcam:kvcam
+    isCheckItem:isCheckItem
+    size_hint: 1,1
+    canvas.before:
+        Color:
+            rgb:(.0,.0,.0)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    BoxLayout:
+        orientation:'horizontal'
+        size_hint: 1, 1
+        pos_hint:{'x':0, 'y':0}
+        spacing: 5
+        padding: 5
+        LabelCamera:
+            id:kvcam
+            size_hint: 1, 1
+            font_size:13
+            color:1,1,1,1
+            text_size: self.size
+            halign: 'left'
+            valign: 'middle'
+            shorten: True
+        ImageButton:
+            size_hint:None,1
+            width: 12
+            pos_hint:{'top':1, 'right':1}
+            source: (helper._ICONS_PATH+'ic_circle_white.png',helper._ICONS_PATH+'live-green.png')[root.choice]
+            on_release:root.choice_play()
+            opacity: (0.2,1)[root.playable]
+            tooltip_text: 'Choice Play'
+        ImageButton:
+            size_hint:None,1
+            width: 12
+            pos_hint:{'top':1, 'right':1}
+            source: helper._ICONS_PATH+'play-w.png' if root.active is False else helper._ICONS_PATH+'ic_loading.gif' if app.root.loading is True else helper._ICONS_PATH+'equi.gif'
+            on_release:root.play()
+            opacity: (0.2,1)[root.playable]
+            tooltip_text: 'Play'
+        ImageButton:
+            size_hint:None,1
+            width: (0,12)[app.root.showMiniD]
+            pos_hint:{'top':1, 'right':1}
+            source: helper._ICONS_PATH+'ic_video-w.png' if root.activeMini is False else helper._ICONS_PATH+'ic_loading.gif' if app.root.loadingMini is True else helper._ICONS_PATH+'equi.gif'
+            on_release:root.playMini(app.root.showMiniD)
+            opacity: (0.2,1)[app.root.showMiniD and root.playable]
+            tooltip_text: 'Play with mini display'
+        CheckBox:
+            id: isCheckItem
+            size_hint:None,1
+            width: 20
+            # opacity:(1,0)[root.active or root.listType == 'PRESENTER']
+            # on_active: root.f_root.change_schedule_loop(self.active)
+            canvas.before:
+                Color:
+                    rgb: 1,1,1
+                Rectangle:
+                    pos:self.center_x-8, self.center_y-8
+                    size:[16,16]
+                Color:
+                    rgb: 0,0,0
+                Rectangle:
+                    pos:self.center_x-7, self.center_y-7
+                    size:[14,14]
+        ImageButton:
+            size_hint:None,1
+            width:16
+            # opacity:(1,0)[root.listType == 'PRESENTER']
+            source: helper._ICONS_PATH+'trash.png'
+            on_release:root.open_confirm_rmv()
+            tooltip_text: 'Remove'

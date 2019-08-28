@@ -8,6 +8,7 @@ from src.modules.rightcontentview.addimage import AddImage
 from src.modules.rightcontentview.addaudio import AddAudio
 from src.modules.rightcontentview.itemlabel import ItemLabel
 from src.modules.rightcontentview.itemschedule import ItemSchedule
+from src.modules.rightcontentview.itempresenter import ItemPresenter
 from src.modules.rightcontentview.itemaudio import ItemAudio
 from src.utils import helper
 

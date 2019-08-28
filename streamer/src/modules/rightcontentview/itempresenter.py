@@ -70,8 +70,8 @@ class ItemPresenter(RecycleDataViewBehavior, FloatLayout):
             self.isCheckItem.active = False
             self.parent.parent.setPlayed(self.index)
             kivyhelper.getApRoot().changeSrc(self.kvcam.get_data_source(),self.listType)
-            if kivyhelper.getApRoot().presenterAuto:
-                self.parent.parent.choice_play(self.index)
+            # if kivyhelper.getApRoot().presenterAuto:
+            #     self.parent.parent.choice_play(self.index)
 
     def playMini(self, isPlay):
         if self.playable and isPlay:

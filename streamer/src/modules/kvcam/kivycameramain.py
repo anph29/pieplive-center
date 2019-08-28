@@ -97,20 +97,19 @@ class KivyCameraMain(Image):
                     self.schedule_type = 'end'
 
                 timeout = 1
-                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-filter_complex","scale=-1:720","-ar","44100","-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-filter_complex","scale=-1:720","-preset","ultrafast","-ar","44100","-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 if self.category == constants.LIST_TYPE_PRESENTER:
                     self.url = self.data_src['rtmp']
                     timeout=2
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-filter_complex","scale=-1:720","-preset","medium","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-filter_complex","scale=-1:720","-preset","ultrafast","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "M3U8":
                     timeout=1
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync", "1","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-filter_complex","scale=-1:720","-ar","44100", "-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync", "1","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-filter_complex","scale=-1:720","-preset","ultrafast","-ar","44100", "-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "RTSP":
                     timeout=2
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i", self.url,"-pix_fmt", "yuv420p", "-flags","+global_header", "-vsync","1","-ar","44100", "-ab", "128k","-af", "aresample=async=1:min_hard_comp=0.100000","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,"-r","25",output]
-                else:
-                    if fps < 25:
-                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-af", f"atempo={25/fps}","-vf", f"scale=-1:720,setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i", self.url,"-pix_fmt", "yuv420p", "-flags","+global_header", "-vsync","1","-ar","44100", "-ab", "128k","-af", "aresample=async=1:min_hard_comp=0.100000","-vf","scale=-1:720","-preset","ultrafast","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                elif fps < 25:
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-af", f"atempo={25/fps}","-vf", f"scale=-1:720,setpts={fps/25}*PTS","-preset","ultrafast","-vb",self.f_parent.v_bitrate,"-r","25",output]
                     
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
@@ -138,7 +137,7 @@ class KivyCameraMain(Image):
                 self.resource_type = 'GIF'
 
             if self.resource_type == 'CAMERA':
-                self.capture = cv2.VideoCapture(int(self.url))
+                self.capture = cv2.VideoCapture(int(self.url))#url index device 0;1;2;3;...
             else:
                 self.capture = cv2.VideoCapture(self.url)
 
@@ -146,18 +145,16 @@ class KivyCameraMain(Image):
                 kivyhelper.getApRoot().loading = False
                 kivyhelper.getApRoot().main_display_status(True)
                 self.reconnect = 0
+                self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
                 self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
                 if self.f_parent is not None:
                     if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.category == constants.LIST_TYPE_SCHEDULE or self.typeOld == "M3U8" or self.typeOld == "VIDEO":
-                        # Clock.schedule_once(lambda x:self.f_parent.refresh_stream(),1)
                         self.f_parent.refresh_stream()              
                     if self.schedule_type == 'duration':
                         self.f_parent.start_schedule(True)
                     if self.f_parent.isStream is False:
                         self.remove_file_flv()
-
                 self.typeOld = self.resource_type
-                self.playAudio()
             else:
                 print("cv2.error:")
                 if self.capture is not None:
@@ -178,12 +175,6 @@ class KivyCameraMain(Image):
             else:
                 self.reconnect += 1
                 Clock.schedule_once(self.process_set_data,1)
-
-    def playAudio(self):
-        # song = AudioSegment.from_file(self.url.replace('.flv','.wav'))
-        # play(song)
-        # player = MediaPlayer(self.url)
-        pass
     
     def show_captured_img(self, url=None):
         cap = cv2.VideoCapture(url or self.url)
@@ -229,7 +220,7 @@ class KivyCameraMain(Image):
             texture.flip_vertical()
             texture.blit_buffer(frame.tostring(), colorfmt='bgr', bufferfmt='ubyte')
             self.texture = texture
-            del frame, texture
+            # del frame, texture
         except IOError:
             print("Exception update_texture_from_frame:")
 

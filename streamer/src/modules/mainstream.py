@@ -296,12 +296,12 @@ class MainStream(RelativeLayout):
 
     def prepare(self):
         try:
-            self.command = ['ffmpeg/ffmpeg.exe','-y',"-re",'-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', '{}x{}'.format(self.f_width, self.f_height), '-i', '-']
+            self.command = ['ffmpeg/ffmpeg.exe','-y','-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', '{}x{}'.format(self.f_width, self.f_height), '-i', '-']
             
             self.command.extend(self.draw_element())
 
             # encode
-            self.command.extend(['-vb', str(self.v_bitrate), '-pix_fmt', 'yuv420p'])
+            self.command.extend(['-vb', str(self.v_bitrate), '-pix_fmt', 'yuv420p','-vf','fps=25'])
 
             self.command.extend(['-r', '25'])
             

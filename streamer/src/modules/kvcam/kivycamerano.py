@@ -12,7 +12,7 @@ from src.utils import helper, kivyhelper
 from src.modules import constants
 
 kv = '''
-<KivyCameraMini>:
+<KivyCameraNo>:
     drag_rectangle: self.x, self.y, self.width, self.height
     drag_timeout: 10000000
     drag_distance: 0
@@ -21,7 +21,7 @@ kv = '''
 
 Builder.load_string(kv)
 
-class KivyCameraMini(DragBehavior, Image):
+class KivyCameraNo(DragBehavior, Image):
     capture = ObjectProperty(None)
     url = StringProperty('')
     resource_type = StringProperty('')
@@ -42,7 +42,7 @@ class KivyCameraMini(DragBehavior, Image):
     url_remove = StringProperty('')
 
     def __init__(self, **kwargs):
-        super(KivyCameraMini, self).__init__(**kwargs)
+        super(KivyCameraNo, self).__init__(**kwargs)
         self.f_height = 720
         self.show_captured_img(self.default_frame)
         self.data_src = {
@@ -120,8 +120,9 @@ class KivyCameraMini(DragBehavior, Image):
                 elif self.resource_type == "RTSP":
                     timeout=1
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i", self.url,"-pix_fmt", "yuv420p", "-flags","+global_header", "-vsync","1","-ar","44100", "-ab", "128k","-af", "aresample=async=1:min_hard_comp=0.100000","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,"-r","25",output]
-                elif fps < 25:
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-af", f"atempo={25/fps}","-vf", f"scale=-1:720,setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                else:
+                    if fps < 25:
+                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-af", f"atempo={25/fps}","-vf", f"scale=-1:720,setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
                     
                 si = subprocess.STARTUPINFO()
                 si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
@@ -157,11 +158,8 @@ class KivyCameraMini(DragBehavior, Image):
                 kivyhelper.getApRoot().loadingMini = False
                 kivyhelper.getApRoot().mini_display_status(True)
                 self.reconnect = 0
-                self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
                 self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
                 if self.f_parent is not None:
-                    if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.category == constants.LIST_TYPE_SCHEDULE or self.typeOld == "M3U8" or self.typeOld == "VIDEO":
-                        self.f_parent.refresh_stream()
                     if self.f_parent.isStream is False:
                         self.remove_file_flv()
                 self.typeOld = self.resource_type

@@ -14,6 +14,7 @@ from PIL import (
 )  # to fuck -> OSerror: cannot identify image file
 from src.utils import helper
 from src.constants import UI
+from src.constants.MTYPE import *
 from .mediaitem import MediaItem
 from src.modules.custom import ToolTip, CanvasC
 import io
@@ -49,7 +50,7 @@ class MediaItemBox(MediaItem):
         self.wrapper.pack(fill=tk.BOTH)
         self.initTOP()
         self.initBOTTOM()
-        if self.mtype == "VIDEO":
+        if self.mtype == VIDEO:
             self.buffer = tk.Frame(
                 self.wrapper, bd=0, relief=tk.SUNKEN, bg="#f00", width=0, height=3
             )
@@ -67,7 +68,7 @@ class MediaItemBox(MediaItem):
         self.top.pack(side=tk.TOP)
 
         self.top.bind("<Button-1>", self.playOrPauseClick)
-        if self.mtype == "IMG":
+        if self.mtype == IMG:
             try:
                 im = Image.open(self.url)
             except FileNotFoundError:
@@ -81,7 +82,7 @@ class MediaItemBox(MediaItem):
         self.topImage = tk.Label(self.top, image=imgMedia, bg="#f2f2f2", cursor="hand2")
         self.topImage.photo = imgMedia
         #
-        if self.mtype != "IMG":
+        if self.mtype != IMG:
             self.topImage.bind("<Button-1>", self.initVLC)
         self.topImage.pack(padx=pdx, pady=pdy)
 
@@ -204,7 +205,7 @@ class MediaItemBox(MediaItem):
             self.light.pack(side=tk.RIGHT)
 
     def initVLC(self, evt):
-        # video, camera || presenter onlinne
+        # video, camera, presenter is onlinne
         if self.parentTab.tabType != MediaType.PRESENTER or (
             self.parentTab.tabType == MediaType.PRESENTER and self.LN510 == 2
         ):
@@ -222,9 +223,9 @@ class MediaItemBox(MediaItem):
             #
             self.media.release()
             # self.playOrPause()
-            if self.mtype == "VIDEO":
+            if self.mtype == VIDEO:
                 self.after(100, self.playOrPause)
-            if self.mtype == "RTSP":
+            if self.mtype == RTSP:
                 self.after(5000, self.playOrPause)
             self.vlcInited = True
 
@@ -276,7 +277,7 @@ class MediaItemBox(MediaItem):
         self.updatePlayIcon("f5")
 
     def play(self):
-        if self.mtype == "VIDEO":
+        if self.mtype == VIDEO:
             if self.finished:
                 self.buffer.configure(width=0)
                 self.player.stop()
@@ -301,7 +302,6 @@ class MediaItemBox(MediaItem):
                 self.play()
                 self.updatePlayIcon("pause")
                 self.topImage.config(cursor="none")
-
 
     def updateZoomIcon(self, ico):
         image = Image.open(f"{helper._ICONS_PATH}zoom-{ico}.png")

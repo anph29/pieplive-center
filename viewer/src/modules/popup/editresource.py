@@ -42,7 +42,7 @@ class PopupEditResource(PopupAddResource):
         self.name = tk.StringVar()
         self.url = tk.StringVar()
         self.setupData()
-        urlEditabel = self.mtype in ["VIDEO", "IMG"]
+        urlEditabel = self.mtype in [VIDEO, IMG]
         # name
         fName = tk.Frame(fFile, pady=10, padx=20)
         lName = tk.Label(fName, text="Name:", width=6, anchor=tk.W, font=UI.TXT_FONT)
@@ -80,7 +80,7 @@ class PopupEditResource(PopupAddResource):
             btnChoose.configure(width=7)
             btnChoose.pack(side=tk.RIGHT, fill=tk.Y)
         # duration
-        if self.mtype == "VIDEO":
+        if self.mtype == VIDEO:
             self.packDuration(fFile)
         # error msg
         self.fError = tk.Frame(fFile)
@@ -175,7 +175,7 @@ class PopupEditResource(PopupAddResource):
         tk_helper.verifyHMS_val(self.ss)
 
     def onSave(self):
-        if self.mtype == "VIDEO":
+        if self.mtype == VIDEO:
             self.duration = helper.convertHMSNoToSec(
                 {
                     "h": int(self.hh.get()),

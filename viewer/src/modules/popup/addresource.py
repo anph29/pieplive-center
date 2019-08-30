@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import filedialog, ttk
 from src.utils import tk_helper, scryto
 from src.constants import UI
+from src.constants.MTYPE import *
 from src.enums import MediaType
 
 
@@ -161,11 +162,11 @@ class PopupAddResource(object):
         )
         fname = os.fsdecode(path)
         if ftype.isImage(fname):
-            self.localFile("IMG")
+            self.localFile(IMG)
         elif ftype.isVideo(fname):
-            self.localFile("VIDEO")
+            self.localFile(VIDEO)
         elif ftype.isAudio(fname):
-            self.localFile("AUDIO")
+            self.localFile(AUDIO)
         else:
             self.fError.pack(side=tk.TOP, fill=tk.X)
         # fill data
@@ -210,14 +211,14 @@ class PopupAddResource(object):
 
     def getMTypeByPath(self, fpath):
         if self.parent.tabType is MediaType.IMAGE and ftype.isImage(fpath):
-            return "IMG"
+            return IMG
         elif self.parent.tabType is MediaType.VIDEO and ftype.isVideo(fpath):
-            return "VIDEO"
+            return VIDEO
         elif self.parent.tabType is MediaType.AUDIO and ftype.isAudio(fpath):
-            return "AUDIO"
+            return AUDIO
 
     def addMediaByType(self, dt):
-        if dt["type"] == "VIDEO":
+        if dt["type"] == VIDEO:
             dt["duration"] = helper.getVideoDuration(dt["url"])
         self.parent.addMediaToList(dt)
         self.parent.addMedia(dt)
@@ -242,7 +243,6 @@ class PopupAddResource(object):
             "type": self.mtype,
             "id": scryto.hash_md5_with_time(url),
         }
-        print(dt, "aaaaaaaaaaaaa")
         # add duration
         if (
             self.useLocal

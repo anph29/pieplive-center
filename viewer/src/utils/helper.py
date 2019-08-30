@@ -1,13 +1,13 @@
 import os
 import re
+import cv2
+import time
 import json
 import math
 import base64
+import shutil
 from . import zip_helper
 from datetime import datetime
-import time
-import cv2
-import shutil
 from urllib.request import Request, urlopen
 
 """
@@ -21,9 +21,9 @@ _PATH_IMAGE = f"{_BASE_PATH}cfg/image.json"
 _PATH_VIDEO = f"{_BASE_PATH}cfg/video.json"
 _PATH_AUDIO = f"{_BASE_PATH}cfg/audio.json"
 _PATH_CAMERA = f"{_BASE_PATH}cfg/camera.json"
-_PATH_SCHEDULE = f"{_BASE_PATH}cfg/schedule.json"
 _PATH_SETTING = f"{_BASE_PATH}cfg/setting.json"
 _PATH_I18N_DIR = f"{_BASE_PATH}i18n/"
+_PATH_SCHEDULE = f"{_BASE_PATH}cfg/schedule.json"
 _PATH_PRESENTER = f"{_BASE_PATH}cfg/presenter.json"
 _PATH_KEY_STREAM = f"{_BASE_PATH}cfg/keystream.json"
 _PATH_SCHEDULE_DIR = f"{_BASE_PATH}cfg/schedules/"

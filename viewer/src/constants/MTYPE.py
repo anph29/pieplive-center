@@ -1,0 +1,5 @@
+IMG = "IMG"
+VIDEO = "VIDEO"
+RTSP = "RTSP"
+M3U8 = "M3U8"
+AUDIO = "AUDIO"

@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from src.utils import tk_helper, helper, scryto
 from src.constants import UI
+from src.constants.MTYPE import *
 import re
 from src.modules.custom import LabeledCombobox
 

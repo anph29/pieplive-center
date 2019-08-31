@@ -82,3 +82,11 @@ class ItemPresenter(RecycleDataViewBehavior, FloatLayout):
     def choice_play(self):
         if self.playable:
             self.parent.parent.choice_play(self.index)
+
+    def add_to_action(self):
+        _data = {
+            "id":self._id,
+            "name":self.name,
+            'active': self.playable
+        }
+        kivyhelper.getApRoot().add_to_action(_data)

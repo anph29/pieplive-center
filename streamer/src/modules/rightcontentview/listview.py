@@ -374,10 +374,9 @@ class ListPresenter(RecycleView):
             if int(m['id']) == _id:
                 if ln510 == 2:
                     m['playable'] = True
-                    item = {'id':m['id'],'name':m['name']}
-                    kivyhelper.getApRoot().addPresenting(item)
+                    kivyhelper.getApRoot().active_presenter_action(m['id'])
                 else:
-                    kivyhelper.getApRoot().deletePresenting(m['id'])
+                    kivyhelper.getApRoot().deactive_presenter_action(m['id'])
                     m['playable'] = False
         self.refresh_view()
 

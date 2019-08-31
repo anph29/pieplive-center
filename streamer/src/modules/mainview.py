@@ -69,6 +69,7 @@ class MainView(Widget):
         self.init_right_content_cam()
         self.init_right_content_presenter()
         self.init_right_content_schedule()
+        self.init_bottom_content_presenter_action()
         Clock.schedule_once(self.turnOnObserver,1)
     
     def get_setting(self):
@@ -108,6 +109,9 @@ class MainView(Widget):
 
     def right_content_schedule_refresh(self):
         self.right_content.tab_schedule.ls_schedule.refresh_list()
+
+    def init_bottom_content_presenter_action(self):
+        self.bottom_left.list_presenting.set_data()
 
     def initAudio(self):
         try:
@@ -192,11 +196,14 @@ class MainView(Widget):
         if self.mainStream is not None:
             self.mainStream.on_change_Volume(id, volume)
 
-    def addPresenting(self, item):
+    def add_to_action(self, item):
         self.bottom_left.list_presenting.add_source(item)
 
-    def deletePresenting(self, _id):
-        self.bottom_left.list_presenting.del_source(_id)
+    def active_presenter_action(self, _id):
+        self.bottom_left.list_presenting.active_action(_id)
+
+    def deactive_presenter_action(self, _id):
+        self.bottom_left.list_presenting.deactive_action(_id)
 
     def change_auto_stop(self, val):
         self.autoStop = val

@@ -451,7 +451,7 @@ def makeSureResourceFolderExisted():
         "staticsource",
         "keystream",
     ]:
-    checkResourceExistAndWriteIfNot(target)
+        checkResourceExistAndWriteIfNot(target)
 
 
 def checkResourceExistAndWriteIfNot(target, data=[]):

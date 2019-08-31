@@ -101,7 +101,7 @@ class KivyCameraMain(Image):
                 if self.category == constants.LIST_TYPE_PRESENTER:
                     self.url = self.data_src['rtmp']
                     timeout=2
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats",'-fflags','+genpts+igndts',"-i",self.url,"-tune","fastdecode","-preset","veryslow","-filter_complex","scale=-1:720","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",'-threads','8',output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats",'-fflags','+genpts+igndts',"-i",self.url,"-tune","fastdecode","-preset","veryslow","-filter_complex","scale=-1:720","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",'-pix_fmt','yuv422p','-threads','8',output]
                 elif self.resource_type == "M3U8":
                     timeout=1
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync", "1","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-filter_complex","scale=-1:720","-preset","ultrafast","-ar","44100", "-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",output]

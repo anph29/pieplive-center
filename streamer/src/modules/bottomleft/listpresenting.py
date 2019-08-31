@@ -8,7 +8,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.uix.scrollview import ScrollView
 from src.modules.custom.popup import PiepMeConfirmPopup
-from src.utils import helper, kivyhelper
+from src.utils import helper, kivyhelper, firebase
 from kivy.lang import Builder
 from kivy.clock import Clock
 from functools import partial
@@ -35,6 +35,9 @@ class ListPresenting(RecycleView):
                 list(self.data)
             )
         )
+
+    def get_data(self):
+        return self.data
 
     # def set_source(self,sources):
     #     self.data = sources
@@ -84,6 +87,42 @@ class ListPresenting(RecycleView):
                 child.refresh_view_attrs(self,child.index, self.data[child.index])
         except:
             pass
+    
+    def get_index_from_id(self, _id):
+        for child in self.children[0].children:
+            if child._id == _id:
+                return child.index
+        return -1
+
+    # lay id tiep theo de auto choice play
+    def get_next_id_from_id(self, _id):
+        _idx = -1
+        id = -1
+        flag = False
+
+        for child in self.children[0].children:
+            if child._id == _id:
+                _idx = child.index
+                break
+        if _idx != -1:
+            for child in self.children[0].children:
+                if child.index > _idx and child.active is True:
+                    id = child._id
+                    flag = True
+            if flag is False:
+                for child in self.children[0].children:
+                    if int(child.index) < int(_idx) and child.active is True:
+                        id = child._id
+                        flag = True
+        return id
+
+    def get_number_active(self):
+        num = 0
+        for m in self.data:
+            if m['active'] is True:
+                num = num + 1
+        return num
+        
 
 class BoxPresenting(SelectableBox):
     """ Adds selection and focus behaviour to the view. """

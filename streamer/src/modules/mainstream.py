@@ -459,9 +459,11 @@ class MainStream(RelativeLayout):
         except:
             pass
 
+    #set loop for schedule
     def loop_schedule(self,_val):
         self.is_loop = _val
         
+    #delete all file in folder temp
     def deleteAllFile(self):
         folder = helper._BASE_PATH+'temp/'
         for the_file in os.listdir(folder):

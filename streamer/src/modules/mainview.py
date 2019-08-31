@@ -225,13 +225,13 @@ class MainView(Widget):
     def main_display_status(self, val):
         self.mainDisplayStt = val
         if self.mainStream.isStream is True and self.autoStop is True:
-            if self.mainDisplayStt is False and self.miniDisplayStt is False and self.right_content.tab_presenter.ls_presenter.get_number_active() == 0 :
+            if self.mainDisplayStt is False and self.miniDisplayStt is False and self.bottom_left.list_presenting.get_number_active() == 0 :
                 self.triggerStop()
 
     def mini_display_status(self, val):
         self.miniDisplayStt = val
         if self.mainStream.isStream is True and self.autoStop is True:
-            if self.mainDisplayStt is False and self.miniDisplayStt is False and self.right_content.tab_presenter.ls_presenter.get_number_active() == 0 :
+            if self.mainDisplayStt is False and self.miniDisplayStt is False and self.bottom_left.list_presenting.get_number_active() == 0 :
                 self.triggerStop()
 
     @mainthread

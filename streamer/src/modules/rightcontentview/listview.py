@@ -324,26 +324,39 @@ class ListPresenter(RecycleView):
     def onChangePresenter(self, presenter):
         #choice status
         if int(self.item_choice) == presenter:
+            # case recieve firebase after execute choice play
             pass
         else:
             if presenter == 0 and kivyhelper.getApRoot().presenterAuto is True and kivyhelper.getApRoot().mainStream.isStream is True and kivyhelper.getApRoot().modeStream == 'NORMAL':
                 if self.switch_proc is not None:
                     self.switch_proc.cancel()
-                
-                idx = -1
-                for child in self.children[0].children:
-                    if child.id == self.item_choice:
-                        idx = child.index
-                if idx != -1:
-                    for child in self.children[0].children:
-                        if child.index != idx and child.playable:
-                            presenter = int(child.id)
-                            firebase.makeChangePresenter(presenter)
-                            self.switch_proc = Clock.schedule_once(lambda x: kivyhelper.getApRoot().switch_display_auto(0),kivyhelper.getApRoot().delaySwitchDisplay)
-                            kivyhelper.getApRoot().delaySwitchDisplay += 2
-                            break
+
+                # idx = -1
+                # for child in self.children[0].children:
+                #     if child.id == self.item_choice:
+                #         idx = child.index
+                # if idx != -1:
+                #     for child in self.children[0].children:
+                #         if child.index != idx and child.playable:
+                #             presenter = int(child.id)
+                #             firebase.makeChangePresenter(presenter)
+                #             self.switch_proc = Clock.schedule_once(lambda x: kivyhelper.getApRoot().switch_display_auto(0),kivyhelper.getApRoot().delaySwitchDisplay)
+                #             kivyhelper.getApRoot().delaySwitchDisplay += 2
+                #             break
+
+                # get id next
+                _id = kivyhelper.getApRoot().bottom_left.list_presenting.get_next_id_from_id(self.item_choice)
+                if _id != -1:
+                    presenter = int(_id)
+                    #choice play
+                    firebase.makeChangePresenter(presenter)
+                    #switch display
+                    self.switch_proc = Clock.schedule_once(lambda x: kivyhelper.getApRoot().switch_display_auto(0),kivyhelper.getApRoot().delaySwitchDisplay)
+                    kivyhelper.getApRoot().delaySwitchDisplay += 2
+
             self.item_choice = str(presenter)
 
+            #update data
             for obj in self.data:
                 obj['list'] = constants.LIST_TYPE_PRESENTER
                 if int(obj['id']) == int(presenter):
@@ -351,6 +364,7 @@ class ListPresenter(RecycleView):
                 else:
                     obj['choice'] = False
             
+            #update view
             for child in self.children[0].children:
                 child.listType = constants.LIST_TYPE_PRESENTER
                 if int(child.id) == int(presenter):

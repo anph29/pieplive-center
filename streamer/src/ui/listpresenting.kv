@@ -8,11 +8,25 @@
         Rectangle:
             size:self.size
             pos:self.pos
-    Label:
-        color: 1.0,1.0,1.0,1
-        font_size: 12
-        text: root.name
-        text_size: self.width, 24
-        valign: 'center'
-        halign: 'justify'
-        markup: True
+    BoxLayout:
+        orientation:'horizontal'
+        size_hint: 1, 1
+        pos_hint:{'x':0, 'y':0}
+        spacing: 5
+        padding: 5
+        Label:
+            size_hint:1,1
+            color: 1.0,1.0,1.0,1
+            font_size: 12
+            text: root.name
+            text_size: self.width, 24
+            opacity: (0.5,1)[root.active]
+            valign: 'center'
+            halign: 'justify'
+            markup: True
+        ImageButton:
+            size_hint:None,1
+            width:16
+            source: helper._ICONS_PATH+'trash.png'
+            on_release:root.open_confirm_rmv()
+            tooltip_text: 'Remove'

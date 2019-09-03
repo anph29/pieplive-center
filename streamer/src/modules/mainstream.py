@@ -436,32 +436,36 @@ class MainStream(RelativeLayout):
     def start_schedule(self, isSchedule):
         if self.mgrSchedule is not None:
             self.mgrSchedule.cancel()
-        self.ls_schedule = self.f_parent.right_content.tab_schedule.ls_schedule.get_data()
+        ls_schedule = self.f_parent.right_content.tab_schedule.ls_schedule
 
         if isSchedule:
-            index = self.f_parent.right_content.tab_schedule.ls_schedule.getCurrentIndex()
-            self.mgrSchedule = Clock.schedule_once(self.process_schedule , self.ls_schedule[index]['duration']+3)
+            index = ls_schedule.getCurrentIndex()
+            _data = ls_schedule.get_data_from_index(index)
+            self.mgrSchedule = Clock.schedule_once(self.process_schedule , _data['duration']+3)
     
     def process_schedule(self, fps):
         try:
-            self.ls_schedule = self.f_parent.right_content.tab_schedule.ls_schedule.get_data()
+            ls_schedule = self.f_parent.right_content.tab_schedule.ls_schedule
+            # self.ls_schedule = self.f_parent.right_content.tab_schedule.ls_schedule.get_data()
             if self.mgrSchedule is not None:
                 self.mgrSchedule.cancel()
-            self.current_schedule = self.f_parent.right_content.tab_schedule.ls_schedule.getCurrentIndex() + 1
-            if self.current_schedule >= len(self.ls_schedule):
+            self.current_schedule = ls_schedule.getCurrentIndex() + 1
+            if self.current_schedule >= ls_schedule.get_count_element():
                 if self.is_loop:
                     self.current_schedule = 0
                 else:
                     return False
-            data_src = self.ls_schedule[self.current_schedule]
-            self.f_parent.right_content.tab_schedule.ls_schedule.setPlayed(self.current_schedule)
+            data_src = ls_schedule.get_data_from_index(self.current_schedule)
+            ls_schedule.setPlayed(self.current_schedule)
             self._set_capture(data_src, 'SCHEDULE', True)
         except:
             pass
 
+    #set loop for schedule
     def loop_schedule(self,_val):
         self.is_loop = _val
         
+    #delete all file in folder temp
     def deleteAllFile(self):
         folder = helper._BASE_PATH+'temp/'
         for the_file in os.listdir(folder):

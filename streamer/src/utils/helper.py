@@ -25,6 +25,7 @@ _PATH_SETTING = f"{_BASE_PATH}cfg/setting.json"
 _PATH_I18N_DIR = f"{_BASE_PATH}i18n/"
 _PATH_SCHEDULE = f"{_BASE_PATH}cfg/schedule.json"
 _PATH_PRESENTER = f"{_BASE_PATH}cfg/presenter.json"
+_PATH_PRESENTER_ACTION = f"{_BASE_PATH}cfg/presenter_action.json"
 _PATH_KEY_STREAM = f"{_BASE_PATH}cfg/keystream.json"
 _PATH_SCHEDULE_DIR = f"{_BASE_PATH}cfg/schedules/"
 _PATH_STATICSOURCE = f"{_BASE_PATH}cfg/staticsource.json"
@@ -229,6 +230,22 @@ def _write_lspresenter(data):
 
 def _add_to_lspresenter(data):
     appendJSON(_PATH_PRESENTER, data)
+
+
+"""
+ls presenter action
+"""
+
+def _load_ls_presenter_action():
+    return loadJSON(_PATH_PRESENTER_ACTION)
+
+
+def _write_lspresenter_action(data):
+    writeJSON(_PATH_PRESENTER_ACTION, data)
+
+
+def _add_to_lspresenter_action(data):
+    appendJSON(_PATH_PRESENTER_ACTION, data)
 
 
 """
@@ -443,6 +460,7 @@ def makeSureResourceFolderExisted():
         "schedule",
         "audio",
         "presenter",
+        "presenter_action",
         "staticsource",
         "keystream",
     ]:
@@ -477,6 +495,7 @@ def getSettingJSONContent():
         "stream_key": "",
         "play": "",
         "p300": {},
+        "isnotify": False,
     }
 
 

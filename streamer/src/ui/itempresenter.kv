@@ -48,6 +48,13 @@
             on_release:root.playMini(app.root.showMiniD)
             opacity: (0.2,1)[app.root.showMiniD and root.playable]
             tooltip_text: 'Play with mini display'
+        ImageButton:
+            size_hint:None,1
+            width: 12
+            pos_hint:{'top':1, 'right':1}
+            source: helper._ICONS_PATH+'ic_presenter-w.png'
+            on_release:root.add_to_action()
+            tooltip_text: 'add to list action'
         CheckBox:
             id: isCheckItem
             size_hint:None,1

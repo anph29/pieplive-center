@@ -482,6 +482,7 @@ def getSettingJSONContent():
         "stream_key": "",
         "play": "",
         "p300": {},
+        "isnotify": False,
     }
 
 

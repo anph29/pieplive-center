@@ -17,6 +17,7 @@ class ScheduleHead(tk.Frame):
 
 class ScheduleDetail(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
+        self.parent = parent
         super(ScheduleDetail, self).__init__(parent, *args, **kwargs)
         self.singleschedule = None
         self.initUI()

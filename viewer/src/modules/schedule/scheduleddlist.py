@@ -4,7 +4,7 @@ from src.modules.custom import DDList, VerticalScrolledFrame
 from src.utils import helper, store
 from src.modules.custom import ToolTip
 from PIL import Image, ImageTk
-from src.constants import UI
+from src.constants import UI, STORE_SCHEDULE
 
 
 class ScheduleDDList(tk.Frame):
@@ -177,7 +177,7 @@ class ScheduleDDList(tk.Frame):
     def saveSortedList(self):
         sorted = list(map(lambda x: x.value, self.ddlist._list_of_items))
         filtered = list(
-            filter(lambda x: bool(x) and x["id"] != "STORE_SCHEDULE", sorted)
+            filter(lambda x: bool(x) and x["id"] != STORE_SCHEDULE, sorted)
         )
         # index, timepoint = self.get1stEvalueTimepoint(sorted)
         self.clearData()

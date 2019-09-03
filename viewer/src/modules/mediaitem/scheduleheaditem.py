@@ -3,7 +3,7 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 from tkinter import messagebox
 from src.utils import helper, scryto, store
-from src.constants import UI
+from src.constants import UI, STORE_SCHEDULE
 from src.modules.custom import ToolTip, PLabel
 from tkcalendar import DateEntry
 from datetime import datetime, timedelta
@@ -11,7 +11,7 @@ from src.utils import store
 
 
 class ScheduleHeadItem(tk.Frame):
-    def __init__(self, parent, parentTab=None, media=None, *args, **kwargs):
+    def __init__(self, parent, parentTab=None, sch=None, *args, **kwargs):
         super(ScheduleHeadItem, self).__init__(parent, *args, **kwargs)
         self.parentTab = parentTab
         self.checked = tk.BooleanVar()
@@ -20,7 +20,7 @@ class ScheduleHeadItem(tk.Frame):
         self.path = ""
         self.actived = False
         self.isRunningSch = False
-        self.set_data(media)
+        self.set_data(sch)
         self.initUI()
         #
         if self.isRunningSch:
@@ -31,14 +31,16 @@ class ScheduleHeadItem(tk.Frame):
             "path": self.path,
             "id": self.id,
             "name": store._get("RUNNING_SCHEDULE") if self.isRunningSch else self.name,
+            "lock": self.lock,
         }
 
-    def set_data(self, media):
-        self.id = media["id"] if bool(media) else ""
-        self.name = media["name"] if bool(media) else ""
-        self.path = media["path"] if bool(media) else ""
+    def set_data(self, sch):
+        self.id = sch["id"] if bool(sch) else ""
+        self.name = sch["name"] if bool(sch) else ""
+        self.path = sch["path"] if bool(sch) else ""
+        self.lock = sch["lock"] if bool(sch) else ""
         self.itemBg = "#F4ECF7"
-        self.isRunningSch = self.id == "STORE_SCHEDULE"
+        self.isRunningSch = self.id == STORE_SCHEDULE
 
     def deleteSchedule(self, evt):
         if messagebox.askyesno(
@@ -209,9 +211,9 @@ class ScheduleHeadItem(tk.Frame):
 
 
 class ScheduleHeadItemEdit(ScheduleHeadItem):
-    def __init__(self, parent, parentTab=None, media=None, *args, **kwargs):
+    def __init__(self, parent, parentTab=None, sch=None, *args, **kwargs):
         super(ScheduleHeadItemEdit, self).__init__(
-            parent, parentTab=parentTab, media=media, *args, **kwargs
+            parent, parentTab=parentTab, sch=sch, *args, **kwargs
         )
 
     def initUI(self):

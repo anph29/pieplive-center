@@ -399,9 +399,9 @@ def convertSecNoToHMS(seconds, toObj=False):
     h = math.floor(seconds / 3600)
     m = math.floor((seconds % 3600) / 60)
     s = seconds - h * 3600 - m * 60
-    hs = ("", "0")[h < 10] + str(h)
-    ms = ("", "0")[m < 10] + str(m)
-    ss = ("", "0")[s < 10] + str(s)
+    hs = f'{("", "0")[h < 10]}{h}'
+    ms = f'{("", "0")[m < 10]}{m}'
+    ss = f'{("", "0")[s < 10]}{s}'
     if toObj:
         return {"h": hs, "m": ms, "s": ss}
     else:
@@ -428,7 +428,7 @@ def makeSureResourceFolderExisted():
         os.mkdir(f"{_BASE_PATH}cfg/schedules")
     # sorted schedule file
     if not os.path.isfile(f"{_BASE_PATH}cfg/schedules/sorted.json"):
-        writeJSON(f"{_BASE_PATH}cfg/schedules/sorted.json", [])
+        writeJSON(f"{_BASE_PATH}cfg/schedules/sorted.json", getSortedJSONContent())
     # store
     checkResourceExistAndWriteIfNot("store", data={})
     # setting
@@ -478,6 +478,12 @@ def getSettingJSONContent():
         "play": "",
         "p300": {},
     }
+
+
+def getSortedJSONContent():
+    return [
+        {"path": "", "id": "STORE_SCHEDULE", "name": "RUNNING_SCHEDULE", "lock": False}
+    ]
 
 
 def getMTypeFromUrl(url):

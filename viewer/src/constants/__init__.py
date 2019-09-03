@@ -1,1 +1,3 @@
 from . import *
+
+STORE_SCHEDULE = 'STORE_SCHEDULE'

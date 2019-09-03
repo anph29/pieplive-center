@@ -7,6 +7,7 @@ from src.modules.custom import ToolTip
 from PIL import Image, ImageTk
 from src.modules.mediaitem import ScheduleHeadItem, ScheduleHeadItemEdit
 from datetime import datetime, timedelta
+from src.constants import STORE_SCHEDULE
 
 
 class SortedList(ScheduleDDList):
@@ -24,15 +25,6 @@ class SortedList(ScheduleDDList):
         self.showListSchedule()
 
     def showListSchedule(self):
-        # 1. default
-        self.addToScheduleGUI(
-            {
-                "path": "",
-                "id": "STORE_SCHEDULE",
-                "name": f"{store._get('RUNNING_SCHEDULE')}",
-            }
-        )
-        # 2. list
         self._LS_SCHEDULE_DATA = self.loadSchedule()
         for media in self._LS_SCHEDULE_DATA:
             self.addToScheduleGUI(media)
@@ -44,10 +36,8 @@ class SortedList(ScheduleDDList):
         self.showDupplicateBtn()
 
     def addToScheduleGUI(self, data):
-        item = self.ddlist.create_item(
-            value=data, freeze=data["id"] == "STORE_SCHEDULE"
-        )
-        ui = ScheduleHeadItem(item, parentTab=self, media=data)
+        item = self.ddlist.create_item(value=data, freeze=data["id"] == STORE_SCHEDULE)
+        ui = ScheduleHeadItem(item, parentTab=self, sch=data)
         self._LS_SCHEDULE_UI.append(ui)
         ui.pack(expand=True)
         self.ddlist.add_item(item)
@@ -109,6 +99,7 @@ class SortedList(ScheduleDDList):
                 "path": copied,
                 "id": scryto.hash_md5_with_time(copied),
                 "name": sch.name + " (copy)",
+                "lock": sch.lock,
             }
         )
 

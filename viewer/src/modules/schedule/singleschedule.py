@@ -14,6 +14,7 @@ from src.modules.custom import ToolTip
 class SingleSchedule(ScheduleDDList):
     def __init__(self, parent, *args, **kwargs):
         super(SingleSchedule, self).__init__(parent, *args, **kwargs)
+        self.parent = parent
         self.tbBgColor = "#D4EFDF"
         self.wrapperWidth = 745
         self.totalDuration = 0
@@ -39,6 +40,7 @@ class SingleSchedule(ScheduleDDList):
         self.isRunningSch = self.schId == "STORE_SCHEDULE"
         self.schPath = sch["path"] if bool(sch) else ""
         self.schName = sch["name"] if bool(sch) else ""
+        self.schLocked = sch["lock"] if bool(sch) else ""
         #
         title = f"{'RUNNING SCHEDULE: ' if self.isRunningSch else ''}{self.schName}"
         self.lblTitle.config(text=title)

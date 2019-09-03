@@ -558,6 +558,26 @@ class ListSchedule(RecycleView):
                 return child.index
         return -1
 
+    def get_data_from_index(self, idx):
+        _id = ''
+        _data = None
+        for child in self.children[0].children:
+            if child.index == idx:
+                _id = child.id
+                break
+        if len(_id) > 0:
+            for obj in self.data:
+                if obj['id'] == _id:
+                    _data = obj
+                    break
+        return _data
+
+    def get_count_element(self):
+        if self.data is None:
+            return 0
+        return len(self.data)
+
+
     def setSelected(self,index):
         for child in self.children[0].children:
             if child.index == index:

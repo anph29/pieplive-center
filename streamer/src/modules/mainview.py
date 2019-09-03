@@ -293,27 +293,30 @@ class MainView(Widget):
 
     def send_notify_piep(self):
         try:
-            socket_md = Socket_model()
-            data = {
-                "FO100": self.p300['FO100'],
-                "CHANNELTYPE": "FOLLOW",
-                "NICKNAME": self.p300['NV106'],
-                "AVATAR": self.p300['NV126'],
-                "TITLE": self.p300['PV301'],
-                "TYPE": 'K100',
-                "FC100": 0,#self.p300['FC100'],
-                "FC150": 0,#self.p300['FC150'],
-                "LIVE" : 'ON',#: đang live || OFF
-                "message":  {
-                    "p300": self.p300,
-                    "typepieper": 9,
-                    "pt300": self.p300['FT300'],
-                    "fc100": 0,#self.p300['FC100'],
-                    "fc150": 0#self.p300['FC150']
+            if self.setting['isnotify'] is True:
+                socket_md = Socket_model()
+                data = {
+                    "FO100": self.p300['FO100'],
+                    "CHANNELTYPE": "FOLLOW",
+                    "NICKNAME": self.p300['NV106'],
+                    "AVATAR": self.p300['NV126'],
+                    "TITLE": self.p300['PV301'],
+                    "TYPE": 'K100',
+                    "FC100": 0,#self.p300['FC100'],
+                    "FC150": 0,#self.p300['FC150'],
+                    "LIVE" : 'ON',#: đang live || OFF
+                    "message":  {
+                        "p300": self.p300,
+                        "typepieper": 9,
+                        "pt300": self.p300['FT300'],
+                        "fc100": 0,#self.p300['FC100'],
+                        "fc150": 0#self.p300['FC150']
+                    }
                 }
-            }
-            dt = {'event':'publishPieperToCustomerByProvider','data':json.dumps(data),'LOGIN':self.p300['NV106W']}
-            socket_md.send_notify_piep(dt)
+                dt = {'event':'publishPieperToCustomerByProvider','data':json.dumps(data),'LOGIN':self.p300['NV106W']}
+                socket_md.send_notify_piep(dt)
+                self.setting['isnotify'] = False
+                helper._write_setting(self.setting)
         except:
             pass
 
@@ -328,6 +331,9 @@ class MainView(Widget):
         self.streamKey = self.setting['stream_key'] = stream_key
         self.linkPlay = self.setting['play'] = play
         self.p300 = self.setting['p300'] = p300
+        self.setting['isnotify'] = False
+        if bool(p300) and int(p300['PN303']) != 15:
+            self.setting['isnotify'] = True
         self.mainStream.urlStream = self.streamServer + self.streamKey
         helper._write_setting(self.setting)
 

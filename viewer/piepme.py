@@ -21,6 +21,7 @@ def run():
     root.title("PiepLive Center Setting")
     imgicon = tk.PhotoImage(file=helper._LOGO_VIEWER)
     root.tk.call('wm', 'iconphoto', root._w, imgicon)
+
     piepme = MainApplication(root)
     piepme.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
     

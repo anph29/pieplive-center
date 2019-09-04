@@ -19,7 +19,6 @@ class SingleSchedule(ScheduleDDList):
         self.wrapperWidth = 745
         self.totalDuration = 0
         self.titleTxt = "Schedule Detail"
-        self.keyLock = "single_schedule_lock"
         self.initUI()
         self.lblChk = None
 
@@ -34,6 +33,12 @@ class SingleSchedule(ScheduleDDList):
         self.lblDura.config(
             text=f"total duration: {helper.convertSecNoToHMS(self.totalDuration)}"
         )
+
+    def setLock(self, locked):
+        self.schLocked = locked
+
+    def getLock(self):
+        return self.schLocked
 
     def setData(self, sch):
         self.schId = sch["id"] if bool(sch) else ""

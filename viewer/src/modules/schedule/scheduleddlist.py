@@ -15,7 +15,6 @@ class ScheduleDDList(tk.Frame):
         self.titleTxt = ""
         self.tbBgColor = "#fff"
         self.wrapperWidth = 0
-        self.keyLock = None
 
     def initUI(self):
         self.showToolBar()
@@ -133,12 +132,6 @@ class ScheduleDDList(tk.Frame):
         self.ddlist.setLock(locked)
         self.setLock(locked)
 
-    def setLock(self, locked):
-        return store._set(self.keyLock, locked)
-
-    def getLock(self):
-        return bool(store._get(self.keyLock))
-
     def f5(self, evt):
         self.clearView()
         self.showListSchedule()
@@ -176,9 +169,7 @@ class ScheduleDDList(tk.Frame):
 
     def saveSortedList(self):
         sorted = list(map(lambda x: x.value, self.ddlist._list_of_items))
-        filtered = list(
-            filter(lambda x: bool(x) and x["id"] != STORE_SCHEDULE, sorted)
-        )
+        filtered = list(filter(lambda x: bool(x) and x["id"] != STORE_SCHEDULE, sorted))
         # index, timepoint = self.get1stEvalueTimepoint(sorted)
         self.clearData()
         self.writeSchedule(filtered)
@@ -193,3 +184,9 @@ class ScheduleDDList(tk.Frame):
     #     for i, m in enumerate(ls):
     #         if 'timepoint' in m and int(m['timepoint']) > 0:
     #             return i, m['timepoint']
+
+    def setLock(self, locked):
+        pass
+
+    def getLock(self):
+        pass

@@ -24,6 +24,12 @@ class SortedList(ScheduleDDList):
         super(SortedList, self).initUI()
         self.showListSchedule()
 
+    def setLock(self, locked):
+        store._set(self.keyLock, locked)
+
+    def getLock(self):
+        return bool(store._get(self.keyLock))
+
     def showListSchedule(self):
         self._LS_SCHEDULE_DATA = self.loadSchedule()
         for media in self._LS_SCHEDULE_DATA:

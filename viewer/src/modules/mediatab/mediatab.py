@@ -27,7 +27,7 @@ class MediaTab(tk.Frame):
 
     def turnOnObserver(self):
         if bool(store._get("FO100")) and self.tabType == MediaType.PRESENTER:
-            print('>>>turnOnObserver<<<')
+            print(">>>turnOnObserver<<<")
             self.listenerStream = firebase.startObserverActivedBu(self.firebaseCallback)
 
     def firebaseCallback(self, message):
@@ -199,7 +199,6 @@ class MediaTab(tk.Frame):
             helper._add_to_schedule(data)
         elif self.tabType == MediaType.AUDIO:
             helper._add_to_lsaudio(data)
-
 
     def loadLsMedia(self):
         if self.tabType == MediaType.CAMERA:

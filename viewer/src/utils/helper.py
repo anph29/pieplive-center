@@ -125,8 +125,8 @@ def delete_schedule_container(fname):
         os.remove(path)
 
 
-def duplicate_schedule_container(frName, toName):
-    src = makeSureScheduleFile(frName)
+def duplicate_schedule_container(frName, toName, fromRunning=False):
+    src = frName if fromRunning else makeSureScheduleFile(frName)
     dst = makeSureScheduleFile(toName)
     shutil.copyfile(src, dst)
     return toName
@@ -234,6 +234,7 @@ def _add_to_lspresenter(data):
 """
 ls presenter action
 """
+
 
 def _load_ls_presenter_action():
     return loadJSON(_PATH_PRESENTER_ACTION)

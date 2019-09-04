@@ -202,12 +202,7 @@ class ScheduleHeadItem(tk.Frame):
 
     def saveEditSchedule(self, evt):
         self.parentTab.saveSchedule(
-            {
-                "path": self.path,
-                "id": self.id,
-                "name": self.eName.get(),
-                "lock": self.lock,
-            }
+            {"path": self.path, "id": self.id, "name": self.eName.get(), 'lock':self.lock}
         )
 
     def duplicate(self, evt):

@@ -489,7 +489,7 @@ def getSettingJSONContent():
 
 def getSortedJSONContent():
     return [
-        {"path": "", "id": "STORE_SCHEDULE", "name": "RUNNING_SCHEDULE", "lock": False}
+        {"path": "", "id": "STORE_SCHEDULE", "name": "RUNNING_SCHEDULE", "lock": True}
     ]
 
 

@@ -43,3 +43,6 @@ class LeftSchedule(tk.Frame):
             self, schedule=self.mutiRight.singleschedule, bg="#fff"
         )
         self.mutiLeft.pack(side=tk.LEFT, fill=tk.Y)
+
+    def overwiteSortedItem(self, sch):
+        self.mutiLeft.sortedlist.overwiteSortedItem(sch)

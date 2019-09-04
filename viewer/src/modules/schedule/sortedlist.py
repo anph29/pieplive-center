@@ -151,13 +151,15 @@ class SortedList(ScheduleDDList):
 
     def findLastDateInSchedule(self):
         self._LS_SCHEDULE_DATA = self.loadSchedule()
-        if not bool(self._LS_SCHEDULE_DATA):
+        if not bool(self._LS_SCHEDULE_DATA) or len(self._LS_SCHEDULE_DATA) < 2:
             return datetime.today()
         else:
             fmt = "%d%m%Y"
-            flag = datetime.strptime(self._LS_SCHEDULE_DATA[0]["path"], fmt)
+            flag = datetime.strptime(self._LS_SCHEDULE_DATA[1]["path"], fmt)
             for sch in self._LS_SCHEDULE_DATA:
-                cr = datetime.strptime(sch["path"], fmt)
+                cr = datetime.strptime(
+                    "01011900" if "" == sch["path"] else sch["path"], fmt
+                )
                 if cr > flag:
                     flag = cr
             #
@@ -185,3 +187,11 @@ class SortedList(ScheduleDDList):
 
     def writeSchedule(self, data):
         helper._write_sorted_schedule(data)
+
+    def overwiteSortedItem(self, sch):
+        mapped = list(
+            map(lambda x: sch if x["id"] == sch["id"] else x, self._LS_SCHEDULE_DATA)
+        )
+        self.clearData()
+        self.writeSchedule(mapped)
+        self.f5(None)

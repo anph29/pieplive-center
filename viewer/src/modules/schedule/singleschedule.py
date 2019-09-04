@@ -19,8 +19,13 @@ class SingleSchedule(ScheduleDDList):
         self.wrapperWidth = 745
         self.totalDuration = 0
         self.titleTxt = "Schedule Detail"
-        self.initUI()
         self.lblChk = None
+        self.schId = ""
+        self.isRunningSch = False
+        self.schPath = ""
+        self.schName = ""
+        self.schLocked = False
+        self.initUI()
 
     def showListSchedule(self):
         self._LS_SCHEDULE_DATA = self.loadSchedule()
@@ -36,21 +41,33 @@ class SingleSchedule(ScheduleDDList):
 
     def setLock(self, locked):
         self.schLocked = locked
+        # update file
+        self.parent.parent.overwiteSortedItem(self.getData())
 
     def getLock(self):
         return self.schLocked
+
+    def getData(self):
+        return {
+            "path": self.schPath,
+            "id": self.schId,
+            "name": self.schName,
+            "lock": self.schLocked,
+        }
 
     def setData(self, sch):
         self.schId = sch["id"] if bool(sch) else ""
         self.isRunningSch = self.schId == "STORE_SCHEDULE"
         self.schPath = sch["path"] if bool(sch) else ""
         self.schName = sch["name"] if bool(sch) else ""
-        self.schLocked = sch["lock"] if bool(sch) else ""
-        #
+        self.schLocked = sch["lock"] if bool(sch) else False
+        # title
         title = f"{'RUNNING SCHEDULE: ' if self.isRunningSch else ''}{self.schName}"
         self.lblTitle.config(text=title)
         self.lblTitle.pack_forget()
         self.lblTitle.pack(side=tk.LEFT, padx=20, pady=5)
+        # lock
+        self.updateLockStatus("" if self.getLock() else "un")
 
         #
         self.showTitleWidthSave()

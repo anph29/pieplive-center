@@ -51,7 +51,7 @@ class ScheduleDDList(tk.Frame):
             item_relief=tk.FLAT,
             borderwidth=0,
             bg="#fff",
-            droppedCallback=self.saveSortedList,
+            droppedCallback=self.saveDragedList,
         )
 
     def loadSchedule(self):
@@ -122,15 +122,17 @@ class ScheduleDDList(tk.Frame):
         ToolTip(self.cmdLock, "unlocked")
 
     def toggleLock(self, evt):
-        un = "un" if self.getLock() else ""
-        imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}{un}lock-24.png"))
-        self.cmdLock.configure(image=imgLock)
-        self.cmdLock.image = imgLock
-        ToolTip(self.cmdLock, f"{un}locked")
+        self.updateLockStatus("un" if self.getLock() else "")
         #
         locked = not self.ddlist.getLock()
         self.ddlist.setLock(locked)
         self.setLock(locked)
+
+    def updateLockStatus(self, un):
+        imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}{un}lock-24.png"))
+        self.cmdLock.configure(image=imgLock)
+        self.cmdLock.image = imgLock
+        ToolTip(self.cmdLock, f"{un}locked")
 
     def f5(self, evt):
         self.clearView()
@@ -138,7 +140,12 @@ class ScheduleDDList(tk.Frame):
         self.checkall.set(False)
 
     def tabDeleteAll(self, evt):
-        filtered = list(filter(lambda x: x.checked.get(), self._LS_SCHEDULE_UI))
+        filtered = list(
+            filter(
+                lambda x: x.checked.get() and x.id != STORE_SCHEDULE,
+                self._LS_SCHEDULE_UI,
+            )
+        )
         lsId = list(map(lambda x: x.id, filtered))
         if len(lsId) > 0:
             if messagebox.askyesno(
@@ -167,12 +174,16 @@ class ScheduleDDList(tk.Frame):
         self.clearData()
         self.writeSchedule(filtered)
 
-    def saveSortedList(self):
+    def saveDragedList(self):
         sorted = list(map(lambda x: x.value, self.ddlist._list_of_items))
+        runningSh = list(
+            filter(lambda x: bool(x) and x["id"] == STORE_SCHEDULE, sorted)
+        )
         filtered = list(filter(lambda x: bool(x) and x["id"] != STORE_SCHEDULE, sorted))
+
         # index, timepoint = self.get1stEvalueTimepoint(sorted)
         self.clearData()
-        self.writeSchedule(filtered)
+        self.writeSchedule(runningSh + filtered)
 
     def showListSchedule(self):
         pass

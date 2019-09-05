@@ -1,4 +1,4 @@
-from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.properties import ObjectProperty, NumericProperty, BooleanProperty, StringProperty
 from src.modules.custom.popup import PiepMeConfirmPopup
@@ -7,7 +7,7 @@ from src.utils import helper, kivyhelper
 import datetime
 
 Builder.load_file('src/ui/itemaudio.kv')
-class ItemAudio(RecycleDataViewBehavior, FloatLayout):
+class ItemAudio(RecycleDataViewBehavior, BoxLayout):
     index = NumericProperty(0)
     dt_capture = ObjectProperty()
     name = StringProperty('')

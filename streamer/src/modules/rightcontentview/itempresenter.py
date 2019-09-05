@@ -1,4 +1,4 @@
-from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.properties import ObjectProperty, NumericProperty, ObjectProperty, BooleanProperty, StringProperty
 from src.modules.custom.popup import PiepMeConfirmPopup
@@ -8,7 +8,7 @@ from src.utils import kivyhelper
 from src.modules.custom.addschedule import AddSchedule
 
 Builder.load_file('src/ui/itempresenter.kv')
-class ItemPresenter(RecycleDataViewBehavior, FloatLayout):
+class ItemPresenter(RecycleDataViewBehavior, BoxLayout):
     index = NumericProperty(0)
     dt_capture = ObjectProperty()
     name = StringProperty('')
@@ -60,9 +60,6 @@ class ItemPresenter(RecycleDataViewBehavior, FloatLayout):
 
     def rmv_capture(self):
         self.parent.parent.remove(self.index)
-
-    # def add_to_schedule(self):
-    #     kivyhelper.getApRoot().open_add_schedule(self.data)
     
     def play(self):
         if self.playable:

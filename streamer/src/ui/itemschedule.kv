@@ -16,7 +16,7 @@
     BoxLayout:
         orientation:'horizontal'
         size_hint: 1, 1
-        pos_hint:{'x':0, 'y':0}
+        # pos_hint:{'x':0, 'y':0}
         padding: 5
         spacing: 5
         LabelCamera:
@@ -43,26 +43,26 @@
         ImageButton:
             size_hint:None,1
             width: 12
-            pos_hint:{'top':1, 'right':1}
+            # pos_hint:{'top':1, 'right':1}
             source: helper._ICONS_PATH+'play-w.png' if root.active is False else helper._ICONS_PATH+'ic_loading.gif' if app.root.loading is True else helper._ICONS_PATH+'equi.gif'
             on_release:root.play()
         ImageButton:
             size_hint:None,1
             width: 16
-            pos_hint:{'top':1, 'right':1}
+            # pos_hint:{'top':1, 'right':1}
             source: helper._ICONS_PATH+'ic_media_tab.png' if root.audio != '' else helper._ICONS_PATH + 'ic_media-w.png'
             on_release:root.link_audio(app.root)
         ImageButton:
             size_hint:None,1
             width: 12
             # opacity:(0,1)[root.index > 0]
-            pos_hint:{'top':1, 'right':1}
+            # pos_hint:{'top':1, 'right':1}
             source: helper._ICONS_PATH+'ic_up.png'
             on_release:root.up()
         ImageButton:
             size_hint:None,1
             width: 12
-            pos_hint:{'top':1, 'right':1}
+            # pos_hint:{'top':1, 'right':1}
             source: helper._ICONS_PATH+'ic_down.png'
             on_release:root.down()
         CheckBox:
@@ -86,6 +86,6 @@
             size_hint:None,1
             width: 16
             # opacity:(1,0)[root.active]
-            pos_hint:{'top':1, 'right':1}
+            # pos_hint:{'top':1, 'right':1}
             source: helper._ICONS_PATH+'trash.png'
             on_release:root.open_confirm_rmv()

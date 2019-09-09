@@ -30,7 +30,6 @@ class KivyCameraMain(Image):
     typeOld = StringProperty('')
     category = StringProperty('')
     data_src = None
-    schedule_type = StringProperty('')
     url_remove = StringProperty('')
 
 
@@ -58,19 +57,13 @@ class KivyCameraMain(Image):
         self.duration_current = 0
         self.duration_total_n = 1
         self.duration_fps = 25
-        self.schedule_type = ''# '' / duration / end
-        if self.category == constants.LIST_TYPE_SCHEDULE:
-            self.schedule_type = 'duration'
-            if self.data_src['duration'] == 0:
-                self.schedule_type = 'end'
         
         if self.pipe is not None:
             self.pipe.kill()
         if self.capture is not None:
             self.capture.release()
         self.stop_update_capture()
-        fps = 25
-        dura = 0
+        # fps = 25
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.resource_type == 'MP4' or self.resource_type == "RTSP":
                 timenow = datetime.datetime.timestamp(datetime.datetime.now())
@@ -79,13 +72,11 @@ class KivyCameraMain(Image):
                     if self.resource_type == 'VIDEO' or self.resource_type == 'MP4' or (self.resource_type == "M3U8" and self.category != constants.LIST_TYPE_PRESENTER):
                         _cap = cv2.VideoCapture(self.url)
                         if _cap.isOpened():
-                            fps = _cap.get(cv2.CAP_PROP_FPS)
-                            print("========",fps,"=======")
+                            # fps = _cap.get(cv2.CAP_PROP_FPS)
                             if self.resource_type == 'VIDEO' or self.resource_type == 'MP4':
                                 # if fps >= 25:
                                 self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
                                 self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)
-                                dura = int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS))
                                 # else:
                                 # self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
                                 # self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/25
@@ -93,12 +84,9 @@ class KivyCameraMain(Image):
                     del _cap
                 except Exception as e:
                     print("Exception:", e)
-                        
-                if self.category == constants.LIST_TYPE_SCHEDULE and dura == self.data_src['duration']:
-                    self.schedule_type = 'end'
 
                 timeout = 1
-                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-vsync","1","-af", "aresample=async=1","-filter_complex","scale=-1:720","-ar","44100","-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
+                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-af", "aresample=async=1","-ar","44100","-ab", "128k","-vsync","1","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
                 if self.category == constants.LIST_TYPE_PRESENTER:
                     self.url = self.data_src['rtmp']
                     timeout=2
@@ -195,7 +183,7 @@ class KivyCameraMain(Image):
                     kivyhelper.getApRoot().main_display_status(False)
                     if self.category == constants.LIST_TYPE_SCHEDULE:
                         if 'duration' in self.data_src and  self.data_src['duration'] is not None:
-                            if (self.data_src['duration'] == 0 or int(self.duration_current) >= self.data_src['duration']) and self.schedule_type == 'end':
+                            if (self.data_src['duration'] == 0 or int(self.duration_current) >= self.data_src['duration']):
                                 self.f_parent.process_schedule(1)
                     if self.resource_type == 'GIF':
                         self.capture.release()

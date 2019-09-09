@@ -87,7 +87,7 @@ class KivyCameraMini(DragBehavior, Image):
             self.capture.release()
         self.stop_update_capture()
 
-        fps = 25
+        # fps = 25
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.resource_type == 'MP4' or self.resource_type == "RTSP":
                 timenow = datetime.datetime.timestamp(datetime.datetime.now())
@@ -96,7 +96,7 @@ class KivyCameraMini(DragBehavior, Image):
                     if self.resource_type == 'VIDEO' or self.resource_type == 'MP4' or (self.resource_type == "M3U8" and self.category != constants.LIST_TYPE_PRESENTER):
                         _cap = cv2.VideoCapture(self.url)
                         if _cap.isOpened():
-                            fps = _cap.get(cv2.CAP_PROP_FPS)
+                            # fps = _cap.get(cv2.CAP_PROP_FPS)
                             if self.resource_type == 'VIDEO' or self.resource_type == 'MP4':
                                 # if fps >= 25:
                                 self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
@@ -109,7 +109,7 @@ class KivyCameraMini(DragBehavior, Image):
                     print("Exception:", e)
 
                 timeout = 1
-                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-vsync","1","-af", "aresample=async=1","-filter_complex","scale=-1:720","-ar","44100","-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
+                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-af", "aresample=async=1","-ar","44100","-ab", "128k","-vsync","1","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
                 if self.category == constants.LIST_TYPE_PRESENTER:
                     self.url = self.data_src['rtmp']
                     timeout=2

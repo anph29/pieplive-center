@@ -18,6 +18,7 @@ class SortedList(ScheduleDDList):
         self.tbBgColor = "#E8DAEF"
         self.titleTxt = "Schedule List"
         self.keyLock = "schedule_sorted_lock"
+        self.lastActivedId = ""
         self.initUI()
 
     def initUI(self):
@@ -44,6 +45,9 @@ class SortedList(ScheduleDDList):
     def addToScheduleGUI(self, data):
         item = self.ddlist.create_item(value=data, freeze=data["id"] == STORE_SCHEDULE)
         ui = ScheduleHeadItem(item, parentTab=self, sch=data)
+        #
+        if data["id"] == self.lastActivedId:
+            ui.setActive()
         self._LS_SCHEDULE_UI.append(ui)
         ui.pack(expand=True)
         self.ddlist.add_item(item)
@@ -195,3 +199,9 @@ class SortedList(ScheduleDDList):
         self.clearData()
         self.writeSchedule(mapped)
         self.f5(None)
+
+    def f5(self, evt):
+        filtered = list(filter(lambda x: x.actived, self._LS_SCHEDULE_UI))
+        self.lastActivedId = filtered[0].id or ""
+        super(SortedList, self).f5(evt)
+

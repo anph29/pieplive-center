@@ -23,8 +23,8 @@ class ScheduleHeadItem(tk.Frame):
         self.set_data(sch)
         self.initUI()
         #
-        if self.isRunningSch:
-            self.loadScheduleDE(None)
+        # if self.isRunningSch:
+        #     self.loadScheduleDE(None)
 
     def get_data(self):
         return {
@@ -175,6 +175,9 @@ class ScheduleHeadItem(tk.Frame):
     def loadScheduleDE(self, evt):
         self.parentTab.loadScheduleDE(self.get_data())
         self.changeBgFollowActivation(True)
+
+    def setActive(self, active=True):
+        self.changeBgFollowActivation(active)
 
     def changeBgFollowActivation(self, active=False):
         self.actived = active

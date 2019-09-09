@@ -1,73 +1,137 @@
-import sys
-import hashlib
-import re
-import time
+import tkinter as Tk, re
 
 
-def hash_md5(s):
-    s = s.encode("utf-8")
-    m = hashlib.md5()
-    m.update(s)
-    return m.hexdigest()
 
 
-def createTokenV3(input, isRecursive=False):
-    try:
-        if "token" in input:
-            del input["token"]
+class TransparentWin (Tk.Tk) :
+    ''' Transparent Tk Window Class '''
 
-        if isRecursive is False:
-            input["v"] = "v1"
-            input["keyToken"] = "Piepme2017"
+    def __init__ (self) :
 
-        ư
+        Tk.Tk.__init__(self)
 
-        # improve non-charater from v2
-        maped_ls = map(
-            lambda v: (
-                f"{v}=[{createTokenV3(input[v], True)}]"
-                if type(input[v]) in [dict, list]
-                else f"{v}={re.sub(r'[^a-zA-Z0-9]', '', str(input[v]))}"
-            ),
-            sorted_key,
-        )
-        paramStr = "&".join(list(maped_ls))
-        if not isRecursive:
-            print(paramStr)
-        return paramStr if isRecursive else hash_md5(paramStr)
-    except:
-        print(sys.exc_info())
+        self.Drag = Drag(self)
+
+        ''' Sets focus to the window. '''
+        self.focus_force()
+
+        ''' Removes the native window boarder. '''
+        self.overrideredirect(True)
+
+        ''' Disables resizing of the widget.  '''
+        self.resizable(False, False)
+
+        ''' Places window above all other windows in the window stack. '''
+        self.wm_attributes("-topmost", True)
+
+        ''' This changes the alpha value (How transparent the window should
+            be). It ranges from 0.0 (completely transparent) to 1.0
+            (completely opaque).  '''
+        self.attributes("-alpha", 0.7)
+
+        ''' The windows overall position on the screen  '''
+        self.wm_geometry('+' + str(439) + '+' + str(172))
+
+        ''' Changes the window's color. '''
+        bg = '#3e4134'
+
+        self.config(bg=bg)
+
+        self.Frame = Tk.Frame(self, bg=bg)
+        self.Frame.pack()
+
+        ''' Exits the application when the window is right clicked. '''
+        self.Frame.bind('<Button-3>', self.exit)
+
+        ''' Changes the window's size indirectly. '''
+        self.Frame.configure(width=162, height=100)
+
+    def exit (self, event) :
+        self.destroy()
+
+    def position (self) :
+
+        _filter = re.compile(r"(\d+)?x?(\d+)?([+-])(\d+)([+-])(\d+)")
+
+        pos = self.winfo_geometry()
+
+        filtered = _filter.search(pos)
+        self.X = int(filtered.group(4))
+        self.Y = int(filtered.group(6))
+
+        return self.X, self.Y
+
+class Drag:
+    ''' Makes a window dragable. '''
+
+    def __init__ (self, par, dissable=None, releasecmd=None) :
+
+        self.Par        = par
+        self.Dissable   = dissable
+
+        self.ReleaseCMD = releasecmd
+
+        self.Par.bind('<Button-1>', self.relative_position)
+        self.Par.bind('<ButtonRelease-1>', self.drag_unbind)
 
 
-if __name__ == "__main__":
-    createTokenV3(
-        {
-            "FO100": 1932,
-            "PP300": 6660,
-            "FT300": 1,
-            "PO322": {
-                "image": [
-                    {
-                        "SIZE": 0,
-                        "EX": "png",
-                        "fileName": "piep-ttfIu9Zt15659270199131565927019913.png",
-                        "DES": "",
-                        "RATIO": 1,
-                        "THUMB": "https://media.cdnedge.bluemix.net/1932/images/piep-ttfIu9Zt15659270199131565927019913.png",
-                        "IMG": "https://media.cdnedge.bluemix.net/1932/images/piep-ttfIu9Zt15659270199131565927019913.png",
-                        "FM600": 3503,
-                        "FO100": 1932,
-                    }
-                ],
-                "live": {
-                    "time": "2019-08-16T03:45:00.000Z",
-                    "description": "",
-                    "title": "thong test live",
-                    "FL300": 8990,
-                    "src": "https://livevn.piepme.com/hls/1932.fc9feb122c5467ed44796610e6bf93b9/index.m3u8",
-                    "NV124": "vn",
-                },
-            },
-        }
-    )
+    def relative_position (self, event) :
 
+        cx, cy = self.Par.winfo_pointerxy()
+        x, y = self.Par.position()
+
+        self.OriX = x
+        self.OriY = y
+
+        self.RelX = cx - x
+        self.RelY = cy - y
+
+        self.Par.bind('<Motion>', self.drag_wid)
+
+    def drag_wid (self, event) :
+
+        cx, cy = self.Par.winfo_pointerxy()
+
+        d = self.Dissable
+
+        if d == 'x' :
+            x = self.OriX
+            y = cy - self.RelY
+        elif d == 'y' :
+            x = cx - self.RelX
+            y = self.OriY
+        else:
+            x = cx - self.RelX
+            y = cy - self.RelY
+
+        if x < 0 :
+            x = 0
+
+        if y < 0 :
+            y = 0
+
+        self.Par.wm_geometry('+' + str(x) + '+' + str(y))
+
+    def drag_unbind (self, event) :
+
+        self.Par.unbind('<Motion>')
+
+        if self.ReleaseCMD != None :
+            self.ReleaseCMD()
+
+
+    def dissable (self) :
+
+        self.Par.unbind('<Button-1>')
+        self.Par.unbind('<ButtonRelease-1>')
+        self.Par.unbind('<Motion>')
+
+
+def __run__ () :
+
+    TransparentWin().mainloop()
+
+
+if __name__ == '__main__' :
+
+    __run__()

@@ -396,25 +396,25 @@ class ListPresenter(RecycleView):
 
     def choice_play(self, index):
         if self.data[index]['id'] == self.item_choice:
+            # off
             firebase.makeChangePresenter(0)
             self.item_choice = "0"
             self.data[index]['choice'] = False
             for child in self.children[0].children:
                 child.choice = False
-                child.listType=constants.LIST_TYPE_PRESENTER
         else:
+            # on
             firebase.makeChangePresenter(int(self.data[index]['id']))
             self.item_choice = self.data[index]['id']
             for obj in self.data:
                 obj['choice'] = False
-                obj['list'] = constants.LIST_TYPE_PRESENTER
             self.data[index]['choice'] = True
             for child in self.children[0].children:
-                child.listType=constants.LIST_TYPE_PRESENTER
                 if child.index == index:
                     child.choice = True
                 else:
                     child.choice = False
+        # self.refresh_view()
 
     def set_data(self):
         self.data = list(

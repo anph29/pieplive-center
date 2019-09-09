@@ -81,14 +81,14 @@ class KivyCameraMain(Image):
                         if _cap.isOpened():
                             fps = _cap.get(cv2.CAP_PROP_FPS)
                             if self.resource_type == 'VIDEO' or self.resource_type == 'MP4':
-                                if fps >= 25:
-                                    self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
-                                    self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)
-                                    dura = int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS))
-                                else:
-                                    self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
-                                    self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/25
-                                    dura = int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/25)
+                                # if fps >= 25:
+                                self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
+                                self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)
+                                dura = int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS))
+                                # else:
+                                # self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
+                                # self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/25
+                                # dura = int(_cap.get(cv2.CAP_PROP_FRAME_COUNT)/25)
                     del _cap
                 except Exception as e:
                     print("Exception:", e)
@@ -97,19 +97,19 @@ class KivyCameraMain(Image):
                     self.schedule_type = 'end'
 
                 timeout = 1
-                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-filter_complex","scale=-1:720","-ar","44100","-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-vsync","1","-filter_complex","scale=-1:720","-ar","44100","-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
                 if self.category == constants.LIST_TYPE_PRESENTER:
                     self.url = self.data_src['rtmp']
                     timeout=2
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats",'-fflags','+genpts+igndts',"-i",self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-filter_complex","scale=-1:720","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-i",self.url,"-vsync","1","-af","aresample=async=1:first_pts=0","-filter_complex","scale=-1:720","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-tune","grain","-r","25",'-g','50',output]
                 elif self.resource_type == "M3U8":
                     timeout=1
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url,"-vsync", "1","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-filter_complex","scale=-1:720","-ar","44100", "-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url,"-vsync", "1","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-filter_complex","scale=-1:720","-ar","44100", "-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
                 elif self.resource_type == "RTSP":
                     timeout=2
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i", self.url,"-flags","+global_header","-vsync","1","-ar","44100","-ab","128k","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,"-r","25",output]
-                elif fps < 25:
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i",helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab","128k","-af",f"atempo={25/fps}","-vf",f"scale=-1:720,setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i", self.url,"-flags","+global_header","-vsync","1","-ar","44100","-ab","128k","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
+                # elif fps < 25:
+                #     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i",helper._BASE_PATH+"media/muted2.mp3","-vsync","1","-ar","44100","-ab","128k","-af",f"atempo={25/fps}","-vf",f"scale=-1:720,setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
                     
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW

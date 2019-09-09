@@ -1,4 +1,4 @@
-from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.properties import ObjectProperty, NumericProperty, ObjectProperty, BooleanProperty, StringProperty
 from src.modules.custom.popup import PiepMeConfirmPopup
@@ -8,7 +8,7 @@ from src.utils import kivyhelper
 from src.modules.custom.addschedule import AddSchedule
 
 Builder.load_file('src/ui/itemlabel.kv')
-class ItemLabel(RecycleDataViewBehavior, FloatLayout):
+class ItemLabel(RecycleDataViewBehavior, BoxLayout):
     index = NumericProperty(0)
     dt_capture = ObjectProperty()
     name = StringProperty('')

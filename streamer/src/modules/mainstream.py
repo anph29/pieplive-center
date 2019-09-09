@@ -184,7 +184,6 @@ class MainStream(RelativeLayout):
         except IOError:
             kivyhelper.getApRoot().triggerStop()
 
-    @mainthread
     def stream(self, fps):
         try:
             if self.isStream:
@@ -226,7 +225,6 @@ class MainStream(RelativeLayout):
         self.fbo.remove(self.canvas)
         if self.parent is not None and self.canvas_parent_index > -1:
             self.parent.canvas.insert(self.canvas_parent_index, self.canvas)
-        print("--- STOP ---")
         
     def set_url_stream(self, urlStream):
         self.urlStream = urlStream
@@ -302,7 +300,7 @@ class MainStream(RelativeLayout):
             self.command.extend(self.draw_element())
 
             # encode
-            self.command.extend(['-vb', str(self.v_bitrate)])#,'-r', '25','-vf','fps=25'
+            self.command.extend(['-vb', str(self.v_bitrate),'-r', '25','-vf','fps=25'])
             
             # tream
             self.command.extend(['-f', 'flv', self.urlStream])

@@ -150,9 +150,7 @@ class KivyCameraMain(Image):
                 self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
                 if self.f_parent is not None:
                     if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.category == constants.LIST_TYPE_SCHEDULE or self.typeOld == "M3U8" or self.typeOld == "VIDEO":
-                        self.f_parent.refresh_stream()              
-                    if self.schedule_type == 'duration':
-                        self.f_parent.start_schedule(True)
+                        self.f_parent.refresh_stream()
                     if self.f_parent.isStream is False:
                         self.remove_file_flv()
                 self.typeOld = self.resource_type
@@ -203,6 +201,11 @@ class KivyCameraMain(Image):
                         self.capture.release()
                         self.capture = cv2.VideoCapture(self.url)
                 else:
+                    if self.category == constants.LIST_TYPE_SCHEDULE:
+                        if 'duration' in self.data_src and  self.data_src['duration'] is not None:
+                            if self.data_src['duration'] != 0 and int(self.duration_current) >= self.data_src['duration']:
+                                self.f_parent.process_schedule(1)
+
                     ret, frame = self.capture.retrieve()
                     if ret:
                         if self.resource_type == 'VIDEO' or self.resource_type == 'MP4' or self.resource_type == 'M3U8' or self.resource_type == 'RTSP':

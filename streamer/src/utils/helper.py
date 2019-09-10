@@ -489,7 +489,7 @@ def getSettingJSONContent():
 
 def getSortedJSONContent():
     return [
-        {"path": "", "id": "STORE_SCHEDULE", "name": "RUNNING_SCHEDULE", "lock": False}
+        {"path": "", "id": "STORE_SCHEDULE", "name": "RUNNING_SCHEDULE", "lock": True}
     ]
 
 
@@ -513,7 +513,6 @@ def getVideoDuration(fpath):
         _cap = cv2.VideoCapture(fpath)
         if _cap.isOpened():
             fps = _cap.get(cv2.CAP_PROP_FPS)
-            fps = fps if fps > 25 else 25
             total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
             dura = int(total / fps)
         _cap.release()

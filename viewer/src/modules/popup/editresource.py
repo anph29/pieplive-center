@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import filedialog, ttk
 from src.utils import tk_helper, scryto
 from src.constants import UI
+from src.constants.MTYPE import *
 from src.enums import MediaType
 from .addresource import PopupAddResource
 

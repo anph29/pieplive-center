@@ -118,10 +118,12 @@ class MediaItemSchedule(MediaItem):
         runtime.pack(side=tk.RIGHT, padx=5)
 
     def editMedia(self, evt):
-        self.parentTab.showAddToSchedulePopup(self.get_data(), edit=True)
+        if self.parentTab.notWarningLocked():
+            self.parentTab.showAddToSchedulePopup(self.get_data(), edit=True)
 
     def editRuntime(self, evt):
-        self.parentTab.editRuntime(self.get_data())
+        if self.parentTab.notWarningLocked():
+            self.parentTab.editRuntime(self.get_data())
 
     def deleteMedia(self, evt):
         super(MediaItemSchedule, self).deleteMedia(evt)

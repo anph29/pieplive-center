@@ -19,6 +19,7 @@ class MediaTab(tk.Frame):
         self._LS_MEDIA_UI = []
         self.listenerStream = None
         self.totalDuration = 0
+        self.keyLock = f"media_lock_{self.tabType.value}"
 
     def initUI(self):
         self.showToolBar()
@@ -117,6 +118,16 @@ class MediaTab(tk.Frame):
         self.cmdF5.bind("<Button-1>", self.f5)
         self.cmdF5.pack(side=tk.RIGHT, padx=(0, 5), pady=5)
         ToolTip(self.cmdF5, "Refresh")
+        # lock
+        un = "" if self.getLock() else "un"
+        imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}{un}lock-24.png"))
+        self.cmdLock = tk.Label(
+            self.tbright, image=imgLock, cursor="hand2", bg=self.tbBgColor
+        )
+        self.cmdLock.image = imgLock
+        self.cmdLock.bind("<Button-1>", self.toggleLock)
+        self.cmdLock.pack(side=tk.RIGHT, padx=(0, 5))
+        ToolTip(self.cmdLock, "Lock")
 
     def f5(self, evt):
         self.clearView()
@@ -129,25 +140,33 @@ class MediaTab(tk.Frame):
     def tabDeleteAll(self, evt):
         filtered = list(filter(lambda x: x.checked.get(), self._LS_MEDIA_UI))
         lsId = list(map(lambda x: x.id, filtered))
-        if len(lsId) > 0:
-            if messagebox.askyesno("PiepMe", "Are you sure delete all selected media?"):
-                self.deleteMediaItem(lsId)
-                self.f5(evt)
+        if (
+            len(lsId) > 0
+            and self.notWarningLocked()
+            and messagebox.askyesno("PiepMe", "Are you sure delete all selected media?")
+        ):
+            self.deleteMediaItem(lsId)
+            self.f5(evt)
 
     def tabSelectAll(self):
         for medi in self._LS_MEDIA_UI:
             medi.checked.set(self.checkall.get())
 
     def showAddCamBtn(self):
-        popupaddresource = PopupAddResource(self)
+
         imAdd = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}add-rgb24.png"))
         self.cmdAdd = tk.Label(
             self.tbright, image=imAdd, cursor="hand2", bg=self.tbBgColor
         )
         self.cmdAdd.image = imAdd
-        self.cmdAdd.bind("<Button-1>", popupaddresource.initGUI)
+        self.cmdAdd.bind("<Button-1>", self.showAddPopup)
         self.cmdAdd.pack(side=tk.LEFT, padx=5, pady=5)
         ToolTip(self.cmdAdd, "Add new media")
+
+    def showAddPopup(self, evt):
+        if self.notWarningLocked():
+            popupaddresource = PopupAddResource(self)
+            popupaddresource.initGUI()
 
     def showLsMedia(self):
         self._LS_MEDIA_DATA = self.loadLsMedia()
@@ -233,3 +252,28 @@ class MediaTab(tk.Frame):
         filtered = list(filter(lambda x: x["id"] not in lsId, ls))
         self.clearData()
         self.writeLsMedia(filtered)
+
+    def toggleLock(self, evt):
+        un = "un" if self.getLock() else ""
+        imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}{un}lock-24.png"))
+        self.cmdLock.configure(image=imgLock)
+        self.cmdLock.image = imgLock
+        ToolTip(self.cmdLock, f"{un}locked")
+        #
+        locked = not self.getLock()
+        self.setLock(locked)
+        if self.ddlist != None:
+            self.ddlist.setLock(locked)
+
+    def setLock(self, locked):
+        return store._set(self.keyLock, locked)
+
+    def getLock(self):
+        return bool(store._get(self.keyLock))
+
+    def notWarningLocked(self):
+        if self.getLock():
+            messagebox.showwarning("PiepMe", "Media list locked!")
+            return False
+        else:
+            return True

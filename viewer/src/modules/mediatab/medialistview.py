@@ -14,7 +14,6 @@ from src.modules.popup import PopupEditResource
 class MediaListView(MediaTab):
     def __init__(self, parent, *args, **kwargs):
         self.tabType = kwargs["tabType"]
-        self.keyLock = f"media_lock_{self.tabType.value}"
         del kwargs["tabType"]
         if "schedule" in (kwargs):
             self.schedule = kwargs["schedule"]
@@ -62,36 +61,8 @@ class MediaListView(MediaTab):
 
     def packRightToolbar(self):
         super(MediaListView, self).packRightToolbar()
-        # lock
-        un = "" if self.getLock() else "un"
-        imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}{un}lock-24.png"))
-        self.cmdLock = tk.Label(
-            self.tbright, image=imgLock, cursor="hand2", bg=self.tbBgColor
-        )
-        self.cmdLock.image = imgLock
-        self.cmdLock.bind("<Button-1>", self.toggleLock)
-        self.cmdLock.pack(side=tk.RIGHT, padx=(0, 5))
-
         if self.tabType not in [MediaType.SCHEDULE, MediaType.AUDIO]:
             self.showBtnPushAllToSchedule()
-        ToolTip(self.cmdLock, "Lock")
-
-    def toggleLock(self, evt):
-        un = "un" if self.getLock() else ""
-        imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}{un}lock-24.png"))
-        self.cmdLock.configure(image=imgLock)
-        self.cmdLock.image = imgLock
-        ToolTip(self.cmdLock, f"{un}locked")
-        #
-        locked = not self.ddlist.getLock()
-        self.ddlist.setLock(locked)
-        self.setLock(locked)
-
-    def setLock(self, locked):
-        return store._set(self.keyLock, locked)
-
-    def getLock(self):
-        return bool(store._get(self.keyLock))
 
     def addMediaToList(self, media):
         item = self.ddlist.create_item(value=media)
@@ -124,7 +95,8 @@ class MediaListView(MediaTab):
         self.writeLsMedia(filtered)
 
     def showPopupAddSchedule(self, data):
-        self.schedule.showAddToSchedulePopup(data)
+        if self.schedule.notWarningLocked():
+            self.schedule.showAddToSchedulePopup(data)
 
     def mergeAudioToSchedule(self, data):
         self.schedule.mergeAudioToSchedule(data)
@@ -132,18 +104,22 @@ class MediaListView(MediaTab):
     def pushAllToSchedule(self, evt):
         filtered = list(filter(lambda x: x.checked.get(), self._LS_MEDIA_UI))
         mapped = list(map(lambda x: x.get_data(), filtered))
-        if len(mapped) > 0:
-            if messagebox.askyesno(
+        if (
+            len(mapped) > 0
+            and self.schedule.notWarningLocked()
+            and messagebox.askyesno(
                 "PiepMe", "Are you sure push all selected media to schedule?"
-            ):
-                for medi in mapped:
-                    # need new id any time
-                    medi["id"] = scryto.hash_md5_with_time(medi["url"])
-                    self.schedule.saveToSchedule(medi)
+            )
+        ):
+            for medi in mapped:
+                # need new id any time
+                medi["id"] = scryto.hash_md5_with_time(medi["url"])
+                self.schedule.saveToSchedule(medi)
 
     def showEditMedia(self, data):
-        editMedia = PopupEditResource(self, data)
-        editMedia.initGUI(data)
+        if self.notWarningLocked():
+            editMedia = PopupEditResource(self, data)
+            editMedia.initGUI(data)
 
     def saveToMediaList(self, media):
         ls = self.loadLsMedia()
@@ -158,3 +134,4 @@ class MediaListView(MediaTab):
         for medi in self._LS_MEDIA_UI:
             if medi.playing_audio:
                 medi.triggerStop()
+

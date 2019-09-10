@@ -147,6 +147,7 @@ class MainStream(RelativeLayout):
     def _set_captureMini(self, data_src, data_type, is_from_schedule):
         self.cameraMini.f_parent = self
         self.cameraMini.set_data_source(data_src, data_type)
+        self.f_parent.refresh_select_source_mini(data_type)
 
     def refresh_stream(self):
         if self.isStream is True:
@@ -200,6 +201,7 @@ class MainStream(RelativeLayout):
                 self.reconnect = 0
         except:
             self.stopStream()
+            print('reconecting')
             self.reconnect += 2
             normal = Normal_model()
             key = self.f_parent.streamKey.split("?")[0]

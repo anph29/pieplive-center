@@ -97,14 +97,13 @@ class KivyCameraMini(DragBehavior, Image):
                         _cap = cv2.VideoCapture(self.url)
                         if _cap.isOpened():
                             # fps = _cap.get(cv2.CAP_PROP_FPS)
-                            if self.resource_type == 'VIDEO' or self.resource_type == 'MP4':
-                                # if fps >= 25:
-                                self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
-                                self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)
-                                # else:
-                                #     self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
-                                #     self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/25
-                    del _cap
+                            # if fps >= 25:
+                            self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
+                            self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)
+                            # else:
+                            #     self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
+                            #     self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/25
+                        del _cap
                 except Exception as e:
                     print("Exception:", e)
 
@@ -127,20 +126,14 @@ class KivyCameraMini(DragBehavior, Image):
                 si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
                 self.pipe = subprocess.Popen(command, startupinfo=si)
                 self.url = output
-                Clock.schedule_once(self.process_set_data ,timeout)
+                Clock.schedule_once(self.init_capture ,timeout)
             else:
-                Clock.schedule_once(self.process_set_data , 0)
+                Clock.schedule_once(self.init_capture , 0)
         except :
             print("Exception:")
-            Clock.schedule_once(self.process_set_data , 0)
-        
-    def process_set_data(self, second):
-        try:
-            self.init_capture()
-        except Exception:
-            pass
+            Clock.schedule_once(self.init_capture , 0)
 
-    def init_capture(self):
+    def init_capture(self, second):
         try:
             if self.capture is not None:
                 self.capture.release()
@@ -173,7 +166,7 @@ class KivyCameraMini(DragBehavior, Image):
                     kivyhelper.getApRoot().loadingMini = False
                 else:
                     self.reconnect += 1
-                    Clock.schedule_once(self.process_set_data,1)
+                    Clock.schedule_once(self.init_capture,1)
                 
         except Exception as e:
             print("Exception init_capture:", e)
@@ -183,7 +176,7 @@ class KivyCameraMini(DragBehavior, Image):
                 self.show_captured_img(self.default_frame)
             else:
                 self.reconnect += 1
-                Clock.schedule_once(self.process_set_data,1)
+                Clock.schedule_once(self.init_capture,1)
     
     def show_captured_img(self, url=None):
         cap = cv2.VideoCapture(url or self.url)

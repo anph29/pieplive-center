@@ -23,8 +23,8 @@ class ScheduleHeadItem(tk.Frame):
         self.set_data(sch)
         self.initUI()
         #
-        # if self.isRunningSch:
-        #     self.loadScheduleDE(None)
+        if self.isRunningSch:
+            self.loadScheduleDE(None)
 
     def get_data(self):
         return {
@@ -43,7 +43,7 @@ class ScheduleHeadItem(tk.Frame):
         self.isRunningSch = self.id == STORE_SCHEDULE
 
     def deleteSchedule(self, evt):
-        if messagebox.askyesno(
+        if self.parentTab.notWarningLocked() and messagebox.askyesno(
             "PiepMe", f"Are you sure to delete schedule: `{self.name}`?"
         ):
             self.parentTab.rmvSchedule([self.id])
@@ -193,8 +193,9 @@ class ScheduleHeadItem(tk.Frame):
             self.lblPen.config(bg=self.itemBg)
 
     def editSchedule(self, evt):
-        self.fView.pack_forget()
-        self.initUIEdit(edit=True)
+        if self.parentTab.notWarningLocked():
+            self.fView.pack_forget()
+            self.initUIEdit(edit=True)
 
     def cancelEditSchedule(self, evt):
         if bool(self.id):
@@ -214,8 +215,9 @@ class ScheduleHeadItem(tk.Frame):
         )
 
     def duplicate(self, evt):
-        self.parentTab.duplicateSingleSchedule(self)
-        self.parentTab.f5(None)
+        if self.parentTab.notWarningLocked():
+            self.parentTab.duplicateSingleSchedule(self)
+            self.parentTab.f5(None)
 
 
 class ScheduleHeadItemEdit(ScheduleHeadItem):

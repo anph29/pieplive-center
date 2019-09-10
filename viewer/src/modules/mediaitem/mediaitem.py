@@ -49,7 +49,9 @@ class MediaItem(tk.Frame):
         self.rtmp = media["rtmp"] if "rtmp" in media else ""
 
     def deleteMedia(self, evt):
-        if messagebox.askyesno("PiepMe", f"Are you sure to delete: `{self.name}`?"):
+        if self.parentTab.notWarningLocked() and messagebox.askyesno(
+            "PiepMe", f"Are you sure to delete: `{self.name}`?"
+        ):
             self.parentTab.deleteMediaItem([self.id])
             self.destroy()
 

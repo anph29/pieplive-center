@@ -16,7 +16,7 @@ class PopupAddResource(object):
         self.error = False
         self.directory = None
 
-    def initGUI(self, evt):
+    def initGUI(self):
         # first destroy
         if None is not self.popup:
             self.popup.destroy()

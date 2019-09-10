@@ -147,12 +147,15 @@ class ScheduleDDList(tk.Frame):
             )
         )
         lsId = list(map(lambda x: x.id, filtered))
-        if len(lsId) > 0:
-            if messagebox.askyesno(
+        if (
+            len(lsId) > 0
+            and self.notWarningLocked()
+            and messagebox.askyesno(
                 "PiepMe", "Are you sure delete all selected schedule?"
-            ):
-                self.rmvSchedule(lsId)
-                self.f5(evt)
+            )
+        ):
+            self.rmvSchedule(lsId)
+            self.f5(evt)
 
     def tabSelectAll(self):
         for medi in self._LS_SCHEDULE_UI:
@@ -181,7 +184,6 @@ class ScheduleDDList(tk.Frame):
         )
         filtered = list(filter(lambda x: bool(x) and x["id"] != STORE_SCHEDULE, sorted))
 
-        # index, timepoint = self.get1stEvalueTimepoint(sorted)
         self.clearData()
         self.writeSchedule(runningSh + filtered)
 
@@ -191,13 +193,15 @@ class ScheduleDDList(tk.Frame):
     def writeSchedule(self, data):
         pass
 
-    # def get1stEvalueTimepoint(self, ls):
-    #     for i, m in enumerate(ls):
-    #         if 'timepoint' in m and int(m['timepoint']) > 0:
-    #             return i, m['timepoint']
-
     def setLock(self, locked):
         pass
 
     def getLock(self):
         pass
+
+    def notWarningLocked(self):
+        if self.getLock():
+            messagebox.showwarning("PiepMe", "Schedule list locked!")
+            return False
+        else:
+            return True

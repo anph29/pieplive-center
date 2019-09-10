@@ -95,10 +95,14 @@ class SingleSchedule(ScheduleDDList):
             self.lblChk.pack(padx=35, pady=5, side=tk.RIGHT)
             ToolTip(self.lblChk, "Save as Running Schedule")
 
+
     def saveAsRunningSchedule(self, evt):
-        if messagebox.askyesno("PiepMe", "Are you sure overwrite `RUNNING SCHEDULE`?"):
-            helper._write_schedule(self._LS_SCHEDULE_DATA)
-            store._set("RUNNING_SCHEDULE", self.schName)
+        if self.parent.parent.isRunningScheduleLocked():
+            messagebox.showwarning("PiepMe", "`RUNNING SCHEDULE` is locked!")
+        else:
+            if messagebox.askyesno("PiepMe", "Are you sure overwrite `RUNNING SCHEDULE`?"):
+                helper._write_schedule(self._LS_SCHEDULE_DATA)
+                store._set("RUNNING_SCHEDULE", self.schName)
 
     def addToScheduleGUI(self, media):
         item = self.ddlist.create_item(value=media, bg="#ddd")
@@ -146,8 +150,9 @@ class SingleSchedule(ScheduleDDList):
         self.ddlist.add_item(item)
 
     def showAddToSchedulePopup(self, data, edit=False):
-        addresource = PopupAddSchedule(self, data)
-        addresource.initGUI(edit=edit)
+        if self.notWarningLocked():
+            addresource = PopupAddSchedule(self, data)
+            addresource.initGUI(edit=edit)
 
     def editRuntime(self, data):
         addresource = PopupAddSchedule(self, data)

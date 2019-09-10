@@ -46,3 +46,6 @@ class LeftSchedule(tk.Frame):
 
     def overwiteSortedItem(self, sch):
         self.mutiLeft.sortedlist.overwiteSortedItem(sch)
+
+    def isRunningScheduleLocked(self):
+        return self.mutiLeft.sortedlist.isRunningScheduleLocked()

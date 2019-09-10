@@ -18,7 +18,7 @@ class SortedList(ScheduleDDList):
         self.tbBgColor = "#E8DAEF"
         self.titleTxt = "Schedule List"
         self.keyLock = "schedule_sorted_lock"
-        self.lastActivedId = ""
+        self.lastActivedId = "STORE_SCHEDULE"
         self.initUI()
 
     def initUI(self):
@@ -86,16 +86,17 @@ class SortedList(ScheduleDDList):
             self.ddlist.add_item(item)
 
     def duplicateSchedule(self, evt):
-        filtered = list(
-            filter(lambda x: x.checked.get() and bool(x.path), self._LS_SCHEDULE_UI)
-        )
-        if len(filtered) > 0:
-            if messagebox.askyesno(
-                "PiepMe", "Are you sure duplicate all selected schedule?"
-            ):
-                for sch in filtered:
-                    self.duplicateSingleSchedule(sch)
-                self.f5(evt)
+        if self.notWarningLocked():
+            filtered = list(
+                filter(lambda x: x.checked.get() and bool(x.path), self._LS_SCHEDULE_UI)
+            )
+            if len(filtered) > 0:
+                if messagebox.askyesno(
+                    "PiepMe", "Are you sure duplicate all selected schedule?"
+                ):
+                    for sch in filtered:
+                        self.duplicateSingleSchedule(sch)
+                    self.f5(evt)
 
     def duplicateSingleSchedule(self, sch):
         dstPath = helper._PATH_SCHEDULE if sch.isRunningSch else sch.path
@@ -202,6 +203,9 @@ class SortedList(ScheduleDDList):
 
     def f5(self, evt):
         filtered = list(filter(lambda x: x.actived, self._LS_SCHEDULE_UI))
-        self.lastActivedId = filtered[0].id or ""
+        self.lastActivedId = filtered[0].id if len(filtered) > 0 else ""
         super(SortedList, self).f5(evt)
 
+    def isRunningScheduleLocked(self):
+        storedSch = list(filter(lambda x: x['id'] == STORE_SCHEDULE, self._LS_SCHEDULE_DATA))[0]
+        return storedSch['lock']

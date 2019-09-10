@@ -7,9 +7,10 @@ from src.enums import MediaType
 
 class MediaGridView(DynamicGrid, MediaTab):
     def __init__(self, parent, tabType=None, *args, **kwargs):
+        self.tabType = tabType
         super(MediaGridView, self).__init__(parent, *args, **kwargs)
         self.parent = parent
-        self.tabType = tabType
+        self.ddlist = None
         self.initUI()
 
     def initUI(self):

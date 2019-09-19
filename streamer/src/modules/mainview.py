@@ -52,6 +52,7 @@ class MainView(Widget):
         self.f_height = 720
         self.setting = None
         self.src_selecting = ''# dang chay source cua list nao
+        self.src_selecting_mini = ''# dang chay source cua list nao
         self.switchDisplayAuto = None
 
     def on_start(self):
@@ -509,3 +510,22 @@ class MainView(Widget):
                 self.right_content.tab_schedule.ls_schedule.item_playing = ''
                 self.right_content.tab_schedule.ls_schedule.set_data()
         self.src_selecting = type
+
+    def refresh_select_source_mini(self, type):
+        if self.src_selecting_mini != '' and self.src_selecting_mini != type:
+            if self.src_selecting_mini == constants.LIST_TYPE_VIDEO:
+                self.right_content.tab_media.ls_media.item_playing_mini = ''
+                self.right_content.tab_media.ls_media.set_data()
+            elif self.src_selecting_mini == constants.LIST_TYPE_IMAGE:
+                self.right_content.tab_image.ls_image.item_playing_mini = ''
+                self.right_content.tab_image.ls_image.set_data()
+            elif self.src_selecting_mini == constants.LIST_TYPE_CAMERA:
+                self.right_content.tab_camera.ls_camera.item_playing_mini = ''
+                self.right_content.tab_camera.ls_camera.set_data()
+            elif self.src_selecting_mini == constants.LIST_TYPE_PRESENTER:
+                self.right_content.tab_presenter.ls_presenter.item_playing_mini = ''
+                self.right_content.tab_presenter.ls_presenter.set_data()
+            elif self.src_selecting_mini == constants.LIST_TYPE_SCHEDULE:
+                self.right_content.tab_schedule.ls_schedule.item_playing_mini = ''
+                self.right_content.tab_schedule.ls_schedule.set_data()
+        self.src_selecting_mini = type

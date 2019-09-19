@@ -166,7 +166,7 @@ class P300(tk.Frame):
 
     def packCheckExisted(self):
         # already
-        imChk = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}check-green-s.png"))
+        imChk = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}check-green-s.png"))
         self.lblExisted = tk.Label(
             self.bottom, image=imChk, cursor="hand2", bg=self.botBg
         )
@@ -179,7 +179,7 @@ class P300(tk.Frame):
         timeTooltip = self.liveTime - timedelta(hours=3) + offset
         timeTooltipStr = datetime.strftime(timeTooltip, "%d/%m/%Y %H:%M")
         # already
-        imChk = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}ic-wait.png"))
+        imChk = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}ic-wait.png"))
         self.lblExisted = tk.Label(
             self.bottom, image=imChk, cursor="hand2", bg=self.botBg, text="Waiting"
         )

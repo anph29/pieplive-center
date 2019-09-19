@@ -31,7 +31,7 @@
             size_hint:None,1
             width: 12
             # pos_hint:{'top':1, 'right':1}
-            source: helper._ICONS_PATH+'icon-volume.png'
+            source: helper._ICON_PATH+'icon-volume.png'
             opacity: (0.2,1)[root.active]
             on_release:root.play()
         CheckBox:
@@ -56,5 +56,5 @@
             width: 16
             # opacity:(1,0)[root.active]
             # pos_hint:{'top':1, 'right':1}
-            source: helper._ICONS_PATH+'trash.png'
+            source: helper._ICON_PATH+'trash.png'
             on_release:root.open_confirm_rmv()

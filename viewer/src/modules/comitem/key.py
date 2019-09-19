@@ -79,7 +79,7 @@ class Key(tk.Frame):
         ToolTip(self.lbl_name, self.name)
 
         # bin
-        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}trash-b.png"))
+        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}trash-b.png"))
         self.lbl_trash = tk.Label(
             self.fView, image=imageBin, cursor="hand2", bg=self.itemBg
         )
@@ -88,7 +88,7 @@ class Key(tk.Frame):
         self.lbl_trash.pack(side=tk.RIGHT)
         ToolTip(self.lbl_trash, "Delete")
         # edit
-        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}pen-b.png"))
+        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}pen-b.png"))
         lblPen = tk.Label(self.fView, image=imageBin, cursor="hand2", bg=self.itemBg)
         lblPen.image = imageBin
         lblPen.bind("<Button-1>", self.editKey)

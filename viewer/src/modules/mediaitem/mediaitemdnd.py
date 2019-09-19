@@ -54,7 +54,7 @@ class MediaItemDnD(MediaItem):
         lbl_name.bind("<Double-Button-1>", self.callParentAddSchedule)
         ToolTip(lbl_name, self.name)
         # bin
-        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}trash-b.png"))
+        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}trash-b.png"))
         lbl_trash = tk.Label(wrapper, image=imageBin, cursor="hand2", bg=self.itemBg)
         lbl_trash.image = imageBin
         lbl_trash.bind("<Button-1>", self.deleteMedia)
@@ -62,7 +62,7 @@ class MediaItemDnD(MediaItem):
         lbl_trash.pack(side=tk.RIGHT)
         self.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         # edit
-        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}pen-b.png"))
+        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}pen-b.png"))
         lblPen = tk.Label(wrapper, image=imageBin, cursor="hand2", bg=self.itemBg)
         lblPen.image = imageBin
         lblPen.bind("<Button-1>", self.editMedia)
@@ -72,7 +72,7 @@ class MediaItemDnD(MediaItem):
         # push to schedule
         imgPush = ImageTk.PhotoImage(
             Image.open(
-                f"{helper._ICONS_PATH}{'ic_audio' if self.parentTab.tabType == MediaType.AUDIO else 'add-to-sch'}.png"
+                f"{helper._ICON_PATH}{'ic_audio' if self.parentTab.tabType == MediaType.AUDIO else 'add-to-sch'}.png"
             )
         )
         lblPush = tk.Label(wrapper, image=imgPush, cursor="hand2", bg=self.itemBg)
@@ -87,7 +87,7 @@ class MediaItemDnD(MediaItem):
         # play
         if self.parentTab.tabType == MediaType.AUDIO:
             imagePlay = ImageTk.PhotoImage(
-                Image.open(f"{helper._ICONS_PATH}play-mp3-b.png")
+                Image.open(f"{helper._ICON_PATH}play-mp3-b.png")
             )
             self.lblPlay = tk.Label(
                 wrapper, image=imagePlay, bg=self.itemBg, cursor="hand2"
@@ -97,7 +97,7 @@ class MediaItemDnD(MediaItem):
             self.lblPlay.pack(side=tk.RIGHT)
         # traffic light
         if self.parentTab.tabType == MediaType.PRESENTER:
-            frame = tk.PhotoImage(file=f"{helper._ICONS_PATH}live-red.png")
+            frame = tk.PhotoImage(file=f"{helper._ICON_PATH}live-red.png")
             self.light = tk.Label(
                 wrapper, width=16, height=16, image=frame, bg=self.itemBg
             )

@@ -75,7 +75,7 @@ class ScheduleHeadItem(tk.Frame):
             self.packDate()
         # cancel
         imageBin = ImageTk.PhotoImage(
-            Image.open(f"{helper._ICONS_PATH}close-pink-s.png")
+            Image.open(f"{helper._ICON_PATH}close-pink-s.png")
         )
         lblClose = tk.Label(self.fEdit, image=imageBin, cursor="hand2", bg=self.itemBg)
         lblClose.image = imageBin
@@ -84,7 +84,7 @@ class ScheduleHeadItem(tk.Frame):
         lblClose.pack(side=tk.RIGHT, padx=5)
         # save
         imageBin = ImageTk.PhotoImage(
-            Image.open(f"{helper._ICONS_PATH}check-green-s.png")
+            Image.open(f"{helper._ICON_PATH}check-green-s.png")
         )
         lblChk = tk.Label(self.fEdit, image=imageBin, cursor="hand2", bg=self.itemBg)
         lblChk.image = imageBin
@@ -130,7 +130,7 @@ class ScheduleHeadItem(tk.Frame):
         if not self.isRunningSch:
             # bin
             imageBin = ImageTk.PhotoImage(
-                Image.open(f"{helper._ICONS_PATH}trash-b.png")
+                Image.open(f"{helper._ICON_PATH}trash-b.png")
             )
             self.lbl_trash = tk.Label(
                 self.fView, image=imageBin, cursor="hand2", bg=self.itemBg
@@ -140,7 +140,7 @@ class ScheduleHeadItem(tk.Frame):
             self.lbl_trash.pack(side=tk.RIGHT)
             ToolTip(self.lbl_trash, "Delete")
             # edit
-            imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}pen-b.png"))
+            imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}pen-b.png"))
             self.lblPen = tk.Label(
                 self.fView, image=imageBin, cursor="hand2", bg=self.itemBg
             )
@@ -151,7 +151,7 @@ class ScheduleHeadItem(tk.Frame):
 
         # load schedule detail
         imgPush = ImageTk.PhotoImage(
-            Image.open(f"{helper._ICONS_PATH}push-right-b.png")
+            Image.open(f"{helper._ICON_PATH}push-right-b.png")
         )
         self.lblPush = tk.Label(
             self.fView, image=imgPush, cursor="hand2", bg=self.itemBg
@@ -165,7 +165,7 @@ class ScheduleHeadItem(tk.Frame):
         self.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
         # dupplicate
-        imDup = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}duplicate-24.png"))
+        imDup = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}duplicate-24.png"))
         self.cmdDup = tk.Label(self.fView, image=imDup, cursor="hand2", bg=self.itemBg)
         self.cmdDup.image = imDup
         self.cmdDup.bind("<Button-1>", self.duplicate)

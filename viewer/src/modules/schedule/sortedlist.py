@@ -53,7 +53,7 @@ class SortedList(ScheduleDDList):
         self.ddlist.add_item(item)
 
     def showDupplicateBtn(self):
-        imDup = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}duplicate-24.png"))
+        imDup = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}duplicate-24.png"))
         self.cmdDup = tk.Label(
             self.tbright, image=imDup, cursor="hand2", bg=self.tbBgColor
         )
@@ -63,7 +63,7 @@ class SortedList(ScheduleDDList):
         ToolTip(self.cmdDup, "Duplicate schedule")
 
     def showAddCamBtn(self):
-        imAdd = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}add-rgb24.png"))
+        imAdd = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}add-rgb24.png"))
         self.cmdAdd = tk.Label(
             self.tbright, image=imAdd, cursor="hand2", bg=self.tbBgColor
         )

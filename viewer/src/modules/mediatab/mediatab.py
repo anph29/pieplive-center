@@ -101,7 +101,7 @@ class MediaTab(tk.Frame):
         self.tbright = tk.Frame(self.toolbar, relief=tk.FLAT, bg=self.tbBgColor)
         self.tbright.pack(fil=tk.Y, side=tk.RIGHT)
         # delete all
-        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}trash-b24.png"))
+        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}trash-b24.png"))
         self.cmdDelAll = tk.Label(
             self.tbright, image=imageBin, cursor="hand2", bg=self.tbBgColor
         )
@@ -110,7 +110,7 @@ class MediaTab(tk.Frame):
         self.cmdDelAll.pack(side=tk.RIGHT, padx=(0, 15), pady=5)
         ToolTip(self.cmdDelAll, "Delete all selected")
         # refresh
-        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}f5-b24.png"))
+        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}f5-b24.png"))
         self.cmdF5 = tk.Label(
             self.tbright, image=imageBin, cursor="hand2", bg=self.tbBgColor
         )
@@ -120,7 +120,7 @@ class MediaTab(tk.Frame):
         ToolTip(self.cmdF5, "Refresh")
         # lock
         un = "" if self.getLock() else "un"
-        imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}{un}lock-24.png"))
+        imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}{un}lock-24.png"))
         self.cmdLock = tk.Label(
             self.tbright, image=imgLock, cursor="hand2", bg=self.tbBgColor
         )
@@ -154,7 +154,7 @@ class MediaTab(tk.Frame):
 
     def showAddCamBtn(self):
 
-        imAdd = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}add-rgb24.png"))
+        imAdd = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}add-rgb24.png"))
         self.cmdAdd = tk.Label(
             self.tbright, image=imAdd, cursor="hand2", bg=self.tbBgColor
         )
@@ -255,7 +255,7 @@ class MediaTab(tk.Frame):
 
     def toggleLock(self, evt):
         un = "un" if self.getLock() else ""
-        imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}{un}lock-24.png"))
+        imgLock = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}{un}lock-24.png"))
         self.cmdLock.configure(image=imgLock)
         self.cmdLock.image = imgLock
         ToolTip(self.cmdLock, f"{un}locked")

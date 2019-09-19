@@ -28,7 +28,7 @@ class ListP300(DynamicGrid, tk.Frame):
         self.toolbar = tk.Frame(self, height=50, relief=tk.FLAT, bg=self.tbBgColor)
         self.toolbar.pack(fil=tk.X, side=tk.BOTTOM)
         # refresh
-        imF5 = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}f5-b24.png"))
+        imF5 = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}f5-b24.png"))
         self.cmdF5 = tk.Label(
             self.toolbar, image=imF5, cursor="hand2", bg=self.tbBgColor
         )

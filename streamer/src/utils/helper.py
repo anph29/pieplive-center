@@ -29,10 +29,10 @@ _PATH_KEY_STREAM = f"{_BASE_PATH}cfg/keystream.json"
 _PATH_SCHEDULE_DIR = f"{_BASE_PATH}cfg/schedules/"
 _PATH_STATICSOURCE = f"{_BASE_PATH}cfg/staticsource.json"
 _PATH_SCHEDULE_SORTED = f"{_BASE_PATH}cfg/schedules/sorted.json"
-_ICONS_PATH = f"{_BASE_PATH}icons/"
+_ICON_PATH = f"{_BASE_PATH}icons/"
 _IMAGES_PATH = f"{_BASE_PATH}images/"
-_LOGO_STREAMER = f"{_ICONS_PATH}logo-streamer.ico"
-_LOGO_VIEWER = f"{_ICONS_PATH}logo-viewer.png"
+_LOGO_STREAMER = f"{_ICON_PATH}logo-streamer.ico"
+_LOGO_VIEWER = f"{_ICON_PATH}logo-viewer.png"
 
 """
 schedule

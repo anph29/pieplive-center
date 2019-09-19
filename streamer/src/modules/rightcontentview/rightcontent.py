@@ -29,10 +29,10 @@ class RightContent(TabbedPanel):
     def play_schedule(self, instance):
         if self.is_schedule == False:    
             self.is_schedule = True
-            instance.source = helper._ICONS_PATH + 'pause.png'
+            instance.source = helper._ICON_PATH + 'pause.png'
         else:
             self.is_schedule = False
-            instance.source = helper._ICONS_PATH + 'play-w.png'
+            instance.source = helper._ICON_PATH + 'play-w.png'
         if self.f_parent is not None:
             self.f_parent.mainStream.start_schedule(self.is_schedule)
     

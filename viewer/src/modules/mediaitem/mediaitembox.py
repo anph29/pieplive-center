@@ -147,7 +147,7 @@ class MediaItemBox(MediaItem):
         # play
         if self.parentTab.tabType != MediaType.IMAGE:
             imagePlay = ImageTk.PhotoImage(
-                Image.open(f"{helper._ICONS_PATH}play-b.png")
+                Image.open(f"{helper._ICON_PATH}play-b.png")
             )
             self.lblPlay = tk.Label(
                 self.bottom, image=imagePlay, bg=self.botBg, cursor="hand2"
@@ -167,7 +167,7 @@ class MediaItemBox(MediaItem):
         )
         lbl_name.pack(side=tk.LEFT)
         # bin
-        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}trash-b.png"))
+        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}trash-b.png"))
         lbl_trash = tk.Label(self.bottom, image=imageBin, bg=self.botBg, cursor="hand2")
         lbl_trash.image = imageBin
         lbl_trash.bind("<Button-1>", self.deleteMedia)
@@ -175,7 +175,7 @@ class MediaItemBox(MediaItem):
         lbl_trash.pack(side=tk.RIGHT)
         self.bottom.pack(side=tk.BOTTOM, fill=tk.X)
         # zoom
-        # imgZom = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}zoom-in.png"))
+        # imgZom = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}zoom-in.png"))
         # self.lblZoom = tk.Label(
         #     self.bottom, image=imgZom, bg=self.botBg, cursor="hand2"
         # )
@@ -186,7 +186,7 @@ class MediaItemBox(MediaItem):
         if self.parentTab.tabType != MediaType.IMAGE:
             # volume
             imgVolume = ImageTk.PhotoImage(
-                Image.open(f"{helper._ICONS_PATH}volume-mute.png")
+                Image.open(f"{helper._ICON_PATH}volume-mute.png")
             )
             self.lblVolume = tk.Label(
                 self.bottom, image=imgVolume, bg=self.botBg, cursor="hand2"
@@ -197,7 +197,7 @@ class MediaItemBox(MediaItem):
             ToolTip(self.lblVolume, "Turn on")
         # traffic light
         if self.parentTab.tabType == MediaType.PRESENTER:
-            frame = tk.PhotoImage(file=f"{helper._ICONS_PATH}live-red.png")
+            frame = tk.PhotoImage(file=f"{helper._ICON_PATH}live-red.png")
             self.light = tk.Label(
                 self.bottom, width=16, height=16, image=frame, bg=self.botBg
             )
@@ -304,13 +304,13 @@ class MediaItemBox(MediaItem):
                 self.topImage.config(cursor="none")
 
     def updateZoomIcon(self, ico):
-        image = Image.open(f"{helper._ICONS_PATH}zoom-{ico}.png")
+        image = Image.open(f"{helper._ICON_PATH}zoom-{ico}.png")
         imagetk = ImageTk.PhotoImage(image)
         self.lblZoom.configure(image=imagetk)
         self.lblZoom.image = imagetk
 
     def updateVolumeIcon(self, ico):
-        image = Image.open(f"{helper._ICONS_PATH}volume-{ico}.png")
+        image = Image.open(f"{helper._ICON_PATH}volume-{ico}.png")
         imagetk = ImageTk.PhotoImage(image)
         self.lblVolume.configure(image=imagetk)
         self.lblVolume.image = imagetk

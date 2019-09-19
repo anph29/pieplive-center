@@ -74,7 +74,7 @@ class MediaListView(MediaTab):
     # push all to schedule
     def showBtnPushAllToSchedule(self):
         imgPush = ImageTk.PhotoImage(
-            Image.open(f"{helper._ICONS_PATH}push-all-sch.png")
+            Image.open(f"{helper._ICON_PATH}push-all-sch.png")
         )
         self.cmdPush = tk.Label(
             self.tbright, image=imgPush, cursor="hand2", bg=self.tbBgColor

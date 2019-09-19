@@ -28,7 +28,7 @@
             size_hint:None,1
             width: 12
             # pos_hint:{'top':1, 'right':1}
-            source: helper._ICONS_PATH+'live-orange.png' if root.choice is False else helper._ICONS_PATH+'live-green.png'
+            source: helper._ICON_PATH+'live-orange.png' if root.choice is False else helper._ICON_PATH+'live-green.png'
             on_release:root.choice_play()
             opacity: (0.2,1)[root.playable]
             tooltip_text: 'Choice Play'
@@ -36,7 +36,7 @@
             size_hint:None,1
             width: 12
             # pos_hint:{'top':1, 'right':1}
-            source: helper._ICONS_PATH+'play-w.png' if root.active is False else helper._ICONS_PATH+'ic_loading.gif' if app.root.loading is True else helper._ICONS_PATH+'equi.gif'
+            source: helper._ICON_PATH+'play-w.png' if root.active is False else helper._ICON_PATH+'ic_loading.gif' if app.root.loading is True else helper._ICON_PATH+'equi.gif'
             on_release:root.play()
             opacity: (0.2,1)[root.playable]
             tooltip_text: 'Play'
@@ -44,7 +44,7 @@
             size_hint:None,1
             width: (0,12)[app.root.showMiniD]
             # pos_hint:{'top':1, 'right':1}
-            source: helper._ICONS_PATH+'ic_video-w.png' if root.activeMini is False else helper._ICONS_PATH+'ic_loading.gif' if app.root.loadingMini is True else helper._ICONS_PATH+'equi.gif'
+            source: helper._ICON_PATH+'ic_video-w.png' if root.activeMini is False else helper._ICON_PATH+'ic_loading.gif' if app.root.loadingMini is True else helper._ICON_PATH+'equi.gif'
             on_release:root.playMini(app.root.showMiniD)
             opacity: (0.2,1)[app.root.showMiniD and root.playable]
             tooltip_text: 'Play with mini display'
@@ -52,7 +52,7 @@
             size_hint:None,1
             width: 12
             # pos_hint:{'top':1, 'right':1}
-            source: helper._ICONS_PATH+'ic_presenter-w.png'
+            source: helper._ICON_PATH+'ic_presenter-w.png'
             on_release:root.add_to_action()
             tooltip_text: 'add to list action'
         CheckBox:
@@ -76,6 +76,6 @@
             size_hint:None,1
             width:16
             # opacity:(1,0)[root.listType == 'PRESENTER']
-            source: helper._ICONS_PATH+'trash.png'
+            source: helper._ICON_PATH+'trash.png'
             on_release:root.open_confirm_rmv()
             tooltip_text: 'Remove'

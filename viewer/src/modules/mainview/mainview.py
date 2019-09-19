@@ -130,14 +130,14 @@ class MainView(tk.Frame):
         self.superWrapper = ttk.Notebook(self)
         self.superWrapper.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
         # Schedule
-        icSchedule = tk.PhotoImage(file=helper._ICONS_PATH + "ic_clock_tab.png")
+        icSchedule = tk.PhotoImage(file=helper._ICON_PATH + "ic_clock_tab.png")
         self.schedule = Schedule(self)
         self.schedule.image = icSchedule
         self.superWrapper.add(
             self.schedule, text="Schedule", image=icSchedule, compound=tk.LEFT
         )
         # Live View
-        icMedia = tk.PhotoImage(file=helper._ICONS_PATH + "ic_media_tab.png")
+        icMedia = tk.PhotoImage(file=helper._ICON_PATH + "ic_media_tab.png")
         self.mediaList = self.makeMediaListTab()
         self.mediaList.image = icMedia
         self.superWrapper.add(
@@ -148,7 +148,7 @@ class MainView(tk.Frame):
         self.superWrapper.enable_traversal()
 
     def packCOMtab(self):
-        icCom = tk.PhotoImage(file=helper._ICONS_PATH + "se-icon.png")
+        icCom = tk.PhotoImage(file=helper._ICON_PATH + "se-icon.png")
         self.tabCOM = COMWrapper(self)
         self.tabCOM.image = icCom
         self.superWrapper.add(self.tabCOM, text="C.O.M", image=icCom, compound=tk.LEFT)
@@ -158,27 +158,27 @@ class MainView(tk.Frame):
         mediaListTab = ttk.Notebook(self, style="sub.TNotebook")
         mediaListTab.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
         # 1
-        icImg = tk.PhotoImage(file=helper._ICONS_PATH + "ic_image.png")
+        icImg = tk.PhotoImage(file=helper._ICON_PATH + "ic_image.png")
         self.tab_image = self.makeMediaGrid(MediaType.IMAGE)
         self.tab_image.image = icImg
         mediaListTab.add(self.tab_image, text="Images", image=icImg, compound=tk.LEFT)
         # 2
-        icVid = tk.PhotoImage(file=helper._ICONS_PATH + "ic_video.png")
+        icVid = tk.PhotoImage(file=helper._ICON_PATH + "ic_video.png")
         self.tab_video = self.makeMediaGrid(MediaType.VIDEO)
         self.tab_video.image = icVid
         mediaListTab.add(self.tab_video, text="Videos", image=icVid, compound=tk.LEFT)
         # 3
-        icVid = tk.PhotoImage(file=helper._ICONS_PATH + "ic_audio.png")
+        icVid = tk.PhotoImage(file=helper._ICON_PATH + "ic_audio.png")
         self.tab_video = self.makeMediaGrid(MediaType.AUDIO)
         self.tab_video.image = icVid
         mediaListTab.add(self.tab_video, text="Audios", image=icVid, compound=tk.LEFT)
         # 4
-        icCam = tk.PhotoImage(file=helper._ICONS_PATH + "ic_camera.png")
+        icCam = tk.PhotoImage(file=helper._ICON_PATH + "ic_camera.png")
         self.tab_camera = self.makeMediaGrid(MediaType.CAMERA)
         self.tab_camera.image = icCam
         mediaListTab.add(self.tab_camera, text="Cameras", image=icCam, compound=tk.LEFT)
         # 5
-        icPres = tk.PhotoImage(file=helper._ICONS_PATH + "ic_presenter.png")
+        icPres = tk.PhotoImage(file=helper._ICON_PATH + "ic_presenter.png")
         self.tab_presenter = self.makeMediaGrid(MediaType.PRESENTER)
         self.tab_presenter.image = icPres
         mediaListTab.add(
@@ -202,7 +202,7 @@ class MainView(tk.Frame):
         rightToolbar.pack(side=tk.RIGHT, fill=tk.Y)
         #
         imgCheck = ImageTk.PhotoImage(
-            Image.open(helper._ICONS_PATH + "close-pink-s.png")
+            Image.open(helper._ICON_PATH + "close-pink-s.png")
         )
         lblCommandClear = tk.Label(rightToolbar, bd=1, image=imgCheck, bg="#fff")
         lblCommandClear.photo = imgCheck
@@ -210,7 +210,7 @@ class MainView(tk.Frame):
         lblCommandClear.bind("<Button-1>", self.onClearResource)
         #
         imgCheck = ImageTk.PhotoImage(
-            Image.open(helper._ICONS_PATH + "check-green-s.png")
+            Image.open(helper._ICON_PATH + "check-green-s.png")
         )
         lblCommandCheck = tk.Label(rightToolbar, bd=1, image=imgCheck, bg="#fff")
         lblCommandCheck.photo = imgCheck

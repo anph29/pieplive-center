@@ -58,11 +58,11 @@ class MediaItem(tk.Frame):
     def updateLightColor(self, ln510):
         self.LN510 = ln510
         ## OFF
-        frame = tk.PhotoImage(file=f"{helper._ICONS_PATH}live-red.png")
+        frame = tk.PhotoImage(file=f"{helper._ICON_PATH}live-red.png")
         if ln510 == 1:  # ON-WAITING
-            frame = tk.PhotoImage(file=f"{helper._ICONS_PATH}live-orange.png")
+            frame = tk.PhotoImage(file=f"{helper._ICON_PATH}live-orange.png")
         elif ln510 == 2:  # GOT-READY
-            frame = tk.PhotoImage(file=f"{helper._ICONS_PATH}live-green.png")
+            frame = tk.PhotoImage(file=f"{helper._ICON_PATH}live-green.png")
 
         self.light.configure(image=frame)
         self.light.image = frame
@@ -72,7 +72,7 @@ class MediaItem(tk.Frame):
         # count down 5 sec
         countFrame = [
             tk.PhotoImage(
-                file=f"{helper._ICONS_PATH}count.gif", format=f"gif -index {i}"
+                file=f"{helper._ICON_PATH}count.gif", format=f"gif -index {i}"
             )
             for i in range(0, 15)
         ]
@@ -100,7 +100,7 @@ class MediaItem(tk.Frame):
         # interval live stastus
         liveFrame = [
             tk.PhotoImage(
-                file=f"{helper._ICONS_PATH}live.gif", format=f"gif -index {i}"
+                file=f"{helper._ICON_PATH}live.gif", format=f"gif -index {i}"
             )
             for i in range(0, 3)
         ]
@@ -122,7 +122,7 @@ class MediaItem(tk.Frame):
         self.stopGIF = True
 
     def updatePlayIcon(self, ico):
-        image = Image.open(f"{helper._ICONS_PATH}{ico}-b.png")
+        image = Image.open(f"{helper._ICON_PATH}{ico}-b.png")
         imagetk = ImageTk.PhotoImage(image)
         self.lblPlay.configure(image=imagetk)
         self.lblPlay.image = imagetk

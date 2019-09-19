@@ -64,7 +64,7 @@ class MediaItemSchedule(MediaItem):
         ToolTip(lbl_name, self.name)
         lbl_name.pack(side=tk.LEFT)
         # bin
-        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}trash-b.png"))
+        imageBin = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}trash-b.png"))
         lbl_trash = tk.Label(
             self.wrapper, image=imageBin, cursor="hand2", bg=self.itemBg
         )
@@ -74,7 +74,7 @@ class MediaItemSchedule(MediaItem):
         lbl_trash.pack(side=tk.RIGHT)
         self.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         # edit
-        imPen = ImageTk.PhotoImage(Image.open(f"{helper._ICONS_PATH}pen-b.png"))
+        imPen = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}pen-b.png"))
         lblPen = tk.Label(self.wrapper, image=imPen, cursor="hand2", bg=self.itemBg)
         lblPen.image = imPen
         lblPen.bind("<Button-1>", self.editMedia)
@@ -85,7 +85,7 @@ class MediaItemSchedule(MediaItem):
         if bool(self.audio):
             # play
             imagePlay = ImageTk.PhotoImage(
-                Image.open(f"{helper._ICONS_PATH}play-mp3-b.png")
+                Image.open(f"{helper._ICON_PATH}play-mp3-b.png")
             )
             self.lblPlay = tk.Label(
                 self.wrapper, image=imagePlay, bg=self.itemBg, cursor="hand2"

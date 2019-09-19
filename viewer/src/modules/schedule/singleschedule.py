@@ -81,7 +81,7 @@ class SingleSchedule(ScheduleDDList):
 
         elif not bool(self.lblChk):  # NORMAL
             imageChk = ImageTk.PhotoImage(
-                Image.open(f"{helper._ICONS_PATH}check-green-s.png")
+                Image.open(f"{helper._ICON_PATH}check-green-s.png")
             )
             self.lblChk = tk.Label(
                 self.title,

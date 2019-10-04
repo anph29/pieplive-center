@@ -32,7 +32,10 @@ class SortedList(ScheduleDDList):
         return bool(store._get(self.keyLock))
 
     def showListSchedule(self):
-        self._LS_SCHEDULE_DATA = self.loadSchedule()
+        self.renderSchedule(self.loadSchedule())
+
+    def renderSchedule(self, data):
+        self._LS_SCHEDULE_DATA = data
         for media in self._LS_SCHEDULE_DATA:
             self.addToScheduleGUI(media)
 
@@ -48,6 +51,7 @@ class SortedList(ScheduleDDList):
         #
         if data["id"] == self.lastActivedId:
             ui.setActive()
+            ui.loadScheduleDE(None)
         self._LS_SCHEDULE_UI.append(ui)
         ui.pack(expand=True)
         self.ddlist.add_item(item)
@@ -207,5 +211,8 @@ class SortedList(ScheduleDDList):
         super(SortedList, self).f5(evt)
 
     def isRunningScheduleLocked(self):
-        storedSch = list(filter(lambda x: x['id'] == STORE_SCHEDULE, self._LS_SCHEDULE_DATA))[0]
-        return storedSch['lock']
+        storedSch = list(
+            filter(lambda x: x["id"] == STORE_SCHEDULE, self._LS_SCHEDULE_DATA)
+        )[0]
+        return storedSch["lock"]
+

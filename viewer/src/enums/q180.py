@@ -77,10 +77,10 @@ class Q180(Enum):
     # "QV182" : "CHA_COM_CON",
     # "QL186" : ISODate("2018-11-02T02:52:58.637+0000"),
     # "QL188" : "TUNGNS"
-    CHA_COM_CON = 12
-    # "_id" : 13.0,
+    CHA_COM_CON = 35
+    # "_id" : 36.0,
     # "QV181" : "Quyen livestream ve trung tam CENTER cua Kenhp",
     # "QV182" : "CHA_LIV_CEN",
     # "QL186" : ISODate("2018-11-02T02:52:58.637+0000"),
     # "QL188" : "TUNGNS"
-    CHA_LIV_CEN = 13
+    CHA_LIV_CEN = 36

@@ -21,6 +21,8 @@ class MediaGridView(DynamicGrid, MediaTab):
             MediaType.SCHEDULE,
         ):
             self.showAddCamBtn()
+        # search zone
+        # self.zSearch.searchZone.pack(side=tk.TOP, fill=tk.X)
 
     def addMediaToList(self, media):
         ui = MediaItemBox(

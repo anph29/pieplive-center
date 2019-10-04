@@ -9,6 +9,7 @@ from src.modules.popup import PopupAddSchedule
 from src.constants import UI
 from PIL import Image, ImageTk
 from src.modules.custom import ToolTip
+from src.modules.custom import ZSearch
 
 
 class SingleSchedule(ScheduleDDList):
@@ -27,8 +28,25 @@ class SingleSchedule(ScheduleDDList):
         self.schLocked = False
         self.initUI()
 
+    def initUI(self):
+        super(SingleSchedule, self).initUI()
+        # search zone
+        self.zSearch = ZSearch(
+            self.title,
+            searchBg=self.tbBgColor,
+            getListFunc=self.loadSchedule,
+            clearViewFunc=self.clearView,
+            renderFunc=self.renderSchedule,
+            pvSearchWidth=35,
+            pvSearchColor="#fff",
+        )
+        self.zSearch.searchZone.pack(side=tk.RIGHT, fill=tk.X)
+
     def showListSchedule(self):
-        self._LS_SCHEDULE_DATA = self.loadSchedule()
+        self.renderSchedule(self.loadSchedule())
+
+    def renderSchedule(self, data):
+        self._LS_SCHEDULE_DATA = data
         self.totalDuration = 0
         if bool(self._LS_SCHEDULE_DATA):
             for sch in self._LS_SCHEDULE_DATA:
@@ -68,7 +86,6 @@ class SingleSchedule(ScheduleDDList):
         self.lblTitle.pack(side=tk.LEFT, padx=20, pady=5)
         # lock
         self.updateLockStatus("" if self.getLock() else "un")
-
         #
         self.showTitleWidthSave()
         self.clearView()
@@ -84,7 +101,7 @@ class SingleSchedule(ScheduleDDList):
                 Image.open(f"{helper._ICON_PATH}check-green-s.png")
             )
             self.lblChk = tk.Label(
-                self.title,
+                self.titleLeft,
                 image=imageChk,
                 font=UI.TXT_FONT,
                 cursor="hand2",
@@ -95,12 +112,13 @@ class SingleSchedule(ScheduleDDList):
             self.lblChk.pack(padx=35, pady=5, side=tk.RIGHT)
             ToolTip(self.lblChk, "Save as Running Schedule")
 
-
     def saveAsRunningSchedule(self, evt):
         if self.parent.parent.isRunningScheduleLocked():
             messagebox.showwarning("PiepMe", "`RUNNING SCHEDULE` is locked!")
         else:
-            if messagebox.askyesno("PiepMe", "Are you sure overwrite `RUNNING SCHEDULE`?"):
+            if messagebox.askyesno(
+                "PiepMe", "Are you sure overwrite `RUNNING SCHEDULE`?"
+            ):
                 helper._write_schedule(self._LS_SCHEDULE_DATA)
                 store._set("RUNNING_SCHEDULE", self.schName)
 

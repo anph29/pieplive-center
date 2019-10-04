@@ -50,7 +50,9 @@ class MediaListView(MediaTab):
             MediaType.SCHEDULE,
         ):
             self.showAddCamBtn()
-        #
+        # search zone
+        self.zSearch.searchZone.pack(side=tk.TOP, fill=tk.X)
+        # list
         self.scrollZ.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
         self.ddlist.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
@@ -73,9 +75,7 @@ class MediaListView(MediaTab):
 
     # push all to schedule
     def showBtnPushAllToSchedule(self):
-        imgPush = ImageTk.PhotoImage(
-            Image.open(f"{helper._ICON_PATH}push-all-sch.png")
-        )
+        imgPush = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}push-all-sch.png"))
         self.cmdPush = tk.Label(
             self.tbright, image=imgPush, cursor="hand2", bg=self.tbBgColor
         )

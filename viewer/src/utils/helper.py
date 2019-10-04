@@ -349,7 +349,7 @@ def writeJSON(path, data):
         json.dump(data, jflie, indent=2)
 
 
-def appendJSON(path, data, auto_increment=False):
+def appendJSON(path, data):
     jdata = loadJSON(path)
     jdata.append(data)
     writeJSON(path, jdata)

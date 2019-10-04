@@ -31,13 +31,16 @@ class ScheduleDDList(tk.Frame):
         self.title = tk.Frame(self, height=50, relief=tk.FLAT, bg=self.tbBgColor)
         self.title.pack(fil=tk.X, side=tk.TOP)
         #
+        self.titleLeft = tk.Frame(self.title, height=50, relief=tk.FLAT, bg=self.tbBgColor)
+        self.titleLeft.pack(fil=tk.X, side=tk.LEFT)
+        #
         self.lblTitle = tk.Label(
-            self.title,
+            self.titleLeft,
             text=self.titleTxt.upper(),
             bg=self.tbBgColor,
             font=UI.TITLE_FONT,
         )
-        self.lblTitle.pack(pady=5)
+        self.lblTitle.pack(side=tk.LEFT, pady=5)
 
     def makeDDList(self, ref):
         return DDList(
@@ -57,8 +60,11 @@ class ScheduleDDList(tk.Frame):
     def loadSchedule(self):
         return []
 
+    def renderSchedule(self):
+        ...
+
     def addToScheduleGUI(self, media):
-        pass
+        ...
 
     def showToolBar(self):
         self.checkall = tk.BooleanVar()

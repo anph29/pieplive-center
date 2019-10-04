@@ -22,9 +22,6 @@ class ScheduleHeadItem(tk.Frame):
         self.isRunningSch = False
         self.set_data(sch)
         self.initUI()
-        #
-        if self.isRunningSch:
-            self.loadScheduleDE(None)
 
     def get_data(self):
         return {

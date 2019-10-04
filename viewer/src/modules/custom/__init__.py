@@ -6,3 +6,4 @@ from .ddlist import DDList
 from .scrollableframe import VerticalScrolledFrame
 from .tooltip import ToolTip, ToolTipBase
 from .canvascancircle import CanvasC
+from .search import ZSearch

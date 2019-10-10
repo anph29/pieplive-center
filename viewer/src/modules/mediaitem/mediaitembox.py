@@ -40,6 +40,7 @@ class MediaItemBox(MediaItem):
         self.after(100, self.initGUI)
         self.top = None
         self.volume = False
+        self.player = None
 
     def initGUI(self):
         ww = self.cell_width + 5
@@ -146,9 +147,7 @@ class MediaItemBox(MediaItem):
         self.checkbox.pack(side=tk.LEFT, fill=tk.Y, padx=0, pady=0)
         # play
         if self.parentTab.tabType != MediaType.IMAGE:
-            imagePlay = ImageTk.PhotoImage(
-                Image.open(f"{helper._ICON_PATH}play-b.png")
-            )
+            imagePlay = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}play-b.png"))
             self.lblPlay = tk.Label(
                 self.bottom, image=imagePlay, bg=self.botBg, cursor="hand2"
             )
@@ -209,6 +208,8 @@ class MediaItemBox(MediaItem):
         if self.parentTab.tabType != MediaType.PRESENTER or (
             self.parentTab.tabType == MediaType.PRESENTER and self.LN510 == 2
         ):
+            #
+            self.parentTab.findPlayingToDestroy()
             self.topImage.config(cursor="wait")
             #
             self.Instance = vlc.Instance()
@@ -222,12 +223,20 @@ class MediaItemBox(MediaItem):
             self.player.set_hwnd(self.top.winfo_id())
             #
             self.media.release()
-            # self.playOrPause()
             if self.mtype == VIDEO:
                 self.after(100, self.playOrPause)
             if self.mtype == RTSP:
                 self.after(5000, self.playOrPause)
             self.vlcInited = True
+
+        
+    def destroy_player(self):
+        if self.player.is_playing():
+            self.player.pause()
+            self.updatePlayIcon("play")
+        #
+        self.player.release()
+        self.vlcInited = False
 
     def toggleZoom(self, evt):
         # w = self.winfo_width()
@@ -297,6 +306,7 @@ class MediaItemBox(MediaItem):
                 self.initVLC(None)
             if self.player.is_playing():
                 self.player.pause()
+                #
                 self.updatePlayIcon("play")
             else:
                 self.play()

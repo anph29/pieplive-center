@@ -8,14 +8,13 @@ from src.modules.popup import PopupAddResource
 from src.modules.custom import ToolTip
 from src.utils import firebase, store
 from src.modules.login import Login
-from src.modules.custom import ZSearch
 
 
 class MediaTab(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         super(MediaTab, self).__init__(parent, *args, **kwargs)
         self.parent = parent
-        self.tbBgColor = "#fff"
+        self.tbBgColor = "#f3f3f3"
         self._LS_MEDIA_DATA = []
         self._LS_MEDIA_UI = []
         self.listenerStream = None
@@ -26,13 +25,7 @@ class MediaTab(tk.Frame):
         self.showToolBar()
         self.showLsMedia()
         self.after(500, self.turnOnObserver)
-        self.zSearch = ZSearch(
-            self,
-            searchBg=self.tbBgColor,
-            getListFunc=self.loadLsMedia,
-            clearViewFunc=self.clearView,
-            renderFunc=self.renderLsMediaFromData,
-        )
+    
 
     def turnOnObserver(self):
         if bool(store._get("FO100")) and self.tabType == MediaType.PRESENTER:

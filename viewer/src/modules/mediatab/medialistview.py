@@ -9,6 +9,7 @@ from src.utils import helper, scryto, store
 from src.modules.custom import VerticalScrolledFrame, ToolTip
 from src.enums import MediaType
 from src.modules.popup import PopupEditResource
+from src.modules.custom import ZSearch
 
 
 class MediaListView(MediaTab):
@@ -51,6 +52,13 @@ class MediaListView(MediaTab):
         ):
             self.showAddCamBtn()
         # search zone
+        self.zSearch = ZSearch(
+            self,
+            searchBg=self.tbBgColor,
+            getListFunc=self.loadLsMedia,
+            clearViewFunc=self.clearView,
+            renderFunc=self.renderLsMediaFromData,
+        )
         self.zSearch.searchZone.pack(side=tk.TOP, fill=tk.X)
         # list
         self.scrollZ.pack(side=tk.TOP, fill=tk.BOTH, expand=True)

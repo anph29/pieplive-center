@@ -3,7 +3,7 @@ from src.modules.custom import DynamicGrid
 from src.modules.mediaitem import MediaItemBox
 from .mediatab import MediaTab
 from src.enums import MediaType
-
+from src.modules.custom import ZSearch
 
 class MediaGridView(DynamicGrid, MediaTab):
     def __init__(self, parent, tabType=None, *args, **kwargs):
@@ -22,7 +22,15 @@ class MediaGridView(DynamicGrid, MediaTab):
         ):
             self.showAddCamBtn()
         # search zone
-        # self.zSearch.searchZone.pack(side=tk.TOP, fill=tk.X)
+        self.zSearch = ZSearch(
+            self.tbleft,
+            searchBg=self.tbBgColor,
+            getListFunc=self.loadLsMedia,
+            clearViewFunc=self.clearView,
+            renderFunc=self.renderLsMediaFromData,
+            pvSearchColor="#fff"
+        )
+        self.zSearch.searchZone.pack(side=tk.TOP, fill=tk.X)
 
     def addMediaToList(self, media):
         ui = MediaItemBox(
@@ -36,3 +44,12 @@ class MediaGridView(DynamicGrid, MediaTab):
         self.context.config(state=tk.NORMAL)
         self.context.delete(1.0, tk.END)
         self.context.config(state=tk.DISABLED)
+
+    def findPlayingToDestroy(self):
+        filtered = list(
+            filter(
+                lambda x: x.vlcInited, self._LS_MEDIA_UI
+            )
+        )
+        for box in filtered:
+           box.destroy_player()

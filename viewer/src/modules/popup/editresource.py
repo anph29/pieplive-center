@@ -81,7 +81,7 @@ class PopupEditResource(PopupAddResource):
             btnChoose.configure(width=7)
             btnChoose.pack(side=tk.RIGHT, fill=tk.Y)
         # duration
-        if self.mtype == VIDEO:
+        if self.mtype in [VIDEO, M3U8]:
             self.packDuration(fFile)
         # error msg
         self.fError = tk.Frame(fFile)

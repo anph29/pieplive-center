@@ -11,6 +11,8 @@ from functools import partial
 from src.utils import helper, kivyhelper
 from src.modules import constants
 
+from ffpyplayer.player import MediaPlayer
+
 kv = '''
 <KivyCameraNo>:
     drag_rectangle: self.x, self.y, self.width, self.height
@@ -40,6 +42,7 @@ class KivyCameraNo(DragBehavior, Image):
     category = StringProperty('')
     data_src = None
     url_remove = StringProperty('')
+    player = None
 
     def __init__(self, **kwargs):
         super(KivyCameraNo, self).__init__(**kwargs)
@@ -137,9 +140,24 @@ class KivyCameraNo(DragBehavior, Image):
         
     def process_set_data(self, second):
         try:
-            self.init_capture()
+            # self.init_capture()
+            self.player = MediaPlayer(self.url)
+            self.event_capture = Clock.schedule_interval(self.update2, 1.0 / self.duration_fps)
+            
+        
         except Exception:
             pass
+
+    def update2(self, dt):
+        val = ''
+        if val != 'eof':
+            frame, val = self.player.get_frame()
+            if val != 'eof' and frame is not None:
+                img, t = frame
+                texture = Texture.create(size=(img.get_size()[0], img.get_size()[1]))
+                texture.flip_vertical()
+                texture.blit_buffer(img.to_bytearray()[0])
+                self.texture = texture
 
     def init_capture(self):
         try:

@@ -9,8 +9,10 @@ from src.utils import helper, kivyhelper
 from pathlib import Path
 from src.modules import constants
 import os
+
 # from pydub import AudioSegment
 # from pydub.playback import play
+from ffpyplayer.player import MediaPlayer
 
 class KivyCameraMain(Image):
     capture = ObjectProperty(None)
@@ -78,28 +80,51 @@ class KivyCameraMain(Image):
                 except Exception as e:
                     print("Exception:", e)
 
-                timeout = 1
+                timeout = 3
                 command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i",helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab","128k","-vsync","1","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
                 if self.category == constants.LIST_TYPE_PRESENTER:
                     self.url = self.data_src['rtmp']
-                    timeout=2
+                    timeout=4
                     command = ["ffmpeg/ffmpeg.exe","-y","-i",self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vf","scale=-1:720","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "M3U8":
-                    timeout=1
+                    timeout=3
                     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f","hls","-i",self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-filter_complex","scale=-1:720","-ar","44100", "-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
                 elif self.resource_type == "RTSP":
-                    timeout=2
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags","prefer_tcp","-i",self.url,"-vsync","1","-ar","44100","-ab","128k","-vf","scale=-1:720","-vb","10M",'-preset','fast',"-r","25",'-g','50',output]
+                    timeout=4
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags","prefer_tcp","-i",self.url,"-vsync","1","-ar","44100","-ab","128k","-vf","scale=-1:720","-vb","6M",'-preset','fast',"-r","25",'-g','50',output]
                     
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
                 self.pipe = sp.Popen(command, startupinfo=si)
                 self.url = output
-                Clock.schedule_once(self.init_capture ,timeout)
+                Clock.schedule_once(self.process_set_data ,timeout)
             else:
-                Clock.schedule_once(self.init_capture , 0)
+                Clock.schedule_once(self.process_set_data , 0)
         except :
-            Clock.schedule_once(self.init_capture , 0)
+            Clock.schedule_once(self.process_set_data , 0)
+
+    def process_set_data(self, second):
+        try:
+            # self.init_capture()
+            print(self.url)
+            self.player = MediaPlayer(self.url)
+            self.event_capture = Clock.schedule_interval(self.update2, 1.0 / self.duration_fps)
+            
+        
+        except Exception:
+            pass
+
+    def update2(self, dt):
+        val = ''
+        if val != 'eof':
+            frame, val = self.player.get_frame()
+            if val != 'eof' and frame is not None:
+                img, t = frame
+                self.duration_current = t
+                texture = Texture.create(size=img.get_size())
+                texture.flip_vertical()
+                texture.blit_buffer(img.to_bytearray()[0])
+                self.texture = texture
 
     def init_capture(self, second):
         try:

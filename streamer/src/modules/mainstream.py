@@ -5,6 +5,7 @@ from kivy.graphics import Fbo, ClearColor, ClearBuffers, Scale, Translate, Canva
 from kivy.uix.relativelayout import RelativeLayout
 from src.modules.kvcam.kivycameramain import KivyCameraMain
 from src.modules.kvcam.kivycameramini import KivyCameraMini
+from src.modules.kvcam.kivycamerano import KivyCameraNo
 from src.modules.custom.pieplabel import PiepLabel
 from src.modules.custom.piepimage import PiepImage
 from kivy.properties import ObjectProperty,NumericProperty

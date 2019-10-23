@@ -204,6 +204,7 @@ class PopupAddResource(object):
                             "id": scryto.hash_md5_with_time(fpath),
                             "name": self.getNameFromPath(fpath),
                             "type": self.getMTypeByPath(fpath),
+                            "duration": 0,
                         }
                         self.addMediaByType(dt)
             #

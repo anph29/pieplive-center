@@ -26,6 +26,7 @@ class MediaListView(MediaTab):
         self.scrollZ = VerticalScrolledFrame(self, style="scroll.TFrame")
         self.ddlist = self.makeDDList(self.scrollZ.interior)
         self.ddlist.setLock(self.getLock())
+        self.unUseFiterd = False
         self.initUI()
 
     def makeDDList(self, ref):
@@ -73,6 +74,7 @@ class MediaListView(MediaTab):
         super(MediaListView, self).packRightToolbar()
         if self.tabType not in [MediaType.SCHEDULE, MediaType.AUDIO]:
             self.showBtnPushAllToSchedule()
+            self.showFilterNotUse()
 
     def addMediaToList(self, media):
         item = self.ddlist.create_item(value=media)
@@ -80,6 +82,54 @@ class MediaListView(MediaTab):
         self._LS_MEDIA_UI.append(ui)
         ui.pack(expand=True)
         self.ddlist.add_item(item)
+
+    # filter not in use
+    def showFilterNotUse(self):
+        imgPush = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}filter.png"))
+        self.cmdFilter = tk.Label(
+            self.tbright, image=imgPush, cursor="hand2", bg=self.tbBgColor
+        )
+        self.cmdFilter.image = imgPush
+        self.cmdFilter.bind("<Button-1>", self.filterNotInUse)
+        self.cmdFilter.pack(side=tk.RIGHT, padx=(5, 0))
+        ToolTip(self.cmdFilter, "Show not use resource")
+
+    def filterNotInUse(self, e):
+        ed = "" if self.unUseFiterd else "ed"
+        imgFilter = ImageTk.PhotoImage(Image.open(f"{helper._ICON_PATH}filter{ed}.png"))
+        self.cmdFilter.configure(image=imgFilter)
+        self.cmdFilter.image = imgFilter
+
+        if self.unUseFiterd:
+            self.clearView()
+            self.renderLsMediaFromData(self.loadLsMedia())
+            self.unUseFiterd = False
+
+        else:
+            self.unUseFiterd = True
+            # list all in schedule
+            lsIdMediaInSchedule = list(
+                map(lambda sch: sch["url"], helper._load_schedule())
+            )
+            sortedSch = helper._load_sorted_schedule()
+            for sch in sortedSch:
+                if bool(sch["path"]):
+                    lsIdMediaInSchedule += list(
+                        map(
+                            lambda item: item["url"],
+                            helper._load_schedule_width_fname(sch["path"]),
+                        )
+                    )
+            # filter not in schedule
+            filtered = list(
+                filter(
+                    lambda media: media["url"] not in lsIdMediaInSchedule,
+                    self._LS_MEDIA_DATA,
+                )
+            )
+            # render not in use from filtered
+            self.clearView()
+            self.renderLsMediaFromData(filtered)
 
     # push all to schedule
     def showBtnPushAllToSchedule(self):

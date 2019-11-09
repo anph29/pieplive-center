@@ -88,9 +88,7 @@ class KivyCameraMini(DragBehavior, Image):
         if self.capture is not None:
             self.capture.release()
         self.stop_update_capture()
-        gpu = 'h264_amf'
-        # gpu = 'h264_nvenc'
-
+        
         # fps = 25
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.resource_type == 'MP4' or self.resource_type == "RTSP":
@@ -112,17 +110,17 @@ class KivyCameraMini(DragBehavior, Image):
                     print("Exception:", e)
 
                 timeout = 3
-                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-c:v",gpu,"-af", "aresample=async=1","-ar","44100","-ab", "128k","-vsync","1","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
+                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-c:v",self.f_parent.gpu,"-af", "aresample=async=1","-ar","44100","-ab", "128k","-vsync","1","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
                 if self.category == constants.LIST_TYPE_PRESENTER:
                     self.url = self.data_src['rtmp']
                     timeout=4
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-c:v",gpu,"-vf","scale=-1:720","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,'-preset','fast',"-r","25",'-g','50',output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-c:v",self.f_parent.gpu,"-vf","scale=-1:720","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,'-preset','fast',"-r","25",'-g','50',output]
                 elif self.resource_type == "M3U8":
                     timeout=3
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f","hls","-i",self.url,"-vsync", "1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-c:v",gpu,"-filter_complex","scale=-1:720","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f","hls","-i",self.url,"-vsync", "1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-c:v",self.f_parent.gpu,"-filter_complex","scale=-1:720","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
                 elif self.resource_type == "RTSP":
                     timeout=4
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags","prefer_tcp","-i", self.url,"-flags","+global_header","-vsync","1","-c:v",gpu,"-ar","44100","-ab","128k","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,'-preset','fast',"-r","25",'-g','50',output]
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags","prefer_tcp","-i", self.url,"-flags","+global_header","-vsync","1","-c:v",self.f_parent.gpu,"-ar","44100","-ab","128k","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,'-preset','fast',"-r","25",'-g','50',output]
                 # elif fps < 25:
                 #     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-af",f"atempo={25/fps}","-vf", f"scale=-1:720,setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
                     

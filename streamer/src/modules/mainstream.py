@@ -51,6 +51,8 @@ class MainStream(RelativeLayout):
         self.is_loop = True
         self.current_schedule = -1
         self.deleteAllFile()
+        self.gpu = 'h264_amf'
+        # self.gpu = 'h264_nvenc'
 
     def _load(self):
         pass

@@ -303,7 +303,7 @@ class MainStream(RelativeLayout):
             self.command.extend(self.draw_element())
 
             # encode
-            self.command.extend(['-vb', str(self.v_bitrate),'-r', '25','-vf','fps=25'])
+            self.command.extend(["-c:v","h264_amf",'-vb', str(self.v_bitrate),'-r', '25'])
             
             # tream
             self.command.extend(['-f', 'flv', self.urlStream])

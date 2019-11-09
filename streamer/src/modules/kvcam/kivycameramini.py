@@ -88,61 +88,60 @@ class KivyCameraMini(DragBehavior, Image):
         if self.capture is not None:
             self.capture.release()
         self.stop_update_capture()
+        gpu = 'h264_amf'
+        # gpu = 'h264_nvenc'
 
         # fps = 25
         try:
-            # if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.resource_type == 'MP4' or self.resource_type == "RTSP":
-            #     timenow = datetime.datetime.timestamp(datetime.datetime.now())
-            #     output = helper._BASE_PATH+'temp/{}.flv'.format(timenow)
-            #     try:
-            #         if self.resource_type == 'VIDEO' or self.resource_type == 'MP4' or (self.resource_type == "M3U8" and self.category != constants.LIST_TYPE_PRESENTER):
-            #             _cap = cv2.VideoCapture(self.url)
-            #             if _cap.isOpened():
-            #                 # fps = _cap.get(cv2.CAP_PROP_FPS)
-            #                 # if fps >= 25:
-            #                 self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
-            #                 self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)
-            #                 # else:
-            #                 #     self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
-            #                 #     self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/25
-            #             del _cap
-            #     except Exception as e:
-            #         print("Exception:", e)
+            if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.resource_type == 'MP4' or self.resource_type == "RTSP":
+                timenow = datetime.datetime.timestamp(datetime.datetime.now())
+                output = helper._BASE_PATH+'temp/{}.flv'.format(timenow)
+                try:
+                    if self.resource_type == 'VIDEO' or self.resource_type == 'MP4' or (self.resource_type == "M3U8" and self.category != constants.LIST_TYPE_PRESENTER):
+                        _cap = cv2.VideoCapture(self.url)
+                        if _cap.isOpened():
+                            # fps = _cap.get(cv2.CAP_PROP_FPS)
+                            # if fps >= 25:
+                            self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
+                            self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)
+                            # else:
+                            #     self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
+                            #     self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/25
+                        del _cap
+                except Exception as e:
+                    print("Exception:", e)
 
-            #     timeout = 3
-            #     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-af", "aresample=async=1","-ar","44100","-ab", "128k","-vsync","1","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
-            #     if self.category == constants.LIST_TYPE_PRESENTER:
-            #         self.url = self.data_src['rtmp']
-            #         timeout=4
-            #         command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-vf","scale=-1:720","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,'-preset','fast',"-r","25",'-g','50',output]
-            #     elif self.resource_type == "M3U8":
-            #         timeout=3
-            #         command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f","hls","-i",self.url,"-vsync", "1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-filter_complex","scale=-1:720","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
-            #     elif self.resource_type == "RTSP":
-            #         timeout=4
-            #         command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags","prefer_tcp","-i", self.url,"-flags","+global_header","-vsync","1","-ar","44100","-ab","128k","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,'-preset','fast',"-r","25",'-g','50',output]
-            #     # elif fps < 25:
-            #     #     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-af",f"atempo={25/fps}","-vf", f"scale=-1:720,setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
+                timeout = 3
+                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-c:v",gpu,"-af", "aresample=async=1","-ar","44100","-ab", "128k","-vsync","1","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
+                if self.category == constants.LIST_TYPE_PRESENTER:
+                    self.url = self.data_src['rtmp']
+                    timeout=4
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-c:v",gpu,"-vf","scale=-1:720","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,'-preset','fast',"-r","25",'-g','50',output]
+                elif self.resource_type == "M3U8":
+                    timeout=3
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f","hls","-i",self.url,"-vsync", "1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-c:v",gpu,"-filter_complex","scale=-1:720","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
+                elif self.resource_type == "RTSP":
+                    timeout=4
+                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags","prefer_tcp","-i", self.url,"-flags","+global_header","-vsync","1","-c:v",gpu,"-ar","44100","-ab","128k","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,'-preset','fast',"-r","25",'-g','50',output]
+                # elif fps < 25:
+                #     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-af",f"atempo={25/fps}","-vf", f"scale=-1:720,setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
                     
-            #     si = subprocess.STARTUPINFO()
-            #     si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-            #     self.pipe = subprocess.Popen(command, startupinfo=si)
-            #     self.url = output
-            #     Clock.schedule_once(self.process_set_data ,timeout)
-            # else:
-            Clock.schedule_once(self.process_set_data , 0)
+                si = subprocess.STARTUPINFO()
+                si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+                self.pipe = subprocess.Popen(command, startupinfo=si)
+                self.url = output
+                Clock.schedule_once(self.process_set_data ,timeout)
+            else:
+                Clock.schedule_once(self.process_set_data , 0)
         except :
             print("Exception:")
             Clock.schedule_once(self.process_set_data , 0)
 
     def process_set_data(self, second):
         try:
-            # self.init_capture()
-            print(self.url)
-            self.player = MediaPlayer(self.url)
-            self.event_capture = Clock.schedule_interval(self.update2, 1.0 / self.duration_fps)
-            
-        
+            self.init_capture(0)
+            # self.player = MediaPlayer(self.url)
+            # self.event_capture = Clock.schedule_interval(self.update2, 1.0 / self.duration_fps)
         except Exception:
             pass
 

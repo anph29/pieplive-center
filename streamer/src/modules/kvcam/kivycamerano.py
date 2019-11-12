@@ -141,7 +141,7 @@ class KivyCameraNo(DragBehavior, Image):
     def process_set_data(self, second):
         try:
             # self.init_capture()
-            self.player = MediaPlayer(self.url)
+            # self.player = MediaPlayer(self.url)
             self.event_capture = Clock.schedule_interval(self.update2, 1.0 / self.duration_fps)
             
         

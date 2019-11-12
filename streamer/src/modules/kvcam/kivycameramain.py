@@ -93,32 +93,11 @@ class KivyCameraMain(Image):
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
                 self.pipe = sp.Popen(command, startupinfo=si)
                 self.url = output
-                Clock.schedule_once(self.process_set_data ,timeout)
+                Clock.schedule_once(self.init_capture ,timeout)
             else:
-                Clock.schedule_once(self.process_set_data , 0)
+                Clock.schedule_once(self.init_capture , 0)
         except :
-            Clock.schedule_once(self.process_set_data , 0)
-
-    def process_set_data(self, second):
-        try:
-            self.init_capture(0)
-            # self.player = MediaPlayer(self.url)
-            # self.event_capture = Clock.schedule_interval(self.update2, 1.0 / self.duration_fps)
-            
-        except Exception:
-            pass
-
-    def update2(self, dt):
-        val = ''
-        if val != 'eof':
-            frame, val = self.player.get_frame()
-            if val != 'eof' and frame is not None:
-                img, t = frame
-                self.duration_current = t
-                texture = Texture.create(size=img.get_size())
-                texture.flip_vertical()
-                texture.blit_buffer(img.to_bytearray()[0])
-                self.texture = texture
+            Clock.schedule_once(self.init_capture , 0)
 
     def init_capture(self, second):
         try:

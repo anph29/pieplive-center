@@ -7,7 +7,7 @@ block_cipher = None
 
 added_files = [
   ( 'src\\ui', 'src\\ui' ),
-  ( 'ffmpeg\\', 'ffmpeg\\' ),
+  ( 'ffmpeg-win\\', 'ffmpeg-win\\' ),
   ( 'piepstream.kv', '.' ),
   ( '..\\PiepLiveCenter.zip', '.' ),
   ( 'Lib\\site-packages\\kivy\\garden', 'kivy\\garden' ),

@@ -5,6 +5,7 @@ from kivy.graphics import Fbo, ClearColor, ClearBuffers, Scale, Translate, Canva
 from kivy.uix.relativelayout import RelativeLayout
 from src.modules.kvcam.kivycameramain import KivyCameraMain
 from src.modules.kvcam.kivycameramini import KivyCameraMini
+from src.modules.kvcam.kivycamerano import KivyCameraNo
 from src.modules.custom.pieplabel import PiepLabel
 from src.modules.custom.piepimage import PiepImage
 from kivy.properties import ObjectProperty,NumericProperty
@@ -50,8 +51,8 @@ class MainStream(RelativeLayout):
         self.is_loop = True
         self.current_schedule = -1
         self.deleteAllFile()
-        # self.gpu = 'h264_amf'
-        self.gpu = 'h264_nvenc'
+        self.gpu = 'h264_amf'
+        # self.gpu = 'h264_nvenc'
 
     def _load(self):
         pass
@@ -299,12 +300,17 @@ class MainStream(RelativeLayout):
 
     def prepare(self):
         try:
-            self.command = ['ffmpeg/ffmpeg.exe','-y','-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', '{}x{}'.format(self.f_width, self.f_height), '-i', '-']
+            self.command = ['ffmpeg-win/ffmpeg.exe','-y','-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', '{}x{}'.format(self.f_width, self.f_height), '-i', '-']
             
             self.command.extend(self.draw_element())
 
             # encode
-            self.command.extend(["-c:v","h264_amf",'-vb', str(self.v_bitrate),'-r', '25'])
+            # self.command.extend(["-c:v",self.gpu])
+            self.command.extend(['-vb', str(self.v_bitrate)])
+            self.command.extend(['-r', '25'])
+            self.command.extend(['-g', '50'])
+            self.command.extend(['-q', '0'])
+            self.command += ["-preset", "medium"]
             
             # tream
             self.command.extend(['-f', 'flv', self.urlStream])

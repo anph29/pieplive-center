@@ -5,6 +5,7 @@ from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, Num
 from kivy.graphics.texture import Texture
 from kivy.uix.behaviors import DragBehavior
 from kivy.graphics import Rectangle, Color
+from kivy.weakmethod import WeakMethod
 from threading import Thread, Event
 from kivy.lang import Builder
 from functools import partial
@@ -12,6 +13,7 @@ from src.utils import helper, kivyhelper
 from src.modules import constants
 
 from ffpyplayer.player import MediaPlayer
+import numpy as np
 
 kv = '''
 <KivyCameraNo>:
@@ -54,6 +56,7 @@ class KivyCameraNo(DragBehavior, Image):
             "url": self.default_frame,
             "type": "IMG"
         }
+        self._callback_ref = WeakMethod(self._player_callback)
 
     def on_touch_up(self, touch):
         if self._get_uid('svavoid') in touch.ud:
@@ -111,21 +114,21 @@ class KivyCameraNo(DragBehavior, Image):
                 except Exception as e:
                     print("Exception:", e)
 
-                timeout = 1
-                command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-filter_complex","scale=-1:720","-ar","44100","-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                timeout = 2
+                command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-filter_complex","scale=-1:720","-ar","44100","-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 if self.category == constants.LIST_TYPE_PRESENTER:
                     self.url = self.data_src['rtmp']
-                    timeout=2
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-preset","medium","-filter_complex","scale=-1:720","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                    timeout=3
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-i", self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-preset","medium","-filter_complex","scale=-1:720","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "M3U8":
-                    timeout=1
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync", "1","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-filter_complex:0","scale=-1:720","-ar","44100", "-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                    timeout=2
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-f", "hls","-i", self.url, "-vsync", "1","-af", "aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-filter_complex:0","scale=-1:720","-ar","44100", "-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
                 elif self.resource_type == "RTSP":
-                    timeout=1
-                    command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i", self.url,"-pix_fmt", "yuv420p", "-flags","+global_header", "-vsync","1","-ar","44100", "-ab", "128k","-af", "aresample=async=1:min_hard_comp=0.100000","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,"-r","25",output]
-                else:
-                    if fps < 25:
-                        command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-af", f"atempo={25/fps}","-vf", f"scale=-1:720,setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                    timeout=2
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-rtsp_flags", "prefer_tcp","-i", self.url,"-pix_fmt", "yuv420p", "-flags","+global_header", "-vsync","1","-ar","44100", "-ab", "128k","-af", "aresample=async=1:min_hard_comp=0.100000","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                # else:
+                #     if fps < 25:
+                #         command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-af", f"atempo={25/fps}","-vf", f"scale=-1:720,setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",output]
                     
                 si = subprocess.STARTUPINFO()
                 si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
@@ -135,18 +138,29 @@ class KivyCameraNo(DragBehavior, Image):
             else:
                 Clock.schedule_once(self.process_set_data , 0)
         except :
-            print("Exception:")
+            print("Exception:s")
             Clock.schedule_once(self.process_set_data , 0)
         
     def process_set_data(self, second):
         try:
             # self.init_capture()
-            # self.player = MediaPlayer(self.url)
+            self.player = MediaPlayer(self.url,callback=self._player_callback,
+                thread_lib='SDL',
+                loglevel='info')
             self.event_capture = Clock.schedule_interval(self.update2, 1.0 / self.duration_fps)
-            
-        
         except Exception:
             pass
+    
+    def _player_callback(self, selector, value):
+        print("a")
+        if self.player is None:
+            return
+
+        print(selector)
+        # if selector == 'quit':
+        #     def close(*args):
+        #         self.unload()
+        #     Clock.schedule_once(close, 0)
 
     def update2(self, dt):
         val = ''

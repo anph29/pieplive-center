@@ -25,11 +25,8 @@ class KivyCameraMini(DragBehavior, Image):
     capture = ObjectProperty(None)
     url = StringProperty('')
     resource_type = StringProperty('')
-    buffer_rate = NumericProperty(0)
-    duration_total = NumericProperty(0)
-    duration_total_n = NumericProperty(1)
-    duration_current = NumericProperty(0)
-    duration_fps = NumericProperty(25)
+    durationCurrent = NumericProperty(0)
+    fps = NumericProperty(25)#frame per second: variable for stream
     reconnect = NumericProperty(0)
 
     event_capture = None
@@ -68,6 +65,13 @@ class KivyCameraMini(DragBehavior, Image):
                 super(DragBehavior, self).on_touch_up(touch)
         return self._get_uid() in touch.ud
 
+    def set_fps(self, fps):
+        self.fps = fps
+
+    def set_default_data(self):
+        self.reconnect = 0
+        self.durationCurrent = 0
+
     def set_data_source(self, input, category):
         if helper._BASE_PATH+'temp' in self.url:
             self.url_remove = self.url
@@ -75,52 +79,32 @@ class KivyCameraMini(DragBehavior, Image):
         self.url = input['url']
         self.resource_type = input['type']
         self.category = category
-        self.reconnect = 0
-        self.buffer_rate = 0
-        self.duration_total = 0
-        self.duration_current = 0
-        self.duration_total_n = 1
-        self.duration_fps = 25
+        self.set_default_data()
+
         if self.pipe is not None:
             self.pipe.kill()
         if self.capture is not None:
             self.capture.release()
         self.stop_update_capture()
         
-        # fps = 25
         try:
             if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.resource_type == 'MP4' or self.resource_type == "RTSP":
                 timenow = datetime.datetime.timestamp(datetime.datetime.now())
                 output = helper._BASE_PATH+'temp/{}.flv'.format(timenow)
-                try:
-                    if self.resource_type == 'VIDEO' or self.resource_type == 'MP4' or (self.resource_type == "M3U8" and self.category != constants.LIST_TYPE_PRESENTER):
-                        _cap = cv2.VideoCapture(self.url)
-                        if _cap.isOpened():
-                            # fps = _cap.get(cv2.CAP_PROP_FPS)
-                            # if fps >= 25:
-                            self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
-                            self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)
-                            # else:
-                            #     self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)
-                            #     self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/25
-                        del _cap
-                except Exception as e:
-                    print("Exception:", e)
 
-                timeout = 3
-                command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-c:v",self.f_parent.gpu,"-af", "aresample=async=1","-ar","44100","-ab", "128k","-vsync","1","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
+
+                timeout = 2
+                command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-c:v",self.f_parent.gpu,"-af", "aresample=async=1","-ar","44100","-ab", "128k","-vsync","1","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,"-r",str(self.fps),'-g',str(self.fps*2),output]
                 if self.category == constants.LIST_TYPE_PRESENTER:
                     self.url = self.data_src['rtmp']
-                    timeout=4
-                    command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-i",self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-c:v",self.f_parent.gpu,"-vf","scale=-1:720","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,'-preset','fast',"-r","25",'-g','50',output]
-                elif self.resource_type == "M3U8":
                     timeout=3
-                    command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-f","hls","-i",self.url,"-vsync", "1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-c:v",self.f_parent.gpu,"-filter_complex","scale=-1:720","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-i",self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-c:v",self.f_parent.gpu,"-vf","scale=-1:720","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,'-preset','fast',"-r",str(self.fps),'-g',str(self.fps*2),output]
+                elif self.resource_type == "M3U8":
+                    timeout=2
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-f","hls","-i",self.url,"-vsync", "1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-c:v",self.f_parent.gpu,"-filter_complex","scale=-1:720","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r",str(self.fps),'-g',str(self.fps*2),output]
                 elif self.resource_type == "RTSP":
-                    timeout=4
-                    command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-rtsp_flags","prefer_tcp","-i", self.url,"-flags","+global_header","-vsync","1","-c:v",self.f_parent.gpu,"-ar","44100","-ab","128k","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,'-preset','fast',"-r","25",'-g','50',output]
-                # elif fps < 25:
-                #     command = ["ffmpeg/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i", helper._BASE_PATH+"media/muted2.mp3","-ar","44100","-ab", "128k","-af",f"atempo={25/fps}","-vf", f"scale=-1:720,setpts={fps/25}*PTS","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
+                    timeout=3
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-rtsp_flags","prefer_tcp","-i", self.url,"-flags","+global_header","-vsync","1","-c:v",self.f_parent.gpu,"-ar","44100","-ab","128k","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,'-preset','fast',"-r",str(self.fps),'-g',str(self.fps*2),output]
                     
                 si = subprocess.STARTUPINFO()
                 si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
@@ -130,8 +114,8 @@ class KivyCameraMini(DragBehavior, Image):
             else:
                 Clock.schedule_once(self.init_capture , 0)
         except :
-            print("Exception:")
-            Clock.schedule_once(self.init_capture , 0)
+            print("Exception: source")
+            # Clock.schedule_once(self.init_capture , 0)
 
     def init_capture(self, second):
         try:
@@ -150,8 +134,7 @@ class KivyCameraMini(DragBehavior, Image):
                 kivyhelper.getApRoot().loadingMini = False
                 kivyhelper.getApRoot().mini_display_status(True)
                 self.reconnect = 0
-                self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
-                self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
+                self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.fps)
                 if self.f_parent is not None:
                     if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.category == constants.LIST_TYPE_SCHEDULE or self.typeOld == "M3U8" or self.typeOld == "VIDEO":
                         self.f_parent.refresh_stream()
@@ -201,9 +184,7 @@ class KivyCameraMini(DragBehavior, Image):
                     ret, frame = self.capture.retrieve()
                     if ret:
                         if self.resource_type == 'VIDEO' or self.resource_type == 'MP4' or self.resource_type == 'M3U8':
-                            if self.resource_type == 'VIDEO' or self.resource_type == 'MP4':
-                                self.buffer_rate = self.capture.get(cv2.CAP_PROP_POS_FRAMES) / self.duration_total_n
-                            self.duration_current = self.capture.get(cv2.CAP_PROP_POS_FRAMES)/self.capture.get(cv2.CAP_PROP_FPS)
+                            self.durationCurrent = self.capture.get(cv2.CAP_PROP_POS_FRAMES)/self.capture.get(cv2.CAP_PROP_FPS)
                         self.update_texture_from_frame(frame)
         except IOError:
             print("Exception update:")

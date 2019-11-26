@@ -52,12 +52,12 @@
                     size_hint: None,1
                     width: self.parent.width - videoDuration.width
                     max: 100
-                    value: root.mainStream.camera.buffer_rate * 100
+                    value: root.mainStream.camera.durationRate * 100
                     opacity:1
                 Label:
                     id: videoDuration
                     size_hint: None,1
-                    text: helper.convertSecNoToHMS(root.mainStream.camera.duration_current) +"/"+ helper.convertSecNoToHMS(root.mainStream.camera.duration_total)
+                    text: helper.convertSecNoToHMS(root.mainStream.camera.durationCurrent) +"/"+ helper.convertSecNoToHMS(root.mainStream.camera.durationTotal)
                     font_size: 13
 
             BoxLayout:

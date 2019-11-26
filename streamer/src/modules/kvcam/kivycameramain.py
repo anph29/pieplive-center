@@ -8,19 +8,17 @@ import subprocess as sp
 from src.utils import helper, kivyhelper
 from pathlib import Path
 from src.modules import constants
-import os
 
 class KivyCameraMain(Image):
-    capture = ObjectProperty(None)
-    url = StringProperty('')
+    capture = ObjectProperty(None) #cv2 capture
+    url = StringProperty('') #link video to play
     resource_type = StringProperty('')
-    buffer_rate = NumericProperty(0)
-    duration_total = NumericProperty(0)
-    duration_total_n = NumericProperty(1)
-    duration_current = NumericProperty(0)
-    duration_fps = NumericProperty(25)
+    durationRate = NumericProperty(0) #(%) variable for processbar video
+    durationTotal = NumericProperty(0) # total duration fo video
+    frameTotal = NumericProperty(1) #total frame of video
+    durationCurrent = NumericProperty(0)
+    fps = NumericProperty(25)#frame per second: variable for stream
     reconnect = NumericProperty(0)
-
     event_capture = None
     default_frame = helper._IMAGES_PATH + 'splash.jpg'
     pipe = None
@@ -29,7 +27,6 @@ class KivyCameraMain(Image):
     category = StringProperty('')
     data_src = None
     url_remove = StringProperty('')
-
 
     def __init__(self, **kwargs):
         super(KivyCameraMain, self).__init__(**kwargs)
@@ -42,6 +39,16 @@ class KivyCameraMain(Image):
             "type": "IMG"
         }
 
+    def set_fps(self, fps):
+        self.fps = fps
+
+    def set_default_data(self):
+        self.reconnect = 0
+        self.durationRate = 0
+        self.durationTotal = 0
+        self.durationCurrent = 0
+        self.frameTotal = 1
+
     def set_data_source(self, input, category):
         if helper._BASE_PATH+'temp' in self.url:
             self.url_remove = self.url
@@ -49,12 +56,7 @@ class KivyCameraMain(Image):
         self.url = input['url']
         self.resource_type = input['type']
         self.category = category
-        self.reconnect = 0
-        self.buffer_rate = 0
-        self.duration_total = 0
-        self.duration_current = 0
-        self.duration_total_n = 1
-        self.duration_fps = 25
+        self.set_default_data()
         
         if self.pipe is not None:
             self.pipe.kill()
@@ -70,24 +72,24 @@ class KivyCameraMain(Image):
                     if self.resource_type == 'VIDEO' or self.resource_type == 'MP4' or (self.resource_type == "M3U8" and self.category != constants.LIST_TYPE_PRESENTER):
                         _cap = cv2.VideoCapture(self.url)
                         if _cap.isOpened():
-                            self.duration_total_n = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
-                            self.duration_total = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)
+                            self.frameTotal = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
+                            self.durationTotal = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)
                         del _cap
                 except Exception as e:
                     print("Exception:", e)
 
                 timeout = 3
-                command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i",helper._BASE_PATH+"media/muted2.mp3","-c:v",self.f_parent.gpu,"-c:a","aac","-ar","44100","-ab","128k","-vsync","1","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
+                command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-i",self.url,'-stream_loop','-1',"-i",helper._BASE_PATH+"media/muted2.mp3","-c:v",self.f_parent.gpu,"-c:a","aac","-ar","44100","-ab","128k","-vsync","1","-vf","scale=-1:720","-vb",self.f_parent.v_bitrate,"-r",str(self.fps),'-g',str(self.fps*2),output]
                 if self.category == constants.LIST_TYPE_PRESENTER:
                     self.url = self.data_src['rtmp']
                     timeout=4
-                    command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-c:v",self.f_parent.gpu,"-vf","scale=-1:720","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r","25",output]
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-i",self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-c:v",self.f_parent.gpu,"-vf","scale=-1:720","-ar","44100","-ab","128k","-vb",self.f_parent.v_bitrate,"-r",str(self.fps),'-g',str(self.fps*2),output]
                 elif self.resource_type == "M3U8":
                     timeout=3
-                    command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-f","hls","-i",self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-c:v",self.f_parent.gpu,"-filter_complex","scale=-1:720","-ar","44100", "-ab", "128k","-vb",self.f_parent.v_bitrate,"-r","25",'-g','50',output]
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-f","hls","-i",self.url,"-vsync","1","-af","aresample=async=1:min_hard_comp=0.100000:first_pts=0","-flags","+global_header","-c:v",self.f_parent.gpu,"-filter_complex","scale=-1:720","-ar","44100", "-ab", "128k","-vb",self.f_parent.v_bitrate,"-r",str(self.fps),'-g',str(self.fps*2),output]
                 elif self.resource_type == "RTSP":
                     timeout=4
-                    command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-rtsp_flags","prefer_tcp","-i",self.url,"-vsync","1","-c:v",self.f_parent.gpu,"-ar","44100","-ab","128k","-vf","scale=-1:720","-vb","6M",'-preset','fast',"-r","25",'-g','50',output]
+                    command = ["ffmpeg-win/ffmpeg.exe","-y","-nostats","-rtsp_flags","prefer_tcp","-i",self.url,"-vsync","1","-c:v",self.f_parent.gpu,"-ar","44100","-ab","128k","-vf","scale=-1:720","-vb","6M",'-preset','fast',"-r",str(self.fps),'-g',str(self.fps*2),output]
                     
                 si = sp.STARTUPINFO()
                 si.dwFlags |= sp.STARTF_USESHOWWINDOW
@@ -98,6 +100,8 @@ class KivyCameraMain(Image):
                 Clock.schedule_once(self.init_capture , 0)
         except :
             Clock.schedule_once(self.init_capture , 0)
+            print("except add source")
+            pass
 
     def init_capture(self, second):
         try:
@@ -117,8 +121,7 @@ class KivyCameraMain(Image):
                 kivyhelper.getApRoot().loading = False
                 kivyhelper.getApRoot().main_display_status(True)
                 self.reconnect = 0
-                self.duration_fps = self.capture.get(cv2.CAP_PROP_FPS)
-                self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.duration_fps)
+                self.event_capture = Clock.schedule_interval(self.update, 1.0 / self.fps)
                 if self.f_parent is not None:
                     if self.resource_type == "M3U8" or self.resource_type == "VIDEO" or self.category == constants.LIST_TYPE_SCHEDULE or self.typeOld == "M3U8" or self.typeOld == "VIDEO":
                         self.f_parent.refresh_stream()
@@ -167,7 +170,7 @@ class KivyCameraMain(Image):
                     if self.category == constants.LIST_TYPE_SCHEDULE:
                         #schedule
                         if 'duration' in self.data_src and  self.data_src['duration'] is not None:
-                            if (self.data_src['duration'] == 0 or int(self.duration_current) >= self.data_src['duration']):
+                            if (self.data_src['duration'] == 0 or int(self.durationCurrent) >= self.data_src['duration']-1):
                                 self.f_parent.process_schedule(1)
                     if self.resource_type == 'GIF':
                         #replay gif image
@@ -177,15 +180,15 @@ class KivyCameraMain(Image):
                     if self.category == constants.LIST_TYPE_SCHEDULE:
                         #schedule
                         if 'duration' in self.data_src and  self.data_src['duration'] is not None:
-                            if self.data_src['duration'] != 0 and int(self.duration_current) >= self.data_src['duration']:
+                            if self.data_src['duration'] != 0 and int(self.durationCurrent) >= self.data_src['duration']:
                                 self.f_parent.process_schedule(1)
 
                     ret, frame = self.capture.retrieve()
                     if ret:
                         if self.resource_type == 'VIDEO' or self.resource_type == 'MP4' or self.resource_type == 'M3U8' or self.resource_type == 'RTSP':
                             if self.resource_type == 'VIDEO' or self.resource_type == 'MP4':
-                                self.buffer_rate = self.capture.get(cv2.CAP_PROP_POS_FRAMES) / self.duration_total_n
-                            self.duration_current = self.capture.get(cv2.CAP_PROP_POS_FRAMES)/self.capture.get(cv2.CAP_PROP_FPS)
+                                self.durationRate = self.capture.get(cv2.CAP_PROP_POS_FRAMES) / self.frameTotal
+                            self.durationCurrent = self.capture.get(cv2.CAP_PROP_POS_FRAMES)/self.capture.get(cv2.CAP_PROP_FPS)
                         self.update_texture_from_frame(frame)
         except IOError:
             print("Exception update:")

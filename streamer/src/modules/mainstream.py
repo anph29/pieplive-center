@@ -251,10 +251,10 @@ class MainStream(RelativeLayout):
             url = self.camera.url
             if os.path.exists(url):
                 numau += 1
-                if self.camera.duration_current == 0:
+                if self.camera.durationCurrent == 0:
                     inp.extend(["-i", url])
                 else:
-                    inp.extend(["-ss", helper.convertSecNoToHMS(self.camera.duration_current),"-i", url,"-flags","+global_header"])
+                    inp.extend(["-ss", helper.convertSecNoToHMS(self.camera.durationCurrent),"-i", url,"-flags","+global_header"])
                 txt += f"[{numau}:a]volume=2[a{numau}];"
                 _map += f'[a{numau}]'
 
@@ -262,10 +262,10 @@ class MainStream(RelativeLayout):
             _url = self.cameraMini.url
             if os.path.exists(_url):
                 numau += 1
-                if self.cameraMini.duration_current == 0:
+                if self.cameraMini.durationCurrent == 0:
                     inp.extend(["-i", _url])
                 else:
-                    inp.extend(["-ss", helper.convertSecNoToHMS(self.cameraMini.duration_current),"-i", _url,"-flags","+global_header"])
+                    inp.extend(["-ss", helper.convertSecNoToHMS(self.cameraMini.durationCurrent),"-i", _url,"-flags","+global_header"])
                 txt += f"[{numau}:a]volume=2[a{numau}];"
                 _map += f'[a{numau}]'
 

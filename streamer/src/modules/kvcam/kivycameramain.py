@@ -72,7 +72,7 @@ class KivyCameraMain(Image):
                     if self.resource_type == 'VIDEO' or self.resource_type == 'MP4' or (self.resource_type == "M3U8" and self.category != constants.LIST_TYPE_PRESENTER):
                         _cap = cv2.VideoCapture(self.url)
                         if _cap.isOpened():
-                            self.frameTotal = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*25
+                            self.frameTotal = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)*self.fps
                             self.durationTotal = _cap.get(cv2.CAP_PROP_FRAME_COUNT)/_cap.get(cv2.CAP_PROP_FPS)
                         del _cap
                 except Exception as e:
@@ -132,12 +132,12 @@ class KivyCameraMain(Image):
                 print("cv2.error:")
                 if self.capture is not None:
                     self.capture.release()
-                if self.reconnect >= 20:
+                if self.reconnect >= 10:
                     self.show_captured_img(self.default_frame)
                     kivyhelper.getApRoot().loading = False
                 else:
                     self.reconnect += 1
-                    Clock.schedule_once(self.init_capture,0.5)
+                    Clock.schedule_once(self.init_capture,1)
                 
         except Exception as e:
             print("Exception init_capture:", e)
@@ -156,6 +156,8 @@ class KivyCameraMain(Image):
             self.update_texture_from_frame(frame)
         cap.release()
         del ret, frame, cap
+        if self.category == constants.LIST_TYPE_SCHEDULE:
+            self.f_parent.start_schedule(True)
 
     def stop_update_capture(self):
         if self.event_capture is not None:
@@ -190,6 +192,8 @@ class KivyCameraMain(Image):
                                 self.durationRate = self.capture.get(cv2.CAP_PROP_POS_FRAMES) / self.frameTotal
                             self.durationCurrent = self.capture.get(cv2.CAP_PROP_POS_FRAMES)/self.capture.get(cv2.CAP_PROP_FPS)
                         self.update_texture_from_frame(frame)
+            else:
+                print("update: dont open")
         except IOError:
             print("Exception update:")
 

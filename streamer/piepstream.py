@@ -11,10 +11,12 @@ Config.set('graphics', 'position', 'custom')
 Config.set('graphics', 'top', 30)
 Config.set('graphics', 'left', 20)
 Config.set('graphics', 'resizable', 0)
-Config.set('graphics', 'maxfps', 0)
+Config.set('graphics', 'maxfps', 60)
 Config.set('graphics', 'fbo', 'force-hardware')#one of hardware, software or force-hardware
 Config.set('graphics', 'kivy_clock', 'free_all')#one of default, interrupt, free_all, free_only
+# Config.set('graphics', 'multisamples', 2)
 Config.set('kivy', 'window_icon', helper._LOGO_STREAMER)
+Config.set('kivy', 'exit_on_escape', 0)
 Config.write()
 
 from kivy.app import App

@@ -31,7 +31,7 @@ class MainStream(RelativeLayout):
         self.f_height = 720
         self.capture = None
         self.fps = 25
-        self.v_bitrate = "4M"
+        self.v_bitrate = "2M"
         self.urlStream = ''
         self.devAudio = None
         self.deviceVolume = 100
@@ -50,11 +50,12 @@ class MainStream(RelativeLayout):
         self.is_loop = True
         self.current_schedule = -1
         self.deleteAllFile()
-        # self.gpu = 'h264_amf'
-        self.gpu = 'h264_nvenc'
+        self.gpu = 'h264_amf'
+        # self.gpu = 'h264_nvenc'
 
     def _load(self):
-        pass
+        self.camera.set_fps(self.fps)
+        self.cameraMini.set_fps(self.fps)
 
     def show_camera_mini(self):
         if self.f_parent.modeStream == constants.MODES_NORMAL:
@@ -183,7 +184,7 @@ class MainStream(RelativeLayout):
             self.fbo.add(self.canvas)
     
             self.isStream = True
-            self.event = Clock.schedule_interval(self.stream, 1/25)
+            self.event = Clock.schedule_interval(self.stream, 1/self.fps)
         except IOError:
             kivyhelper.getApRoot().triggerStop()
 
@@ -299,19 +300,20 @@ class MainStream(RelativeLayout):
 
     def prepare(self):
         try:
-            self.command = ['ffmpeg-win/ffmpeg.exe','-y','-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', '{}x{}'.format(self.f_width, self.f_height), '-i', '-']
+            self.command = ['ffmpeg-win/ffmpeg.exe','-re','-y','-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', '{}x{}'.format(self.f_width, self.f_height), '-i', '-']
             
             self.command.extend(self.draw_element())
 
             # encode
             # self.command.extend(["-c:v",self.gpu])
+            # self.command.extend(["-c:v","h264"])
             self.command.extend(['-vb', str(self.v_bitrate)])
-            self.command.extend(['-r', '25'])
-            self.command.extend(['-g', '50'])
-            self.command.extend(['-q', '0'])
-            self.command += ["-preset", "medium"]
+            self.command.extend(['-r', str(self.fps)])
+            self.command.extend(['-g', str(self.fps*2)])
+            # self.command.extend(['-q', '0'])
+            # self.command.extend(["-c:a","aac"])
             
-            # tream
+            # stream
             self.command.extend(['-f', 'flv', self.urlStream])
             
             si = subprocess.STARTUPINFO()
@@ -447,7 +449,7 @@ class MainStream(RelativeLayout):
         if isSchedule:
             index = ls_schedule.getCurrentIndex()
             _data = ls_schedule.get_data_from_index(index)
-            self.mgrSchedule = Clock.schedule_once(self.process_schedule , _data['duration']+3)
+            self.mgrSchedule = Clock.schedule_once(self.process_schedule , _data['duration'])
     
     def process_schedule(self, fps):
         try:

@@ -14,7 +14,6 @@ from src.models import P300_model, Socket_model
 from src.modules import constants
 import json
 
-
 Builder.load_file('src/ui/main.kv')
 
 class MainView(Widget):
